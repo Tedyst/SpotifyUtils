@@ -46,7 +46,7 @@ export default function Login() {
 
     useEffect(() => {
       // The url for login
-      fetch('/api/auth/url').then(res => res.json()).then(data => {
+      fetch('/auth-url').then(res => res.json()).then(data => {
           let url = data.url;
           url = url.replace("127.0.0.1%3A5000", window.location.host);
           setLoginUrl(url);

@@ -4,7 +4,7 @@ from flask import request, url_for
 import SpotifyUtils.config as config
 from SpotifyUtils import APP, db
 from SpotifyUtils.user import User
-from SpotifyUtils.playlist import Playlist
+from SpotifyUtils.utils import real_url
 from flask_login import login_user, current_user
 import json
 
@@ -16,7 +16,7 @@ def auth():
     sp_oauth = spotipy.oauth2.SpotifyOAuth(
         config.SPOTIFY_CLIENT_ID,
         config.SPOTIFY_CLIENT_SECRET,
-        url_for('auth', _external=True),
+        real_url(),
         scope=config.SCOPE)
 
     code = sp_oauth.parse_response_code(request.url)
@@ -77,7 +77,7 @@ def authurl():
     sp_oauth = spotipy.oauth2.SpotifyOAuth(
         config.SPOTIFY_CLIENT_ID,
         config.SPOTIFY_CLIENT_SECRET,
-        url_for('auth', _external=True),
+        real_url(),
         scope=config.SCOPE)
 
     url = sp_oauth.get_authorize_url()
