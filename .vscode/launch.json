@@ -31,7 +31,8 @@
                 "--host",
                 "0.0.0.0"
             ],
-            "jinja": true
+            "jinja": true,
+            "cwd": "${workspaceFolder}/api"
         },
         {
             "name": "Flask Only Run",
@@ -48,7 +49,8 @@
                 "--host",
                 "0.0.0.0"
             ],
-            "jinja": true
+            "jinja": true,
+            "cwd": "${workspaceFolder}/api"
         },
         {
             "name": "Python: Current File",
