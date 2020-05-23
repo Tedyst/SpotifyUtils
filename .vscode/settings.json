@@ -1,0 +1,13 @@
+{
+    "python.pythonPath": "api/venv/bin/python3",
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pytestEnabled": false,
+    "vsdocker.imageUser": "tedyst/spotify-utils",
+    "vs-kubernetes": {
+        "vs-kubernetes.python-remote-root": "/APP"
+    },
+}
