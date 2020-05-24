@@ -10,6 +10,9 @@ class User(db.Model):
     displayname = db.Column(db.String(50))
     image = db.Column(db.String(50))
     token = db.Column(db.String(100))
+    top_tracks = db.Column(db.String(10000))
+    top_artists = db.Column(db.String(10000))
+    top_genres = db.Column(db.String(10000))
 
     def __init__(self, username, token):
         self.username = username
