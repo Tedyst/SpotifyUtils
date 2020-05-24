@@ -1,5 +1,5 @@
-import SpotifyUtils.sources.genius as genius
-# import SpotifyUtils.sources.youtube as youtube
+import SpotifyUtils.lyrics.genius as genius
+# import SpotifyUtils.lyrics.youtube as youtube
 from SpotifyUtils.song import Song
 import time
 from SpotifyUtils import APP
