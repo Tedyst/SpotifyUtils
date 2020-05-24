@@ -14,9 +14,10 @@ export default function ResultBox(props) {
                 name={item.name}
                 artist={item.artist}
                 image={item.image_url}
+                lyrics={item.lyrics}
             />
         </Grid>
-                ));
+    ));
     return (
         <Container maxWidth="lg">
             <Grid container spacing={2}>

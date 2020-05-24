@@ -6,9 +6,13 @@ import CardMedia from '@material-ui/core/CardMedia';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
+import CardActions from '@material-ui/core/CardActions';
+import Button from '@material-ui/core/Button';
 
-
-const useStyle = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
         flexWrap: 'unset',
@@ -36,20 +40,80 @@ const useStyle = makeStyles((theme) => ({
         height: 38,
         width: 38,
     },
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        outline: 'none'
+    },
+    modalPaper: {
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+        outline: 'none'
+    },
+    modalRoot: {
+        minWidth: 400,
+    },
+    modalTitle: {
+        fontSize: 14,
+    },
+    modalPos: {
+        marginBottom: 12,
+    }
 }));
 
 export default function SongCard(props) {
-    const desktop = useStyle();
     console.log(props);
+    const classes = useStyles();
+    const [open, setOpen] = React.useState(false);
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    let modal = (<Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
+            open={open}
+            onClose={handleClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+                timeout: 500,
+            }}
+        >
+        <Fade in={open}>
+            <Card className={classes.modalRoot}>
+                <CardContent>
+                    <Typography variant="h5" component="h2">
+                    {props.name}
+                    </Typography>
+                    <Typography className={classes.modalTitle} color="textSecondary" gutterBottom>
+                    {props.artist}
+                    </Typography>
+                    <Typography variant="body2" component="p">
+                    {props.lyrics}
+                    </Typography>
+                </CardContent>
+            </Card>
+        </Fade>
+        </Modal>);
+
     return (
-        <Card className={desktop.root}>
+    <Card className={classes.root}>
         <CardMedia
-            className={desktop.cover}
+            className={classes.cover}
             image={props.image}
             title={props.name}
         />
-        <div className={desktop.details}>
-            <CardContent className={desktop.content}>
+        <div className={classes.details}>
+            <CardContent className={classes.content}>
                 <Typography component="h6" variant="h6">
                     {props.name}
                 </Typography>
@@ -57,12 +121,14 @@ export default function SongCard(props) {
                     {props.artist}
                 </Typography>
             </CardContent>
-            {/* <div className={desktop.controls}>
-                <IconButton aria-label="play/pause">
-                    <PlayArrowIcon className={desktop.playIcon} />
-                </IconButton>
-            </div> */}
+            <CardActions>
+                <Button
+                    size="small"
+                    onClick={handleOpen}
+                >See lyrics</Button>
+            </CardActions>
         </div>
+        {modal}
     </Card>
     );
 }
