@@ -5,10 +5,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Select, MenuItem, TextField, Grid } from '@material-ui/core';
-import {
-  selectPlaylists
-} from '../store/user';
-import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,9 +33,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function PlaylistView() {
+export default function PlaylistView(props) {
     const classes = useStyles();
-    const playlists = useSelector(selectPlaylists);
+    const playlists = props.playlists;
 
     let idk = <MenuItem value="none" disabled>
                 No playlist found!

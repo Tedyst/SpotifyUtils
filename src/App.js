@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Login from './views/Login';
-import ResultView from './views/ResultView';
+import PlaylistSearch from './views/PlaylistSearch';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   BrowserRouter as Router,
@@ -72,13 +72,13 @@ function App() {
             <Login />
           </Route>
           <Route path="/playlistsearch">
-            <ResultView />
+            <PlaylistSearch />
           </Route>
           <Route path="/">
+            {redirect}
             <Home />
           </Route>
         </Switch>
-        {redirect}
       </main>
       </Router>
     </div>

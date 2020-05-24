@@ -38,31 +38,37 @@ const useStyle = makeStyles((theme) => ({
     },
 }));
 
-export default function PlaylistCardDesktop() {
+export default function PlaylistCardDesktop(props) {
     const desktop = useStyle();
 
     return (
         <Card className={desktop.root}>
         <CardMedia
             className={desktop.cover}
-            image="https://i.scdn.co/image/ab67616d0000b273f817f90531b8b396b370ab0d"
-            title="Live from space album cover"
+            image={props.image}
+            title={props.name}
         />
         <div className={desktop.details}>
             <CardContent className={desktop.content}>
                 <Typography component="h6" variant="h6">
-                    Lorem ipsum dolor 
+                    {props.name}
                 </Typography>
                 <Typography variant="subtitle1" color="textSecondary">
-                    Lorem ipsum dolor
+                    {props.artist}
                 </Typography>
             </CardContent>
-            <div className={desktop.controls}>
+            {/* <div className={desktop.controls}>
                 <IconButton aria-label="play/pause">
                     <PlayArrowIcon className={desktop.playIcon} />
                 </IconButton>
-            </div>
+            </div> */}
         </div>
     </Card>
     );
+}
+
+PlaylistCardDesktop.defaultProps = {
+    image: "https://i.scdn.co/image/ab67616d0000b273f817f90531b8b396b370ab0d",
+    name: "Show & Tell",
+    artist: "Said The Sky"
 }
