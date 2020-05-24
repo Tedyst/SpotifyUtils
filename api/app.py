@@ -7,6 +7,7 @@ from SpotifyUtils.user import User
 from SpotifyUtils.utils import real_url
 from flask_login import login_user, current_user
 from SpotifyUtils.sections.PlaylistSearcher import playlistsearcher_blueprint
+from SpotifyUtils.sections.Lyrics import lyrics_blueprint
 import json
 
 db.create_all()
@@ -92,6 +93,8 @@ def authurl():
 
 APP.register_blueprint(playlistsearcher_blueprint,
                        url_prefix="/playlistsearch")
+APP.register_blueprint(lyrics_blueprint,
+                       url_prefix="/lyrics")
 
 
 if __name__ == "__main__":
