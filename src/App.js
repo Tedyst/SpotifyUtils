@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import Login from './views/Login';
 import PlaylistSearch from './views/PlaylistSearch';
+import PlaylistView from './views/PlaylistView';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   BrowserRouter as Router,
@@ -75,6 +76,9 @@ function App() {
           </Route>
           <Route path="/playlistsearch">
             <PlaylistSearch />
+          </Route>
+          <Route path="/lyrics">
+            <PlaylistView />
           </Route>
           <Route path="/">
             {redirect}
