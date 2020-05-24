@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
@@ -60,7 +60,7 @@ export default function PlaylistView(props) {
       setselectedPlaylist(event.target.value);
     };
 
-    if(Updating == true){
+    if(Updating === true){
       setTimeout(()=>{
         fetch('/playlistsearch/' + selectedPlaylist + "/" +  Word).then(res => res.json()).then(data => {
           setUpdating(!data.finished);

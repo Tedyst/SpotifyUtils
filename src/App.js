@@ -58,13 +58,6 @@ function App() {
     redirect = <Redirect to="/auth" />
   } 
 
-  let items = [{
-    name: "Test",
-    artist: "Test Artist",
-    lyrics: "SALASDSADL<br>sasd"
-  }]
-
-
   return (
     <div className={classes.root}>
       <Router>
