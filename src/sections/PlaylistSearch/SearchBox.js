@@ -61,7 +61,6 @@ export default function PlaylistView(props) {
     };
 
     if(Updating == true){
-      console.log(Updating);
       setTimeout(()=>{
         fetch('/playlistsearch/' + selectedPlaylist + "/" +  Word).then(res => res.json()).then(data => {
           setUpdating(!data.finished);
@@ -74,7 +73,6 @@ export default function PlaylistView(props) {
       event.preventDefault();
       setUpdating(true);
       fetch('/playlistsearch/' + selectedPlaylist + "/" +  Word).then(res => res.json()).then(data => {
-        console.log(data);
         setUpdating(!data.finished);
         props.setResults(data.results);
       });
