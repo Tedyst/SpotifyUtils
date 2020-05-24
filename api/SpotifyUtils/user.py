@@ -1,5 +1,5 @@
+from SpotifyUtils.song import Song
 from SpotifyUtils import db, login_manager
-from SpotifyUtils.playlist import Playlist
 import spotipy
 
 
@@ -37,7 +37,7 @@ class User(db.Model):
 
     def playlists(self):
         sp = spotipy.Spotify(self.token)
-        playlists = sp.u9ser_playlists(self.username)
+        playlists = sp.user_playlists(self.username)
         result = []
         for playlist in playlists['items']:
             result.append(
@@ -73,3 +73,54 @@ class User(db.Model):
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.filter(User.id == user_id).first()
+
+
+class Playlist():
+    def __init__(self, id, name, user):
+        self.id = id
+        self.name = name
+        self.user = user
+        self.number = 0
+        self.tracks = []
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "tracks": self.tracks
+        }
+
+    def get(self):
+        sp = spotipy.Spotify(self.user.token)
+        playlist_info = sp.playlist(self.id, market="RO")
+        self.name = playlist_info['name']
+        self.number = playlist_info['tracks']['total']
+        result = []
+        tracks = _playlist_tracks(sp, self.user, self.id)
+        for spotify_info in tracks:
+            exists = Song.query.filter(Song.artist == spotify_info['artists'][0]['name']).filter(
+                Song.name == spotify_info['name']).first()
+            if not exists:
+                exists = Song(
+                    spotify_info['name'],
+                    spotify_info['artists'][0]['name'],
+                    spotify_info['uri'],
+                    spotify_info['album']['images'][0]['url'],
+                    spotify_info['preview_url']
+                )
+                db.session.add(exists)
+            result.append(exists)
+        db.session.commit()
+        self.tracks = result
+
+
+def _playlist_tracks(sp, user: User, uri):
+    results = sp.user_playlist_tracks(user.username, playlist_id=uri)
+    tracks = []
+    for track in results['items']:
+        tracks.append(track['track'])
+    while results['next']:
+        results = sp.next(results)
+        for track in results['items']:
+            tracks.append(track['track'])
+    return tracks

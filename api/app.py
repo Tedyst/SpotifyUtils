@@ -1,11 +1,12 @@
 import spotipy
-from flask import request, url_for
+from flask import request
 
 import SpotifyUtils.config as config
 from SpotifyUtils import APP, db
 from SpotifyUtils.user import User
 from SpotifyUtils.utils import real_url
 from flask_login import login_user, current_user
+from SpotifyUtils.sections.PlaylistSearcher import playlistsearcher_blueprint
 import json
 
 db.create_all()
@@ -87,6 +88,10 @@ def authurl():
 
     url = sp_oauth.get_authorize_url()
     return {"url": url}
+
+
+APP.register_blueprint(playlistsearcher_blueprint,
+                       url_prefix="/playlistsearcher")
 
 
 if __name__ == "__main__":
