@@ -8,9 +8,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Redirect } from 'react-router-dom';
 import {
-  selectLogged
+  setLogged,
+  selectLogged,
+  setPlaylists,
+  setUsername,
+  setImage
 } from '../store/user';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +41,7 @@ export default function Login() {
     const classes = useStyles();
     const [LoginUrl, setLoginUrl] = useState("");
     const logged = useSelector(selectLogged);
+    const dispatch = useDispatch();
 
     let search = window.location.search;
     let params = new URLSearchParams(search);
@@ -52,7 +57,16 @@ export default function Login() {
       if(code !== null) {
         // Check if the code works
         fetch('/auth?code=' + code).then(res => res.json()).then(data => {
-          if(data.success === true){
+          if(data.success === true) {
+              fetch('/status').then(res => res.json()).then(data => {
+                dispatch(setLogged(data.logged));
+                dispatch(setPlaylists(data.playlists));
+                dispatch(setImage(data.image));
+                if(!data.username)
+                  dispatch(setUsername("Not Logged In"));
+                else
+                  dispatch(setUsername(data.username));
+              });
             return <Redirect to="/" />
           }
         });

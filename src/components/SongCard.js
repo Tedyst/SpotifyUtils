@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
         top:'10%',
         bottom: '10%',
         overflow:'scroll',
-        height:'80%',
+        height: '80%',
         display:'block'
     },
     modalTitle: {
