@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask_login import current_user
 from threading import Thread
-from SpotifyUtils.user import Playlist
+from SpotifyUtils.user import Playlist, User
 import time
 from SpotifyUtils.song import Song
 import regex
@@ -29,11 +29,11 @@ def ajax(playlist_id, words):
         return {"logged": False}
     query = None
     for i in query_queue:
-        if i.user == current_user.id and i.words == words and i.playlist == playlist_id:
+        if i.user == current_user.id and i.words == words and i.playlist_id == playlist_id:
             query = i
             break
     if query is None:
-        query = Query(current_user.id, playlist_id, words, 0)
+        query = Query(current_user.id, playlist_id, words, -1)
         query_queue.append(query)
         thread = Thread(target=search_thread, args=[query])
         thread.start()
@@ -50,8 +50,10 @@ def ajax(playlist_id, words):
 
 
 def search_thread(query: Query):
-    playlist = Playlist(query.playlist_id, "", query.user)
+    user = User.query.filter(User.id == query.user).first()
+    playlist = Playlist(query.playlist_id, "", user)
     playlist.get()
+    query.total = playlist.number
     threads = []
     words = query.words.lower()
     for song in playlist.tracks:
