@@ -15,7 +15,8 @@ import {
   setPlaylists,
   setUsername,
   selectUsername,
-  selectImage
+  selectImage,
+  setImage
 } from './store/user';
 import Sidebar from './views/Sidebar';
 import { makeStyles } from '@material-ui/core';
@@ -47,6 +48,7 @@ function App() {
     fetch('/status').then(res => res.json()).then(data => {
         dispatch(setLogged(data.logged));
         dispatch(setPlaylists(data.playlists));
+        dispatch(setImage(data.image));
         if(!data.username)
           dispatch(setUsername("Not Logged In"));
         else

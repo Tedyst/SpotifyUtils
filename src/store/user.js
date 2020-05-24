@@ -13,7 +13,7 @@ export const userSlice = createSlice({
       state.logged = action.payload;
     },
     setImage: (state, action) => {
-      state.logged = action.payload;
+      state.image = action.payload;
     },
     setUsername: (state, action) => {
       state.name = action.payload;
