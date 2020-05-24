@@ -7,17 +7,20 @@ export default function ResultBox(props) {
     if(props.results === [])
         return null
     let items = [];
-    items = props.results.map((item, key) => (<SongCard
-                    key={key}
-                    name={item.name}
-                    artist={item.artist}
-                />));
+    items = props.results.map((item, key) => (
+        <Grid item xs={6} md={3} sm={4} lg={2}>
+            <SongCard
+                key={item.id}
+                name={item.name}
+                artist={item.artist}
+                image={item.image_url}
+            />
+        </Grid>
+                ));
     return (
         <Container maxWidth="lg">
             <Grid container spacing={2}>
-                <Grid item xs={4} md={3} sm={6} lg={2}>
-                    {items}
-                </Grid>
+                {items}
             </Grid>
         </Container>
     )

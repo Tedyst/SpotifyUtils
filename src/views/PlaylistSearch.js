@@ -11,7 +11,6 @@ import ResultBox from '../sections/PlaylistSearch/ResultBox';
 export default function PlaylistSearch() {
     const playlists = useSelector(selectPlaylists);
     const [Results, setResults] = React.useState([]);
-    console.log(Results);
     return (
         <div>
         <Container maxWidth="xs">

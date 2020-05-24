@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
@@ -55,25 +55,35 @@ export default function PlaylistView(props) {
     }
     const [selectedPlaylist, setselectedPlaylist] = React.useState('none');
     const [Word, setWord] = React.useState('');
+    const [Updating, setUpdating] = React.useState(false);
     const changePlaylist = (event) => {
       setselectedPlaylist(event.target.value);
     };
 
+    if(Updating == true){
+      console.log(Updating);
+      setTimeout(()=>{
+        fetch('/playlistsearch/' + selectedPlaylist + "/" +  Word).then(res => res.json()).then(data => {
+          setUpdating(!data.finished);
+          props.setResults(data.results);
+        });
+      }, 2000);
+    }
+
     const mySubmitHandler = (event) => {
       event.preventDefault();
-      console.log(Word, selectedPlaylist);
-      props.setResults([
-          {
-              "id": "test",
-              "name": "Good song",
-              "artist": "Said The Sky",
-              "image": ""
-          }
-      ])
+      setUpdating(true);
+      fetch('/playlistsearch/' + selectedPlaylist + "/" +  Word).then(res => res.json()).then(data => {
+        console.log(data);
+        setUpdating(!data.finished);
+        props.setResults(data.results);
+      });
+      props.setResults([]);
     }
 
     const changeWord = (event) => {
       setWord(event.target.value);
+      setUpdating(false);
     }
 
     return (

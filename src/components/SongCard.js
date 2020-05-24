@@ -40,7 +40,7 @@ const useStyle = makeStyles((theme) => ({
 
 export default function SongCard(props) {
     const desktop = useStyle();
-
+    console.log(props);
     return (
         <Card className={desktop.root}>
         <CardMedia

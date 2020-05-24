@@ -91,7 +91,7 @@ def authurl():
 
 
 APP.register_blueprint(playlistsearcher_blueprint,
-                       url_prefix="/playlistsearcher")
+                       url_prefix="/playlistsearch")
 
 
 if __name__ == "__main__":
