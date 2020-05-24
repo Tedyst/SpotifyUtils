@@ -1,7 +1,7 @@
 import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
-import PlaylistView from '../sections/PlaylistSearch/SearchBox';
+import SearchBox from '../sections/PlaylistSearch/SearchBox';
 import {
   selectPlaylists
 } from '../store/user';
@@ -10,21 +10,18 @@ import ResultBox from '../sections/PlaylistSearch/ResultBox';
 
 export default function PlaylistSearch() {
     const playlists = useSelector(selectPlaylists);
-    let results = [
-        {
-            "id": "test",
-            "name": "Test Name",
-            "artist": "Test Artist",
-            "image": ""
-        }
-    ]
+    const [Results, setResults] = React.useState([]);
+    console.log(Results);
     return (
         <div>
         <Container maxWidth="xs">
-            <PlaylistView playlists={playlists}/>
+            <SearchBox
+                setResults={setResults}
+                playlists={playlists}
+            />
             <CssBaseline />
         </Container>
-        <ResultBox results={results}/>
+        <ResultBox results={Results}/>
         </div>
     )
 }

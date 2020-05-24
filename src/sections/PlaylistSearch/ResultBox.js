@@ -4,16 +4,19 @@ import { Grid } from '@material-ui/core';
 import SongCard from '../../components/SongCard'
 
 export default function ResultBox(props) {
-    if(props.results === undefined)
+    if(props.results === [])
         return null
+    let items = [];
+    items = props.results.map((item, key) => (<SongCard
+                    key={key}
+                    name={item.name}
+                    artist={item.artist}
+                />));
     return (
         <Container maxWidth="lg">
             <Grid container spacing={2}>
                 <Grid item xs={4} md={3} sm={6} lg={2}>
-                    <SongCard
-                        name="Test"
-                        artist="Test artist"
-                    />
+                    {items}
                 </Grid>
             </Grid>
         </Container>

@@ -38,7 +38,7 @@ const useStyle = makeStyles((theme) => ({
     },
 }));
 
-export default function PlaylistCardDesktop(props) {
+export default function SongCard(props) {
     const desktop = useStyle();
 
     return (
@@ -67,7 +67,7 @@ export default function PlaylistCardDesktop(props) {
     );
 }
 
-PlaylistCardDesktop.defaultProps = {
+SongCard.defaultProps = {
     image: "https://i.scdn.co/image/ab67616d0000b273f817f90531b8b396b370ab0d",
     name: "Show & Tell",
     artist: "Said The Sky"

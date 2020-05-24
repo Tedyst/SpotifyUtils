@@ -54,16 +54,38 @@ export default function PlaylistView(props) {
       };
     }
     const [selectedPlaylist, setselectedPlaylist] = React.useState('none');
+    const [Word, setWord] = React.useState('');
     const changePlaylist = (event) => {
       setselectedPlaylist(event.target.value);
     };
+
+    const mySubmitHandler = (event) => {
+      event.preventDefault();
+      console.log(Word, selectedPlaylist);
+      props.setResults([
+          {
+              "id": "test",
+              "name": "Good song",
+              "artist": "Said The Sky",
+              "image": ""
+          }
+      ])
+    }
+
+    const changeWord = (event) => {
+      setWord(event.target.value);
+    }
 
     return (
         <Container>
             <CssBaseline />
             <div className={classes.paper}>
               <Grid container spacing={2}>
-                <form className={classes.form} noValidate>
+                <form
+                  className={classes.form}
+                  noValidate
+                  onSubmit={mySubmitHandler}
+                >
                   <Typography variant="body2" color="textPrimary" align="center">
                       Here are all of your playlists:
                   </Typography>
@@ -84,12 +106,15 @@ export default function PlaylistView(props) {
                     id="standard-basic"
                     label="Words to search"
                     variant="outlined"
-                    className={classes.grid} />
+                    className={classes.grid}
+                    onChange={changeWord}
+                  />
                   <Button
                       fullWidth
                       variant="contained"
                       color="primary"
                       className={classes.submit}
+                      type="submit"
                   >
                       Search
                   </Button>
