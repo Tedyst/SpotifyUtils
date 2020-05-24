@@ -8,9 +8,9 @@ export default function ResultBox(props) {
         return null
     let items = [];
     items = props.results.map((item, key) => (
-        <Grid item xs={6} md={3} sm={4} lg={2}>
+        <Grid item xs={6} md={3} sm={4} lg={2} key={item.uri}>
             <SongCard
-                key={item.id}
+                key={item.uri}
                 name={item.name}
                 artist={item.artist}
                 image={item.image_url}

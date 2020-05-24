@@ -54,17 +54,25 @@ const useStyles = makeStyles((theme) => ({
     },
     modalRoot: {
         minWidth: 400,
+        position:'absolute',
+        top:'10%',
+        bottom: '10%',
+        overflow:'scroll',
+        height:'80%',
+        display:'block'
     },
     modalTitle: {
         fontSize: 14,
     },
     modalPos: {
         marginBottom: 12,
+    },
+    lyrics: {
+        whiteSpace: "pre-wrap",
     }
 }));
 
 export default function SongCard(props) {
-    console.log(props);
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
@@ -97,7 +105,7 @@ export default function SongCard(props) {
                     <Typography className={classes.modalTitle} color="textSecondary" gutterBottom>
                     {props.artist}
                     </Typography>
-                    <Typography variant="body2" component="p">
+                    <Typography variant="body2" component="p" className={classes.lyrics}>
                     {props.lyrics}
                     </Typography>
                 </CardContent>
@@ -106,6 +114,7 @@ export default function SongCard(props) {
         </Modal>);
 
     return (
+    <Fade in={true}>
     <Card className={classes.root}>
         <CardMedia
             className={classes.cover}
@@ -130,6 +139,7 @@ export default function SongCard(props) {
         </div>
         {modal}
     </Card>
+    </Fade>
     );
 }
 

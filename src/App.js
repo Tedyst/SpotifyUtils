@@ -20,8 +20,6 @@ import {
 import Sidebar from './views/Sidebar';
 import { makeStyles } from '@material-ui/core';
 
-import LyricsModal from './components/LyricsModal';
-
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -85,12 +83,7 @@ function App() {
           </Route>
           <Route path="/">
             {redirect}
-
-            <LyricsModal 
-              name={items[0].name}
-              artist={items[0].artist}
-              lyrics={items[0].lyrics}
-              />
+            <Home />
           </Route>
         </Switch>
       </main>
