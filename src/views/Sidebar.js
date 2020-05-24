@@ -5,7 +5,6 @@ import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -101,7 +100,7 @@ function ResponsiveDrawer(props) {
     const container = window !== undefined ? () => window().document.body : undefined;
 
     let avatar;
-    if(props.image == "")
+    if(props.image === "")
         avatar = <Avatar 
             className={classes.avatar}
             src={SpotifyLogo}

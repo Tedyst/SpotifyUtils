@@ -1,17 +1,11 @@
 import React from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import SkipNextIcon from '@material-ui/icons/SkipNext';
-import Collapse from '@material-ui/core/Collapse';
-import clsx from 'clsx';
-import { red } from '@material-ui/core/colors';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 
 const useStyle = makeStyles((theme) => ({
@@ -46,12 +40,6 @@ const useStyle = makeStyles((theme) => ({
 
 export default function PlaylistCardDesktop() {
     const desktop = useStyle();
-
-    const [expanded, setExpanded] = React.useState(true);
-
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
 
     return (
         <Card className={desktop.root}>

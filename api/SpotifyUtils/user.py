@@ -37,7 +37,7 @@ class User(db.Model):
 
     def playlists(self):
         sp = spotipy.Spotify(self.token)
-        playlists = sp.user_playlists(self.username)
+        playlists = sp.u9ser_playlists(self.username)
         result = []
         for playlist in playlists['items']:
             result.append(

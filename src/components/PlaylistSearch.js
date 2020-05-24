@@ -8,7 +8,7 @@ import { Select, MenuItem, TextField, Grid } from '@material-ui/core';
 import {
   selectPlaylists
 } from '../store/user';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
 export default function PlaylistView() {
     const classes = useStyles();
     const playlists = useSelector(selectPlaylists);
-    const dispatch = useDispatch();
 
     let idk = <MenuItem value="none" disabled>
                 No playlist found!

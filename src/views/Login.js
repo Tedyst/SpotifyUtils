@@ -8,10 +8,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Redirect } from 'react-router-dom';
 import {
-  setLogged,
   selectLogged
 } from '../store/user';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -38,7 +37,6 @@ export default function Login() {
     const classes = useStyles();
     const [LoginUrl, setLoginUrl] = useState("");
     const logged = useSelector(selectLogged);
-    const dispatch = useDispatch();
 
     let search = window.location.search;
     let params = new URLSearchParams(search);
