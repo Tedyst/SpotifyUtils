@@ -6,7 +6,7 @@ import {
   selectPlaylists
 } from '../store/user';
 import { useSelector } from 'react-redux';
-import ResultBox from '../sections/PlaylistSearch/ResultBox';
+import ResultBox from '../components/ResultBox';
 
 export default function PlaylistSearch() {
     const playlists = useSelector(selectPlaylists);

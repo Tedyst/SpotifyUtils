@@ -1,7 +1,7 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
 import { Grid } from '@material-ui/core';
-import SongCard from '../../components/SongCard'
+import SongCard from './SongCard'
 
 export default function ResultBox(props) {
     if(props.results === [])
