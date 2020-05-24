@@ -17,9 +17,9 @@ def update_lyrics(song: Song):
                 return
         lyrics = source.get_lyrics(song)
         if lyrics is not None:
-            song.lyrics = lyrics.replace('\n', '<br>')
             APP.logger.info("Taken lyrics for %s from %s",
                             song.title, source.SOURCE_NAME)
+            song.lyrics = lyrics
             song.source = source.SOURCE_NAME
             song.last_check = int(time.time())
             return

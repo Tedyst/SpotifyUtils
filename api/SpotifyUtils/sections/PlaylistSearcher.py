@@ -7,6 +7,7 @@ from SpotifyUtils.song import Song
 import regex
 from SpotifyUtils.lyrics import update_lyrics
 from SpotifyUtils import db
+import queue
 
 playlistsearcher_blueprint = Blueprint('playlistsearcher', __name__)
 query_queue = []
@@ -51,57 +52,78 @@ def ajax(playlist_id, words):
 
 def search_thread(query: Query):
     user = User.query.filter(User.id == query.user).first()
+    q = queue.Queue()
     playlist = Playlist(query.playlist_id, "", user)
     playlist.get()
     query.total = playlist.number
     threads = []
     words = query.words.lower()
+    threads = queue.Queue()
+    # If we already checked just skip creating the thread
     for song in playlist.tracks:
         if type(song) != Song:
             continue
-        if song.last_check:
-            if time.time() - song.last_check < 86400:
-                # Check now, do not create another thread
-                if song.lyrics:
-                    if len(words) < 8:
-                        re = regex.search(
-                            rf'({words}){{e<=1}}', song.lyrics.lower())
-                    else:
-                        re = regex.search(
-                            rf'({words}){{e<=3}}', song.lyrics.lower())
-                    if re is not None:
-                        query.result.append(song)
-                else:
-                    query.notfound.append(song)
-                query.searched += 1
-                continue
 
+        # We cannot move the original object because it is tied to this thread
         copysong = Song(
             song.name, song.artist, song.uri, song.image, song.preview
         )
         copysong.lyrics = song.lyrics
         copysong.source = song.source
         copysong.last_check = song.last_check
-        thread = Thread(target=update_lyrics,
-                        args=[copysong])
-        thread.start()
-        threads.append([thread, copysong, song])
-
-    for couple in threads:
-        thread.join()
-        thread = couple[0]
-        song = couple[1]
-        originalsong = couple[2]
-        originalsong.lyrics = song.lyrics
-        originalsong.source = song.source
-        originalsong.last_check = song.last_check
-        if song.lyrics:
-            re = regex.search(
-                rf'({words}){{e<=3}}', song.lyrics.lower())
+        if copysong.lyrics:
+            if len(words) < 8:
+                re = regex.search(
+                    rf'({words}){{e<=1}}', copysong.lyrics.lower())
+            else:
+                re = regex.search(
+                    rf'({words}){{e<=2}}', copysong.lyrics.lower())
             if re is not None:
-                query.result.append(song)
-        else:
-            query.notfound.append(song)
+                query.result.append(copysong)
+            query.searched += 1
+            continue
+
+        if copysong.last_check:
+            if time.time() - copysong.last_check < 86400:
+                query.searched += 1
+                continue
+
+        threads.put([q, song, copysong])
+
+    # Starting the threads
+    for counter in range(0, min(10, threads.qsize())):
+        args = threads.get()
+        thread = Thread(target=update_lyrics_queue, args=args)
+        thread.start()
+
+    # Getting the result from the threads
+    for counter in range(query.total - query.searched):
+        song, copysong = q.get()
+        if not threads.empty():
+            args = threads.get()
+            thread = Thread(target=update_lyrics_queue, args=args)
+            thread.start()
+
+        # Update song (the one tied to the database)
+        song.lyrics = copysong.lyrics
+        song.source = copysong.source
+        song.last_check = copysong.last_check
+
+        if copysong.lyrics:
+            if len(words) < 8:
+                re = regex.search(
+                    rf'({words}){{e<=1}}', copysong.lyrics.lower())
+            else:
+                re = regex.search(
+                    rf'({words}){{e<=2}}', copysong.lyrics.lower())
+            if re is not None:
+                query.result.append(copysong)
         query.searched += 1
-    db.session.commit()
+        db.session.commit()
+
     return
+
+
+def update_lyrics_queue(q: queue.Queue, song: Song, copysong: Song):
+    update_lyrics(copysong)
+    q.put([song, copysong])
