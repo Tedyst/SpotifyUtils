@@ -17,7 +17,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
-
+import SpotifyLogo from '../static/img/spotify.png';
+import { Link } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -47,6 +48,9 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         justifyContent: "center",
         alignItems: "center"
+    },
+    avatar: {
+        marginRight: 10,
     },
     // necessary for content to be below app bar
     toolbar: theme.mixins.toolbar,
@@ -78,28 +82,36 @@ function ResponsiveDrawer(props) {
         </div>
         <Divider />
         <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
+            <ListItem button key="Home" component={Link} to="/">
+                <ListItemIcon>
+                    <MailIcon />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
             </ListItem>
-            ))}
-        </List>
-        <Divider />
-        <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} />
+            <ListItem button key="PlaylistSearch" component={Link} to="/playlistsearch">
+                <ListItemIcon>
+                    <MailIcon />
+                </ListItemIcon>
+                <ListItemText primary="PlaylistSearch" />
             </ListItem>
-            ))}
         </List>
         </div>
     );
 
     const container = window !== undefined ? () => window().document.body : undefined;
 
-    
+    let avatar;
+    if(props.image == "")
+        avatar = <Avatar 
+            className={classes.avatar}
+            src={SpotifyLogo}
+        />;
+    else
+        avatar = <Avatar 
+            className={classes.avatar}
+            src={props.image}
+        />;
+
     const header = (
         <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
@@ -112,6 +124,7 @@ function ResponsiveDrawer(props) {
                 >
                     <MenuIcon />
                 </IconButton>
+                {avatar}
                 <Typography variant="h6" noWrap>
                     {props.username}
                 </Typography>

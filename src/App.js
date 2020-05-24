@@ -14,7 +14,8 @@ import {
   selectLogged,
   setPlaylists,
   setUsername,
-  selectUsername
+  selectUsername,
+  selectImage
 } from './store/user';
 import Sidebar from './views/Sidebar';
 import { makeStyles } from '@material-ui/core';
@@ -39,12 +40,11 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const logged = useSelector(selectLogged);
   const username = useSelector(selectUsername);
+  const image = useSelector(selectImage);
   const classes = useStyles();
   const dispatch = useDispatch();
-  console.log("Logged is " + logged);
   if(!logged){
     fetch('/status').then(res => res.json()).then(data => {
-      console.log("setLogged" + data.logged);
         dispatch(setLogged(data.logged));
         dispatch(setPlaylists(data.playlists));
         if(!data.username)
@@ -61,18 +61,21 @@ function App() {
   return (
     <div className={classes.root}>
       <Router>
-      <Sidebar username={username}/>
+      <Sidebar
+        username={username}
+        image={image}
+        />
       <main className={classes.content}>
         <div className={classes.toolbar} />
         <Switch>
           <Route path="/auth">
             <Login />
           </Route>
-          <Route path="/test">
-            <Home />
+          <Route path="/playlistsearch">
+            <ResultView />
           </Route>
           <Route path="/">
-            <ResultView />
+            <Home />
           </Route>
         </Switch>
         {redirect}

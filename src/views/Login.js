@@ -54,9 +54,7 @@ export default function Login() {
       if(code !== null) {
         // Check if the code works
         fetch('/auth?code=' + code).then(res => res.json()).then(data => {
-          console.log(data);
           if(data.success === true){
-            console.log("Redirect");
             return <Redirect to="/" />
           }
         });

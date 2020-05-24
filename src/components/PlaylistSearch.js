@@ -42,15 +42,18 @@ export default function PlaylistView() {
     const playlists = useSelector(selectPlaylists);
     const dispatch = useDispatch();
 
-    let idk = [];
+    let idk = <MenuItem value="none" disabled>
+                No playlist found!
+              </MenuItem>;
     if(playlists !== undefined){
+      idk = [];
       for(var key in playlists) {
         idk.push(
           <MenuItem
-            value={key}
-            key={key}
+            value={playlists[key].id}
+            key={playlists[key].id}
             className={classes.fullWidth} >
-                {playlists[key]}
+                {playlists[key].name}
           </MenuItem>
         );
       };
