@@ -4,11 +4,15 @@ export const userSlice = createSlice({
   name: 'user',
   initialState: {
     logged: false,
+    name: "",
     playlists: []
   },
   reducers: {
     setLogged: (state, action) => {
       state.logged = action.payload;
+    },
+    setUsername: (state, action) => {
+      state.name = action.payload;
     },
     setPlaylists: (state, action) => {
       state.playlists = action.payload;
@@ -16,7 +20,11 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setLogged, setPlaylists } = userSlice.actions;
+export const {
+  setLogged, 
+  setPlaylists,
+  setUsername
+} = userSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -33,5 +41,6 @@ export const { setLogged, setPlaylists } = userSlice.actions;
 // in the slice file. For example: `useSelector((state) => state.counter.value)`
 export const selectLogged = state => state.counter.logged;
 export const selectPlaylists = state => state.counter.playlists;
+export const selectName = state => state.counter.name;
 
 export default userSlice.reducer;

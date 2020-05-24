@@ -14,10 +14,29 @@ import {
   selectLogged,
   setPlaylists
 } from './store/user';
+import Sidebar from './views/Sidebar';
+import { makeStyles } from '@material-ui/core';
 
+const drawerWidth = 240;
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+      display: 'flex',
+    },
+    // necessary for content to be below app bar
+    toolbar: theme.mixins.toolbar,
+    drawerPaper: {
+        width: drawerWidth,
+    },
+    content: {
+        flexGrow: 1,
+        padding: theme.spacing(3),
+    },
+}));
 
 function App() {
   const logged = useSelector(selectLogged);
+  const classes = useStyles();
   const dispatch = useDispatch();
   console.log("Logged is " + logged);
   if(!logged){
@@ -31,21 +50,29 @@ function App() {
   if(!logged){
     redirect = <Redirect to="/auth" />
   } 
+
   return (
-    <Router>
-      <Switch>
-        <Route path="/auth">
-          <Login />
-        </Route>
-        <Route path="/test">
-          <Home />
-        </Route>
-        <Route path="/">
-          <ResultView />
-        </Route>
-      </Switch>
-      {redirect}
-    </Router>
+    <div className={classes.root}>
+      <Router>
+      <Sidebar/>
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
+        <Switch>
+          <Route path="/auth">
+            <Login />
+          </Route>
+          <Route path="/test">
+            <Home />
+          </Route>
+          <Route path="/">
+            <ResultView />
+          </Route>
+        </Switch>
+        {redirect}
+      </main>
+      </Router>
+    </div>
+    
   );
 }
 
