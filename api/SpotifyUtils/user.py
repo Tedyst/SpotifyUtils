@@ -8,6 +8,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50))
     displayname = db.Column(db.String(50))
+    image = db.Column(db.String(50))
     token = db.Column(db.String(100))
 
     def __init__(self, username, token):
@@ -52,7 +53,7 @@ class User(db.Model):
 
     def playlists_json(self):
         result = []
-        for playlist in self.playlists:
+        for playlist in self.playlists():
             result.append(playlist.to_json())
         return result
 

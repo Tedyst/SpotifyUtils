@@ -38,6 +38,10 @@ def auth():
     user = User.query.filter(User.username == username).first()
     if user is None:
         user = User(username, token)
+        if me['display_name']:
+            user.displayname = me['display_name']
+        if len(me['images']) > 0:
+            user.image = me['images'][0]['url']
 
     user.token = token
     db.session.add(user)
@@ -58,6 +62,7 @@ def status():
     return {
         "logged": True,
         "username": current_user.name,
+        "image": current_user.image,
         "playlists": current_user.playlists_json()
     }
 

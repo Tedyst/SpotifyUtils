@@ -12,7 +12,9 @@ import {
 import {
   setLogged,
   selectLogged,
-  setPlaylists
+  setPlaylists,
+  setUsername,
+  selectUsername
 } from './store/user';
 import Sidebar from './views/Sidebar';
 import { makeStyles } from '@material-ui/core';
@@ -36,14 +38,19 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const logged = useSelector(selectLogged);
+  const username = useSelector(selectUsername);
   const classes = useStyles();
   const dispatch = useDispatch();
   console.log("Logged is " + logged);
   if(!logged){
-    fetch('/playlists').then(res => res.json()).then(data => {
+    fetch('/status').then(res => res.json()).then(data => {
       console.log("setLogged" + data.logged);
         dispatch(setLogged(data.logged));
         dispatch(setPlaylists(data.playlists));
+        if(!data.username)
+          dispatch(setUsername("Not Logged In"));
+        else
+          dispatch(setUsername(data.username));
       });
     }
   let redirect = null;
@@ -54,7 +61,7 @@ function App() {
   return (
     <div className={classes.root}>
       <Router>
-      <Sidebar/>
+      <Sidebar username={username}/>
       <main className={classes.content}>
         <div className={classes.toolbar} />
         <Switch>

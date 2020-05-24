@@ -57,7 +57,7 @@ export default function Login() {
           console.log(data);
           if(data.success === true){
             console.log("Redirect");
-            dispatch(setLogged(true));
+            return <Redirect to="/" />
           }
         });
       }

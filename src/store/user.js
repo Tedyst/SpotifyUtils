@@ -4,7 +4,7 @@ export const userSlice = createSlice({
   name: 'user',
   initialState: {
     logged: false,
-    name: "",
+    name: "Not Logged In",
     playlists: []
   },
   reducers: {
@@ -41,6 +41,6 @@ export const {
 // in the slice file. For example: `useSelector((state) => state.counter.value)`
 export const selectLogged = state => state.counter.logged;
 export const selectPlaylists = state => state.counter.playlists;
-export const selectName = state => state.counter.name;
+export const selectUsername = state => state.counter.name;
 
 export default userSlice.reducer;
