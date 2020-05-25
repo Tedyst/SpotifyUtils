@@ -84,22 +84,7 @@ export default function SearchBox(props) {
     setselectedPlaylist(event.target.value);
     };
 
-    if(Updating === true){
-        setTimeout(()=>{
-            fetch('/lyrics/' + selectedPlaylist).then(res => res.json()).then(data => {
-            setUpdating(!data.finished);
-            props.setResults(data.results);
-            if(data.total == -1)
-                setButtonText("Searching...");
-            else
-                setButtonText("Searching..." + data.searched + "/" + data.total);
-            });
-        }, 2000);
-    }
-
-    const mySubmitHandler = (event) => {
-        event.preventDefault();
-        setUpdating(true);
+    const update = function (){
         fetch('/lyrics/' + selectedPlaylist).then(res => res.json()).then(data => {
             setUpdating(!data.finished);
             props.setResults(data.results);
@@ -108,7 +93,20 @@ export default function SearchBox(props) {
             else
                 setButtonText("Searching..." + data.searched + "/" + data.total);
         });
+    }
+
+    if(Updating === true){
+        setTimeout(()=>{
+            update();
+        }, 200);
+    }
+
+    const mySubmitHandler = (event) => {
+        event.preventDefault();
+        setButtonText("Searching...");
+        setUpdating(true);
         props.setResults([]);
+        update();
     }
 
     return (
