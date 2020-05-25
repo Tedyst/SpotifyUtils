@@ -96,15 +96,15 @@ def user(user):
                 copy.update(val)
                 result["tracks"].append(copy)
     for idx, val in enumerate(initiator["genres"]):
-        total += 2
+        total += 4
         for idx1, val1 in enumerate(target["genres"]):
             if val1 == val:
-                score += 2
+                score += 4
                 copy = {
                     "initiator": idx + 1,
                     "target": idx1 + 1,
                     "name": val
                 }
                 result["genres"].append(copy)
-    result["percent"] = int(total/score * 100)
+    result["percent"] = int(score/total * 100)
     return result
