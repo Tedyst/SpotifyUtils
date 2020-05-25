@@ -19,18 +19,20 @@ def me():
         "genres": {}
     }
 
-    for i in sp.current_user_top_artists(time_range="short_term")["items"]:
+    for i in sp.current_user_top_artists(time_range="short_term", limit=50)["items"]:
         result["artists"].append({
             "name": i["name"],
             "image": i["images"][0]["url"],
             "id": i["uri"]
         })
+
+    for i in sp.current_user_top_artists(time_range="long_term", limit=50)["items"]:
         for genre in i["genres"]:
             if genre not in result["genres"]:
                 result["genres"][genre] = 0
             result["genres"][genre] += 1
 
-    for i in sp.current_user_top_tracks(time_range="short_term")["items"]:
+    for i in sp.current_user_top_tracks(time_range="short_term", limit=50)["items"]:
         result["tracks"].append({
             "artist": i["artists"][0]["name"],
             "name": i["name"],

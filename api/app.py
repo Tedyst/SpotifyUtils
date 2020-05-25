@@ -9,6 +9,7 @@ from flask_login import login_user, current_user
 from SpotifyUtils.sections.PlaylistSearcher import playlistsearcher_blueprint
 from SpotifyUtils.sections.Lyrics import lyrics_blueprint
 from SpotifyUtils.sections.Top import top_blueprint
+from SpotifyUtils.sections.Compare import compare_blueprint
 import json
 
 db.create_all()
@@ -98,6 +99,8 @@ APP.register_blueprint(lyrics_blueprint,
                        url_prefix="/lyrics")
 APP.register_blueprint(top_blueprint,
                        url_prefix="/top")
+APP.register_blueprint(compare_blueprint,
+                       url_prefix="/compare")
 
 
 if __name__ == "__main__":
