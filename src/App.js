@@ -21,6 +21,7 @@ import {
 } from './store/user';
 import Sidebar from './views/Sidebar';
 import { makeStyles } from '@material-ui/core';
+import Cookies from 'js-cookie';
 
 const drawerWidth = 240;
 
@@ -41,21 +42,21 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const logged = useSelector(selectLogged);
+  Cookies.set("logged", logged);
   const username = useSelector(selectUsername);
   const image = useSelector(selectImage);
   const classes = useStyles();
   const dispatch = useDispatch();
-  if(!logged){
-    fetch('/status').then(res => res.json()).then(data => {
-        dispatch(setLogged(data.logged));
-        dispatch(setPlaylists(data.playlists));
-        dispatch(setImage(data.image));
-        if(!data.username)
-          dispatch(setUsername("Not Logged In"));
-        else
-          dispatch(setUsername(data.username));
-      });
-    }
+  fetch('/status').then(res => res.json()).then(data => {
+      dispatch(setLogged(data.logged));
+      dispatch(setPlaylists(data.playlists));
+      dispatch(setImage(data.image));
+      if(!data.username)
+        dispatch(setUsername("Not Logged In"));
+      else
+        dispatch(setUsername(data.username));
+    });
+
   let redirect = null;
   if(!logged){
     redirect = <Redirect to="/auth" />
@@ -81,10 +82,10 @@ function App() {
             <PlaylistView />
           </Route>
           <Route path="/">
-            {redirect}
             <Home />
           </Route>
         </Switch>
+        {redirect}
       </main>
       </Router>
     </div>

@@ -56,15 +56,43 @@ export default function PlaylistView(props) {
     const [selectedPlaylist, setselectedPlaylist] = React.useState('none');
     const [Word, setWord] = React.useState('');
     const [Updating, setUpdating] = React.useState(false);
+    const [ButtonText, setButtonText] = React.useState("");
     const changePlaylist = (event) => {
       setselectedPlaylist(event.target.value);
     };
+
+    let button = (
+    <Button
+        fullWidth
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        type="submit"
+    >
+        Search
+    </Button>);
+    if(Updating === true)
+      button = (
+      <Button
+        fullWidth
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        type="submit"
+        disabled={true}
+      >
+        {ButtonText}
+      </Button>);
 
     if(Updating === true){
       setTimeout(()=>{
         fetch('/playlistsearch/' + selectedPlaylist + "/" +  Word).then(res => res.json()).then(data => {
           setUpdating(!data.finished);
           props.setResults(data.results);
+          if(data.total == -1)
+            setButtonText("Searching...");
+          else
+            setButtonText("Searching..." + data.searched + "/" + data.total);
         });
       }, 2000);
     }
@@ -72,9 +100,14 @@ export default function PlaylistView(props) {
     const mySubmitHandler = (event) => {
       event.preventDefault();
       setUpdating(true);
+      setButtonText("Searching...");
       fetch('/playlistsearch/' + selectedPlaylist + "/" +  Word).then(res => res.json()).then(data => {
         setUpdating(!data.finished);
         props.setResults(data.results);
+        if(data.total == -1)
+          setButtonText("Searching...");
+        else
+          setButtonText("Searching..." + data.searched + "/" + data.total);
       });
       props.setResults([]);
     }
@@ -117,15 +150,7 @@ export default function PlaylistView(props) {
                     className={classes.grid}
                     onChange={changeWord}
                   />
-                  <Button
-                      fullWidth
-                      variant="contained"
-                      color="primary"
-                      className={classes.submit}
-                      type="submit"
-                  >
-                      Search
-                  </Button>
+                  {button}
                 </form>
                 </Grid>
             </div>

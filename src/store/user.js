@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
+import Cookies from 'js-cookie';
 
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
-    logged: false,
+    logged: Cookies.get("logged"),
     name: "Not Logged In",
     image: "",
     playlists: []
