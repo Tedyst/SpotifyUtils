@@ -99,6 +99,12 @@ function ResponsiveDrawer(props) {
                 </ListItemIcon>
                 <ListItemText primary="Lyrics from Playlist" />
             </ListItem>
+            <ListItem button key="Top" component={Link} to="/top">
+                <ListItemIcon>
+                    <MailIcon />
+                </ListItemIcon>
+                <ListItemText primary="Your Top" />
+            </ListItem>
         </List>
         </div>
     );

@@ -3,6 +3,7 @@ import './App.css';
 import Login from './views/Login';
 import PlaylistSearch from './views/PlaylistSearch';
 import PlaylistView from './views/PlaylistView';
+import Top from './views/Top';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   BrowserRouter as Router,
@@ -49,6 +50,7 @@ function App() {
   const dispatch = useDispatch();
   fetch('/status').then(res => res.json()).then(data => {
       dispatch(setLogged(data.logged));
+      Cookies.set("logged", logged);
       dispatch(setPlaylists(data.playlists));
       dispatch(setImage(data.image));
       if(!data.username)
@@ -80,6 +82,9 @@ function App() {
           </Route>
           <Route path="/lyrics">
             <PlaylistView />
+          </Route>
+          <Route path="/top">
+            <Top />
           </Route>
           <Route path="/">
             <Home />

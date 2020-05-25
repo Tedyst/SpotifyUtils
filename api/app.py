@@ -63,6 +63,8 @@ def auth():
 def status():
     if not current_user.is_authenticated:
         return {"logged": False}
+    if not current_user.valid():
+        return {"logged": False}
     return {
         "logged": True,
         "username": current_user.name,

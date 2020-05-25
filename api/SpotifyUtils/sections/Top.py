@@ -42,6 +42,12 @@ def me():
             "preview_url": i["preview_url"]
         })
 
+    genres = sorted(
+        result["genres"].items(), key=lambda item: item[1], reverse=True)
+    result["genres"] = {}
+    for idx, val in enumerate(genres):
+        result["genres"][idx] = val[0]
+
     current_user.top_artists = json.dumps(result["artists"])
     current_user.top_tracks = json.dumps(result["tracks"])
     current_user.top_genres = json.dumps(result["genres"])
