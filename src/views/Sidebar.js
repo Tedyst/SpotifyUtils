@@ -17,7 +17,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import SpotifyLogo from '../static/img/spotify.png';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -67,6 +67,7 @@ function ResponsiveDrawer(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
+    const location = useLocation();
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -81,25 +82,25 @@ function ResponsiveDrawer(props) {
         </div>
         <Divider />
         <List>
-            <ListItem button key="Home" component={Link} to="/">
+            <ListItem button key="Home" component={Link} to="/" selected={location.pathname === "/"}>
                 <ListItemIcon>
                     <MailIcon />
                 </ListItemIcon>
                 <ListItemText primary="Home" />
             </ListItem>
-            <ListItem button key="PlaylistSearch" component={Link} to="/playlistsearch">
+            <ListItem button key="PlaylistSearch" component={Link} to="/playlistsearch" selected={location.pathname === "/playlistsearch"}>
                 <ListItemIcon>
                     <MailIcon />
                 </ListItemIcon>
                 <ListItemText primary="PlaylistSearch" />
             </ListItem>
-            <ListItem button key="Lyrics" component={Link} to="/lyrics">
+            <ListItem button key="Lyrics" component={Link} to="/lyrics" selected={location.pathname === "/lyrics"}>
                 <ListItemIcon>
                     <MailIcon />
                 </ListItemIcon>
                 <ListItemText primary="Lyrics from Playlist" />
             </ListItem>
-            <ListItem button key="Top" component={Link} to="/top">
+            <ListItem button key="Top" component={Link} to="/top" selected={location.pathname === "/top"}>
                 <ListItemIcon>
                     <MailIcon />
                 </ListItemIcon>
