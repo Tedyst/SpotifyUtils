@@ -16,6 +16,9 @@ import List from '../sections/Top/List';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1
+    },
+    fullWidth: {
+        width: '100%'
     }
 }));
 
@@ -97,7 +100,7 @@ export default function Top(){
         </Container>
         <Container maxWidth="xl">
             <Grid container spacing={2} className={classes.root} direction="row" alignItems="stretch">
-                <Grid item key="lista-tracks" xs={4}>
+                <Grid item key="lista-tracks" md={4} className={classes.fullWidth}>
                     <Typography variant="h4" color="textPrimary" align="center">
                         Your top tracks
                     </Typography>
@@ -105,7 +108,7 @@ export default function Top(){
                         items={top["tracks"]}
                     />
                 </Grid>
-                <Grid item key="lista-artists" xs={4}>
+                <Grid item key="lista-artists" md={4} className={classes.fullWidth}>
                     <Typography variant="h4" color="textPrimary" align="center">
                         Your top artists
                     </Typography>
@@ -113,7 +116,7 @@ export default function Top(){
                         items={top["artists"]}
                     />
                 </Grid>
-                <Grid item key="lista-genres" xs={4}>
+                <Grid item key="lista-genres" md={4} className={classes.fullWidth}>
                     <Typography variant="h4" color="textPrimary" align="center">
                         Your top genres
                     </Typography>
