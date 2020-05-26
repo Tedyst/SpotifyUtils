@@ -36,6 +36,15 @@ export default function ArtistCard(props) {
     const classes = useStyles();
     console.log(classes);
 
+    let bestSong = null;
+    if(props.bestSong)
+        bestSong = (
+        <Typography variant="h7" color="h7">
+            You really love the song 
+            <b> {props.bestSong}</b>
+        </Typography>
+        );
+
     return (
     <Card className={classes.root}>
         <CardMedia
@@ -47,9 +56,7 @@ export default function ArtistCard(props) {
             <Typography component="h6" variant="h6">
                 {props.name}
             </Typography>
-            <Typography variant="subtitle1" color="textSecondary">
-                {props.secondary}
-            </Typography>
+            {bestSong}
         </CardContent>
         </div>
     </Card>);

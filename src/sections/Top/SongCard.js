@@ -38,6 +38,14 @@ export default function SongCard(props) {
     const classes = useStyles();
     console.log(classes);
 
+    let duration = null;
+    if(props.duration)
+        duration = (
+            <Typography variant="h7" color="h7">
+                When you only have <b>{props.duration}</b>, you know what you want
+            </Typography>
+        )
+
     return (
     <Card className={classes.root}>
         <div className={classes.details}>
@@ -48,9 +56,7 @@ export default function SongCard(props) {
             <Typography variant="subtitle1" color="textSecondary">
                 {props.artist}
             </Typography>
-            <Typography variant="h7" color="h7">
-                {props.secondary}
-            </Typography>
+            {duration}
         </CardContent>
         </div>
         <CardMedia

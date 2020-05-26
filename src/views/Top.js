@@ -48,6 +48,7 @@ export default function Top(){
     }
     console.log(top);
     let artists = [];
+    let bestSongForArtist = null;
     let tracks = [];
     for(var val in top["artists"]){
         artists.push(<Grid item key={top["artists"][val].id}>
@@ -59,7 +60,6 @@ export default function Top(){
                 height={200}
             />
         </Grid>);
-        break;
     }
     for(var val in top["tracks"]){
         tracks.push(<Grid item key={top["tracks"][val].id}>
@@ -70,7 +70,8 @@ export default function Top(){
                 image={top["tracks"][val].image}
             />
         </Grid>);
-        break;
+        if(top["tracks"][val].artist === top["artists"][0].name && bestSongForArtist === null)
+            bestSongForArtist = top["tracks"][val].name;
     }
 
     let topArtist = null;
@@ -80,7 +81,7 @@ export default function Top(){
                 key={top["artists"][0].id}
                 name={top["artists"][0].name}
                 image={top["artists"][0].image}
-                secondary={"Test"}
+                bestSong={bestSongForArtist}
             />
         </Grid>);
     let topTrack = null;
@@ -91,8 +92,8 @@ export default function Top(){
                 name={top["tracks"][0].name}
                 artist={top["tracks"][0].artist}
                 image={top["tracks"][0].image}
-                secondary={
-                    "When you only have " + msToText(top["tracks"][0].duration) + ", you know what you want"
+                duration={
+                    msToText(top["tracks"][0].duration)
                 }
             />
         </Grid>)
