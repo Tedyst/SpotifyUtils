@@ -28,8 +28,10 @@ function msToText(ms){
         return hours + " Hours";
     if(minutes !== 0){
         if(seconds !== 0)
-            return 
+            return minutes + " Minutes and " + seconds + " Seconds";
+        return minutes + " Minutes";
     }
+    return seconds + " Seconds";
 }
 
 
@@ -79,7 +81,6 @@ export default function Top(){
                 name={top["artists"][0].name}
                 image={top["artists"][0].image}
                 secondary={"Test"}
-                height={200}
             />
         </Grid>);
     let topTrack = null;
@@ -91,13 +92,13 @@ export default function Top(){
                 artist={top["tracks"][0].artist}
                 image={top["tracks"][0].image}
                 secondary={
-                    "When you only have "
+                    "When you only have " + msToText(top["tracks"][0].duration) + ", you know what you want"
                 }
             />
         </Grid>)
 
     return (
-        <Container maxWidth="sm">
+        <Container maxWidth="xs" disableGutters={true} fixed={true}>
             <Typography component="h4" variant="h4" align="center">
                 Your top artist and track
             </Typography>

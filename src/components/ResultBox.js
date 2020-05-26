@@ -19,8 +19,8 @@ export default function ResultBox(props) {
         </Grid>
     ));
     return (
-        <Container maxWidth="lg">
-            <Grid container spacing={2}>
+        <Container maxWidth="lg" disableGutters={true}>
+            <Grid container spacing={1}>
                 {items}
             </Grid>
         </Container>

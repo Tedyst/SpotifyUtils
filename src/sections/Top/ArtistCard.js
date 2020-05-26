@@ -12,18 +12,19 @@ import SkipNextIcon from '@material-ui/icons/SkipNext';
 const useStyles = makeStyles({
     root: {
         display: 'flex',
-        minHeight: 250,
+        minHeight: 150,
+        maxWidth: '100%'
     },
     details: {
         display: 'flex',
         flexDirection: 'column',
-        marginRight: 'auto'
+        marginRight: 'auto',
     },
     content: {
         flex: '1 0 auto'
     },
     cover: {
-        minWidth: 250,
+        minWidth: 150,
     },
     playIcon: {
         height: 38,
