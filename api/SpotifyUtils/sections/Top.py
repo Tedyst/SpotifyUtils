@@ -11,7 +11,7 @@ top_blueprint = Blueprint('top', __name__)
 def me():
     if not current_user.is_authenticated:
         return {"logged": False}
-    result = functions.Top(current_user.token)
+    result = functions.Top(current_user)
 
     return result
 

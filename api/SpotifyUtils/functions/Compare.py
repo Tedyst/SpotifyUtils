@@ -14,10 +14,6 @@ def Compare(initiator: User, target: User):
         "genres": []
     }
 
-    top_initiator["genres"] = {k: v for k, v in sorted(
-        top_initiator["genres"].items(), key=lambda item: item[1], reverse=True)}
-    top_target["genres"] = {k: v for k, v in sorted(
-        top_target["genres"].items(), key=lambda item: item[1], reverse=True)}
     score = 0
     total = 0
     for idx, val in enumerate(top_initiator["artists"]):
@@ -42,14 +38,14 @@ def Compare(initiator: User, target: User):
                 }
                 copy.update(val)
                 result["tracks"].append(copy)
-    for idx, val in enumerate(top_initiator["genres"]):
+    for idx, val in top_initiator["genres"].items():
         total += 4
-        for idx1, val1 in enumerate(top_target["genres"]):
+        for idx1, val1 in top_target["genres"].items():
             if val1 == val:
                 score += 4
                 copy = {
-                    "initiator": idx + 1,
-                    "target": idx1 + 1,
+                    "initiator": int(idx) + 1,
+                    "target": int(idx1) + 1,
                     "name": val
                 }
                 result["genres"].append(copy)

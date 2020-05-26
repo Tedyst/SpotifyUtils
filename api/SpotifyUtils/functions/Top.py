@@ -2,7 +2,7 @@ import spotipy
 import json
 from SpotifyUtils.user import User
 from time import time
-from SpotifyUtils import db
+from SpotifyUtils import db, APP
 
 
 def Top(user: User):
@@ -18,12 +18,16 @@ def Top(user: User):
         result["artists"] = json.loads(user.top_artists)
         result["tracks"] = json.loads(user.top_tracks)
         result["genres"] = json.loads(user.top_genres)
+        APP.logger.info("Loaded top from cache for %s", user.name)
         return result
 
     # Update the top
-    short_term = sp.current_user_top_artists(time_range="short_term", limit=50)
+    short_term_artists = sp.current_user_top_artists(
+        time_range="short_term", limit=50)
+    short_term_tracks = sp.current_user_top_tracks(
+        time_range="short_term", limit=50)
     long_term = sp.current_user_top_artists(time_range="long_term", limit=50)
-    for i in short_term["items"]:
+    for i in short_term_artists["items"]:
         result["artists"].append({
             "name": i["name"],
             "image": i["images"][0]["url"],
@@ -36,7 +40,7 @@ def Top(user: User):
                 result["genres"][genre] = 0
             result["genres"][genre] += 1
 
-    for i in short_term["items"]:
+    for i in short_term_tracks["items"]:
         result["tracks"].append({
             "artist": i["artists"][0]["name"],
             "name": i["name"],
