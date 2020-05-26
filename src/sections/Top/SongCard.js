@@ -36,12 +36,11 @@ const useStyles = makeStyles({
 
 export default function SongCard(props) {
     const classes = useStyles();
-    console.log(classes);
 
     let duration = null;
     if(props.duration)
         duration = (
-            <Typography variant="h7" color="h7">
+            <Typography variant="body2" color="textPrimary">
                 When you only have <b>{props.duration}</b>, you know what you want
             </Typography>
         )

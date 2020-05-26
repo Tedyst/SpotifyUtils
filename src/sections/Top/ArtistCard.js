@@ -34,12 +34,11 @@ const useStyles = makeStyles({
 
 export default function ArtistCard(props) {
     const classes = useStyles();
-    console.log(classes);
 
     let bestSong = null;
     if(props.bestSong)
         bestSong = (
-        <Typography variant="h7" color="h7">
+        <Typography variant="body2" color="textPrimary">
             You really love the song 
             <b> {props.bestSong}</b>
         </Typography>

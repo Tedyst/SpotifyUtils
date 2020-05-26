@@ -11,6 +11,7 @@ import ArtistCard from '../sections/Top/ArtistCard';
 import SongCard from '../sections/Top/SongCard';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+import List from '../sections/Top/List';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,32 +47,11 @@ export default function Top(){
             dispatch(setTop(data));
         });
     }
-    console.log(top);
-    let artists = [];
     let bestSongForArtist = null;
-    let tracks = [];
-    for(var val in top["artists"]){
-        artists.push(<Grid item key={top["artists"][val].id}>
-            <ArtistCard
-                key={top["artists"][val].id}
-                name={top["artists"][val].name}
-                image={top["artists"][val].image}
-                secondary={"Test"}
-                height={200}
-            />
-        </Grid>);
-    }
     for(var val in top["tracks"]){
-        tracks.push(<Grid item key={top["tracks"][val].id}>
-            <SongCard
-                key={top["tracks"][val].id}
-                name={top["tracks"][val].name}
-                artist={top["tracks"][val].artist}
-                image={top["tracks"][val].image}
-            />
-        </Grid>);
         if(top["tracks"][val].artist === top["artists"][0].name && bestSongForArtist === null)
             bestSongForArtist = top["tracks"][val].name;
+        break;
     }
 
     let topArtist = null;
@@ -99,6 +79,7 @@ export default function Top(){
         </Grid>)
 
     return (
+        <div>
         <Container maxWidth="xs" disableGutters={true} fixed={true}>
             <Typography component="h4" variant="h4" align="center">
                 Your top artist and track
@@ -114,5 +95,34 @@ export default function Top(){
                 {topTrack}
             </Grid>
         </Container>
+        <Container maxWidth="xl">
+            <Grid container spacing={2} className={classes.root} direction="row" alignItems="stretch">
+                <Grid item key="lista-tracks" xs={4}>
+                    <Typography variant="h4" color="textPrimary" align="center">
+                        Your top tracks
+                    </Typography>
+                    <List
+                        items={top["tracks"]}
+                    />
+                </Grid>
+                <Grid item key="lista-artists" xs={4}>
+                    <Typography variant="h4" color="textPrimary" align="center">
+                        Your top artists
+                    </Typography>
+                    <List
+                        items={top["artists"]}
+                    />
+                </Grid>
+                <Grid item key="lista-genres" xs={4}>
+                    <Typography variant="h4" color="textPrimary" align="center">
+                        Your top genres
+                    </Typography>
+                    <List
+                        items={top["genres"]}
+                    />
+                </Grid>
+            </Grid>
+        </Container>
+        </div>
     )
 }
