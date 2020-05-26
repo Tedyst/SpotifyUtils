@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
         outline: 'none'
     },
     modalRoot: {
-        minWidth: 400,
+        minWidth: 300,
         position:'absolute',
         top:'10%',
         bottom: '10%',
