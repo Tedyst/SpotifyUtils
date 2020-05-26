@@ -52,9 +52,10 @@ export default function Top(){
     }
     let bestSongForArtist = null;
     for(var val in top["tracks"]){
-        if(top["tracks"][val].artist === top["artists"][0].name && bestSongForArtist === null)
+        if(top["tracks"][val].artist === top["artists"][0].name && bestSongForArtist === null){
             bestSongForArtist = top["tracks"][val].name;
-        break;
+            break;
+        }
     }
 
     let topArtist = null;
