@@ -6,12 +6,14 @@ from SpotifyUtils import db, APP
 
 
 def Top(user: User):
-    sp = spotipy.Spotify(user.token)
     result = {
         "artists": [],
         "tracks": [],
         "genres": {}
     }
+    if not user.valid():
+        return result
+    sp = spotipy.Spotify(user.token)
 
     # If the top has already been updated in the last 10 minutes
     if time() - user.top_updated < 600:
