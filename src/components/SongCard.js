@@ -111,6 +111,18 @@ export default function SongCard(props) {
         </Fade>
         </Modal>);
 
+    let cardAction = (<CardActions>
+                <Button
+                    size="small"
+                    onClick={handleOpen}
+                >See lyrics</Button>
+            </CardActions>);
+
+    if(props.lyrics === undefined){
+        cardAction = null;
+        modal = null;
+    }
+
     return (
     <Fade in={true}>
     <Card className={classes.root}>
@@ -128,12 +140,7 @@ export default function SongCard(props) {
                     {props.artist}
                 </Typography>
             </CardContent>
-            <CardActions>
-                <Button
-                    size="small"
-                    onClick={handleOpen}
-                >See lyrics</Button>
-            </CardActions>
+            {cardAction}
         </div>
         {modal}
     </Card>

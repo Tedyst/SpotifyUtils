@@ -49,14 +49,29 @@ export default function Login() {
 
     useEffect(() => {
       // The url for login
-      fetch('/auth-url').then(res => res.json()).then(data => {
-          let url = data.url;
-          url = url.replace("127.0.0.1%3A5000", window.location.host);
-          setLoginUrl(url);
+      fetch('/auth-url', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            "host":  window.location.protocol + "//" + window.location.host
+          }),
+        }).then(res => res.json()).then(data => {
+          setLoginUrl(data.url);
         });
       if(code !== null) {
         // Check if the code works
-        fetch('/auth?code=' + code).then(res => res.json()).then(data => {
+        fetch('/auth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            "host": window.location.protocol + "//" + window.location.host,
+            "code": code
+          }),
+        } ).then(res => res.json()).then(data => {
           if(data.success === true) {
               fetch('/status').then(res => res.json()).then(data => {
                 dispatch(setLogged(data.logged));
@@ -99,6 +114,7 @@ function loginPage(classes, LoginUrl){
                 color="primary"
                 className={classes.submit}
                 href={LoginUrl}
+                disabled={LoginUrl === "" ? true : false}
             >
                 Sign in using Spotify
             </Button>

@@ -4,7 +4,6 @@ from flask import request
 import SpotifyUtils.config as config
 from SpotifyUtils import APP, db
 from SpotifyUtils.user import User
-from SpotifyUtils.utils import real_url
 from flask_login import login_user, current_user
 from SpotifyUtils.sections.PlaylistSearcher import playlistsearcher_blueprint
 from SpotifyUtils.sections.Lyrics import lyrics_blueprint
@@ -15,15 +14,22 @@ import json
 db.create_all()
 
 
-@APP.route('/auth')
+@APP.route('/auth', methods=['POST'])
 def auth():
+    data = request.get_json()
+    if data is None:
+        return {"success": False}
+    if "host" not in data:
+        return {"success": False}
+    if "code" not in data:
+        return {"success": False}
     sp_oauth = spotipy.oauth2.SpotifyOAuth(
         config.SPOTIFY_CLIENT_ID,
         config.SPOTIFY_CLIENT_SECRET,
-        real_url(),
+        data["host"] + "/auth",
         scope=config.SCOPE)
 
-    code = sp_oauth.parse_response_code(request.url)
+    code = data["code"]
     if "?code=" in request.url:
         APP.logger.info(
             "Found Spotify auth code in Request URL!")
@@ -83,12 +89,17 @@ def playlists():
     }
 
 
-@APP.route('/auth-url')
+@APP.route('/auth-url', methods=['POST'])
 def authurl():
+    data = request.get_json()
+    if data is None:
+        return {"url": ""}
+    if "host" not in data:
+        return {"url": ""}
     sp_oauth = spotipy.oauth2.SpotifyOAuth(
         config.SPOTIFY_CLIENT_ID,
         config.SPOTIFY_CLIENT_SECRET,
-        real_url(),
+        data["host"] + "/auth",
         scope=config.SCOPE)
 
     url = sp_oauth.get_authorize_url()
