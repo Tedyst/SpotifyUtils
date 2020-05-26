@@ -13,10 +13,12 @@ class User(db.Model):
     top_tracks = db.Column(db.String(10000))
     top_artists = db.Column(db.String(10000))
     top_genres = db.Column(db.String(10000))
+    top_updated = db.Column(db.Integer())
 
     def __init__(self, username, token):
         self.username = username
         self.token = token
+        self.top_updated = 0
 
     def valid(self):
         if self.token is None:
