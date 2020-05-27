@@ -12,6 +12,8 @@ import ArtistCard from '../sections/Top/ArtistCard';
 import SongCard from '../sections/Top/SongCard';
 import Typography from '@material-ui/core/Typography';
 import List from '../sections/Top/List';
+import Avatar from '@material-ui/core/Avatar';
+import { deepOrange } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -19,7 +21,11 @@ const useStyles = makeStyles((theme) => ({
     },
     fullWidth: {
         width: '100%'
-    }
+    },
+    orange: {
+        color: theme.palette.getContrastText(deepOrange[500]),
+        backgroundColor: deepOrange[500],
+    },
 }));
 
 function msToText(ms){
@@ -54,29 +60,33 @@ function NoUsername(){
     return null;
 }
 
+function Acronym(str){
+    var matches = str.match(/\b(\w)/g);
+    var acronym = matches.join('');
+    return acronym;
+}
+
 function Username(){
     const classes = useStyles();
     const [Updating, setUpdating] = useState(false);
     let { code } = useParams();
-    const [top, setTop] = useState(
-        {
-            "artists": {},
-            "tracks": {},
-            "genres": {}
-        }
-    );
+    const [top, setTop] = useState(null);
+    if(top === null && Updating === false){
+        setUpdating(true);
+        fetch('/compare/' + code).then(res => res.json()).then(data => {
+            setTop(data);
+        });
+        return <Test />;
+    } else if(top === null){
+        return <Test />;
+    }
+    console.log(top.target.image);
     if(top["success"] === false){
         return (
             <Test 
                 error={"User does not exist"}
             />
         )
-    }
-    if(Object.keys(top["artists"]).length === 0 && Updating === false){
-        setUpdating(true);
-        fetch('/compare/' + code).then(res => res.json()).then(data => {
-            setTop(data);
-        });
     }
     let bestSongForArtist = null;
     for(var val in top["tracks"]){
@@ -130,6 +140,9 @@ function Username(){
     return (
         <div>
         <Container maxWidth="xs" disableGutters={true} fixed={true}>
+            <Avatar src={top.target.image} className={classes.orange}>
+                {Acronym(top.target.name)}
+            </Avatar>
             {commonTopArtistTrackText}
             <Typography variant="subtitle1" color="textSecondary" align="center">
                 Get ready to feel cool. Or much less cool than you thought
@@ -182,7 +195,7 @@ function Test(props){
         setUpdating(true);
     }
     
-    console.log(code, friends);
+    // console.log(code, friends);
     if(props.error)
         return props.error
     return "No username";
