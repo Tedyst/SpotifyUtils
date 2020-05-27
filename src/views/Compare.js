@@ -11,8 +11,18 @@ import { Grid } from '@material-ui/core';
 import ArtistCard from '../sections/Top/ArtistCard';
 import SongCard from '../sections/Top/SongCard';
 import Typography from '@material-ui/core/Typography';
-import List from '../sections/Top/List';
+import ListItems from '../sections/Top/List';
 import Avatars from '../components/Avatars';
+import {
+  selectCompare
+} from '../store/user';
+import { useSelector } from 'react-redux';
+import TextField from '@material-ui/core/TextField';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import Avatar from '../components/Avatar';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -164,19 +174,19 @@ function Username(){
         <Container maxWidth="xl">
             <Grid container spacing={2} className={classes.root} direction="row" alignItems="stretch">
                 <Grid item key="lista-tracks" md={4} className={classes.fullWidth}>
-                    <List
+                    <ListItems
                         items={top["tracks"]}
                         name={"Common Top Tracks"}
                     />
                 </Grid>
                 <Grid item key="lista-artists" md={4} className={classes.fullWidth}>
-                    <List
+                    <ListItems
                         items={top["artists"]}
                         name={"Common Top Artists"}
                     />
                 </Grid>
                 <Grid item key="lista-genres" md={4} className={classes.fullWidth}>
-                    <List
+                    <ListItems
                         items={top["genres"]}
                         name={"Common Top Genres"}
                     />
@@ -187,20 +197,84 @@ function Username(){
     )
 }
 
-function Test(props){
-    const [code, setCode] = useState("");
-    const [friends, setFriends] = useState([]);
-    const [updating, setUpdating] = useState(false);
-    if (updating === false){
-        fetch('/compare/').then(res => res.json()).then(data => {
-            setCode(data["code"]);
-            setFriends(data["friends"]);
-        });
-        setUpdating(true);
+function copyToClipboard(){
+    var copyText = document.getElementById("link-to-be-copied");
+
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); 
+
+    document.execCommand("copy");
+}
+
+function getLink(code){
+    return window.location.protocol + "//" + window.location.host + "/compare/" + code;
+}
+
+const useStylesNoUsername = makeStyles((theme) => ({
+    root: {
+        width: '100%',
+        position: 'relative',
+        overflow: 'auto',
+        maxHeight: 400,
+        backgroundColor: theme.palette.background.paper,
+    },
+    spacer: {
+        height: 200
     }
-    
-    // console.log(code, friends);
-    if(props.error)
-        return props.error
-    return "No username";
+}));
+
+function Test(){
+    const compare = useSelector(selectCompare);
+    const classes = useStylesNoUsername();
+    let friends = [];
+    for(var val in compare.friends){
+        friends.push(
+            <ListItem key={"friend-" + compare.friends[val].username}>
+                <Avatar name={compare.friends[val].name} image={compare.friends[val].image}>
+                </Avatar>
+                <ListItemText
+                    primary={compare.friends[val].name}
+                    secondary={compare.friends[val].code}
+                />
+            </ListItem>
+        );
+        }
+    console.log(compare);
+    return (
+    <div>
+    <Container maxWidth="md" disableGutters={true} fixed={true}>
+        <Typography variant="h4" color="textPrimary" align="center">
+            Your code is <b>{compare.code}</b> 
+        </Typography>
+        <Typography variant="h5" color="textSecondary" align="center">
+            Send it to your friends and compare your music taste to theirs!
+        </Typography>
+        <br />
+        <br />
+        <TextField
+            InputProps={{
+                readOnly: true,
+            }}
+            onClick={() => { copyToClipboard(); }}
+            id="link-to-be-copied"
+            fullWidth
+            label="Click to copy"
+            value={getLink(compare.code)}
+            variant="outlined"
+        />
+
+    </Container>
+    <Container className={classes.spacer}>
+
+    </Container>
+    <Container maxWidth="xs" disableGutters={true} fixed={true}>
+        <List className={classes.root} subheader={<li />} disablePadding={true}>
+            <ListSubheader color="primary">Your friends</ListSubheader>
+            <ul>
+                {friends}
+            </ul>
+        </List>
+    </Container>
+    </div>
+    );
 }

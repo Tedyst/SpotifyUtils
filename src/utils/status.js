@@ -1,12 +1,10 @@
 import {
   setLogged,
-  selectLogged,
   setPlaylists,
   setUsername,
   setImage,
-  setPathName,
-  selectPathname,
-  setTop
+  setTop,
+  setCompare
 } from '../store/user';
 import { useDispatch, batch } from 'react-redux';
 
@@ -19,12 +17,15 @@ export default function Update(){
             dispatch(setLogged(data.logged));
             dispatch(setPlaylists(data.playlists));
             if(!data.username)
-            dispatch(setUsername("Not Logged In"));
+                dispatch(setUsername("Not Logged In"));
             else
-            dispatch(setUsername(data.username));
+                dispatch(setUsername(data.username));
         })
     });
     fetch('/top/me').then(res => res.json()).then(data => {
         dispatch(setTop(data));
+    });
+    fetch('/compare/').then(res => res.json()).then(data => {
+        dispatch(setCompare(data));
     });
 }
