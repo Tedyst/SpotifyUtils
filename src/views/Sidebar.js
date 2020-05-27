@@ -68,7 +68,12 @@ function ResponsiveDrawer(props) {
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const location = useLocation();
+    const [lastLocation, setLastLocation] = React.useState(location);
 
+    if(location != lastLocation){
+        setLastLocation(location);
+        setMobileOpen(false);
+    }
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
