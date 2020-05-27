@@ -4,6 +4,7 @@ import Login from './views/Login';
 import PlaylistSearch from './views/PlaylistSearch';
 import PlaylistView from './views/PlaylistView';
 import Top from './views/Top';
+import Compare from './views/Compare';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   BrowserRouter as Router,
@@ -85,6 +86,9 @@ function App() {
           </Route>
           <Route path="/top">
             <Top />
+          </Route>
+          <Route path="/compare">
+            <Compare />
           </Route>
           <Route path="/">
             <Home />

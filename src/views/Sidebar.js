@@ -106,6 +106,12 @@ function ResponsiveDrawer(props) {
                 </ListItemIcon>
                 <ListItemText primary="Your Top" />
             </ListItem>
+            <ListItem button key="Compare" component={Link} to="/compare" selected={location.pathname.startsWith("/compare")}>
+                <ListItemIcon>
+                    <MailIcon />
+                </ListItemIcon>
+                <ListItemText primary="Compare" />
+            </ListItem>
         </List>
         </div>
     );
