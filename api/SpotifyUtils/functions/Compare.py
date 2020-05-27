@@ -8,6 +8,18 @@ def Compare(initiator: User, target: User):
     top_target = Top(target)
 
     result = {
+        "initiator": {
+            "username": initiator.username,
+            "name": initiator.name,
+            "image": initiator.image,
+            "code": initiator.friend_code
+        },
+        "target": {
+            "username": target.username,
+            "name": target.name,
+            "image": target.image,
+            "code": target.friend_code
+        },
         "percent": 0,
         "artists": [],
         "tracks": [],

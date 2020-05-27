@@ -7,16 +7,16 @@ from SpotifyUtils import db
 compare_blueprint = Blueprint('compare', __name__)
 
 
-@compare_blueprint.route('/<username>')
-def user(username):
+@compare_blueprint.route('/<code>')
+def user(code):
     if not current_user.is_authenticated:
         return {"logged": False}
-    user = User.query.filter(User.username == username).first()
+    user = User.query.filter(User.friend_code == code).first()
     if user is None:
         return {
             "logged": True,
             "success": False,
-            "error": "User does not exist"
+            "error": "Invalid code"
         }
 
     if user.id != current_user.id:

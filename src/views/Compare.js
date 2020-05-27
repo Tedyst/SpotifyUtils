@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   useRouteMatch,
   useParams
 } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import { useSelector, useDispatch } from 'react-redux';
 import Container from '@material-ui/core/Container';
 import { Grid } from '@material-ui/core';
 import ArtistCard from '../sections/Top/ArtistCard';
 import SongCard from '../sections/Top/SongCard';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import List from '../sections/Top/List';
 
 const useStyles = makeStyles((theme) => ({
@@ -45,11 +41,11 @@ function msToText(ms){
 export default function Compare(){
     let match = useRouteMatch();
     return (<Switch>
-        <Route path={`${match.path}/:username`}>
+        <Route path={`${match.path}/:code`}>
             <Username />
         </Route>
         <Route path={match.path}>
-            No username
+            <Test />
         </Route>
     </Switch>);
 }
@@ -61,6 +57,7 @@ function NoUsername(){
 function Username(){
     const classes = useStyles();
     const [Updating, setUpdating] = useState(false);
+    let { code } = useParams();
     const [top, setTop] = useState(
         {
             "artists": {},
@@ -68,10 +65,16 @@ function Username(){
             "genres": {}
         }
     );
-    let { username } = useParams();
+    if(top["success"] === false){
+        return (
+            <Test 
+                error={"User does not exist"}
+            />
+        )
+    }
     if(Object.keys(top["artists"]).length === 0 && Updating === false){
         setUpdating(true);
-        fetch('/compare/' + username).then(res => res.json()).then(data => {
+        fetch('/compare/' + code).then(res => res.json()).then(data => {
             setTop(data);
         });
     }
@@ -167,7 +170,20 @@ function Username(){
     )
 }
 
-function Test(){
-    let { username } = useParams();
-    return "Username " + username;
+function Test(props){
+    const [code, setCode] = useState("");
+    const [friends, setFriends] = useState([]);
+    const [updating, setUpdating] = useState(false);
+    if (updating === false){
+        fetch('/compare/').then(res => res.json()).then(data => {
+            setCode(data["code"]);
+            setFriends(data["friends"]);
+        });
+        setUpdating(true);
+    }
+    
+    console.log(code, friends);
+    if(props.error)
+        return props.error
+    return "No username";
 }

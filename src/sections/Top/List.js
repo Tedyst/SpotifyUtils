@@ -73,7 +73,7 @@ export default function ListItems(props) {
     }
     return (
         <List className={classes.root} subheader={<li />}>
-            <ListSubheader>{props.name}</ListSubheader>
+            <ListSubheader color="primary">{props.name}</ListSubheader>
             <ul className={classes.ul}>
                 {items}
             </ul>
