@@ -63,7 +63,9 @@ function App() {
         <div className={classes.toolbar} />
         <Switch>
           <Route path="/auth">
-            <Login />
+            <Login 
+              mainUpdate={setUpdating}
+            />
           </Route>
           <Route path="/playlistsearch">
             <PlaylistSearch />

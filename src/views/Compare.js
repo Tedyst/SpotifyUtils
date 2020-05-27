@@ -17,6 +17,7 @@ import {
   selectCompare
 } from '../store/user';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -229,7 +230,7 @@ function Test(){
     let friends = [];
     for(var val in compare.friends){
         friends.push(
-            <ListItem key={"friend-" + compare.friends[val].username}>
+            <ListItem key={"friend-" + compare.friends[val].username} component={Link} to={"/compare/"+compare.friends[val].code}>
                 <Avatar name={compare.friends[val].name} image={compare.friends[val].image}>
                 </Avatar>
                 <ListItemText

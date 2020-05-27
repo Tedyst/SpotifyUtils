@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+export default function Login(props) {
     const classes = useStyles();
     const [LoginUrl, setLoginUrl] = useState("");
     const [Updating, setUpdating] = useState(false);
@@ -64,7 +64,7 @@ export default function Login() {
           }),
         } ).then(res => res.json()).then(data => {
           if(data.success === true) {
-              UpdateUser();
+            props.mainUpdate(true);
           }
         });
       }
