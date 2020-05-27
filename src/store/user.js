@@ -12,7 +12,8 @@ export const userSlice = createSlice({
       "artists": {},
       "tracks": {},
       "genres": {}
-    }
+    },
+    pathname: Cookies.get("pathname")
   },
   reducers: {
     setLogged: (state, action) => {
@@ -29,6 +30,10 @@ export const userSlice = createSlice({
     },
     setTop: (state, action) => {
       state.top = action.payload;
+    },
+    setPathName: (state, action) => {
+      state.pathname = action.payload;
+      Cookies.set("pathname", action.payload);
     }
   },
 });
@@ -38,7 +43,8 @@ export const {
   setPlaylists,
   setUsername,
   setImage,
-  setTop
+  setTop,
+  setPathName
 } = userSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -59,5 +65,6 @@ export const selectPlaylists = state => state.counter.playlists;
 export const selectUsername = state => state.counter.name;
 export const selectImage = state => state.counter.image;
 export const selectTop = state => state.counter.top;
+export const selectPathname = state => state.counter.pathname;
 
 export default userSlice.reducer;

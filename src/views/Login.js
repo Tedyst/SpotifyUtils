@@ -12,7 +12,9 @@ import {
   selectLogged,
   setPlaylists,
   setUsername,
-  setImage
+  setImage,
+  setPathName,
+  selectPathname
 } from '../store/user';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -41,6 +43,7 @@ export default function Login() {
     const classes = useStyles();
     const [LoginUrl, setLoginUrl] = useState("");
     const logged = useSelector(selectLogged);
+    const pathname = useSelector(selectPathname);
     const dispatch = useDispatch();
 
     let search = window.location.search;
@@ -82,13 +85,19 @@ export default function Login() {
                 else
                   dispatch(setUsername(data.username));
               });
-            return <Redirect to="/" />
+            
           }
         });
       }
     });
-    if(logged)
+    if(logged){
+      if(pathname !== ""){
+        dispatch(setPathName(""));
+        return <Redirect to={pathname} />
+      }
       return <Redirect to="/" />
+    }
+      
     return loginPage(classes, LoginUrl);
 }
 

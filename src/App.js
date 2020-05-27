@@ -10,7 +10,8 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect
+  Redirect,
+  useLocation
 } from "react-router-dom";
 import {
   setLogged,
@@ -19,7 +20,8 @@ import {
   setUsername,
   selectUsername,
   selectImage,
-  setImage
+  setImage,
+  setPathName
 } from './store/user';
 import Sidebar from './views/Sidebar';
 import { makeStyles } from '@material-ui/core';
@@ -60,11 +62,6 @@ function App() {
         dispatch(setUsername(data.username));
     });
 
-  let redirect = null;
-  if(!logged){
-    redirect = <Redirect to="/auth" />
-  } 
-
   return (
     <div className={classes.root}>
       <Router>
@@ -94,7 +91,7 @@ function App() {
             <Home />
           </Route>
         </Switch>
-        {redirect}
+        <RedirectWithSave logged={logged}/>
       </main>
       </Router>
     </div>
@@ -102,8 +99,19 @@ function App() {
   );
 }
 
-function Home() {
-  return "Sal"
+function RedirectWithSave(props) {
+  const location = useLocation();
+  const dispatch = useDispatch();
+  if(props.logged)
+    return null;
+  if(location.pathname !== "/auth")
+    dispatch(setPathName(location.pathname));
+  console.log(location.pathname);
+  return <Redirect to="/auth" />
+}
+
+function Home(){
+  return "Home"
 }
 
 export default App;
