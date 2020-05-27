@@ -3,6 +3,7 @@ from SpotifyUtils import db, login_manager
 import spotipy
 from sqlalchemy.schema import Table, ForeignKey
 from sqlalchemy.orm import relationship, backref
+import uuid
 
 friends_table = Table(
     'friends',
@@ -24,6 +25,7 @@ class User(db.Model):
     top_artists = db.Column(db.String(10000))
     top_genres = db.Column(db.String(10000))
     top_updated = db.Column(db.Integer())
+    friend_code = db.Column(db.String(6))
     friends = relationship(
         'User',
         secondary=friends_table,
@@ -36,6 +38,12 @@ class User(db.Model):
         self.username = username
         self.token = token
         self.top_updated = 0
+
+        # Generate unique code
+        code = uuid.uuid4().hex[:5].upper()
+        while(User.query.filter(User.friend_code == code).first()):
+            code = uuid.uuid4().hex[:5].upper()
+        self.friend_code = code
 
     def valid(self):
         if self.token is None:

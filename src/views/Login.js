@@ -92,12 +92,11 @@ export default function Login() {
     });
     if(logged){
       if(pathname !== ""){
-        dispatch(setPathName(""));
         return <Redirect to={pathname} />
       }
       return <Redirect to="/" />
     }
-      
+
     return loginPage(classes, LoginUrl);
 }
 

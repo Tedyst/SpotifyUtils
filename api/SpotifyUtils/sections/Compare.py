@@ -23,3 +23,23 @@ def user(username):
         current_user.friends.append(user)
         db.session.commit()
     return Compare(current_user, user)
+
+
+@compare_blueprint.route('/')
+def me():
+    if not current_user.is_authenticated:
+        return {"logged": False}
+
+    result = {
+        "logged": True,
+        "code": current_user.friend_code,
+        "friends": []
+    }
+    for friend in current_user.friends:
+        result["friends"].append({
+            "username": friend.username,
+            "name": friend.name,
+            "image": friend.image,
+            "code": friend.friend_code
+        })
+    return result
