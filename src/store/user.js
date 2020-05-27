@@ -17,6 +17,7 @@ export const userSlice = createSlice({
   },
   reducers: {
     setLogged: (state, action) => {
+      Cookies.set("logged", action.payload);
       state.logged = action.payload;
     },
     setImage: (state, action) => {

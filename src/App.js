@@ -14,19 +14,15 @@ import {
   useLocation
 } from "react-router-dom";
 import {
-  setLogged,
   selectLogged,
-  setPlaylists,
-  setUsername,
   selectUsername,
   selectImage,
-  setImage,
   setPathName,
   selectPathname
 } from './store/user';
 import Sidebar from './views/Sidebar';
 import { makeStyles } from '@material-ui/core';
-import Cookies from 'js-cookie';
+import UpdateUser from './utils/status';
 
 const drawerWidth = 240;
 
@@ -50,20 +46,10 @@ function App() {
   const username = useSelector(selectUsername);
   const image = useSelector(selectImage);
   const classes = useStyles();
-  const dispatch = useDispatch();
   const [Updating, setUpdating] = useState(false);
   if(Updating === false){
     setUpdating(true);
-    fetch('/status').then(res => res.json()).then(data => {
-        dispatch(setImage(data.image));
-        dispatch(setLogged(data.logged));
-        Cookies.set("logged", data.logged);
-        dispatch(setPlaylists(data.playlists));
-        if(!data.username)
-          dispatch(setUsername("Not Logged In"));
-        else
-          dispatch(setUsername(data.username));
-      });
+    UpdateUser();
   }
 
   return (
@@ -107,16 +93,15 @@ function RedirectWithSave(props) {
   const location = useLocation();
   const dispatch = useDispatch();
   const pathname = useSelector(selectPathname);
-  const logged = useSelector(selectLogged);
-  console.log(location.pathname, pathname, logged);
   if(props.logged === true && location.pathname === "/auth"){
     if(pathname !== "/auth"){
       return <Redirect to={pathname} />
     }
     return null;
   }
-  if(props.logged === true)
+  if(props.logged){
     return null;
+  }
   if(location.pathname !== "/auth"){
     dispatch(setPathName(location.pathname));
     return <Redirect to="/auth" />

@@ -18,6 +18,10 @@ import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import SpotifyLogo from '../static/img/spotify.png';
 import { Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import {
+    selectLogged,
+} from '../store/user';
 
 const drawerWidth = 240;
 
@@ -69,7 +73,10 @@ function ResponsiveDrawer(props) {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const location = useLocation();
     const [lastLocation, setLastLocation] = React.useState(location);
+    const logged = useSelector(selectLogged);
 
+    if(!logged)
+        return null;
     if(location != lastLocation){
         setLastLocation(location);
         setMobileOpen(false);

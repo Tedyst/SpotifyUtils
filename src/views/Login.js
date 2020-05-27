@@ -6,19 +6,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { Redirect } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import {
-  setLogged,
-  selectLogged,
-  setPlaylists,
-  setUsername,
-  setImage,
-  setPathName,
-  selectPathname
-} from '../store/user';
-import { useSelector, useDispatch } from 'react-redux';
-
+import UpdateUser from '../utils/status';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,7 +32,6 @@ export default function Login() {
     const classes = useStyles();
     const [LoginUrl, setLoginUrl] = useState("");
     const [Updating, setUpdating] = useState(false);
-    const dispatch = useDispatch();
 
     let search = window.location.search;
     let params = new URLSearchParams(search);
@@ -77,17 +64,7 @@ export default function Login() {
           }),
         } ).then(res => res.json()).then(data => {
           if(data.success === true) {
-              fetch('/status').then(res => res.json()).then(data => {
-                dispatch(setLogged(data.logged));
-                dispatch(setImage(data.image));
-                Cookies.set("logged", data.logged);
-                dispatch(setPlaylists(data.playlists));
-                if(!data.username)
-                  dispatch(setUsername("Not Logged In"));
-                else
-                  dispatch(setUsername(data.username));
-              });
-            
+              UpdateUser();
           }
         });
       }
