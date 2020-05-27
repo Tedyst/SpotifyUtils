@@ -5,7 +5,7 @@ import {
   useRouteMatch,
   useParams
 } from "react-router-dom";
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Grid } from '@material-ui/core';
 import ArtistCard from '../sections/Top/ArtistCard';
@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import List from '../sections/Top/List';
 import Avatar from '@material-ui/core/Avatar';
 import { deepOrange } from '@material-ui/core/colors';
+import Avatars from '../sections/Compare/Avatars';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -22,10 +23,9 @@ const useStyles = makeStyles((theme) => ({
     fullWidth: {
         width: '100%'
     },
-    orange: {
-        color: theme.palette.getContrastText(deepOrange[500]),
-        backgroundColor: deepOrange[500],
-    },
+    spacer: {
+        height: 100
+    }
 }));
 
 function msToText(ms){
@@ -56,15 +56,6 @@ export default function Compare(){
     </Switch>);
 }
 
-function NoUsername(){
-    return null;
-}
-
-function Acronym(str){
-    var matches = str.match(/\b(\w)/g);
-    var acronym = matches.join('');
-    return acronym;
-}
 
 function Username(){
     const classes = useStyles();
@@ -80,7 +71,6 @@ function Username(){
     } else if(top === null){
         return <Test />;
     }
-    console.log(top.target.image);
     if(top["success"] === false){
         return (
             <Test 
@@ -140,14 +130,28 @@ function Username(){
     return (
         <div>
         <Container maxWidth="xs" disableGutters={true} fixed={true}>
-            <Avatar src={top.target.image} className={classes.orange}>
-                {Acronym(top.target.name)}
-            </Avatar>
-            {commonTopArtistTrackText}
-            <Typography variant="subtitle1" color="textSecondary" align="center">
-                Get ready to feel cool. Or much less cool than you thought
-            </Typography>
-            <br />
+            <Grid container alignItems="center">
+                <Avatars 
+                    initiator={top["initiator"]}
+                    target={top["target"]}
+                />
+            </Grid>
+            <Grid>
+                <br />
+                <Typography variant="h4" color="textPrimary" align="center">
+                    You two are <b>{top["percent"]}%</b> compatible!
+                </Typography>
+                <Typography variant="subtitle1" color="textSecondary" align="center">
+                    Here are the top common artists, tracks, and genres that you both share
+                </Typography>
+            </Grid>
+            <Grid className={classes.spacer}>
+
+            </Grid>
+            <Grid>
+                {commonTopArtistTrackText}
+                <br />
+            </Grid>
             <Grid container spacing={2} className={classes.root} direction="column" alignItems="stretch">
                 {topArtist}
             </Grid>
