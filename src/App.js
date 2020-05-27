@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Login from './views/Login';
 import PlaylistSearch from './views/PlaylistSearch';
@@ -21,7 +21,8 @@ import {
   selectUsername,
   selectImage,
   setImage,
-  setPathName
+  setPathName,
+  selectPathname
 } from './store/user';
 import Sidebar from './views/Sidebar';
 import { makeStyles } from '@material-ui/core';
@@ -46,21 +47,24 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const logged = useSelector(selectLogged);
-  Cookies.set("logged", logged);
   const username = useSelector(selectUsername);
   const image = useSelector(selectImage);
   const classes = useStyles();
   const dispatch = useDispatch();
-  fetch('/status').then(res => res.json()).then(data => {
-      dispatch(setLogged(data.logged));
-      Cookies.set("logged", logged);
-      dispatch(setPlaylists(data.playlists));
-      dispatch(setImage(data.image));
-      if(!data.username)
-        dispatch(setUsername("Not Logged In"));
-      else
-        dispatch(setUsername(data.username));
-    });
+  const [Updating, setUpdating] = useState(false);
+  if(Updating === false){
+    setUpdating(true);
+    fetch('/status').then(res => res.json()).then(data => {
+        dispatch(setImage(data.image));
+        dispatch(setLogged(data.logged));
+        Cookies.set("logged", data.logged);
+        dispatch(setPlaylists(data.playlists));
+        if(!data.username)
+          dispatch(setUsername("Not Logged In"));
+        else
+          dispatch(setUsername(data.username));
+      });
+  }
 
   return (
     <div className={classes.root}>
@@ -102,12 +106,22 @@ function App() {
 function RedirectWithSave(props) {
   const location = useLocation();
   const dispatch = useDispatch();
-  if(props.logged)
+  const pathname = useSelector(selectPathname);
+  const logged = useSelector(selectLogged);
+  console.log(location.pathname, pathname, logged);
+  if(props.logged === true && location.pathname === "/auth"){
+    if(pathname !== "/auth"){
+      return <Redirect to={pathname} />
+    }
     return null;
-  if(location.pathname !== "/auth")
+  }
+  if(props.logged === true)
+    return null;
+  if(location.pathname !== "/auth"){
     dispatch(setPathName(location.pathname));
-  console.log(location.pathname);
-  return <Redirect to="/auth" />
+    return <Redirect to="/auth" />
+  }
+  return null;
 }
 
 function Home(){

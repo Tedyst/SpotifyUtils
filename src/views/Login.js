@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Redirect } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import {
   setLogged,
   selectLogged,
@@ -42,15 +43,15 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
     const classes = useStyles();
     const [LoginUrl, setLoginUrl] = useState("");
-    const logged = useSelector(selectLogged);
-    const pathname = useSelector(selectPathname);
+    const [Updating, setUpdating] = useState(false);
     const dispatch = useDispatch();
 
     let search = window.location.search;
     let params = new URLSearchParams(search);
     let code = params.get('code');
 
-    useEffect(() => {
+    if(Updating === false) {
+      setUpdating(true);
       // The url for login
       fetch('/auth-url', {
           method: 'POST',
@@ -78,8 +79,9 @@ export default function Login() {
           if(data.success === true) {
               fetch('/status').then(res => res.json()).then(data => {
                 dispatch(setLogged(data.logged));
-                dispatch(setPlaylists(data.playlists));
                 dispatch(setImage(data.image));
+                Cookies.set("logged", data.logged);
+                dispatch(setPlaylists(data.playlists));
                 if(!data.username)
                   dispatch(setUsername("Not Logged In"));
                 else
@@ -89,12 +91,6 @@ export default function Login() {
           }
         });
       }
-    });
-    if(logged){
-      if(pathname !== ""){
-        return <Redirect to={pathname} />
-      }
-      return <Redirect to="/" />
     }
 
     return loginPage(classes, LoginUrl);

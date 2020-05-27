@@ -32,8 +32,8 @@ export const userSlice = createSlice({
       state.top = action.payload;
     },
     setPathName: (state, action) => {
-      state.pathname = action.payload;
       Cookies.set("pathname", action.payload);
+      state.pathname = action.payload;
     }
   },
 });
