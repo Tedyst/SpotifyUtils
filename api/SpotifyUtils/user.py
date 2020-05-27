@@ -1,6 +1,16 @@
 from SpotifyUtils.song import Song
 from SpotifyUtils import db, login_manager
 import spotipy
+from sqlalchemy.schema import Table, ForeignKey
+from sqlalchemy.orm import relationship, backref
+
+friends_table = Table(
+    'friends',
+    db.Model.metadata,
+    db.Column('id', db.Integer, primary_key=True),
+    db.Column('user1', db.Integer, ForeignKey('users.id')),
+    db.Column('user2', db.Integer, ForeignKey('users.id'))
+)
 
 
 class User(db.Model):
@@ -14,6 +24,13 @@ class User(db.Model):
     top_artists = db.Column(db.String(10000))
     top_genres = db.Column(db.String(10000))
     top_updated = db.Column(db.Integer())
+    friends = relationship(
+        'User',
+        secondary=friends_table,
+        primaryjoin=id == friends_table.c.user1,
+        secondaryjoin=id == friends_table.c.user2,
+        backref=backref('children')
+    )
 
     def __init__(self, username, token):
         self.username = username
@@ -34,7 +51,7 @@ class User(db.Model):
             return False
         return True
 
-    @property
+    @ property
     def name(self):
         if self.displayname:
             return self.displayname
@@ -62,6 +79,9 @@ class User(db.Model):
             result.append(playlist.to_json())
         return result
 
+    def add_friend(self, user):
+        user.friends += self
+
     def is_authenticated(self):
         return True
 
@@ -75,7 +95,7 @@ class User(db.Model):
         return self.id
 
 
-@login_manager.user_loader
+@ login_manager.user_loader
 def load_user(user_id):
     return User.query.filter(User.id == user_id).first()
 
