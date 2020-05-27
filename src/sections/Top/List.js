@@ -25,29 +25,44 @@ const useStyles = makeStyles((theme) => ({
 export default function ListItems(props) {
     const classes = useStyles();
 
-    if(props.items.length === 0 || !props.items)
-        return null;
+    
     let items = [];
-    console.log(props.items)
+    if(props.items.length === 0 || !props.items)
+        items = (
+            <ListItem key={"list-notfound-" + props.name}>
+                <ListItemText
+                    primary={""}
+                    secondary={"Could not find anything"}
+                />
+            </ListItem>
+        )
     for(var val in props.items){
         if(props.items[val].artist)
             items.push(
-                <ListItem key={props.items[val].id}>
+                <ListItem key={"track-" + props.items[val].id}>
                     <ListItemText
                         primary={props.items[val].name}
                         secondary={props.items[val].artist}
                     />
                 </ListItem>
             );
-        else if(props.items[val].name)
+        else if(props.items[val].id)
             items.push(
-                <ListItem key={props.items[val].id}>
+                <ListItem key={"artist-" + props.items[val].id}>
                     <ListItemText
                         primary={props.items[val].name}
                     />
                 </ListItem>
             );
-        else
+        else if(props.items[val].name)
+            items.push(
+                <ListItem key={`genre-` + props.items[val].name}>
+                    <ListItemText
+                        primary={props.items[val].name}
+                    />
+                </ListItem>
+            );
+        else 
             items.push(
                 <ListItem key={`genre-` + props.items[val]}>
                     <ListItemText
@@ -58,6 +73,7 @@ export default function ListItems(props) {
     }
     return (
         <List className={classes.root} subheader={<li />}>
+            <ListSubheader>{props.name}</ListSubheader>
             <ul className={classes.ul}>
                 {items}
             </ul>

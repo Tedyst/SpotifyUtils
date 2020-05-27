@@ -102,27 +102,21 @@ export default function Top(){
         <Container maxWidth="xl">
             <Grid container spacing={2} className={classes.root} direction="row" alignItems="stretch">
                 <Grid item key="lista-tracks" md={4} className={classes.fullWidth}>
-                    <Typography variant="h4" color="textPrimary" align="center">
-                        Your top tracks
-                    </Typography>
                     <List
                         items={top["tracks"]}
+                        name={"Your Top Tracks"}
                     />
                 </Grid>
                 <Grid item key="lista-artists" md={4} className={classes.fullWidth}>
-                    <Typography variant="h4" color="textPrimary" align="center">
-                        Your top artists
-                    </Typography>
                     <List
                         items={top["artists"]}
+                        name={"You Top Artists"}
                     />
                 </Grid>
                 <Grid item key="lista-genres" md={4} className={classes.fullWidth}>
-                    <Typography variant="h4" color="textPrimary" align="center">
-                        Your top genres
-                    </Typography>
                     <List
                         items={top["genres"]}
+                        name={"Your Top Genres"}
                     />
                 </Grid>
             </Grid>
