@@ -5,16 +5,14 @@ import {
   useRouteMatch,
   useParams
 } from "react-router-dom";
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Grid } from '@material-ui/core';
 import ArtistCard from '../sections/Top/ArtistCard';
 import SongCard from '../sections/Top/SongCard';
 import Typography from '@material-ui/core/Typography';
 import List from '../sections/Top/List';
-import Avatar from '@material-ui/core/Avatar';
-import { deepOrange } from '@material-ui/core/colors';
-import Avatars from '../sections/Compare/Avatars';
+import Avatars from '../components/Avatars';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -129,7 +127,7 @@ function Username(){
         </Typography>)
     return (
         <div>
-        <Container maxWidth="xs" disableGutters={true} fixed={true}>
+        <Container maxWidth="md" disableGutters={true} fixed={true}>
             <Grid container alignItems="center">
                 <Avatars 
                     initiator={top["initiator"]}
@@ -139,7 +137,7 @@ function Username(){
             <Grid>
                 <br />
                 <Typography variant="h4" color="textPrimary" align="center">
-                    You two are <b>{top["percent"]}%</b> compatible!
+                    You and {top.target.name} are <b>{top.percent}%</b> compatible!
                 </Typography>
                 <Typography variant="subtitle1" color="textSecondary" align="center">
                     Here are the top common artists, tracks, and genres that you both share
@@ -148,6 +146,8 @@ function Username(){
             <Grid className={classes.spacer}>
 
             </Grid>
+        </Container>
+        <Container maxWidth="xs" disableGutters={true} fixed={true}>
             <Grid>
                 {commonTopArtistTrackText}
                 <br />
