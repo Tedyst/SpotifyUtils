@@ -98,7 +98,7 @@ export default function SearchBox(props) {
     if(Updating === true){
         setTimeout(()=>{
             update();
-        }, 200);
+        }, 500);
     }
 
     const mySubmitHandler = (event) => {
