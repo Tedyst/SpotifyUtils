@@ -92,13 +92,11 @@ export default function SearchBox(props) {
                 setButtonText("Searching...");
             else
                 setButtonText("Searching..." + data.searched + "/" + data.total);
+            if(!data.finished)
+                setTimeout(()=>{
+                    update();
+                }, 500);
         });
-    }
-
-    if(Updating === true){
-        setTimeout(()=>{
-            update();
-        }, 500);
     }
 
     const mySubmitHandler = (event) => {
