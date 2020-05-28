@@ -64,7 +64,7 @@ export default function Login(props) {
           }),
         } ).then(res => res.json()).then(data => {
           if(data.success === true) {
-            props.mainUpdate(true);
+            props.mainUpdate(false);
           }
         });
       }
