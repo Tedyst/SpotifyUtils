@@ -3,10 +3,68 @@ from SpotifyUtils.user import User
 from SpotifyUtils.functions.Top import Top
 
 
-def Compare(initiator: User, target: User):
+def _Compare(initiator: User, target: User):
     top_initiator = Top(initiator)
     top_target = Top(target)
 
+    result = {
+        "percent": 0,
+        "artists": [],
+        "tracks": [],
+        "genres": []
+    }
+
+    artist_total = 0
+    artist_score = 0
+    artist_max = max(len(top_initiator["artists"]), len(top_target["artists"]))
+    for idx, val in enumerate(top_initiator["artists"]):
+        artist_total += artist_max - idx
+        for idx1, val1 in enumerate(top_target["artists"]):
+            if val1 == val:
+                artist_score += artist_max - idx1
+                copy = {
+                    "initiator": idx,
+                    "target": idx1
+                }
+                copy.update(val)
+                result["artists"].append(copy)
+    tracks_total = 0
+    tracks_score = 0
+    tracks_max = max(len(top_initiator["tracks"]), len(top_target["tracks"]))
+    for idx, val in enumerate(top_initiator["tracks"]):
+        tracks_total += tracks_max - idx
+        for idx1, val1 in enumerate(top_target["tracks"]):
+            if val1 == val:
+                tracks_score += tracks_max - idx1
+                copy = {
+                    "initiator": idx,
+                    "target": idx1
+                }
+                copy.update(val)
+                result["tracks"].append(copy)
+    genre_total = 0
+    genre_score = 0
+    genre_max = max(len(top_initiator["genres"]), len(top_target["genres"]))
+    for idx, val in top_initiator["genres"].items():
+        genre_total += genre_max - int(idx)
+        for idx1, val1 in top_target["genres"].items():
+            if val1 == val:
+                genre_score += genre_max - int(idx1)
+                copy = {
+                    "initiator": int(idx) + 1,
+                    "target": int(idx1) + 1,
+                    "name": val
+                }
+                result["genres"].append(copy)
+    result["percent"] += (tracks_score / tracks_total) * 15
+    result["percent"] += (artist_score / artist_total) * 30
+    result["percent"] += (genre_score / genre_total) * 55
+
+    result["percent"] = min(int(result["percent"]), 100)
+    return result
+
+
+def Compare(initiator: User, target: User):
     result = {
         "initiator": {
             "username": initiator.username,
@@ -25,41 +83,10 @@ def Compare(initiator: User, target: User):
         "tracks": [],
         "genres": []
     }
-
-    score = 0
-    total = 0
-    for idx, val in enumerate(top_initiator["artists"]):
-        total += 3
-        for idx1, val1 in enumerate(top_target["artists"]):
-            if val1 == val:
-                score += 3
-                copy = {
-                    "initiator": idx,
-                    "target": idx1
-                }
-                copy.update(val)
-                result["artists"].append(copy)
-    for idx, val in enumerate(top_initiator["tracks"]):
-        total += 2
-        for idx1, val1 in enumerate(top_target["tracks"]):
-            if val1 == val:
-                score += 2
-                copy = {
-                    "initiator": idx,
-                    "target": idx1
-                }
-                copy.update(val)
-                result["tracks"].append(copy)
-    for idx, val in top_initiator["genres"].items():
-        total += 4
-        for idx1, val1 in top_target["genres"].items():
-            if val1 == val:
-                score += 4
-                copy = {
-                    "initiator": int(idx) + 1,
-                    "target": int(idx1) + 1,
-                    "name": val
-                }
-                result["genres"].append(copy)
-    result["percent"] = int(score/total * 100)
+    compare1 = _Compare(initiator, target)
+    compare2 = _Compare(target, initiator)
+    if compare1["percent"] < compare2["percent"]:
+        result.update(compare2)
+    else:
+        result.update(compare1)
     return result
