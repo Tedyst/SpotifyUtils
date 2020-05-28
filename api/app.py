@@ -31,10 +31,6 @@ def auth():
         scope=config.SCOPE)
 
     code = data["code"]
-    if "?code=" in request.url:
-        APP.logger.info(
-            "Found Spotify auth code in Request URL!")
-        APP.logger.debug("Spotify auth code is %s", code)
 
     try:
         token_info = sp_oauth.get_access_token(code, check_cache=False)
@@ -61,8 +57,8 @@ def auth():
     pint = []
     for playlistasd in user.playlists():
         pint.append(playlistasd.id)
-    APP.logger.info("Playlists for %s: %s",
-                    user.username, json.dumps(pint))
+    APP.logger.debug("Playlists for %s: %s",
+                     user.username, json.dumps(pint))
     return {"success": True}
 
 

@@ -59,7 +59,7 @@ class User(db.Model):
             return False
         return True
 
-    @ property
+    @property
     def name(self):
         if self.displayname:
             return self.displayname
