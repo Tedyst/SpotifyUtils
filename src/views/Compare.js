@@ -24,6 +24,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Avatar from '../components/Avatar';
+import Button from '@material-ui/core/Button';
+import {
+  Redirect,
+} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -55,35 +59,55 @@ function msToText(ms){
 
 export default function Compare(){
     let match = useRouteMatch();
+    const [Word, setWord] = React.useState('');
     return (<Switch>
         <Route path={`${match.path}/:code`}>
-            <Username />
+            <Username 
+                Word={Word}
+                setWord={setWord}
+            />
         </Route>
-        <Route path={match.path}>
-            <Test />
+        <Route path="/">
+            <Test 
+                Word={Word}
+                setWord={setWord}
+            />
         </Route>
     </Switch>);
 }
 
 
-function Username(){
+function Username(props){
     const classes = useStyles();
-    const [Updating, setUpdating] = useState(false);
+    const [Updating, setUpdating] = useState(null);
     let { code } = useParams();
     const [top, setTop] = useState(null);
-    if(top === null && Updating === false){
-        setUpdating(true);
+    if(top === null && Updating === null){
+        setUpdating(code);
         fetch('/compare/' + code).then(res => res.json()).then(data => {
             setTop(data);
+            if(data.success)
+                setUpdating(code);
+            else
+                setUpdating(null);
         });
-        return <Test />;
+        return <Test 
+                Word={props.Word}
+                setWord={props.setWord}
+                />
+    } else if(top === null && Updating !== null) {
+        return <Test 
+                Word={props.Word}
+                setWord={props.setWord}
+                />
     } else if(top === null){
-        return <Test />;
+        return <Redirect to="/compare" />;
     }
     if(top["success"] === false){
         return (
             <Test 
-                error={"User does not exist"}
+                Word={props.Word}
+                setWord={props.setWord}
             />
         )
     }
@@ -221,12 +245,32 @@ const useStylesNoUsername = makeStyles((theme) => ({
     },
     spacer: {
         height: 200
+    },
+    submit: {
+        margin: theme.spacing(3, 0, 2),
+    },
+    form: {
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(1),
+    },
+    grid: {
+        width: '100%',
+        marginTop: '10px'
     }
 }));
 
-function Test(){
+function Test(props){
     const compare = useSelector(selectCompare);
     const classes = useStylesNoUsername();
+    const [RedirectURL, setRedirectURL] = React.useState(null);
+    if(RedirectURL !== null){
+        let url = "/compare/" + String(RedirectURL);
+        if(String(RedirectURL).includes("/compare/"))
+            url = "/compare/" + String(RedirectURL).split("/compare/")[1]
+        console.log(url);
+        return <Redirect to={url} />
+    }
+
     let friends = [];
     for(var val in compare.friends){
         friends.push(
@@ -240,7 +284,17 @@ function Test(){
             </ListItem>
         );
         }
-    console.log(compare);
+
+    const changeWord = (event) => {
+        props.setWord(event.target.value);
+    }
+
+    const mySubmitHandler = (event) => {
+        event.preventDefault();
+        if(props.Word !== "")
+            setRedirectURL(props.Word);
+    }
+
     return (
     <div>
     <Container maxWidth="md" disableGutters={true} fixed={true}>
@@ -265,8 +319,33 @@ function Test(){
         />
 
     </Container>
+    <Container maxWidth="xs">
+        <form
+            className={classes.form}
+            noValidate
+            onSubmit={mySubmitHandler}
+        >
+            <TextField
+            id="standard-basic"
+            label="Enter an user code to compare to it"
+            variant="outlined"
+            className={classes.grid}
+            defaultValue={props.Word}
+            onChange={changeWord}
+            />
+            <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                type="submit"
+            >
+                Search
+            </Button>
+        </form>
+    </Container>
     <Container className={classes.spacer}>
-
+            <br />
     </Container>
     <Container maxWidth="xs" disableGutters={true} fixed={true}>
         <List className={classes.root} subheader={<li />} disablePadding={true}>
