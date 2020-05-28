@@ -21,6 +21,7 @@ def user(code):
 
     if user.id != current_user.id:
         current_user.friends.append(user)
+        user.friends.append(current_user)
         db.session.commit()
     return Compare(current_user, user)
 
