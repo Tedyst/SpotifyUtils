@@ -244,7 +244,7 @@ const useStylesNoUsername = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
     },
     spacer: {
-        height: 200
+        height: 100
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
