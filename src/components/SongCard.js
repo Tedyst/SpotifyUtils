@@ -15,11 +15,14 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexWrap: 'unset',
         flexDirection: 'column',
-        height: 'auto'
+        height: 'auto',
+        alignItems: 'stretch',
+        height: '100%'
     },
     details: {
         display: 'flex',
         flexDirection: 'column',
+        height: '100%'
     },
     content: {
         flex: '1 0 auto',
@@ -63,6 +66,10 @@ const useStyles = makeStyles((theme) => ({
     },
     lyrics: {
         whiteSpace: "pre-wrap",
+    },
+    button: {
+        marginTop: 'auto',
+        justifyContent: 'center'
     }
 }));
 
@@ -111,6 +118,7 @@ export default function SongCard(props) {
                 <Button
                     size="small"
                     onClick={handleOpen}
+                    className={classes.button}
                 >See lyrics</Button>
             </CardActions>);
 
