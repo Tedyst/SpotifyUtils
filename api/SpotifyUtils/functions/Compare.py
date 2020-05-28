@@ -56,9 +56,9 @@ def _Compare(initiator: User, target: User):
                     "name": val
                 }
                 result["genres"].append(copy)
-    result["percent"] += (tracks_score / tracks_total) * 15
-    result["percent"] += (artist_score / artist_total) * 30
-    result["percent"] += (genre_score / genre_total) * 55
+    result["percent"] += (tracks_score / tracks_total) * 150
+    result["percent"] += (artist_score / artist_total) * 100
+    result["percent"] += (genre_score / genre_total) * 80
 
     result["percent"] = min(int(result["percent"]), 100)
     return result
