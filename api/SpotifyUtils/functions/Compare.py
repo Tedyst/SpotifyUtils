@@ -61,9 +61,11 @@ def _Compare(initiator: User, target: User):
     result["percent"] += (genre_score / genre_total) * 80
 
     if(result["percent"] > 100):
-        APP.logger.info("%s and %s got %s%%!" %
+        APP.logger.info("%s and %s got %s%%! Nice!" %
                         (initiator.username, target.username, result["percent"]))
     result["percent"] = min(int(result["percent"]), 100)
+    APP.logger.debug("%s and %s got %s%%" %
+                     (initiator.username, target.username, result["percent"]))
     return result
 
 
@@ -86,6 +88,8 @@ def Compare(initiator: User, target: User):
         "tracks": [],
         "genres": []
     }
+    APP.logger.debug("Comparing %s and %s" %
+                     (initiator.username, target.username))
     compare1 = _Compare(initiator, target)
     compare2 = _Compare(target, initiator)
     if compare1["percent"] < compare2["percent"]:

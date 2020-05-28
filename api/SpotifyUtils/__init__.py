@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from logging import INFO
+from logging import INFO, DEBUG
 import SpotifyUtils.config as config
 
 APP = Flask(__name__,
@@ -11,7 +11,10 @@ APP.config['SECRET_KEY'] = config.SECRET_KEY
 APP.config['SQLALCHEMY_ECHO'] = False
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 APP.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../data.db'
-APP.logger.setLevel(INFO)
+if APP.debug:
+    APP.logger.setLevel(DEBUG)
+else:
+    APP.logger.setLevel(INFO)
 
 db = SQLAlchemy(APP, session_options={
     'expire_on_commit': False

@@ -25,9 +25,10 @@ def Top(user: User):
         result["artists"] = json.loads(user.top_artists)
         result["tracks"] = json.loads(user.top_tracks)
         result["genres"] = json.loads(user.top_genres)
-        APP.logger.info("Loaded top from cache for %s", user.name)
+        APP.logger.debug("Loaded from database for %s", user.name)
         return result
 
+    APP.logger.debug("Loading from spotify for %s", user.name)
     # Update the top
     short_term_artists = sp.current_user_top_artists(
         time_range="short_term", limit=50)
