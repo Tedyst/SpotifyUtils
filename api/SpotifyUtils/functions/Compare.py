@@ -1,6 +1,6 @@
-import spotipy
 from SpotifyUtils.user import User
 from SpotifyUtils.functions.Top import Top
+from SpotifyUtils import APP
 
 
 def _Compare(initiator: User, target: User):
@@ -60,6 +60,9 @@ def _Compare(initiator: User, target: User):
     result["percent"] += (artist_score / artist_total) * 100
     result["percent"] += (genre_score / genre_total) * 80
 
+    if(result["percent"] > 100):
+        APP.logger.info("%s and %s got %s%%!" %
+                        (initiator.username, target.username, result["percent"]))
     result["percent"] = min(int(result["percent"]), 100)
     return result
 
