@@ -16,7 +16,7 @@ def Top(user: User):
         result["tracks"] = json.loads(user.top_tracks)
         result["genres"] = json.loads(user.top_genres)
         APP.logger.debug("Token expired for user %s", user.name)
-        APP.logger.info("Loaded top from cache for %s", user.name)
+        APP.logger.debug("Loaded from database for %s", user.name)
         return result
     sp = spotipy.Spotify(user.token)
 
