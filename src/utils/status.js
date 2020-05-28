@@ -21,11 +21,14 @@ export default function Update(){
             else
                 dispatch(setUsername(data.username));
         })
+        if(data.logged){
+            fetch('/top/me').then(res => res.json()).then(data => {
+                dispatch(setTop(data));
+            });
+            fetch('/compare/').then(res => res.json()).then(data => {
+                dispatch(setCompare(data));
+            });
+        }
     });
-    fetch('/top/me').then(res => res.json()).then(data => {
-        dispatch(setTop(data));
-    });
-    fetch('/compare/').then(res => res.json()).then(data => {
-        dispatch(setCompare(data));
-    });
+    
 }
