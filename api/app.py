@@ -54,11 +54,8 @@ def auth():
     db.session.add(user)
     db.session.commit()
     login_user(user)
-    pint = []
-    for playlistasd in user.playlists():
-        pint.append(playlistasd.id)
     APP.logger.debug("Playlists for %s: %s",
-                     user.username, json.dumps(pint))
+                     user.username, user.playlists_json())
     return {"success": True}
 
 

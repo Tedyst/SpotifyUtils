@@ -4,6 +4,8 @@ import spotipy
 from sqlalchemy.schema import Table, ForeignKey
 from sqlalchemy.orm import relationship, backref
 import uuid
+import time
+import json
 
 friends_table = Table(
     'friends',
@@ -24,8 +26,11 @@ class User(db.Model):
     top_tracks = db.Column(db.String(10000))
     top_artists = db.Column(db.String(10000))
     top_genres = db.Column(db.String(10000))
-    top_updated = db.Column(db.Integer())
+    top_updated = db.Column(db.Integer)
     friend_code = db.Column(db.String(6))
+    last_updated = db.Column(db.Integer)
+    user_playlists = db.Column(db.String(10000))
+
     friends = relationship(
         'User',
         secondary=friends_table,
@@ -37,6 +42,7 @@ class User(db.Model):
     def __init__(self, username, token):
         self.username = username
         self.token = token
+        self.last_updated = time.time()
         self.top_updated = 0
 
         # Generate unique code
@@ -46,6 +52,8 @@ class User(db.Model):
         self.friend_code = code
 
     def valid(self):
+        if time.time() - self.last_updated > 600:
+            return False
         if self.token is None:
             return False
         sp = spotipy.Spotify(self.token)
@@ -66,19 +74,23 @@ class User(db.Model):
         return self.username
 
     def playlists(self):
+        if not self.valid():
+            return json.loads(self.user_playlists)
         sp = spotipy.Spotify(self.token)
         playlists = sp.user_playlists(self.username)
         result = []
         for playlist in playlists['items']:
             result.append(
-                Playlist(playlist['id'], playlist['name'], [])
+                Playlist(playlist['id'], playlist['name'], self)
             )
         while playlists['next']:
             playlists = sp.next(playlists)
             for playlist in playlists['items']:
                 result.append(
-                    Playlist(playlist['id'], playlist['name'], [])
+                    Playlist(playlist['id'], playlist['name'], self)
                 )
+        for playlist in result:
+            self.user_playlists.append(playlist.to_json())
         return result
 
     def playlists_json(self):
