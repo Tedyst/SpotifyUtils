@@ -1,5 +1,5 @@
 import spotipy
-from flask import request
+from flask import request, send_from_directory
 
 import SpotifyUtils.config as config
 from SpotifyUtils import APP, db
@@ -111,6 +111,13 @@ APP.register_blueprint(compare_blueprint,
                        url_prefix="/compare")
 APP.register_blueprint(friends_blueprint,
                        url_prefix="/friends")
+
+
+@APP.route('/', defaults={'path': ''})
+@APP.route('/<path:path>')
+def catch_all(path):
+    asd = send_from_directory('../../build', 'index.html')
+    return asd
 
 
 if __name__ == "__main__":

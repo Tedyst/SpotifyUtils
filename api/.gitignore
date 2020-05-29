@@ -3,3 +3,4 @@ venv/
 *.pyc
 data.db
 asd.txt
+ui/

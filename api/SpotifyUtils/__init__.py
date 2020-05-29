@@ -6,8 +6,7 @@ import SpotifyUtils.config as config
 from flask_migrate import Migrate
 
 APP = Flask(__name__,
-            template_folder='../templates',
-            static_folder="../static")
+            static_folder="../../build/static")
 APP.config['SECRET_KEY'] = config.SECRET_KEY
 APP.config['SQLALCHEMY_ECHO'] = False
 APP.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
