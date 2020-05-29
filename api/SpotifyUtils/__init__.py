@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from logging import INFO, DEBUG
 import SpotifyUtils.config as config
+from flask_migrate import Migrate
 
 APP = Flask(__name__,
             template_folder='../templates',
@@ -19,5 +20,7 @@ else:
 db = SQLAlchemy(APP, session_options={
     'expire_on_commit': False
 })
+
+migrate = Migrate(APP, db)
 
 login_manager = LoginManager(APP)
