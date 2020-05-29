@@ -4,7 +4,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { Select, MenuItem, TextField, Grid } from '@material-ui/core';
+import { Select, MenuItem, Grid } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
 paper: {
@@ -88,7 +88,7 @@ export default function SearchBox(props) {
         fetch('/api/lyrics/' + selectedPlaylist).then(res => res.json()).then(data => {
             setUpdating(!data.finished);
             props.setResults(data.results);
-            if(data.total == -1)
+            if(data.total === -1)
                 setButtonText("Searching...");
             else
                 setButtonText("Searching..." + data.searched + "/" + data.total);

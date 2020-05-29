@@ -16,7 +16,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
-import SpotifyLogo from '../static/img/spotify.png';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -77,7 +76,7 @@ function ResponsiveDrawer(props) {
 
     if(!logged)
         return null;
-    if(location != lastLocation){
+    if(location !== lastLocation){
         setLastLocation(location);
         setMobileOpen(false);
     }
@@ -130,14 +129,7 @@ function ResponsiveDrawer(props) {
 
     const container = window !== undefined ? () => window().document.body : undefined;
 
-    let avatar;
-    if(props.image === "")
-        avatar = <Avatar 
-            className={classes.avatar}
-            src={SpotifyLogo}
-        />;
-    else
-        avatar = <Avatar 
+    const avatar = <Avatar 
             className={classes.avatar}
             src={props.image}
         />;

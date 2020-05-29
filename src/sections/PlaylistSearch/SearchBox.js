@@ -88,7 +88,7 @@ export default function PlaylistView(props) {
       fetch('/api/playlistsearch/' + selectedPlaylist + "/" +  Word).then(res => res.json()).then(data => {
         setUpdating(!data.finished);
         props.setResults(data.results);
-        if(data.total == -1)
+        if(data.total === -1)
           setButtonText("Searching...");
         else
           setButtonText("Searching..." + data.searched + "/" + data.total);

@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexWrap: 'unset',
         flexDirection: 'column',
-        height: 'auto',
         alignItems: 'stretch',
         height: '100%'
     },

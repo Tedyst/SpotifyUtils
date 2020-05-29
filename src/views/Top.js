@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  selectTop,
-  setTop
+  selectTop
 } from '../store/user';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Container from '@material-ui/core/Container';
 import { Grid } from '@material-ui/core';
 import ArtistCard from '../sections/Top/ArtistCard';
 import SongCard from '../sections/Top/SongCard';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import List from '../sections/Top/List';
 
 const useStyles = makeStyles((theme) => ({
