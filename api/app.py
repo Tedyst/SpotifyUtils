@@ -15,7 +15,7 @@ import time
 db.create_all()
 
 
-@APP.route('/auth', methods=['POST'])
+@APP.route('/api/auth', methods=['POST'])
 def auth():
     data = request.get_json()
     if data is None:
@@ -60,7 +60,7 @@ def auth():
     return {"success": True}
 
 
-@APP.route('/status')
+@APP.route('/api/status')
 def status():
     if not current_user.is_authenticated:
         return {"logged": False}
@@ -74,7 +74,7 @@ def status():
     }
 
 
-@APP.route('/playlists')
+@APP.route('/api/playlists')
 def playlists():
     if not current_user.is_authenticated:
         return {"logged": False}
@@ -84,7 +84,7 @@ def playlists():
     }
 
 
-@APP.route('/auth-url', methods=['POST'])
+@APP.route('/api/auth-url', methods=['POST'])
 def authurl():
     data = request.get_json()
     if data is None:
@@ -102,15 +102,15 @@ def authurl():
 
 
 APP.register_blueprint(playlistsearcher_blueprint,
-                       url_prefix="/playlistsearch")
+                       url_prefix="/api/playlistsearch")
 APP.register_blueprint(lyrics_blueprint,
-                       url_prefix="/lyrics")
+                       url_prefix="/api/lyrics")
 APP.register_blueprint(top_blueprint,
-                       url_prefix="/top")
+                       url_prefix="/api/top")
 APP.register_blueprint(compare_blueprint,
-                       url_prefix="/compare")
+                       url_prefix="/api/compare")
 APP.register_blueprint(friends_blueprint,
-                       url_prefix="/friends")
+                       url_prefix="/api/friends")
 
 
 @APP.route('/', defaults={'path': ''})

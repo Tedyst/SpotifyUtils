@@ -85,7 +85,7 @@ export default function SearchBox(props) {
     };
 
     const update = function (){
-        fetch('/lyrics/' + selectedPlaylist).then(res => res.json()).then(data => {
+        fetch('/api/lyrics/' + selectedPlaylist).then(res => res.json()).then(data => {
             setUpdating(!data.finished);
             props.setResults(data.results);
             if(data.total == -1)

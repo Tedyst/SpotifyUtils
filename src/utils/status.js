@@ -11,7 +11,7 @@ import { useDispatch, batch } from 'react-redux';
 
 export default function Update(){
     const dispatch = useDispatch();
-    fetch('/status').then(res => res.json()).then(data => {
+    fetch('/api/status').then(res => res.json()).then(data => {
         batch(() => {
             dispatch(setImage(data.image));
             dispatch(setLogged(data.logged));
@@ -22,10 +22,10 @@ export default function Update(){
                 dispatch(setUsername(data.username));
         })
         if(data.logged){
-            fetch('/top/me').then(res => res.json()).then(data => {
+            fetch('/api/top/me').then(res => res.json()).then(data => {
                 dispatch(setTop(data));
             });
-            fetch('/compare/').then(res => res.json()).then(data => {
+            fetch('/api/compare/').then(res => res.json()).then(data => {
                 dispatch(setCompare(data));
             });
         }

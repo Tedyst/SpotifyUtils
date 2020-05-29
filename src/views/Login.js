@@ -40,7 +40,7 @@ export default function Login(props) {
     if(Updating === false) {
       setUpdating(true);
       // The url for login
-      fetch('/auth-url', {
+      fetch('/api/auth-url', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export default function Login(props) {
         });
       if(code !== null) {
         // Check if the code works
-        fetch('/auth', {
+        fetch('/api/auth', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
