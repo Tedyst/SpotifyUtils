@@ -57,6 +57,10 @@ class User(db.Model):
                 APP.logger.debug(
                     "%s's token is expired, not updating", self.name)
                 return False
+            else:
+                APP.logger.debug(
+                    "%s's token should be valid", self.name)
+                return True
         if self.token is None:
             return False
         sp = spotipy.Spotify(self.token)
