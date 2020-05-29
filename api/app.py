@@ -10,7 +10,7 @@ from SpotifyUtils.sections.Lyrics import lyrics_blueprint
 from SpotifyUtils.sections.Top import top_blueprint
 from SpotifyUtils.sections.Compare import compare_blueprint
 from SpotifyUtils.sections.Friends import friends_blueprint
-import json
+import time
 
 db.create_all()
 
@@ -51,6 +51,7 @@ def auth():
             user.image = me['images'][0]['url']
 
     user.token = token
+    user.last_updated = time.time()
     db.session.add(user)
     db.session.commit()
     login_user(user)

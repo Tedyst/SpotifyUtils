@@ -1,5 +1,5 @@
 from SpotifyUtils.song import Song
-from SpotifyUtils import db, login_manager
+from SpotifyUtils import db, login_manager, APP
 import spotipy
 from sqlalchemy.schema import Table, ForeignKey
 from sqlalchemy.orm import relationship, backref
@@ -52,8 +52,11 @@ class User(db.Model):
         self.friend_code = code
 
     def valid(self):
-        if time.time() - self.last_updated > 600:
-            return False
+        if self.last_updated:
+            if time.time() - self.last_updated > 600:
+                APP.logger.debug(
+                    "%s's token is expired, not updating", self.name)
+                return False
         if self.token is None:
             return False
         sp = spotipy.Spotify(self.token)
@@ -89,8 +92,11 @@ class User(db.Model):
                 result.append(
                     Playlist(playlist['id'], playlist['name'], self)
                 )
+        playlists_db = []
         for playlist in result:
-            self.user_playlists.append(playlist.to_json())
+            playlists_db.append(playlist.to_json())
+        self.user_playlists = json.dumps(playlists_db)
+        db.session.commit()
         return result
 
     def playlists_json(self):
