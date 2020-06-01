@@ -8,6 +8,6 @@
     "python.testing.pytestEnabled": false,
     "vsdocker.imageUser": "tedyst/spotifyutils",
     "vs-kubernetes": {
-        "vs-kubernetes.python-remote-root": "/APP"
+        "vs-kubernetes.python-remote-root": "/app"
     },
 }
