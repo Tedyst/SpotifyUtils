@@ -115,8 +115,12 @@ APP.register_blueprint(friends_blueprint,
 
 @APP.route('/', defaults={'path': ''})
 @APP.route('/<path:path>')
-def catch_all(path):
-    asd = send_from_directory('../../build', 'index.html')
+def catch_all(path, **options):
+    print(path)
+    try:
+        asd = send_from_directory('../../build', path)
+    except Exception:
+        asd = send_from_directory('../../build', 'index.html')
     return asd
 
 
