@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './App.css';
 import Login from './views/Login';
 import PlaylistSearch from './views/PlaylistSearch';
 import PlaylistView from './views/PlaylistView';
