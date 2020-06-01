@@ -1,11 +1,15 @@
 from SpotifyUtils.song import Song
-from SpotifyUtils import db, login_manager, APP
+from SpotifyUtils import db, login_manager, APP, admin
 import spotipy
 from sqlalchemy.schema import Table, ForeignKey
 from sqlalchemy.orm import relationship, backref
 import uuid
 import time
 import json
+from flask_admin.contrib.sqla import ModelView
+from flask_login import current_user
+import SpotifyUtils.config as config
+from flask import redirect, url_for
 
 friends_table = Table(
     'friends',
@@ -179,3 +183,20 @@ def _playlist_tracks(sp, user: User, uri):
         for track in results['items']:
             tracks.append(track['track'])
     return tracks
+
+
+class FlaskAdmin(ModelView):
+
+    def is_accessible(self):
+        if not current_user.is_authenticated:
+            return False
+        if current_user.username == config.ADMIN:
+            return True
+        return False
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('catch_all'))
+
+
+admin.add_view(FlaskAdmin(User, db.session))
+admin.add_view(FlaskAdmin(Song, db.session))
