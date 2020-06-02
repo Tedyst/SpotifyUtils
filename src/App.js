@@ -78,11 +78,11 @@ function App() {
           <Route path="/compare">
             <Compare />
           </Route>
+          <Route path='/admin' component={() => window.location = 
+            window.location.protocol + "//" + window.location.host + "/admin" }/>
           <Route path="/">
             <Home />
           </Route>
-          <Route path='/admin' component={() => window.location = 
-            window.location.protocol + "//" + window.location.host + "/admin" }/>
         </Switch>
         <RedirectWithSave logged={logged}/>
       </main>
