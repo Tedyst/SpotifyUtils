@@ -185,7 +185,9 @@ def _playlist_tracks(sp, user: User, uri):
     return tracks
 
 
-class FlaskAdmin(ModelView):
+class FlaskAdminSong(ModelView):
+
+    column_exclude_list = ('lyrics')
 
     def is_accessible(self):
         if not current_user.is_authenticated:
@@ -198,5 +200,21 @@ class FlaskAdmin(ModelView):
         return redirect(url_for('catch_all'))
 
 
-admin.add_view(FlaskAdmin(User, db.session))
-admin.add_view(FlaskAdmin(Song, db.session))
+class FlaskAdminUser(ModelView):
+
+    column_exclude_list = ('token', 'top_tracks',
+                           'top_artists', 'top_genres', 'user_playlists')
+
+    def is_accessible(self):
+        if not current_user.is_authenticated:
+            return False
+        if current_user.username == config.ADMIN:
+            return True
+        return False
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('catch_all'))
+
+
+admin.add_view(FlaskAdminUser(User, db.session))
+admin.add_view(FlaskAdminSong(Song, db.session))
