@@ -21,7 +21,7 @@ const isLocalhost = Boolean(
 );
 
 function isAdminRoute() {
-  return window.location.pathname.startsWith('/admin')
+  return window.location.pathname.startsWith('/admin');
 }
 
 export function register(config) {
@@ -38,12 +38,13 @@ export function register(config) {
     window.addEventListener('load', () => {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
+      console.log('load service', window.location.pathname);
       if (isAdminRoute()) {
         console.info('unregistering service worker for admin route');
         unregister();
         console.info('reloading');
         window.location.reload();
-        return false;
+        return;
       }
 
       if (isLocalhost) {
