@@ -10,6 +10,7 @@ from SpotifyUtils.sections.Lyrics import lyrics_blueprint
 from SpotifyUtils.sections.Top import top_blueprint
 from SpotifyUtils.sections.Compare import compare_blueprint
 from SpotifyUtils.sections.Friends import friends_blueprint
+from SpotifyUtils.sections.Track import track_blueprint
 import time
 
 db.create_all()
@@ -111,6 +112,8 @@ APP.register_blueprint(compare_blueprint,
                        url_prefix="/api/compare")
 APP.register_blueprint(friends_blueprint,
                        url_prefix="/api/friends")
+APP.register_blueprint(track_blueprint,
+                       url_prefix="/api/track")
 
 
 @APP.route('/', defaults={'path': ''})
