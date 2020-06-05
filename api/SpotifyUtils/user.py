@@ -10,6 +10,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user
 import SpotifyUtils.config as config
 from flask import redirect, url_for
+from requests.exceptions import RetryError
 
 friends_table = Table(
     'friends',
@@ -87,8 +88,16 @@ class User(db.Model):
     def playlists(self):
         if not self.valid():
             return json.loads(self.user_playlists)
-        sp = spotipy.Spotify(self.token)
-        playlists = sp.user_playlists(self.username)
+
+        try:
+            sp = spotipy.Spotify(self.token)
+            playlists = sp.user_playlists(self.username)
+        except RetryError as e:
+            APP.logger.error("Error loading playlists for %s", self.username)
+            APP.logger.error(e)
+            self.setInvalid()
+            return []
+
         result = []
         for playlist in playlists['items']:
             result.append(
@@ -127,6 +136,9 @@ class User(db.Model):
 
     def get_id(self):
         return self.id
+
+    def setInvalid(self):
+        self.last_updated = time.time() - 10000  # Force loading
 
 
 @ login_manager.user_loader

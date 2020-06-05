@@ -6,6 +6,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -31,7 +32,12 @@ export default function Login(props) {
     const classes = useStyles();
     const [LoginUrl, setLoginUrl] = useState("");
     const [Updating, setUpdating] = useState(false);
+    const [Error, setError] = useState(false);
 
+    if(Error){
+      console.log("ERROR")
+      return <Redirect to="/" />
+    }
     let search = window.location.search;
     let params = new URLSearchParams(search);
     let code = params.get('code');
@@ -62,17 +68,24 @@ export default function Login(props) {
             "code": code
           }),
         } ).then(res => res.json()).then(data => {
+          console.log(data);
           if(data.success === true) {
             props.mainUpdate(false);
+          } else {
+            console.log("seterror true");
+            setError(true);
           }
         });
       }
     }
 
-    return loginPage(classes, LoginUrl);
+    if(code !== null)
+      return loginPage(classes, LoginUrl, true);
+    return loginPage(classes, LoginUrl, false);
 }
 
-function loginPage(classes, LoginUrl){
+function loginPage(classes, LoginUrl, loggingIn){
+  let buttonText = loggingIn ? "Logging in... Please wait..." : "Sign in using Spotify";
   return (
     <Container maxWidth="xs">
         <CssBaseline />
@@ -94,9 +107,9 @@ function loginPage(classes, LoginUrl){
                 color="primary"
                 className={classes.submit}
                 href={LoginUrl}
-                disabled={LoginUrl === "" ? true : false}
+                disabled={LoginUrl === "" || loggingIn === true ? true : false}
             >
-                Sign in using Spotify
+                {buttonText}
             </Button>
             </form>
         </div>
