@@ -1,46 +1,51 @@
 import { createSlice } from '@reduxjs/toolkit';
-import Cookies from 'js-cookie';
+import { loadState, saveState } from './localStorage';
 
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
-    logged: Cookies.get("logged"),
-    name: "Not Logged In",
-    image: "",
-    playlists: [],
-    top: {
+    logged: loadState("logged") ? true : false,
+    name: loadState("name") ? loadState("name") : "Not Logged In",
+    image: loadState("image") ? loadState("image") : "",
+    playlists: loadState("playlists") ? loadState("playlists") : [],
+    top: loadState("top") ? loadState("top") : {
       "artists": {},
       "tracks": {},
       "genres": {}
     },
-    pathname: Cookies.get("pathname"),
-    compare: {
+    pathname: loadState("pathname") ? loadState("pathname") : undefined,
+    compare: loadState("compare") ? loadState("compare") : {
       "code": "NONE",
       "friends": []
     }
   },
   reducers: {
     setLogged: (state, action) => {
-      Cookies.set("logged", action.payload);
       state.logged = action.payload;
+      saveState("logged", action.payload);
     },
     setImage: (state, action) => {
       state.image = action.payload;
+      saveState("image", action.payload);
     },
     setUsername: (state, action) => {
       state.name = action.payload;
+      saveState("name", action.payload);
     },
     setPlaylists: (state, action) => {
       state.playlists = action.payload;
+      saveState("playlists", action.payload);
     },
     setTop: (state, action) => {
       state.top = action.payload;
+      saveState("top", action.payload);
     },
     setPathName: (state, action) => {
-      Cookies.set("pathname", action.payload);
+      saveState("pathname", action.payload);
       state.pathname = action.payload;
     },
     setCompare: (state, action) => {
+      saveState("compare", action.payload);
       state.compare = action.payload;
     },
   },
@@ -68,13 +73,13 @@ export const {
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state) => state.counter.value)`
-export const selectLogged = state => state.counter.logged;
-export const selectPlaylists = state => state.counter.playlists;
-export const selectUsername = state => state.counter.name;
-export const selectImage = state => state.counter.image;
-export const selectTop = state => state.counter.top;
-export const selectPathname = state => state.counter.pathname;
-export const selectCompare = state => state.counter.compare;
+// in the slice file. For example: `useSelector((state) => state.user.value)`
+export const selectLogged = state => state.user.logged;
+export const selectPlaylists = state => state.user.playlists;
+export const selectUsername = state => state.user.name;
+export const selectImage = state => state.user.image;
+export const selectTop = state => state.user.top;
+export const selectPathname = state => state.user.pathname;
+export const selectCompare = state => state.user.compare;
 
 export default userSlice.reducer;
