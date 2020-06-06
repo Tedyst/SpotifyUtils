@@ -20,11 +20,14 @@ db.create_all()
 def auth():
     data = request.get_json()
     if data is None:
-        return {"success": False}
+        return {"success": False,
+                "error": "Invalid request"}, 400
     if "host" not in data:
-        return {"success": False}
+        return {"success": False,
+                "error": "Invalid request"}, 400
     if "code" not in data:
-        return {"success": False}
+        return {"success": False,
+                "error": "Invalid request"}, 400
     sp_oauth = spotipy.oauth2.SpotifyOAuth(
         config.SPOTIFY_CLIENT_ID,
         config.SPOTIFY_CLIENT_SECRET,
@@ -37,7 +40,8 @@ def auth():
         token_info = sp_oauth.get_access_token(code, check_cache=False)
     except spotipy.oauth2.SpotifyOauthError as err:
         APP.logger.debug(err)
-        return {"success": False}
+        return {"success": False,
+                "error": "Code invalid"}, 400
 
     token = token_info['access_token']
     me = spotipy.Spotify(token).me()
@@ -64,11 +68,12 @@ def auth():
 @APP.route('/api/status')
 def status():
     if not current_user.is_authenticated():
-        return {"logged": False}
+        return {"success": False,
+                "error": "Not authorized"}, 403
     if not current_user.valid():
-        return {"logged": False}
+        return {"success": False,
+                "error": "Not authorized"}, 403
     return {
-        "logged": True,
         "username": current_user.name,
         "image": current_user.image,
         "playlists": current_user.playlists_json()
@@ -78,9 +83,9 @@ def status():
 @APP.route('/api/playlists')
 def playlists():
     if not current_user.is_authenticated():
-        return {"logged": False}
+        return {"success": False,
+                "error": "Not authorized"}, 403
     return {
-        "logged": True,
         "playlists": current_user.playlists_json()
     }
 
@@ -89,9 +94,13 @@ def playlists():
 def authurl():
     data = request.get_json()
     if data is None:
-        return {"url": ""}
+        return {"success": False,
+                "error": "Invalid Request",
+                "url": ""}, 400
     if "host" not in data:
-        return {"url": ""}
+        return {"success": False,
+                "error": "Invalid Request",
+                "url": ""}, 400
     sp_oauth = spotipy.oauth2.SpotifyOAuth(
         config.SPOTIFY_CLIENT_ID,
         config.SPOTIFY_CLIENT_SECRET,
