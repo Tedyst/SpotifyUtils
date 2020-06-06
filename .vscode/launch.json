@@ -2,12 +2,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name":"Python: Remote Attach",
-            "type":"python",
-            "request":"attach",
-            "port":5678,
-            "host":"localhost",
-            "pathMappings":[
+            "type": "firefox",
+            "request": "launch",
+            "name": "Launch Firefox against localhost",
+            "url": "http://127.0.0.1:3000",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "name": "Python: Remote Attach",
+            "type": "python",
+            "request": "attach",
+            "port": 5678,
+            "host": "localhost",
+            "pathMappings": [
                 {
                     "localRoot":"${workspaceFolder}/api",
                     "remoteRoot":"/APP"
