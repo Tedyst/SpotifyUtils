@@ -15,7 +15,7 @@ class Song(db.Model):
 
     # Analyze info
     analyzed = db.Column(db.Boolean)
-    loudness = db.Column(db.String(50000))
+    loudness_graph = db.Column(db.String(50000))
     duration = db.Column(db.Integer)
     key = db.Column(db.Integer)
     key_confidence = db.Column(db.Integer)
