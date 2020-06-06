@@ -24,6 +24,7 @@ def Track(initiator: User, song: Song):
         }
     sp = spotipy.Spotify(initiator.token)
     analysis = sp.audio_analysis(song.uri)
+    features = sp.audio_features(song.uri)
     loudness = []
 
     # Skip some seconds, too many points to store and visualise
@@ -57,4 +58,4 @@ def Track(initiator: User, song: Song):
         "time_signature": analysis["track"]["time_signature"],
         "time_signature_confidence": analysis["track"]["time_signature_confidence"],
     }
-    return result
+    return {"features": features}

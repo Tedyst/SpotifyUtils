@@ -13,7 +13,7 @@ class Song(db.Model):
     preview = db.Column(db.String(100))
     last_check = db.Column(db.Integer)
 
-    # Analise info
+    # Analyze info
     analyzed = db.Column(db.Boolean)
     loudness = db.Column(db.String(50000))
     duration = db.Column(db.Integer)
@@ -24,6 +24,14 @@ class Song(db.Model):
     tempo_confidence = db.Column(db.Integer)
     time_signature = db.Column(db.Integer)
     time_signature_confidence = db.Column(db.Integer)
+    acousticness = db.Column(db.Integer)
+    danceability = db.Column(db.Integer)
+    energy = db.Column(db.Integer)
+    instrumentalness = db.Column(db.Integer)
+    liveness = db.Column(db.Integer)
+    loudness = db.Column(db.Integer)
+    speechiness = db.Column(db.Integer)
+    valence = db.Column(db.Integer)
 
     def __init__(self, name, artist, uri, image, preview):
         self.name = name
