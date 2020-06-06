@@ -6,8 +6,13 @@ import json
 
 def Track(initiator: User, song: Song):
     if song.analyzed:
+        cache = json.loads(song.loudness)
+        loudness = {
+            "label": [i for i in range(0, len(cache))],
+            "data": cache
+        }
         return {
-            "loudness": json.loads(song.loudness),
+            "loudness": loudness,
             "duration": song.duration,
             "key": song.key,
             "key_confidence": song.key_confidence,
