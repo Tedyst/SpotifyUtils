@@ -12,7 +12,7 @@ def Track(initiator: User, song: Song):
             "data": cache
         }
         return {
-            "loudness": loudness,
+            "loudness_graph": loudness,
             "duration": song.duration,
             "key": song.key,
             "key_confidence": song.key_confidence,
@@ -20,7 +20,15 @@ def Track(initiator: User, song: Song):
             "tempo": song.tempo,
             "tempo_confidence": song.tempo_confidence,
             "time_signature": song.time_signature,
-            "time_signature_confidence": song.time_signature_confidence
+            "time_signature_confidence": song.time_signature_confidence,
+            "acousticness": song.acousticness,
+            "danceability": song.danceability,
+            "energy": song.energy,
+            "liveness": song.liveness,
+            "loudness": song.loudness,
+            "speechiness": song.speechiness,
+            "instrumentalness": song.instrumentalness,
+            "valence": song.valence
         }
     sp = spotipy.Spotify(initiator.token)
     analysis = sp.audio_analysis(song.uri)
@@ -46,9 +54,18 @@ def Track(initiator: User, song: Song):
     song.tempo_confidence = analysis["track"]["tempo_confidence"]
     song.time_signature = analysis["track"]["time_signature"]
     song.time_signature_confidence = analysis["track"]["time_signature_confidence"]
+
+    song.acousticness = features[0]["acousticness"]
+    song.danceability = features[0]["danceability"]
+    song.energy = features[0]["energy"]
+    song.liveness = features[0]["liveness"]
+    song.loudness = features[0]["loudness"]
+    song.speechiness = features[0]["speechiness"]
+    song.instrumentalness = features[0]["instrumentalness"]
+    song.valence = features[0]["valence"]
     db.session.commit()
-    result = {
-        "loudness": loudness,
+    return {
+        "loudness_graph": loudness,
         "duration": analysis["track"]["duration"],
         "key": analysis["track"]["key"],
         "key_confidence": analysis["track"]["key_confidence"],
@@ -57,5 +74,12 @@ def Track(initiator: User, song: Song):
         "tempo_confidence": analysis["track"]["tempo_confidence"],
         "time_signature": analysis["track"]["time_signature"],
         "time_signature_confidence": analysis["track"]["time_signature_confidence"],
+        "acousticness": features[0]["acousticness"],
+        "danceability": features[0]["danceability"],
+        "energy": features[0]["energy"],
+        "liveness": features[0]["liveness"],
+        "loudness": features[0]["loudness"],
+        "speechiness": features[0]["speechiness"],
+        "instrumentalness": features[0]["instrumentalness"],
+        "valence": features[0]["valence"]
     }
-    return {"features": features}

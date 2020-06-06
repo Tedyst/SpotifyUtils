@@ -26,7 +26,7 @@ class Query():
 
 @playlistsearcher_blueprint.route('/<playlist_id>/<words>')
 def ajax(playlist_id, words):
-    if not current_user.is_authenticated:
+    if not current_user.is_authenticated():
         return {"success": False,
                 "error": "Not authorized"}, 403
     query = None

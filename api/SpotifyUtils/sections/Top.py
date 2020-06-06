@@ -10,7 +10,7 @@ top_blueprint = Blueprint('top', __name__)
 
 @top_blueprint.route('/me')
 def me():
-    if not current_user.is_authenticated:
+    if not current_user.is_authenticated():
         return {"success": False,
                 "error": "Not authorized"}, 403
     result = functions.Top(current_user)
@@ -21,7 +21,7 @@ def me():
 # I don't know why i made this function but ok
 @top_blueprint.route('/<user>')
 def user(user):
-    if not current_user.is_authenticated:
+    if not current_user.is_authenticated():
         return {"success": False,
                 "error": "Not authorized"}, 403
     if config.ADMIN != current_user.username:

@@ -63,7 +63,7 @@ def auth():
 
 @APP.route('/api/status')
 def status():
-    if not current_user.is_authenticated:
+    if not current_user.is_authenticated():
         return {"logged": False}
     if not current_user.valid():
         return {"logged": False}
@@ -77,7 +77,7 @@ def status():
 
 @APP.route('/api/playlists')
 def playlists():
-    if not current_user.is_authenticated:
+    if not current_user.is_authenticated():
         return {"logged": False}
     return {
         "logged": True,
