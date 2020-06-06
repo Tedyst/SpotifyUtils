@@ -33,19 +33,19 @@ def Track(initiator: User, song: Song):
     sp = spotipy.Spotify(initiator.token)
     analysis = sp.audio_analysis(song.uri)
     features = sp.audio_features(song.uri)
-    loudness = []
+    loudness_graph = []
 
     # Skip some seconds, too many points to store and visualise
     index = 4
     for segment in analysis["segments"]:
         index += 1
         if index == 5:
-            loudness.append(segment["loudness_max"])
+            loudness_graph.append(segment["loudness_max"])
             index = 0
 
     APP.logger.debug("Analyzed song %s", song.uri)
     song.analyzed = True
-    song.loudness = json.dumps(loudness)
+    song.loudness_graph = json.dumps(loudness_graph)
     song.duration = analysis["track"]["duration"]
     song.key = analysis["track"]["key"]
     song.key_confidence = analysis["track"]["key_confidence"]
@@ -65,7 +65,7 @@ def Track(initiator: User, song: Song):
     song.valence = features[0]["valence"]
     db.session.commit()
     return {
-        "loudness_graph": loudness,
+        "loudness_graph": loudness_graph,
         "duration": analysis["track"]["duration"],
         "key": analysis["track"]["key"],
         "key_confidence": analysis["track"]["key_confidence"],
