@@ -4,7 +4,7 @@ from flask_login import current_user
 import spotipy
 from SpotifyUtils.user import User, Song
 from SpotifyUtils.functions import Track
-from SpotifyUtils import db
+from SpotifyUtils import db, APP
 
 track_blueprint = Blueprint('track', __name__)
 
@@ -12,11 +12,17 @@ track_blueprint = Blueprint('track', __name__)
 @track_blueprint.route('/<id>')
 def track(id):
     if not current_user.is_authenticated:
-        return {"logged": False}
-    song = Song.query.filter(Song.id == id).first()
+        return {"success": False,
+                "error": "Not authorized"}, 403
+    song = Song.query.filter(Song.uri == "spotify:track:" + id).first()
     if song is None:
-        sp = spotipy.Spotify(current_user.token)
-        spotify_info = sp.track(id)
+        try:
+            sp = spotipy.Spotify(current_user.token)
+            spotify_info = sp.track(id)
+        except spotipy.exceptions.SpotifyException:
+            APP.logger.error("Invalid track id %s", id)
+            return {"success": False,
+                    "error": "Invalid Track"}, 400
         song = Song(
             spotify_info['name'],
             spotify_info['artists'][0]['name'],

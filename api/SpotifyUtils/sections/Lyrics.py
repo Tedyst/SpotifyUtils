@@ -25,7 +25,8 @@ class Query():
 @lyrics_blueprint.route('/<playlist_id>')
 def ajax(playlist_id):
     if not current_user.is_authenticated:
-        return {"logged": False}
+        return {"success": False,
+                "error": "Not authorized"}, 403
     query = None
     for i in query_queue:
         if i.user == current_user.id and i.playlist_id == playlist_id:

@@ -10,14 +10,14 @@ compare_blueprint = Blueprint('compare', __name__)
 @compare_blueprint.route('/<code>')
 def user(code):
     if not current_user.is_authenticated:
-        return {"logged": False}
+        return {"success": False,
+                "error": "Not authorized"}, 403
     user = User.query.filter(User.friend_code == code).first()
     if user is None:
         return {
-            "logged": True,
             "success": False,
             "error": "Invalid code"
-        }
+        }, 400
 
     if user.id != current_user.id:
         current_user.friends.append(user)
@@ -29,10 +29,10 @@ def user(code):
 @compare_blueprint.route('/')
 def me():
     if not current_user.is_authenticated:
-        return {"logged": False}
+        return {"success": False,
+                "error": "Not authorized"}, 403
 
     result = {
-        "logged": True,
         "code": current_user.friend_code,
         "friends": []
     }
