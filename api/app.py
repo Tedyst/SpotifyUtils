@@ -69,11 +69,14 @@ def auth():
 def status():
     if not current_user.is_authenticated():
         return {"success": False,
-                "error": "Not authorized"}, 403
+                "error": "Not authorized",
+                "logged": False}, 403
     if not current_user.valid():
         return {"success": False,
-                "error": "Not authorized"}, 403
+                "error": "Not authorized",
+                "logged": False}, 403
     return {
+        "logged": True,
         "username": current_user.name,
         "image": current_user.image,
         "playlists": current_user.playlists_json()
