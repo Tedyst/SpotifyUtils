@@ -34,4 +34,8 @@ def track(id):
             spotify_info['preview_url']
         )
         db.session.add(song)
-    return Track(current_user, song)
+    return {
+        "success": True,
+        "analyze": Track(current_user, song),
+        "track": song.__json__()
+    }
