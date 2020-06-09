@@ -22,7 +22,7 @@ def upgrade():
     op.add_column('songs', sa.Column('duration', sa.Integer(), nullable=True))
     op.add_column('songs', sa.Column('key', sa.Integer(), nullable=True))
     op.add_column('songs', sa.Column('key_confidence', sa.Integer(), nullable=True))
-    op.add_column('songs', sa.Column('loudness', sa.String(length=50000), nullable=True))
+    op.add_column('songs', sa.Column('loudness', sa.Integer(), nullable=True))
     op.add_column('songs', sa.Column('mode', sa.Integer(), nullable=True))
     op.add_column('songs', sa.Column('tempo', sa.Integer(), nullable=True))
     op.add_column('songs', sa.Column('tempo_confidence', sa.Integer(), nullable=True))
