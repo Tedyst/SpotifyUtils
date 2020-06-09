@@ -125,6 +125,7 @@ class User(db.Model):
     def add_friend(self, user):
         user.friends += self
 
+    @property
     def is_authenticated(self):
         return self.valid()
 
@@ -202,7 +203,7 @@ class FlaskAdminSong(ModelView):
     column_exclude_list = ('lyrics')
 
     def is_accessible(self):
-        if not current_user.is_authenticated():
+        if not current_user.is_authenticated:
             return False
         if current_user.username == config.ADMIN:
             return True
@@ -218,7 +219,7 @@ class FlaskAdminUser(ModelView):
                            'top_artists', 'top_genres', 'user_playlists')
 
     def is_accessible(self):
-        if not current_user.is_authenticated():
+        if not current_user.is_authenticated:
             return False
         if current_user.username == config.ADMIN:
             return True

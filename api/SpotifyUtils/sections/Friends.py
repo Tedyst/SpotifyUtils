@@ -6,7 +6,7 @@ friends_blueprint = Blueprint('friends', __name__)
 
 @friends_blueprint.route('/')
 def friends():
-    if not current_user.is_authenticated():
+    if not current_user.is_authenticated:
         return {"success": False,
                 "error": "Not authorized"}, 403
 

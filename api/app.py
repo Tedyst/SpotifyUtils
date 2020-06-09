@@ -67,7 +67,7 @@ def auth():
 
 @APP.route('/api/status')
 def status():
-    if not current_user.is_authenticated():
+    if not current_user.is_authenticated:
         return {"success": False,
                 "error": "Not authorized",
                 "logged": False}, 403
@@ -85,7 +85,7 @@ def status():
 
 @APP.route('/api/playlists')
 def playlists():
-    if not current_user.is_authenticated():
+    if not current_user.is_authenticated:
         return {"success": False,
                 "error": "Not authorized"}, 403
     return {

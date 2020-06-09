@@ -11,7 +11,7 @@ track_blueprint = Blueprint('track', __name__)
 
 @track_blueprint.route('/<id>')
 def track(id):
-    if not current_user.is_authenticated():
+    if not current_user.is_authenticated:
         return {"success": False,
                 "error": "Not authorized"}, 403
     if "spotify:track:" in id:

@@ -9,7 +9,7 @@ compare_blueprint = Blueprint('compare', __name__)
 
 @compare_blueprint.route('/<code>')
 def user(code):
-    if not current_user.is_authenticated():
+    if not current_user.is_authenticated:
         return {"success": False,
                 "error": "Not authorized"}, 403
     user = User.query.filter(User.friend_code == code).first()
@@ -28,7 +28,7 @@ def user(code):
 
 @compare_blueprint.route('/')
 def me():
-    if not current_user.is_authenticated():
+    if not current_user.is_authenticated:
         return {"success": False,
                 "error": "Not authorized"}, 403
 
