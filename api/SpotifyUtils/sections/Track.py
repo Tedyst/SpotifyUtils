@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask_login import current_user
 
 import spotipy
-from SpotifyUtils.user import User, Song
+from SpotifyUtils.user import Song
 from SpotifyUtils.functions import Track
 from SpotifyUtils import db, APP
 
@@ -14,7 +14,10 @@ def track(id):
     if not current_user.is_authenticated():
         return {"success": False,
                 "error": "Not authorized"}, 403
-    song = Song.query.filter(Song.uri == "spotify:track:" + id).first()
+    if "spotify:track:" in id:
+        song = Song.query.filter(Song.uri == id).first()
+    else:
+        song = Song.query.filter(Song.uri == "spotify:track:" + id).first()
     if song is None:
         try:
             sp = spotipy.Spotify(current_user.token)
