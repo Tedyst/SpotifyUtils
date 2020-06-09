@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Login from './views/Login';
 import PlaylistSearch from './views/PlaylistSearch';
 import PlaylistView from './views/PlaylistView';
+import Track from './views/Track';
 import Top from './views/Top';
 import Compare from './views/Compare';
 import { useSelector, useDispatch } from 'react-redux';
@@ -77,6 +78,9 @@ function App() {
           </Route>
           <Route path="/compare">
             <Compare />
+          </Route>
+          <Route path="/track">
+            <Track />
           </Route>
           <Route path='/admin' component={() => window.location = 
             window.location.protocol + "//" + window.location.host + "/admin" }/>
