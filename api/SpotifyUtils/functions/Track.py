@@ -37,7 +37,7 @@ def Track(initiator: User, song: Song):
     loudness_graph = []
 
     # Skip some seconds, too many points to store and visualise
-    index = 4
+    index = 2
     for segment in analysis["segments"]:
         index += 1
         if index == 3:
