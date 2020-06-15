@@ -5,7 +5,7 @@ import json
 
 
 def Track(initiator: User, song: Song):
-    if not song.analyzed:
+    if song.analyzed:
         return {
             "loudness_graph": json.loads(song.loudness_graph),
             "duration": song.duration,
