@@ -79,7 +79,7 @@ function TrackAnalyze(props){
                 popularity={trackInfo.analyze.popularity}
                 length={trackInfo.analyze.length}
                 markets={trackInfo.analyze.markets}
-                explicit={trackInfo.analyze.explicit ? "True" : "False"}
+                explicit={trackInfo.analyze.explicit ? "Yes" : "No"}
                 track_key={trackInfo.analyze.key}
                 mode={trackInfo.analyze.mode}
                 tempo={trackInfo.analyze.tempo}
