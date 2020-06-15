@@ -57,22 +57,29 @@ function TrackAnalyze(props){
         return <Redirect to="/" />;
     }
     console.log(trackInfo);
+    let lyrics = trackInfo.track.lyrics ? (<Grid item xs={12}>
+            <Container maxWidth="sm">
+                <Lyrics 
+                    lyrics={trackInfo.track.lyrics}
+                />
+            </Container>
+        </Grid>) : null;
     return (<Grid container spacing={3}>
         <Grid item xs={12}>
             <Container maxWidth="xs">
                 <SongCard 
                     artist={trackInfo.track.artist}
                     name={trackInfo.track.name}
-                    image="https://i.scdn.co/image/ab67616d0000b273ad3a902d81a73c73e58071b7"
+                    image={trackInfo.track.image_url}
                 />
             </Container>
         </Grid>
         <Grid item xs={6}>
             <TrackInfo 
-                popularity="asd"
-                length="asd"
-                markets="asd"
-                explicit="asd"
+                popularity={trackInfo.analyze.popularity}
+                length={trackInfo.analyze.length}
+                markets={trackInfo.analyze.markets}
+                explicit={trackInfo.analyze.explicit ? "True" : "False"}
                 track_key={trackInfo.analyze.key}
                 mode={trackInfo.analyze.mode}
                 tempo={trackInfo.analyze.tempo}
@@ -102,13 +109,7 @@ function TrackAnalyze(props){
                 data={trackInfo.analyze.loudness_graph}
             />
         </Grid>
-        <Grid item xs={12}>
-            <Container maxWidth="sm">
-                <Lyrics 
-                    lyrics={trackInfo.track.lyrics}
-                />
-            </Container>
-        </Grid>
+        {lyrics}
     </Grid>);
 }
 
