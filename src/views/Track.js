@@ -6,28 +6,16 @@ import {
   useParams
 } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
 import { Grid } from '@material-ui/core';
-import ArtistCard from '../sections/Top/ArtistCard';
-import SongCard from '../sections/Top/SongCard';
-import Typography from '@material-ui/core/Typography';
-import ListItems from '../sections/Top/List';
-import Avatars from '../components/Avatars';
-import {
-  selectCompare
-} from '../store/user';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import TextField from '@material-ui/core/TextField';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import Avatar from '../components/Avatar';
-import Button from '@material-ui/core/Button';
+import TrackInfo from '../sections/Track/TrackInfo';
+import AlbumInfo from '../sections/Track/AlbumInfo';
+import Chart1 from '../sections/Track/Chart1';
+import Chart2 from '../sections/Track/Chart2';
+import Lyrics from '../sections/Track/Lyrics';
 import {
   Redirect,
 } from "react-router-dom";
+import Container from '@material-ui/core/Container';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -82,7 +70,52 @@ function TrackAnalyze(props){
         return <Redirect to="/" />;
     }
     console.log(trackInfo);
-    return "Loaded";
+    return (<Grid container spacing={3}>
+        <Grid item xs={6}>
+            <TrackInfo 
+                popularity="asd"
+                length="asd"
+                markets="20"
+                explicit="False"
+                track_key="asd"
+                mode="asd"
+                tempo="asd"
+                time_signature="asd"
+            />
+        </Grid>
+        <Grid item xs={6}>
+            <AlbumInfo 
+                name="album"
+                popularity="100"
+                release_date="ieri"
+                tracks="-1"
+                markets="10000"
+            />
+        </Grid>
+        <Grid item xs={12}>
+            <Chart1 
+                data={trackInfo.analyze.loudness_graph}
+            />
+        </Grid>
+        <Grid item xs={12}>
+            <Chart2
+                acousticness={trackInfo.analyze.acousticness}
+                danceability={trackInfo.analyze.danceability}
+                energy={trackInfo.analyze.energy}
+                instrumentalness={trackInfo.analyze.instrumentalness}
+                liveness={trackInfo.analyze.liveness}
+                loudness={(60+trackInfo.analyze.loudness)/60}
+                speechiness={trackInfo.analyze.speechiness}
+            />
+        </Grid>
+        <Grid item xs={12}>
+            <Container maxWidth="sm">
+                <Lyrics 
+                    lyrics={trackInfo.track.lyrics}
+                />
+            </Container>
+        </Grid>
+    </Grid>);
 }
 
 function NoTrack(props){

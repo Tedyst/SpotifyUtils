@@ -6,13 +6,8 @@ import json
 
 def Track(initiator: User, song: Song):
     if song.analyzed:
-        cache = json.loads(song.loudness_graph)
-        loudness_graph = {
-            "label": [i for i in range(0, len(cache))],
-            "data": cache
-        }
         return {
-            "loudness_graph": loudness_graph,
+            "loudness_graph": json.loads(song.loudness_graph),
             "duration": song.duration,
             "key": song.key,
             "key_confidence": song.key_confidence,
@@ -39,7 +34,7 @@ def Track(initiator: User, song: Song):
     index = 4
     for segment in analysis["segments"]:
         index += 1
-        if index == 5:
+        if index == 3:
             loudness_graph.append(segment["loudness_max"])
             index = 0
 
