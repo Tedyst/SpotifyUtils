@@ -5,7 +5,7 @@ import json
 
 
 def Track(initiator: User, song: Song):
-    if song.analyzed:
+    if not song.analyzed:
         return {
             "loudness_graph": json.loads(song.loudness_graph),
             "duration": song.duration,
@@ -23,11 +23,17 @@ def Track(initiator: User, song: Song):
             "loudness": song.loudness,
             "speechiness": song.speechiness,
             "instrumentalness": song.instrumentalness,
-            "valence": song.valence
+            "valence": song.valence,
+            "popularity": song.popularity,
+            "length": song.length,
+            "markets": song.markets,
+            "explicit": song.explicit
         }
     sp = spotipy.Spotify(initiator.token)
     analysis = sp.audio_analysis(song.uri)
     features = sp.audio_features(song.uri)
+    track_basic_info = sp.track(song.uri)
+
     loudness_graph = []
 
     # Skip some seconds, too many points to store and visualise
@@ -58,6 +64,12 @@ def Track(initiator: User, song: Song):
     song.speechiness = features[0]["speechiness"]
     song.instrumentalness = features[0]["instrumentalness"]
     song.valence = features[0]["valence"]
+
+    song.popularity = track_basic_info["popularity"]
+    song.length = track_basic_info["duration_ms"]
+    song.markets = len(track_basic_info["available_markets"])
+    song.explicit = track_basic_info["explicit"]
+
     db.session.commit()
     return {
         "loudness_graph": loudness_graph,
@@ -76,5 +88,9 @@ def Track(initiator: User, song: Song):
         "loudness": features[0]["loudness"],
         "speechiness": features[0]["speechiness"],
         "instrumentalness": features[0]["instrumentalness"],
-        "valence": features[0]["valence"]
+        "valence": features[0]["valence"],
+        "popularity": track_basic_info["popularity"],
+        "length": track_basic_info["duration_ms"],
+        "markets": len(track_basic_info["available_markets"]),
+        "explicit": track_basic_info["explicit"]
     }

@@ -33,6 +33,11 @@ class Song(db.Model):
     speechiness = db.Column(db.Integer)
     valence = db.Column(db.Integer)
 
+    popularity = db.Column(db.Integer)
+    length = db.Column(db.Integer)
+    markets = db.Column(db.Integer)
+    explicit = db.Column(db.Boolean)
+
     def __init__(self, name, artist, uri, image, preview):
         self.name = name
         self.artist = artist
