@@ -5,7 +5,6 @@ import {
   useRouteMatch,
   useParams
 } from "react-router-dom";
-import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import TrackInfo from '../sections/Track/TrackInfo';
 import AlbumInfo from '../sections/Track/AlbumInfo';
@@ -16,18 +15,6 @@ import {
   Redirect,
 } from "react-router-dom";
 import Container from '@material-ui/core/Container';
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1
-    },
-    fullWidth: {
-        width: '100%'
-    },
-    spacer: {
-        height: 100
-    }
-}));
 
 export default function Track(){
     let match = useRouteMatch();
@@ -47,7 +34,6 @@ function Loading(){
 
 
 function TrackAnalyze(props){
-    const classes = useStyles();
     const [Updating, setUpdating] = useState(null);
     let { trackid } = useParams();
     const [trackInfo, setTrackInfo] = useState(null);
@@ -71,6 +57,9 @@ function TrackAnalyze(props){
     }
     console.log(trackInfo);
     return (<Grid container spacing={3}>
+        <Grid item xs={12}>
+            
+        </Grid>
         <Grid item xs={6}>
             <TrackInfo 
                 popularity="asd"

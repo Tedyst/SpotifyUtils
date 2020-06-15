@@ -5,8 +5,6 @@ import {
   BarSeries,
   ArgumentAxis,
   Chart,
-  Tooltip,
-  Legend
 } from '@devexpress/dx-react-chart-material-ui';
 
 export default function Chart2(props){
