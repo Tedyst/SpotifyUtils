@@ -81,7 +81,7 @@ function TrackAnalyze(props){
                 markets={trackInfo.analyze.markets}
                 explicit={trackInfo.analyze.explicit ? "Yes" : "No"}
                 track_key={trackInfo.analyze.key}
-                mode={trackInfo.analyze.mode}
+                mode={trackInfo.analyze.mode === 0 ? "Minor" : "Major"}
                 tempo={trackInfo.analyze.tempo}
                 time_signature={trackInfo.analyze.time_signature}
             />
