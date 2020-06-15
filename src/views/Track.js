@@ -11,6 +11,7 @@ import AlbumInfo from '../sections/Track/AlbumInfo';
 import Chart1 from '../sections/Track/Chart1';
 import Chart2 from '../sections/Track/Chart2';
 import Lyrics from '../sections/Track/Lyrics';
+import SongCard from '../sections/Top/SongCard';
 import {
   Redirect,
 } from "react-router-dom";
@@ -58,35 +59,34 @@ function TrackAnalyze(props){
     console.log(trackInfo);
     return (<Grid container spacing={3}>
         <Grid item xs={12}>
-            
+            <Container maxWidth="xs">
+                <SongCard 
+                    artist={trackInfo.track.artist}
+                    name={trackInfo.track.name}
+                    image="https://i.scdn.co/image/ab67616d0000b273ad3a902d81a73c73e58071b7"
+                />
+            </Container>
         </Grid>
         <Grid item xs={6}>
             <TrackInfo 
                 popularity="asd"
                 length="asd"
-                markets="20"
-                explicit="False"
-                track_key="asd"
-                mode="asd"
-                tempo="asd"
-                time_signature="asd"
+                markets="asd"
+                explicit="asd"
+                track_key={trackInfo.analyze.key}
+                mode={trackInfo.analyze.mode}
+                tempo={trackInfo.analyze.tempo}
+                time_signature={trackInfo.analyze.time_signature}
             />
         </Grid>
         <Grid item xs={6}>
             <AlbumInfo 
-                name="album"
-                popularity="100"
-                release_date="ieri"
-                tracks="-1"
-                markets="10000"
+                popularity="asd"
+                release_date="asd"
+                tracks="asd"
+                markets="asd"
             />
-        </Grid>
-        <Grid item xs={12}>
-            <Chart1 
-                data={trackInfo.analyze.loudness_graph}
-            />
-        </Grid>
-        <Grid item xs={12}>
+            <br />
             <Chart2
                 acousticness={trackInfo.analyze.acousticness}
                 danceability={trackInfo.analyze.danceability}
@@ -95,6 +95,11 @@ function TrackAnalyze(props){
                 liveness={trackInfo.analyze.liveness}
                 loudness={(60+trackInfo.analyze.loudness)/60}
                 speechiness={trackInfo.analyze.speechiness}
+            />
+        </Grid>
+        <Grid item xs={12}>
+            <Chart1 
+                data={trackInfo.analyze.loudness_graph}
             />
         </Grid>
         <Grid item xs={12}>

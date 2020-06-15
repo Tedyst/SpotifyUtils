@@ -37,7 +37,7 @@ export default function Chart2(props){
 
     return (<div>
     <Typography>
-        Loudness
+        Track Features
     </Typography>
     <Paper>
     <Chart
