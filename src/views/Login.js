@@ -35,7 +35,6 @@ export default function Login(props) {
     const [Error, setError] = useState(false);
 
     if(Error){
-      console.log("ERROR")
       return <Redirect to="/" />
     }
     let search = window.location.search;
@@ -68,11 +67,9 @@ export default function Login(props) {
             "code": code
           }),
         } ).then(res => res.json()).then(data => {
-          console.log(data);
           if(data.success === true) {
             props.mainUpdate(false);
           } else {
-            console.log("seterror true");
             setError(true);
           }
         });
