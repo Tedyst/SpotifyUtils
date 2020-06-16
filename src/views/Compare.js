@@ -266,8 +266,7 @@ function Test(props){
     if(RedirectURL !== null){
         let url = "/compare/" + String(RedirectURL);
         if(String(RedirectURL).includes("/compare/"))
-            url = "/compare/" + String(RedirectURL).split("/compare/")[1]
-        console.log(url);
+            url = "/compare/" + String(RedirectURL).split("/compare/")[1];
         return <Redirect to={url} />
     }
 
