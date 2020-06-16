@@ -101,6 +101,8 @@ export default function PlaylistView(props) {
     
     const mySubmitHandler = (event) => {
       event.preventDefault();
+      if(selectedPlaylist === 'none' || Word === "")
+        return;
       setButtonText("Searching...");
       setUpdating(true);
       props.setResults([]);

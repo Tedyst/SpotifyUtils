@@ -101,6 +101,8 @@ export default function SearchBox(props) {
 
     const mySubmitHandler = (event) => {
         event.preventDefault();
+        if(selectedPlaylist === 'none')
+            return;
         setButtonText("Searching...");
         setUpdating(true);
         props.setResults([]);
