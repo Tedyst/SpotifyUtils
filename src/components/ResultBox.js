@@ -8,7 +8,7 @@ export default function ResultBox(props) {
         return null
     let items = [];
     items = props.results.map((item, key) => (
-        <Grid item xs={6} md={3} sm={4} lg={2} key={item.uri} spacing={4}>
+        <Grid item xs={6} md={3} sm={4} lg={2} key={item.uri}>
             <SongCard
                 key={item.uri}
                 uri={item.uri}
@@ -20,7 +20,7 @@ export default function ResultBox(props) {
         </Grid>
     ));
     return (
-        <Container maxWidth="lg" disableGutters={true}>
+        <Container maxWidth="lg" disableGutters={true} spacing={4}>
             <Grid container spacing={1}>
                 {items}
             </Grid>

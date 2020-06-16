@@ -36,7 +36,6 @@ export default function TrackAnalyze(props){
     if(trackInfo["success"] === false) {
         return <Redirect to="/" />;
     }
-    console.log(trackInfo);
     let lyrics = trackInfo.track.lyrics ? (<Grid item xs={12}>
             <Container maxWidth="sm">
                 <Lyrics 
