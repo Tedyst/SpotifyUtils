@@ -44,7 +44,7 @@ export default function TrackAnalyze(props){
             </Container>
         </Grid>) : null;
     return (<Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid item lg={12}>
             <Container maxWidth="xs">
                 <SongCard 
                     artist={trackInfo.track.artist}
@@ -53,7 +53,7 @@ export default function TrackAnalyze(props){
                 />
             </Container>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item lg={6} xs={12}>
             <TrackInfo 
                 popularity={trackInfo.analyze.popularity}
                 length={trackInfo.analyze.length}
@@ -65,7 +65,7 @@ export default function TrackAnalyze(props){
                 time_signature={trackInfo.analyze.time_signature}
             />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item lg={6} xs={12}>
             <AlbumInfo 
                 popularity="asd"
                 release_date="asd"
@@ -88,7 +88,10 @@ export default function TrackAnalyze(props){
                 data={trackInfo.analyze.loudness_graph}
             />
         </Grid>
-        {lyrics}
+        <Grid item xs={12}>
+            {lyrics}
+        </Grid>
+        
     </Grid>);
 }
 
