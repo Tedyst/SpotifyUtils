@@ -200,7 +200,7 @@ def _playlist_tracks(sp, user: User, uri):
 
 class FlaskAdminSong(ModelView):
 
-    column_exclude_list = ('lyrics')
+    column_exclude_list = ('lyrics', 'loudness_graph', 'image', 'preview')
 
     def is_accessible(self):
         if not current_user.is_authenticated:
