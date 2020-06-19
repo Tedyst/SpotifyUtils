@@ -13,5 +13,9 @@ module.exports = {
     }, {
         urlPattern: /api/,
         handler: 'networkOnly'
+    },
+    {
+        urlPattern: /logout/,
+        handler: 'networkOnly'
     }]
 }

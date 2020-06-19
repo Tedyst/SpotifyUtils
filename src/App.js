@@ -82,6 +82,8 @@ function App() {
           <Route path="/track">
             <Track />
           </Route>
+          <Route path='/logout' component={() => window.location = 
+            window.location.protocol + "//" + window.location.host + "/logout" }/>
           <Route path='/admin' component={() => window.location = 
             window.location.protocol + "//" + window.location.host + "/admin" }/>
           <Route path="/">

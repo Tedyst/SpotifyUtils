@@ -1,5 +1,5 @@
 import spotipy
-from flask import request, send_from_directory
+from flask import request, send_from_directory, redirect, url_for
 
 import SpotifyUtils.config as config
 from SpotifyUtils import APP, db
@@ -19,8 +19,7 @@ db.create_all()
 @APP.route('/logout')
 def logout():
     logout_user()
-    return {"success": True,
-            "logged": False}
+    return redirect(url_for('catch_all', path="/"))
 
 
 @APP.route('/api/auth', methods=['POST'])

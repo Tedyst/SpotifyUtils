@@ -21,7 +21,7 @@ const isLocalhost = Boolean(
 );
 
 function isAdminRoute() {
-  return window.location.pathname.startsWith('/admin');
+  return window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/logout');
 }
 
 export function register(config) {

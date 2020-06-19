@@ -123,6 +123,12 @@ function ResponsiveDrawer(props) {
                 </ListItemIcon>
                 <ListItemText primary="Compare" />
             </ListItem>
+            <ListItem button key="Logout" component="a" href="/logout">
+                <ListItemIcon>
+                    <MailIcon />
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
+            </ListItem>
         </List>
         </div>
     );
