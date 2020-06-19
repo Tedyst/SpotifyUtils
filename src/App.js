@@ -3,6 +3,7 @@ import Login from './views/Login';
 import PlaylistSearch from './views/PlaylistSearch';
 import PlaylistView from './views/PlaylistView';
 import Track from './views/Track';
+import Recent from './views/Recent';
 import Top from './views/Top';
 import Compare from './views/Compare';
 import { useSelector, useDispatch } from 'react-redux';
@@ -81,6 +82,9 @@ function App() {
           </Route>
           <Route path="/track">
             <Track />
+          </Route>
+          <Route path="/recent">
+            <Recent />
           </Route>
           <Route path='/logout' component={() => "This does not work when using npm run start" }/>
           <Route path='/admin' component={() => "This does not work when using npm run start" }/>

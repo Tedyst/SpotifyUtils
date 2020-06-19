@@ -17,6 +17,9 @@ export const userSlice = createSlice({
     compare: loadState("compare") ? loadState("compare") : {
       "code": "NONE",
       "friends": []
+    },
+    recent: {
+      "results": []
     }
   },
   reducers: {
@@ -48,6 +51,10 @@ export const userSlice = createSlice({
       saveState("compare", action.payload);
       state.compare = action.payload;
     },
+    setRecent: (state, action) => {
+      saveState("recent", action.payload);
+      state.recent = action.payload;
+    },
   },
 });
 
@@ -58,7 +65,8 @@ export const {
   setImage,
   setTop,
   setPathName,
-  setCompare
+  setCompare,
+  setRecent
 } = userSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -81,5 +89,6 @@ export const selectImage = state => state.user.image;
 export const selectTop = state => state.user.top;
 export const selectPathname = state => state.user.pathname;
 export const selectCompare = state => state.user.compare;
+export const selectRecent = state => state.user.recent;
 
 export default userSlice.reducer;

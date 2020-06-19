@@ -11,10 +11,10 @@ def me():
                 "error": "Not authorized"}, 403
     result = {
         "success": True,
-        "tracks": []
+        "results": []
     }
 
     for track in current_user.recent_tracks():
-        result["tracks"].append(track.__json__())
+        result["results"].append(track.__json__())
 
     return result

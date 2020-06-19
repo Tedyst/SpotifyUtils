@@ -123,6 +123,12 @@ function ResponsiveDrawer(props) {
                 </ListItemIcon>
                 <ListItemText primary="Compare" />
             </ListItem>
+            <ListItem button key="Recent-Tracks" component={Link} to="/recent" selected={location.pathname.startsWith("/recent")}>
+                <ListItemIcon>
+                    <MailIcon />
+                </ListItemIcon>
+                <ListItemText primary="Recent Tracks" />
+            </ListItem>
             <ListItem button key="Logout" component="a" href="/logout">
                 <ListItemIcon>
                     <MailIcon />

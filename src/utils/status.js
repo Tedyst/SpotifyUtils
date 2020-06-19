@@ -4,7 +4,8 @@ import {
   setUsername,
   setImage,
   setTop,
-  setCompare
+  setCompare,
+  setRecent
 } from '../store/user';
 import { useDispatch, batch } from 'react-redux';
 
@@ -27,6 +28,9 @@ export default function Update(){
             });
             fetch('/api/compare/').then(res => res.json()).then(data => {
                 dispatch(setCompare(data));
+            });
+            fetch('/api/recent/me').then(res => res.json()).then(data => {
+                dispatch(setRecent(data));
             });
         }
     });
