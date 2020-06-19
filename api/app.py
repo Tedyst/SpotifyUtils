@@ -4,7 +4,7 @@ from flask import request, send_from_directory
 import SpotifyUtils.config as config
 from SpotifyUtils import APP, db
 from SpotifyUtils.user import User
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user, logout_user
 from SpotifyUtils.sections.PlaylistSearcher import playlistsearcher_blueprint
 from SpotifyUtils.sections.Lyrics import lyrics_blueprint
 from SpotifyUtils.sections.Top import top_blueprint
@@ -16,19 +16,11 @@ import time
 db.create_all()
 
 
-@APP.route('/refresh', methods=['POST'])
-def refresh():
-    if not current_user.is_authenticated:
-        return {"success": False,
-                "error": "Not authorized",
-                "logged": False}, 403
-    data = request.get_json()
-    sp_oauth = spotipy.oauth2.SpotifyOAuth(
-        config.SPOTIFY_CLIENT_ID,
-        config.SPOTIFY_CLIENT_SECRET,
-        "https://spotify.stoicatedy.ovh/auth",
-        scope=config.SCOPE)
-    return sp_oauth.refresh_access_token(current_user.refresh_token)
+@APP.route('/logout')
+def logout():
+    logout_user()
+    return {"success": True,
+            "logged": False}
 
 
 @APP.route('/api/auth', methods=['POST'])
