@@ -35,6 +35,7 @@ class User(db.Model):
     friend_code = db.Column(db.String(6))
     last_updated = db.Column(db.Integer)
     user_playlists = db.Column(db.String(10000))
+    refresh_token = db.Column(db.String(100))
 
     friends = relationship(
         'User',
@@ -56,28 +57,43 @@ class User(db.Model):
             code = uuid.uuid4().hex[:5].upper()
         self.friend_code = code
 
+    def refresh(self):
+        APP.logger.debug(
+            "Started refresh token for %s", self.name)
+        try:
+            sp_oauth = spotipy.oauth2.SpotifyOAuth(
+                config.SPOTIFY_CLIENT_ID,
+                config.SPOTIFY_CLIENT_SECRET,
+                "https://spotify.stoicatedy.ovh/auth",
+                scope=config.SCOPE)
+            token_info = sp_oauth.refresh_access_token(
+                current_user.refresh_token)
+            APP.logger.debug(
+                "Got new access token for %s", self.name)
+            self.token = token_info["access_token"]
+            self.last_updated = time.time()
+            db.session.commit()
+        except Exception:
+            return False
+        return True
+
     def valid(self):
-        if self.last_updated:
-            if time.time() - self.last_updated > 600:
-                APP.logger.debug(
-                    "%s's token is expired, not updating", self.name)
-                return False
-            else:
-                APP.logger.debug(
-                    "%s's token should be valid", self.name)
-                return True
         if self.token is None:
             return False
+        if self.last_updated:
+            if time.time() - self.last_updated > 600:
+                return self.refresh()
+            else:
+                return True
         sp = spotipy.Spotify(self.token)
         try:
             me = sp.me()
         except spotipy.client.SpotifyException:
-            return False
-        if me is None:
-            return False
-        if me['id'] != self.username:
-            return False
-        return True
+            pass
+        if me['id'] == self.username:
+            return True
+        # Retry
+        return self.refresh()
 
     @property
     def name(self):

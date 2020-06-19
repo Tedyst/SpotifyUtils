@@ -16,6 +16,21 @@ import time
 db.create_all()
 
 
+@APP.route('/refresh', methods=['POST'])
+def refresh():
+    if not current_user.is_authenticated:
+        return {"success": False,
+                "error": "Not authorized",
+                "logged": False}, 403
+    data = request.get_json()
+    sp_oauth = spotipy.oauth2.SpotifyOAuth(
+        config.SPOTIFY_CLIENT_ID,
+        config.SPOTIFY_CLIENT_SECRET,
+        "https://spotify.stoicatedy.ovh/auth",
+        scope=config.SCOPE)
+    return sp_oauth.refresh_access_token(current_user.refresh_token)
+
+
 @APP.route('/api/auth', methods=['POST'])
 def auth():
     data = request.get_json()
@@ -43,6 +58,7 @@ def auth():
         return {"success": False,
                 "error": "Code invalid"}, 400
 
+    print(token_info)
     token = token_info['access_token']
     me = spotipy.Spotify(token).me()
     username = me['id']
@@ -56,6 +72,7 @@ def auth():
             user.image = me['images'][0]['url']
 
     user.token = token
+    user.refresh_token = token_info["refresh_token"]
     user.last_updated = time.time()
     db.session.add(user)
     db.session.commit()
