@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   useParams
 } from "react-router-dom";
-import { Grid } from '@material-ui/core';
+import { Grid, makeStyles } from '@material-ui/core';
 import TrackInfo from './TrackInfo';
 import AlbumInfo from './AlbumInfo';
 import Chart1 from './Chart1';
@@ -14,7 +14,14 @@ import {
 } from "react-router-dom";
 import Container from '@material-ui/core/Container';
 
+const useStyles = makeStyles((theme) => ({
+    songcard: {
+        width: '100%'
+    }
+}));
+
 export default function TrackAnalyze(props){
+    const classes = useStyles();
     const [Updating, setUpdating] = useState(null);
     let { trackid } = useParams();
     const [trackInfo, setTrackInfo] = useState(null);
@@ -43,16 +50,18 @@ export default function TrackAnalyze(props){
                 />
             </Container>
         </Grid>) : null;
-    return (<Grid container spacing={3}>
-        <Grid item lg={12}>
-            <Container maxWidth="xs">
-                <SongCard 
-                    artist={trackInfo.track.artist}
-                    name={trackInfo.track.name}
-                    image={trackInfo.track.image_url}
-                />
-            </Container>
-        </Grid>
+    return (
+    <div>
+    <Container maxWidth="xs">
+            <SongCard 
+                artist={trackInfo.track.artist}
+                name={trackInfo.track.name}
+                image={trackInfo.track.image_url}
+                className={classes.songcard}
+            />
+        </Container>
+    <br />
+    <Grid container spacing={3}>
         <Grid item lg={6} xs={12}>
             <TrackInfo 
                 popularity={trackInfo.analyze.popularity}
@@ -92,7 +101,8 @@ export default function TrackAnalyze(props){
             {lyrics}
         </Grid>
         
-    </Grid>);
+    </Grid>
+    </div>);
 }
 
 function Loading(){
