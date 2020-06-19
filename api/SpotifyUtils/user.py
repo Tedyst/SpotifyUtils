@@ -258,7 +258,8 @@ class FlaskAdminSong(ModelView):
 class FlaskAdminUser(ModelView):
 
     column_exclude_list = ('token', 'top_tracks',
-                           'top_artists', 'top_genres', 'user_playlists')
+                           'top_artists', 'top_genres', 'user_playlists',
+                           'image', 'refresh_token')
 
     def is_accessible(self):
         if not current_user.is_authenticated:
