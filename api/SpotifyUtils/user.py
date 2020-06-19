@@ -67,7 +67,7 @@ class User(db.Model):
                 "https://spotify.stoicatedy.ovh/auth",
                 scope=config.SCOPE)
             token_info = sp_oauth.refresh_access_token(
-                current_user.refresh_token)
+                self.refresh_token)
             APP.logger.debug(
                 "Got new access token for %s", self.name)
             self.token = token_info["access_token"]
