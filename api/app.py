@@ -49,7 +49,6 @@ def auth():
         return {"success": False,
                 "error": "Code invalid"}, 400
 
-    print(token_info)
     token = token_info['access_token']
     me = spotipy.Spotify(token).me()
     username = me['id']
