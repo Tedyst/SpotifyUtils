@@ -26,16 +26,16 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50))
     displayname = db.Column(db.String(50))
-    image = db.Column(db.String(50))
-    token = db.Column(db.String(100))
-    top_tracks = db.Column(db.String(10000))
+    image = db.Column(db.String(200))
+    token = db.Column(db.String(250))
+    top_tracks = db.Column(db.String(100000))
     top_artists = db.Column(db.String(10000))
     top_genres = db.Column(db.String(10000))
     top_updated = db.Column(db.Integer)
     friend_code = db.Column(db.String(6))
     last_updated = db.Column(db.Integer)
     user_playlists = db.Column(db.String(10000))
-    refresh_token = db.Column(db.String(100))
+    refresh_token = db.Column(db.String(200))
 
     friends = relationship(
         'User',
