@@ -67,10 +67,10 @@ export default function TrackAnalyze(props){
         </Grid>
         <Grid item lg={6} xs={12}>
             <AlbumInfo 
-                popularity="asd"
-                release_date="asd"
-                tracks="asd"
-                markets="asd"
+                popularity={trackInfo.album.popularity}
+                release_date={trackInfo.album.release}
+                tracks={trackInfo.album.tracks}
+                markets={trackInfo.album.markets}
             />
             <br />
             <Chart2
