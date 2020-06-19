@@ -3,7 +3,7 @@ from flask_login import current_user
 
 import spotipy
 from SpotifyUtils.user import Song
-from SpotifyUtils.functions import Track
+from SpotifyUtils.functions import Track, Album
 from SpotifyUtils import db, APP
 
 track_blueprint = Blueprint('track', __name__)
@@ -37,5 +37,6 @@ def track(id):
     return {
         "success": True,
         "analyze": Track(current_user, song),
-        "track": song.__json__()
+        "track": song.__json__(),
+        "album": Album(current_user, song)
     }

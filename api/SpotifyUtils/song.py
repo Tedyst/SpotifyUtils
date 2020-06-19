@@ -38,6 +38,11 @@ class Song(db.Model):
     markets = db.Column(db.Integer)
     explicit = db.Column(db.Boolean)
 
+    album_popularity = db.Column(db.Integer)
+    album_release = db.Column(db.Integer)
+    album_tracks = db.Column(db.Integer)
+    album_markets = db.Column(db.Integer)
+
     def __init__(self, name, artist, uri, image, preview):
         self.name = name
         self.artist = artist

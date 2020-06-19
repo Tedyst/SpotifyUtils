@@ -33,6 +33,7 @@ def Track(initiator: User, song: Song):
     analysis = sp.audio_analysis(song.uri)
     features = sp.audio_features(song.uri)
     track_basic_info = sp.track(song.uri)
+    album_basic_info = sp.album(track_basic_info["album"]["uri"])
 
     loudness_graph = []
 
@@ -69,6 +70,11 @@ def Track(initiator: User, song: Song):
     song.length = track_basic_info["duration_ms"]
     song.markets = len(track_basic_info["available_markets"])
     song.explicit = track_basic_info["explicit"]
+
+    song.album_markets = len(album_basic_info["available_markets"])
+    song.album_popularity = album_basic_info["popularity"]
+    song.album_release = album_basic_info["release_date"]
+    song.album_tracks = album_basic_info["total_tracks"]
 
     db.session.commit()
     return {
