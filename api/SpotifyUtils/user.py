@@ -101,6 +101,32 @@ class User(db.Model):
             return self.displayname
         return self.username
 
+    def recent_tracks(self):
+        if not self.valid():
+            return []
+        sp = spotipy.Spotify(self.token)
+        result = []
+        changed = False
+        for track in sp.current_user_recently_played()["items"]:
+            track_db = Song.query.filter(
+                Song.uri == track["track"]["uri"]).first()
+            if track_db is None:
+                track_db = Song(
+                    track["track"]['name'],
+                    track["track"]['artists'][0]['name'],
+                    track["track"]['uri'],
+                    track["track"]['album']['images'][0]['url'],
+                    track["track"]['preview_url']
+                )
+                db.session.add(track_db)
+                changed = True
+            if track_db in result:
+                continue
+            result.append(track_db)
+        if changed:
+            db.session.commit()
+        return result
+
     def playlists(self):
         if not self.valid():
             return json.loads(self.user_playlists)
