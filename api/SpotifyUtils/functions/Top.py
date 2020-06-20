@@ -11,21 +11,14 @@ def Top(user: User):
         "tracks": [],
         "genres": {}
     }
-    if not user.valid():
+    # If the top has already been updated in the last day or token is invalid
+    if not user.valid() or time() - user.top_updated < 86400:
         result["artists"] = json.loads(user.top_artists)
         result["tracks"] = json.loads(user.top_tracks)
         result["genres"] = json.loads(user.top_genres)
         APP.logger.debug("Loaded from database for %s", user.name)
         return result
     sp = spotipy.Spotify(user.token)
-
-    # If the top has already been updated in the last day
-    if time() - user.top_updated < 86400:
-        result["artists"] = json.loads(user.top_artists)
-        result["tracks"] = json.loads(user.top_tracks)
-        result["genres"] = json.loads(user.top_genres)
-        APP.logger.debug("Loaded from database for %s", user.name)
-        return result
 
     APP.logger.debug("Loading from spotify for %s", user.name)
     # Update the top
