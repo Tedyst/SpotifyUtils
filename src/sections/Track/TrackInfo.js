@@ -24,7 +24,7 @@ function msToText(ms){
 }
 
 function keyToText(key){
-    if(key == -1) return "None";
+    if(key === -1) return "None";
     if(key <= 1) return "C";
     if(key <= 3) return "D";
     if(key <= 5) return "E";

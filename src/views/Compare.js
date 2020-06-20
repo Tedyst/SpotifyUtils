@@ -112,12 +112,13 @@ function Username(props){
         )
     }
     let bestSongForArtist = null;
-    for(var val in top["tracks"]){
-        if(top["tracks"][val].artist === top["artists"][0].name && bestSongForArtist === null){
-            bestSongForArtist = top["tracks"][val].name;
-            break;
+    if(top["artists"].length > 0)
+        for(var val in top["tracks"]){
+            if(top["tracks"][val].artist === top["artists"][0].name && bestSongForArtist === null){
+                bestSongForArtist = top["tracks"][val].name;
+                break;
+            }
         }
-    }
 
     let topArtist = null;
     if(top["artists"].length > 0)
