@@ -18,8 +18,8 @@ def strip_artist(artist):
 
 
 def get_lyrics(song: Song):
-    result = genius.search_song(song.name, song.artist.split('&')[
-        0].lower())
+    result = genius.search_song(song.name.split('(')[0].lower(),
+                                song.artist.split('&')[0].lower())
 
     if result is None:
         return None

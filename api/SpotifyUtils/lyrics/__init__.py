@@ -2,7 +2,7 @@ import SpotifyUtils.lyrics.genius as genius
 # import SpotifyUtils.lyrics.youtube as youtube
 from SpotifyUtils.song import Song
 import time
-from SpotifyUtils import APP
+from SpotifyUtils import APP, db
 
 SOURCES = [genius]
 
@@ -22,6 +22,7 @@ def update_lyrics(song: Song):
             song.lyrics = lyrics
             song.source = source.SOURCE_NAME
             song.last_check = int(time.time())
+            db.session.commit()
             return
 
     song.last_check = int(time.time())
