@@ -20,8 +20,8 @@ def Top(user: User):
         return result
     sp = spotipy.Spotify(user.token)
 
-    # If the top has already been updated in the last 10 minutes
-    if time() - user.top_updated < 600:
+    # If the top has already been updated in the last day
+    if time() - user.top_updated < 86400:
         result["artists"] = json.loads(user.top_artists)
         result["tracks"] = json.loads(user.top_tracks)
         result["genres"] = json.loads(user.top_genres)
