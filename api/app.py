@@ -12,6 +12,7 @@ from SpotifyUtils.sections.Compare import compare_blueprint
 from SpotifyUtils.sections.Friends import friends_blueprint
 from SpotifyUtils.sections.Track import track_blueprint
 from SpotifyUtils.sections.Recent import recent_blueprint
+from SpotifyUtils.sections.PlaylistsGenerator import playlist_generator_blueprint
 import time
 
 db.create_all()
@@ -136,6 +137,8 @@ APP.register_blueprint(track_blueprint,
                        url_prefix="/api/track")
 APP.register_blueprint(recent_blueprint,
                        url_prefix="/api/recent")
+APP.register_blueprint(playlist_generator_blueprint,
+                       url_prefix="/api/playlists_generator")
 
 
 @APP.route('/', defaults={'path': ''})

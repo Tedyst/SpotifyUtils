@@ -60,6 +60,8 @@ class User(db.Model):
     def refresh(self):
         APP.logger.debug(
             "Started refresh token for %s", self.name)
+        if self.refresh_token is None:
+            return False
         try:
             sp_oauth = spotipy.oauth2.SpotifyOAuth(
                 config.SPOTIFY_CLIENT_ID,
