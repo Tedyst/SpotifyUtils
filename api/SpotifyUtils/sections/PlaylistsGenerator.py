@@ -13,13 +13,9 @@ def friends():
         return {"success": False,
                 "error": "Not authorized",
                 "logged": False}, 403
-    friends_top = FriendsTop(current_user)
-    tracks = []
-    for track in friends_top:
-        tracks.append(track["song"]["id"].replace("spotify:track:", ""))
     return {
         "success": True,
-        "result": friends_top
+        "result": FriendsTop(current_user)
     }
 
 
