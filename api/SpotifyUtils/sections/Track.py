@@ -6,6 +6,8 @@ from SpotifyUtils.user import Song
 from SpotifyUtils.functions import Track, Album
 from SpotifyUtils import db, APP
 
+from SpotifyUtils.lyrics import update_lyrics
+
 track_blueprint = Blueprint('track', __name__)
 
 
@@ -34,6 +36,7 @@ def track(id):
             spotify_info['preview_url']
         )
         db.session.add(song)
+    update_lyrics(song)
     return {
         "success": True,
         "analyze": Track(current_user, song),
