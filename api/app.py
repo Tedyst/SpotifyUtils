@@ -151,5 +151,14 @@ def catch_all(path, **options):
     return asd
 
 
+@APP.cli.command()
+def invalidate_all_tokens():
+    db.session.query(User).update({
+        User.token: None,
+        User.refresh_token: None
+    })
+    db.session.commit()
+
+
 if __name__ == "__main__":
     APP.run(threaded=True, debug=True)
