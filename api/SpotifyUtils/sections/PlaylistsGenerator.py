@@ -26,4 +26,4 @@ def save():
                 "error": "Not authorized",
                 "logged": False}, 403
     data = request.get_json()
-    SavePlaylist(current_user, data)
+    SavePlaylist(current_user, data["playlist"])
