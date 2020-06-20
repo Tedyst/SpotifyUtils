@@ -16,3 +16,4 @@ def SavePlaylist(target: User, tracks):
         playlist_id = sp.user_playlist_create(
             target.username, PLAYLIST_NAME, public=False, description=DESCRIPTION)["uri"]
     sp.user_playlist_replace_tracks(target.username, playlist_id, tracks)
+    return playlist_id

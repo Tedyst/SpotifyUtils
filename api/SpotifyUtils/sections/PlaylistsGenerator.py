@@ -13,9 +13,14 @@ def friends():
         return {"success": False,
                 "error": "Not authorized",
                 "logged": False}, 403
+    friends_top = FriendsTop(current_user)
+    tracks = []
+    for track in friends_top:
+        tracks.append(track["song"]["id"].replace("spotify:track:", ""))
     return {
         "success": True,
-        "result": FriendsTop(current_user)
+        "result": friends_top,
+        "playlist": tracks
     }
 
 
@@ -26,4 +31,7 @@ def save():
                 "error": "Not authorized",
                 "logged": False}, 403
     data = request.get_json()
-    SavePlaylist(current_user, data["playlist"])
+    return {
+        "success": True,
+        "playlist_id": SavePlaylist(current_user, data["playlist"])
+    }
