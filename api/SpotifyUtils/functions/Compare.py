@@ -14,8 +14,8 @@ def _Compare(initiator: User, target: User):
         "genres": []
     }
 
-    artist_total = 0
-    artist_score = 0
+    artist_total = 1
+    artist_score = 1
     artist_max = max(len(top_initiator["artists"]), len(top_target["artists"]))
     for idx, val in enumerate(top_initiator["artists"]):
         artist_total += artist_max - idx
@@ -28,8 +28,8 @@ def _Compare(initiator: User, target: User):
                 }
                 copy.update(val)
                 result["artists"].append(copy)
-    tracks_total = 0
-    tracks_score = 0
+    tracks_total = 1
+    tracks_score = 1
     tracks_max = max(len(top_initiator["tracks"]), len(top_target["tracks"]))
     for idx, val in enumerate(top_initiator["tracks"]):
         tracks_total += tracks_max - idx
@@ -42,8 +42,8 @@ def _Compare(initiator: User, target: User):
                 }
                 copy.update(val)
                 result["tracks"].append(copy)
-    genre_total = 0
-    genre_score = 0
+    genre_total = 1
+    genre_score = 1
     genre_max = max(len(top_initiator["genres"]), len(top_target["genres"]))
     for idx, val in top_initiator["genres"].items():
         genre_total += genre_max - int(idx)
