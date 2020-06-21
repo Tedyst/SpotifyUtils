@@ -5,6 +5,7 @@ import spotipy
 from SpotifyUtils.user import Song
 from SpotifyUtils.functions import Track, Album
 from SpotifyUtils import db, APP
+from SpotifyUtils.functions.FindSongInFriendsTop import FindSongInFriendsTop
 
 from SpotifyUtils.lyrics import update_lyrics
 
@@ -37,9 +38,11 @@ def track(id):
         )
         db.session.add(song)
     update_lyrics(song)
+    db.session.commit()
     return {
         "success": True,
         "analyze": Track(current_user, song),
         "track": song.__json__(),
-        "album": Album(current_user, song)
+        "album": Album(current_user, song),
+        "friends": FindSongInFriendsTop(current_user, song)
     }
