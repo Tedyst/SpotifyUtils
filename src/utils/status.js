@@ -33,6 +33,8 @@ export default function Update(){
                 dispatch(setRecent(data));
             });
         }
-    }).catch(err => { console.log(err) });
-    
+    }).catch(err => { 
+        localStorage.clear();
+        console.log(err); 
+    });
 }

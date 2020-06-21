@@ -84,7 +84,7 @@ def status():
             "image": "",
             "playlists": [],
             "logged": False
-        }
+        }, 403
     if not current_user.valid():
         return {
             "success": False,
@@ -93,7 +93,7 @@ def status():
             "image": "",
             "playlists": [],
             "logged": False
-        }
+        }, 403
     return {
         "success": True,
         "logged": True,
