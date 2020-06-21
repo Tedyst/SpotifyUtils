@@ -17,9 +17,13 @@ def strip_artist(artist):
     return artist.split('&')[0].split(',')[0].lower()
 
 
+def strip_name(name):
+    return name.split('(')[0].split('-')[0].lower()
+
+
 def get_lyrics(song: Song):
-    result = genius.search_song(song.name.split('(')[0].lower(),
-                                song.artist.split('&')[0].lower())
+    result = genius.search_song(strip_name(song.name),
+                                strip_artist(song.artist))
 
     if result is None:
         return None
@@ -30,7 +34,7 @@ def get_lyrics(song: Song):
     if ratio > 80:
         APP.logger.debug(
             "Found Genius lyric with %s accuracy for %s, found %s",
-            ratio, song.name + song.artist, result.title)
+            ratio, song.name + '; ' + song.artist, result.title)
         return result.lyrics
 
     APP.logger.debug(
