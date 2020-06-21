@@ -58,10 +58,10 @@ def auth():
     user = User.query.filter(User.username == username).first()
     if user is None:
         user = User(username, token)
-        if me['display_name']:
-            user.displayname = me['display_name']
-        if len(me['images']) > 0:
-            user.image = me['images'][0]['url']
+    if me['display_name']:
+        user.displayname = me['display_name']
+    if len(me['images']) > 0:
+        user.image = me['images'][0]['url']
 
     user.token = token
     user.refresh_token = token_info["refresh_token"]
