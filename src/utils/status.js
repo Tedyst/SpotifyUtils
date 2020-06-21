@@ -33,6 +33,6 @@ export default function Update(){
                 dispatch(setRecent(data));
             });
         }
-    });
+    }).catch(err => { console.log(err) });
     
 }
