@@ -25,9 +25,9 @@ class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50))
-    displayname = db.Column(db.String(50))
-    image = db.Column(db.String(200))
-    token = db.Column(db.String(250))
+    displayname = db.Column(db.String(100))
+    image = db.Column(db.String(500))
+    token = db.Column(db.String(500))
     top_tracks = db.Column(db.String(100000))
     top_artists = db.Column(db.String(10000))
     top_genres = db.Column(db.String(10000))
