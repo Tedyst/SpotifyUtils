@@ -77,14 +77,25 @@ def auth():
 @APP.route('/api/status')
 def status():
     if not current_user.is_authenticated:
-        return {"success": False,
-                "error": "Not authorized",
-                "logged": False}, 403
+        return {
+            "success": False,
+            "error": "Not authorized",
+            "username": "",
+            "image": "",
+            "playlists": [],
+            "logged": False
+        }
     if not current_user.valid():
-        return {"success": False,
-                "error": "Not authorized",
-                "logged": False}, 403
+        return {
+            "success": False,
+            "error": "Not authorized",
+            "username": "",
+            "image": "",
+            "playlists": [],
+            "logged": False
+        }
     return {
+        "success": True,
         "logged": True,
         "username": current_user.name,
         "image": current_user.image,
