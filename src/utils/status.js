@@ -21,6 +21,9 @@ export default function Update(){
                 dispatch(setUsername("Not Logged In"));
             else
                 dispatch(setUsername(data.username));
+
+            if(!data.logged)
+                localStorage.clear();
         })
         if(data.logged){
             fetch('/api/top/me').then(res => res.json()).then(data => {
