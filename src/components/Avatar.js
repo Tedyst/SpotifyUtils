@@ -18,6 +18,8 @@ const useStyles = makeStyles((theme) => ({
 
 function Acronym(str){
     var matches = str.match(/\b(\w)/g);
+    if(matches === null)
+        return str.charAt(0);
     var acronym = matches.join('');
     return acronym;
 }
