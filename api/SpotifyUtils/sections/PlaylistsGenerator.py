@@ -1,6 +1,7 @@
 from flask_login import current_user
 from flask import Blueprint, request
 from SpotifyUtils.functions.PlaylistGenerators.FriendsTop import FriendsTop
+from SpotifyUtils.functions.PlaylistGenerators.Copy import Copy
 from SpotifyUtils.functions.PlaylistFunctions.SavePlaylist import SavePlaylist
 
 
@@ -21,6 +22,19 @@ def friends():
         "success": True,
         "result": friends_top,
         "playlist": tracks
+    }
+
+
+@playlist_generator_blueprint.route('/copy/<origin>/<target>')
+def playlist(origin, target):
+    if not current_user.is_authenticated:
+        return {"success": False,
+                "error": "Not authorized",
+                "logged": False}, 403
+    return {
+        "success": True,
+        "result": Copy(current_user, origin, target),
+        "playlist": []
     }
 
 
