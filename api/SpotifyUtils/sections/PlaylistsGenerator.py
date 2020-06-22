@@ -31,9 +31,9 @@ def playlist(origin, target):
         return {"success": False,
                 "error": "Not authorized",
                 "logged": False}, 403
+    Copy(current_user, origin, target)
     return {
         "success": True,
-        "result": Copy(current_user, origin, target),
         "playlist": []
     }
 
