@@ -9,4 +9,5 @@
     "vs-kubernetes": {
         "vs-kubernetes.python-remote-root": "/app"
     },
+    "python.linting.pylintEnabled": true,
 }
