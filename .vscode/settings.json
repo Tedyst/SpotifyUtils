@@ -1,5 +1,4 @@
 {
-    "python.pythonPath": "api/venv/bin/python3",
     "python.testing.pytestArgs": [
         "tests"
     ],
