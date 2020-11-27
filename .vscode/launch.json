@@ -2,6 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch file",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${file}"
+        },
+        {
             "type": "firefox",
             "request": "launch",
             "name": "Launch Firefox against localhost",
@@ -16,8 +23,8 @@
             "host": "localhost",
             "pathMappings": [
                 {
-                    "localRoot":"${workspaceFolder}/api",
-                    "remoteRoot":"/APP"
+                    "localRoot": "${workspaceFolder}/api",
+                    "remoteRoot": "/APP"
                 }
             ]
         },
