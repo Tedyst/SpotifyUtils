@@ -20,13 +20,13 @@ type User struct {
 	LastUpdated time.Time
 }
 
-var usersCache []User
+var usersCache []*User
 var sessionStore *sqlitestore.SqliteStore
 
 func getUser(ID string) *User {
 	for _, s := range usersCache {
 		if s.ID == ID {
-			return &s
+			return s
 		}
 	}
 	rows, err := db.Query("SELECT ID, DisplayName, Token, RefreshToken FROM users WHERE ID = ?", ID)
@@ -41,15 +41,9 @@ func getUser(ID string) *User {
 	user.Token.Expiry = time.Now()
 	user.Token.TokenType = "Bearer"
 	defer rows.Close()
-	if !rows.Next() {
-		_, err := db.Exec(`INSERT INTO users (ID, DisplayName, Token, RefreshToken) VALUES(?,?,?,?)`,
-			user.ID, user.DisplayName, "", "")
-		if err != nil {
-			log.Println(err)
-		}
-		return user
-	}
+	exists := false
 	for rows.Next() {
+		exists = true
 		err := rows.Scan(&user.ID,
 			&user.DisplayName,
 			&user.Token.AccessToken,
@@ -57,6 +51,15 @@ func getUser(ID string) *User {
 		if err != nil {
 			log.Fatal(err)
 		}
+	}
+	if !exists {
+		_, err := db.Exec(`INSERT INTO users (ID, DisplayName, Token, RefreshToken) VALUES(?,?,?,?)`,
+			user.ID, user.DisplayName, "", "")
+		if err != nil {
+			log.Println(err)
+		}
+		usersCache = append(usersCache, user)
+		return user
 	}
 	err = rows.Err()
 	if err != nil {
