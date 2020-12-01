@@ -69,5 +69,6 @@ func (u *User) refreshUser() error {
 	}
 
 	u.LastUpdated = time.Now()
+	addUser(*u)
 	return nil
 }

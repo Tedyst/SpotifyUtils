@@ -4,3 +4,4 @@ venv/
 data.db
 asd.txt
 ui/
+__debug_bin
