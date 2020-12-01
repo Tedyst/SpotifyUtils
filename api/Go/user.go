@@ -29,14 +29,13 @@ func getUser(ID string) *User {
 			return s
 		}
 	}
-	rows, err := db.Query("SELECT ID, DisplayName, Token, RefreshToken FROM users WHERE ID = ?", ID)
+	rows, err := db.Query("SELECT ID, Token, RefreshToken FROM users WHERE ID = ?", ID)
 	if err != nil {
 		log.Println(err)
 	}
 	user := &User{
-		ID:          ID,
-		DisplayName: ID,
-		Token:       new(oauth2.Token),
+		ID:    ID,
+		Token: new(oauth2.Token),
 	}
 	user.Token.Expiry = time.Now()
 	user.Token.TokenType = "Bearer"
@@ -53,8 +52,8 @@ func getUser(ID string) *User {
 		}
 	}
 	if !exists {
-		_, err := db.Exec(`INSERT INTO users (ID, DisplayName, Token, RefreshToken) VALUES(?,?,?,?)`,
-			user.ID, user.DisplayName, "", "")
+		_, err := db.Exec(`INSERT INTO users (ID, Token, RefreshToken) VALUES(?,?,?)`,
+			user.ID, "", "")
 		if err != nil {
 			log.Println(err)
 		}
@@ -69,8 +68,8 @@ func getUser(ID string) *User {
 }
 
 func (u *User) save() {
-	_, err := db.Exec(`UPDATE users SET DisplayName = ?, Token = ?, RefreshToken = ? WHERE ID = ?`,
-		u.DisplayName, u.Token.AccessToken, u.Token.RefreshToken, u.ID)
+	_, err := db.Exec(`UPDATE users SET Token = ?, RefreshToken = ? WHERE ID = ?`,
+		u.Token.AccessToken, u.Token.RefreshToken, u.ID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -100,6 +99,13 @@ func (u *User) refreshUser() error {
 			return err
 		}
 	}
+
+	spotifyData, err := client.CurrentUser()
+	if err != nil {
+		return err
+	}
+	u.DisplayName = spotifyData.DisplayName
+	u.Images = spotifyData.Images
 
 	u.LastUpdated = time.Now()
 	u.save()
