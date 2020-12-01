@@ -10,17 +10,16 @@ import (
 
 var sessionStore = sessions.NewCookieStore([]byte(secret))
 
-type authAPIResponse struct {
-	Success bool   `json:"success"`
-	Error   string `json:"error,omitempty"`
-	URL     string
-}
-type authAPIRequest struct {
-	Host string `json:"host"`
-	Code string `json:"code"`
-}
-
 func authAPI(res http.ResponseWriter, req *http.Request) {
+	type authAPIResponse struct {
+		Success bool   `json:"success"`
+		Error   string `json:"error,omitempty"`
+		URL     string
+	}
+	type authAPIRequest struct {
+		Host string `json:"host"`
+		Code string `json:"code"`
+	}
 	res.Header().Set("Content-Type", "application/json")
 	response := &authAPIResponse{}
 	if req.Method != "POST" {
@@ -77,16 +76,15 @@ func authAPI(res http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(res, string(respJSON))
 }
 
-type authURLAPIResponse struct {
-	Success bool   `json:"success"`
-	Error   string `json:"error,omitempty"`
-	URL     string `json:",omitempty"`
-}
-type authURLAPIRequest struct {
-	Host string `json:"host"`
-}
-
 func authURLAPI(res http.ResponseWriter, req *http.Request) {
+	type authURLAPIResponse struct {
+		Success bool   `json:"success"`
+		Error   string `json:"error,omitempty"`
+		URL     string `json:",omitempty"`
+	}
+	type authURLAPIRequest struct {
+		Host string `json:"host"`
+	}
 	res.Header().Set("Content-Type", "application/json")
 	response := &authURLAPIResponse{
 		Success: false,

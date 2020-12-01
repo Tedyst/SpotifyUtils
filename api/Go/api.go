@@ -6,15 +6,19 @@ import (
 	"net/http"
 )
 
-type statusAPIResponse struct {
-	Success   bool     `json:"success"`
-	Error     string   `json:"error,omitempty"`
-	Username  string   `json:"username,omitempty"`
-	Image     string   `json:"image,omitempty"`
-	Playlists []string `json:"playlists,omitempty"`
-}
-
 func statusAPI(res http.ResponseWriter, req *http.Request) {
+	type playlistResponse struct {
+		ID     string   `json:"id,omitempty"`
+		Name   string   `json:"name,omitempty"`
+		Tracks []string `json:"tracks,omitempty"`
+	}
+	type statusAPIResponse struct {
+		Success   bool               `json:"success"`
+		Error     string             `json:"error,omitempty"`
+		Username  string             `json:"username,omitempty"`
+		Image     string             `json:"image,omitempty"`
+		Playlists []playlistResponse `json:"playlists,omitempty"`
+	}
 	res.Header().Set("Content-Type", "application/json")
 	session, _ := sessionStore.Get(req, "username")
 	response := &statusAPIResponse{}
@@ -38,7 +42,11 @@ func statusAPI(res http.ResponseWriter, req *http.Request) {
 
 	response.Image = user.Images[0].URL
 	for _, s := range user.Playlists {
-		response.Playlists = append(response.Playlists, string(s.ID))
+		playlist := &playlistResponse{
+			ID:   string(s.ID),
+			Name: s.Name,
+		}
+		response.Playlists = append(response.Playlists, *playlist)
 	}
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprintf(res, string(respJSON))
