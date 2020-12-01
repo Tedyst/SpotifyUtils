@@ -5,23 +5,13 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/tedyst/spotifyutils/api/api/status"
+
 	_ "github.com/cznic/ql/driver"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/michaeljs1990/sqlitestore"
-	"github.com/zmb3/spotify"
-)
-
-var (
-	users        = [1]string{"vq0u2761le51p2idib6f89y78"}
-	scope        = "user-library-read playlist-read-private playlist-read-collaborative user-top-read user-read-recently-played user-read-private playlist-modify-private playlist-modify-public user-follow-modify"
-	admin        = "vq0u2761le51p2idib6f89y78"
-	redirectURL  = "http://127.0.0.1"
-	clientID     = "d4dc2e6f181346f49ef1a1214b4732b3"
-	clientSecret = "d50a2fe6f9b6401faa267a2d258f84d7"
-	address      = "0.0.0.0:5000"
-	secret       = []byte("ePAPW9vJv7gHoftvQTyNj5VkWB52mlza")
-	spotifyAPI   = spotify.NewAuthenticator(redirectURL, scope)
-	db           *sql.DB
+	"github.com/tedyst/spotifyutils/api/auth"
+	"github.com/tedyst/spotifyutils/api/config"
 )
 
 func checkErr(err error) {
@@ -32,22 +22,22 @@ func checkErr(err error) {
 
 func main() {
 	datab, err := sql.Open("sqlite3", "./data.db")
-	db = datab
+	config.DB = datab
 	checkErr(err)
 
-	initDB(db)
+	initDB(config.DB)
 
-	sessionStore, err = sqlitestore.NewSqliteStoreFromConnection(db, "sessions", "/", 3600, secret)
+	config.SessionStore, err = sqlitestore.NewSqliteStoreFromConnection(config.DB, "sessions", "/", 3600, config.Secret)
 	checkErr(err)
 
-	spotifyAPI.SetAuthInfo(clientID, clientSecret)
+	config.SpotifyAPI.SetAuthInfo(config.SpotifyClientID, config.SpotifyClientSecret)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/api/auth", authAPI)
-	mux.HandleFunc("/api/auth-url", authURLAPI)
-	mux.HandleFunc("/api/status", statusAPI)
+	mux.HandleFunc("/api/auth", auth.Auth)
+	mux.HandleFunc("/api/auth-url", auth.AuthURL)
+	mux.HandleFunc("/api/status", status.Status)
 
-	log.Printf("Starting server on address http://%s", address)
-	err = http.ListenAndServe(address, mux)
+	log.Printf("Starting server on address http://%s", config.Address)
+	err = http.ListenAndServe(config.Address, mux)
 	checkErr(err)
 }

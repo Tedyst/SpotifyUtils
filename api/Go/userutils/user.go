@@ -1,11 +1,11 @@
-package main
+package userutils
 
 import (
 	"errors"
 	"log"
 	"time"
 
-	"github.com/michaeljs1990/sqlitestore"
+	"github.com/tedyst/spotifyutils/api/config"
 	"github.com/zmb3/spotify"
 	"golang.org/x/oauth2"
 )
@@ -21,15 +21,14 @@ type User struct {
 }
 
 var usersCache []*User
-var sessionStore *sqlitestore.SqliteStore
 
-func getUser(ID string) *User {
+func GetUser(ID string) *User {
 	for _, s := range usersCache {
 		if s.ID == ID {
 			return s
 		}
 	}
-	rows, err := db.Query("SELECT ID, Token, RefreshToken FROM users WHERE ID = ?", ID)
+	rows, err := config.DB.Query("SELECT ID, Token, RefreshToken FROM users WHERE ID = ?", ID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -44,15 +43,14 @@ func getUser(ID string) *User {
 	for rows.Next() {
 		exists = true
 		err := rows.Scan(&user.ID,
-			&user.DisplayName,
 			&user.Token.AccessToken,
 			&user.Token.RefreshToken)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 	}
 	if !exists {
-		_, err := db.Exec(`INSERT INTO users (ID, Token, RefreshToken) VALUES(?,?,?)`,
+		_, err := config.DB.Exec(`INSERT INTO users (ID, Token, RefreshToken) VALUES(?,?,?)`,
 			user.ID, "", "")
 		if err != nil {
 			log.Println(err)
@@ -62,27 +60,27 @@ func getUser(ID string) *User {
 	}
 	err = rows.Err()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	return user
 }
 
-func (u *User) save() {
-	_, err := db.Exec(`UPDATE users SET Token = ?, RefreshToken = ? WHERE ID = ?`,
+func (u *User) Save() {
+	_, err := config.DB.Exec(`UPDATE users SET Token = ?, RefreshToken = ? WHERE ID = ?`,
 		u.Token.AccessToken, u.Token.RefreshToken, u.ID)
 	if err != nil {
 		log.Println(err)
 	}
 }
 
-func (u *User) refreshUser() error {
+func (u *User) RefreshUser() error {
 	if !u.Token.Valid() {
 		return errors.New("Token expired")
 	}
 	if time.Since(u.LastUpdated) < time.Second*60 {
 		return nil
 	}
-	client := spotifyAPI.NewClient(u.Token)
+	client := config.SpotifyAPI.NewClient(u.Token)
 	playlists, err := client.GetPlaylistsForUser(u.ID)
 	if err != nil {
 		return err
@@ -108,6 +106,6 @@ func (u *User) refreshUser() error {
 	u.Images = spotifyData.Images
 
 	u.LastUpdated = time.Now()
-	u.save()
+	u.Save()
 	return nil
 }

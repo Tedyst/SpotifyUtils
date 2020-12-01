@@ -1,12 +1,15 @@
-package main
+package status
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/tedyst/spotifyutils/api/config"
+	"github.com/tedyst/spotifyutils/api/userutils"
 )
 
-func statusAPI(res http.ResponseWriter, req *http.Request) {
+func Status(res http.ResponseWriter, req *http.Request) {
 	type playlistResponse struct {
 		ID     string   `json:"id,omitempty"`
 		Name   string   `json:"name,omitempty"`
@@ -20,7 +23,7 @@ func statusAPI(res http.ResponseWriter, req *http.Request) {
 		Playlists []playlistResponse `json:"playlists,omitempty"`
 	}
 	res.Header().Set("Content-Type", "application/json")
-	session, _ := sessionStore.Get(req, "username")
+	session, _ := config.SessionStore.Get(req, "username")
 	response := &statusAPIResponse{}
 	if _, ok := session.Values["username"]; !ok {
 		response.Success = false
@@ -30,9 +33,9 @@ func statusAPI(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	val := session.Values["username"]
-	user := getUser(val.(string))
-	user.refreshUser()
-	user.save()
+	user := userutils.GetUser(val.(string))
+	user.RefreshUser()
+	user.Save()
 
 	response.Success = true
 	if user.DisplayName == "" {

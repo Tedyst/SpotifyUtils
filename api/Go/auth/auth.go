@@ -1,12 +1,16 @@
-package main
+package auth
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/tedyst/spotifyutils/api/config"
+	"github.com/tedyst/spotifyutils/api/spotifywrapper"
+	"github.com/tedyst/spotifyutils/api/userutils"
 )
 
-func authAPI(res http.ResponseWriter, req *http.Request) {
+func Auth(res http.ResponseWriter, req *http.Request) {
 	type authAPIResponse struct {
 		Success bool   `json:"success"`
 		Error   string `json:"error,omitempty"`
@@ -37,7 +41,7 @@ func authAPI(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	token, err := getSpotifyAuthorization(request.Host, request.Code)
+	token, err := spotifywrapper.GetSpotifyAuthorization(request.Host, request.Code)
 	if err != nil {
 		response.Error = fmt.Sprint(err)
 		response.Success = false
@@ -46,7 +50,7 @@ func authAPI(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	client := spotifyAPI.NewClient(token)
+	client := config.SpotifyAPI.NewClient(token)
 	spotifyUser, err := client.CurrentUser()
 	if err != nil {
 		response.Error = fmt.Sprint(err)
@@ -55,16 +59,16 @@ func authAPI(res http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(res, string(respJSON))
 		return
 	}
-	user := getUser(spotifyUser.ID)
-	user.Token = token
-	user.DisplayName = spotifyUser.DisplayName
-	user.ID = spotifyUser.ID
-	user.Images = spotifyUser.Images
-	user.refreshUser()
-	user.save()
+	u := userutils.GetUser(spotifyUser.ID)
+	u.Token = token
+	u.DisplayName = spotifyUser.DisplayName
+	u.ID = spotifyUser.ID
+	u.Images = spotifyUser.Images
+	u.RefreshUser()
+	u.Save()
 
-	session, _ := sessionStore.Get(req, "username")
-	session.Values["username"] = user.ID
+	session, _ := config.SessionStore.Get(req, "username")
+	session.Values["username"] = u.ID
 
 	err = session.Save(req, res)
 	if err != nil {
@@ -80,7 +84,7 @@ func authAPI(res http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(res, string(respJSON))
 }
 
-func authURLAPI(res http.ResponseWriter, req *http.Request) {
+func AuthURL(res http.ResponseWriter, req *http.Request) {
 	type authURLAPIResponse struct {
 		Success bool   `json:"success"`
 		Error   string `json:"error,omitempty"`
@@ -102,7 +106,7 @@ func authURLAPI(res http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(res, string(respJSON))
 		return
 	}
-	response.URL = getSpotifyURL(request.Host)
+	response.URL = spotifywrapper.GetSpotifyURL(request.Host)
 	response.Success = true
 	response.Error = ""
 	respJSON, _ := json.Marshal(response)

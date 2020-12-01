@@ -10,6 +10,7 @@ require (
 	github.com/fasthttp/router v1.3.3
 	github.com/fasthttp/session v1.1.8
 	github.com/gernest/qlstore v0.0.0-20161224085350-646d93e25ad3
+	github.com/go-errors/errors v1.1.1
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v1.2.1
 	github.com/ikawaha/kagome.ipadic v1.1.2 // indirect
