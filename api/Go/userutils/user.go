@@ -28,7 +28,7 @@ func GetUser(ID string) *User {
 			return s
 		}
 	}
-	rows, err := config.DB.Query("SELECT ID, Token, RefreshToken FROM users WHERE ID = ?", ID)
+	rows, err := config.DB.Query("SELECT ID, Token, RefreshToken, Expiration FROM users WHERE ID = ?", ID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -42,16 +42,19 @@ func GetUser(ID string) *User {
 	exists := false
 	for rows.Next() {
 		exists = true
+		expiration := int64(0)
 		err := rows.Scan(&user.ID,
 			&user.Token.AccessToken,
-			&user.Token.RefreshToken)
+			&user.Token.RefreshToken,
+			&expiration)
+		user.Token.Expiry = time.Unix(expiration, 0)
 		if err != nil {
 			log.Println(err)
 		}
 	}
 	if !exists {
-		_, err := config.DB.Exec(`INSERT INTO users (ID, Token, RefreshToken) VALUES(?,?,?)`,
-			user.ID, "", "")
+		_, err := config.DB.Exec(`INSERT INTO users (ID, Token, RefreshToken, Expiration) VALUES(?,?,?,?)`,
+			user.ID, "", "", user.Token.Expiry.Unix())
 		if err != nil {
 			log.Println(err)
 		}
@@ -62,12 +65,13 @@ func GetUser(ID string) *User {
 	if err != nil {
 		log.Println(err)
 	}
+	usersCache = append(usersCache, user)
 	return user
 }
 
 func (u *User) Save() {
-	_, err := config.DB.Exec(`UPDATE users SET Token = ?, RefreshToken = ? WHERE ID = ?`,
-		u.Token.AccessToken, u.Token.RefreshToken, u.ID)
+	_, err := config.DB.Exec(`UPDATE users SET Token = ?, RefreshToken = ?, Expiration = ? WHERE ID = ?`,
+		u.Token.AccessToken, u.Token.RefreshToken, u.Token.Expiry.Unix(), u.ID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -77,7 +81,7 @@ func (u *User) RefreshUser() error {
 	if !u.Token.Valid() {
 		return errors.New("Token expired")
 	}
-	if time.Since(u.LastUpdated) < time.Second*60 {
+	if time.Since(u.LastUpdated) < time.Second*600 {
 		return nil
 	}
 	client := config.SpotifyAPI.NewClient(u.Token)
