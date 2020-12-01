@@ -30,6 +30,12 @@ func statusAPI(res http.ResponseWriter, req *http.Request) {
 	user.refreshUser()
 
 	response.Success = true
+	if user.DisplayName == "" {
+		response.Username = user.ID
+	} else {
+		response.Username = user.DisplayName
+	}
+
 	response.Image = user.Images[0].URL
 	for _, s := range user.Playlists {
 		response.Playlists = append(response.Playlists, string(s.ID))
