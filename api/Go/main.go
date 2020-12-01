@@ -5,7 +5,9 @@ import (
 	"log"
 	"net/http"
 
+	_ "github.com/cznic/ql/driver"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/michaeljs1990/sqlitestore"
 	"github.com/zmb3/spotify"
 )
 
@@ -17,8 +19,9 @@ var (
 	clientID     = "d4dc2e6f181346f49ef1a1214b4732b3"
 	clientSecret = "d50a2fe6f9b6401faa267a2d258f84d7"
 	address      = "0.0.0.0:5000"
-	secret       = "asd"
+	secret       = []byte("ePAPW9vJv7gHoftvQTyNj5VkWB52mlza")
 	spotifyAPI   = spotify.NewAuthenticator(redirectURL, scope)
+	db           *sql.DB
 )
 
 func checkErr(err error) {
@@ -28,14 +31,13 @@ func checkErr(err error) {
 }
 
 func main() {
-	db, err := sql.Open("sqlite3", "./go.db")
+	datab, err := sql.Open("sqlite3", "./data.db")
+	db = datab
 	checkErr(err)
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS "listened" (
-		"id" INTEGER PRIMARY KEY AUTOINCREMENT,
-		"user" VARCHAR(25) NULL,
-        "song" VARCHAR(25) NULL,
-        "time" INTEGER NULL
-	);`)
+
+	initDB(db)
+
+	sessionStore, err = sqlitestore.NewSqliteStoreFromConnection(db, "sessions", "/", 3600, secret)
 	checkErr(err)
 
 	spotifyAPI.SetAuthInfo(clientID, clientSecret)

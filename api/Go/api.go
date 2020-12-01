@@ -32,6 +32,7 @@ func statusAPI(res http.ResponseWriter, req *http.Request) {
 	val := session.Values["username"]
 	user := getUser(val.(string))
 	user.refreshUser()
+	user.save()
 
 	response.Success = true
 	if user.DisplayName == "" {
@@ -40,7 +41,10 @@ func statusAPI(res http.ResponseWriter, req *http.Request) {
 		response.Username = user.DisplayName
 	}
 
-	response.Image = user.Images[0].URL
+	if len(user.Images) > 0 {
+		response.Image = user.Images[0].URL
+	}
+
 	for _, s := range user.Playlists {
 		playlist := &playlistResponse{
 			ID:   string(s.ID),

@@ -4,11 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/gorilla/sessions"
 )
-
-var sessionStore = sessions.NewCookieStore([]byte(secret))
 
 func authAPI(res http.ResponseWriter, req *http.Request) {
 	type authAPIResponse struct {
@@ -64,12 +60,20 @@ func authAPI(res http.ResponseWriter, req *http.Request) {
 	user.DisplayName = spotifyUser.DisplayName
 	user.ID = spotifyUser.ID
 	user.Images = spotifyUser.Images
-	addUser(user)
 	user.refreshUser()
+	user.save()
 
 	session, _ := sessionStore.Get(req, "username")
 	session.Values["username"] = user.ID
-	session.Save(req, res)
+
+	err = session.Save(req, res)
+	if err != nil {
+		response.Error = fmt.Sprint(err)
+		response.Success = false
+		respJSON, _ := json.Marshal(response)
+		fmt.Fprintf(res, string(respJSON))
+		return
+	}
 
 	response.Success = true
 	respJSON, _ := json.Marshal(response)

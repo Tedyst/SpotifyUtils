@@ -2,8 +2,10 @@ package main
 
 import (
 	"errors"
+	"log"
 	"time"
 
+	"github.com/michaeljs1990/sqlitestore"
 	"github.com/zmb3/spotify"
 	"golang.org/x/oauth2"
 )
@@ -18,29 +20,57 @@ type User struct {
 	LastUpdated time.Time
 }
 
-var storage []User
+var usersCache []User
+var sessionStore *sqlitestore.SqliteStore
 
-func getUser(ID string) User {
-	for _, s := range storage {
+func getUser(ID string) *User {
+	for _, s := range usersCache {
 		if s.ID == ID {
-			return s
+			return &s
 		}
 	}
-	u := User{
+	rows, err := db.Query("SELECT ID, DisplayName, Token, RefreshToken FROM users WHERE ID = ?", ID)
+	if err != nil {
+		log.Println(err)
+	}
+	user := &User{
 		ID:          ID,
 		DisplayName: ID,
+		Token:       new(oauth2.Token),
 	}
-	return u
-}
-
-func addUser(u User) {
-	for i, s := range storage {
-		if s.ID == u.ID {
-			storage[i] = u
-			return
+	user.Token.Expiry = time.Now()
+	user.Token.TokenType = "Bearer"
+	defer rows.Close()
+	if !rows.Next() {
+		_, err := db.Exec(`INSERT INTO users (ID, DisplayName, Token, RefreshToken) VALUES(?,?,?,?)`,
+			user.ID, user.DisplayName, "", "")
+		if err != nil {
+			log.Println(err)
+		}
+		return user
+	}
+	for rows.Next() {
+		err := rows.Scan(&user.ID,
+			&user.DisplayName,
+			&user.Token.AccessToken,
+			&user.Token.RefreshToken)
+		if err != nil {
+			log.Fatal(err)
 		}
 	}
-	storage = append(storage, u)
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return user
+}
+
+func (u *User) save() {
+	_, err := db.Exec(`UPDATE users SET DisplayName = ?, Token = ?, RefreshToken = ? WHERE ID = ?`,
+		u.DisplayName, u.Token.AccessToken, u.Token.RefreshToken, u.ID)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func (u *User) refreshUser() error {
@@ -69,6 +99,6 @@ func (u *User) refreshUser() error {
 	}
 
 	u.LastUpdated = time.Now()
-	addUser(*u)
+	u.save()
 	return nil
 }
