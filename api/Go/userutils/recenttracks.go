@@ -25,11 +25,11 @@ func (u *User) UpdateRecentTracks() {
 	var rows *sql.Rows
 	if len(items) == 1 {
 		first := items[0].PlayedAt.Unix()
-		rows, err = config.DB.Query("SELECT song,time FROM listened WHERE time == ? AND user = ?", first, u.ID)
+		rows, err = config.DB.Query("SELECT SongID,Time FROM listened WHERE Time == ? AND UserID = ?", first, u.ID)
 	} else {
 		first := items[0].PlayedAt.Unix()
 		last := items[len(items)-1].PlayedAt.Unix()
-		rows, err = config.DB.Query("SELECT song,time FROM listened WHERE time >= ? AND time <= ? AND user = ?", last, first, u.ID)
+		rows, err = config.DB.Query("SELECT SongID,Time FROM listened WHERE Time >= ? AND Time <= ? AND UserID = ?", last, first, u.ID)
 	}
 	if err != nil {
 		log.Print(err)
@@ -55,7 +55,7 @@ func (u *User) UpdateRecentTracks() {
 		return
 	}
 	for _, s := range items {
-		_, err := tx.Exec("INSERT INTO listened (user, song, time) VALUES (?, ?, ?)", u.ID, s.Track.ID, s.PlayedAt.Unix())
+		_, err := tx.Exec("INSERT INTO listened (UserID, SongID, Time) VALUES (?, ?, ?)", u.ID, s.Track.ID, s.PlayedAt.Unix())
 		if err != nil {
 			log.Print(err)
 			return

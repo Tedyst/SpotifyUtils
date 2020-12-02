@@ -12,10 +12,10 @@ func initDB(db *sql.DB) {
 		log.Fatalln(err)
 	}
 	_, err = tx.Exec(`CREATE TABLE IF NOT EXISTS "listened" (
-		"id" INTEGER PRIMARY KEY AUTOINCREMENT,
-		"user" VARCHAR(25) NULL,
-        "song" VARCHAR(25) NULL,
-        "time" INTEGER NULL
+		"ID" INTEGER PRIMARY KEY AUTOINCREMENT,
+		"UserID" VARCHAR(25) NULL,
+        "SongID" VARCHAR(25) NULL,
+        "Time" INTEGER NULL
 	);`)
 	if err != nil {
 		tx.Rollback()
