@@ -3,13 +3,14 @@ package userutils
 import (
 	"database/sql"
 	"log"
+	"time"
 
 	"github.com/tedyst/spotifyutils/api/config"
 	"github.com/zmb3/spotify"
 )
 
-// UpdateTracks updates the recent tracks
-func (u *User) UpdateTracks() {
+// UpdateRecentTracks updates the recent tracks
+func (u *User) UpdateRecentTracks() {
 	if u.Settings.TrackListening == false {
 		return
 	}
@@ -65,15 +66,31 @@ func (u *User) UpdateTracks() {
 		log.Print(err)
 		return
 	}
-	// for _, s := range items {
-	// 	go func(user *User, s spotify.RecentlyPlayedItem) {
-	// 		tx, err := config.DB.Begin()
-	// 		if err != nil {
-	// 			log.Println(tx)
-	// 			return
-	// 		}
-	// 		tx.Query("SELECT track, ")
-	// 		fmt.Println(s.PlayedAt.Unix())
-	// 	}(u, s)
-	// }
+}
+
+func (u *User) StartRecentTracksUpdater() {
+	if u.TrackListeingTimer != nil {
+		return
+	}
+	ticker := time.NewTicker(1 * time.Hour)
+	quit := make(chan struct{})
+	u.TrackListeingTimer = &quit
+	go func(u *User) {
+		for {
+			select {
+			case <-ticker.C:
+				u.UpdateRecentTracks()
+			case <-quit:
+				ticker.Stop()
+				return
+			}
+		}
+	}(u)
+}
+
+func (u *User) StopRecentTracksUpdater() {
+	if u.TrackListeingTimer == nil {
+		return
+	}
+	close(*u.TrackListeingTimer)
 }
