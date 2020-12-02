@@ -17,6 +17,7 @@ func (u *User) UpdateRecentTracks() {
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
 	items, err := u.Client.PlayerRecentlyPlayedOpt(options)
 	if err != nil {
+		log.Print(err)
 		return
 	}
 	if len(items) == 0 {

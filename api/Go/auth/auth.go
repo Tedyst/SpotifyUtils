@@ -64,6 +64,7 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 	u.DisplayName = spotifyUser.DisplayName
 	u.ID = spotifyUser.ID
 	u.Images = spotifyUser.Images
+	u.Client = config.SpotifyAPI.NewClient(u.Token)
 	u.RefreshUser()
 	u.Save()
 

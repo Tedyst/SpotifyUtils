@@ -43,8 +43,6 @@ func GetUser(ID string) *User {
 		ID:    ID,
 		Token: new(oauth2.Token),
 	}
-	user.Token.Expiry = time.Now()
-	user.Token.TokenType = "Bearer"
 	defer rows.Close()
 	exists := false
 	for rows.Next() {
@@ -64,6 +62,8 @@ func GetUser(ID string) *User {
 	user.Settings.TrackListening = true
 
 	if !exists {
+		user.Token.Expiry = time.Now()
+		user.Token.TokenType = "Bearer"
 		_, err := config.DB.Exec(`INSERT INTO users (ID, Token, RefreshToken, Expiration) VALUES(?,?,?,?)`,
 			user.ID, "", "", user.Token.Expiry.Unix())
 		if err != nil {
