@@ -30,14 +30,14 @@ func main() {
 	config.SessionStore, err = sqlitestore.NewSqliteStoreFromConnection(config.DB, "sessions", "/", 3600, config.Secret)
 	checkErr(err)
 
-	config.SpotifyAPI.SetAuthInfo(config.SpotifyClientID, config.SpotifyClientSecret)
+	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/auth", auth.Auth)
 	mux.HandleFunc("/api/auth-url", auth.AuthURL)
 	mux.HandleFunc("/api/status", status.Status)
 
-	log.Printf("Starting server on address http://%s", config.Address)
-	err = http.ListenAndServe(config.Address, mux)
+	log.Printf("Starting server on address http://%s", *config.Address)
+	err = http.ListenAndServe(*config.Address, mux)
 	checkErr(err)
 }
