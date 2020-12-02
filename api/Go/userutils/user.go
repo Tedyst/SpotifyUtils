@@ -12,15 +12,15 @@ import (
 
 // User is the main user struct
 type User struct {
-	ID                 string
-	DisplayName        string
-	Token              *oauth2.Token
-	Images             []spotify.Image
-	Playlists          []spotify.SimplePlaylist
-	LastUpdated        time.Time
-	Client             spotify.Client
-	Settings           UserSettings
-	TrackListeingTimer *chan struct{}
+	ID                  string
+	DisplayName         string
+	Token               *oauth2.Token
+	Images              []spotify.Image
+	Playlists           []spotify.SimplePlaylist
+	LastUpdated         time.Time
+	Client              spotify.Client
+	Settings            UserSettings
+	TrackListeningTimer *chan struct{}
 }
 
 type UserSettings struct {

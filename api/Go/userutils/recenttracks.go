@@ -70,12 +70,12 @@ func (u *User) UpdateRecentTracks() {
 }
 
 func (u *User) StartRecentTracksUpdater() {
-	if u.TrackListeingTimer != nil {
+	if u.TrackListeningTimer != nil {
 		return
 	}
 	ticker := time.NewTicker(1 * time.Hour)
 	quit := make(chan struct{})
-	u.TrackListeingTimer = &quit
+	u.TrackListeningTimer = &quit
 	go func(u *User) {
 		for {
 			select {
@@ -90,8 +90,8 @@ func (u *User) StartRecentTracksUpdater() {
 }
 
 func (u *User) StopRecentTracksUpdater() {
-	if u.TrackListeingTimer == nil {
+	if u.TrackListeningTimer == nil {
 		return
 	}
-	close(*u.TrackListeingTimer)
+	close(*u.TrackListeningTimer)
 }
