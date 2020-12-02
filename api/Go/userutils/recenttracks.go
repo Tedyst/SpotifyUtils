@@ -11,7 +11,7 @@ import (
 
 // UpdateRecentTracks updates the recent tracks
 func (u *User) UpdateRecentTracks() {
-	if u.Settings.TrackListening == false {
+	if u.Settings.RecentTracks == false {
 		return
 	}
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
@@ -70,12 +70,12 @@ func (u *User) UpdateRecentTracks() {
 }
 
 func (u *User) StartRecentTracksUpdater() {
-	if u.TrackListeningTimer != nil {
+	if u.RecentTracksTimer != nil {
 		return
 	}
 	ticker := time.NewTicker(1 * time.Hour)
 	quit := make(chan struct{})
-	u.TrackListeningTimer = &quit
+	u.RecentTracksTimer = &quit
 	go func(u *User) {
 		for {
 			select {
@@ -90,8 +90,8 @@ func (u *User) StartRecentTracksUpdater() {
 }
 
 func (u *User) StopRecentTracksUpdater() {
-	if u.TrackListeningTimer == nil {
+	if u.RecentTracksTimer == nil {
 		return
 	}
-	close(*u.TrackListeningTimer)
+	close(*u.RecentTracksTimer)
 }

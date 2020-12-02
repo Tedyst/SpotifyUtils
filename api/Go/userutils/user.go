@@ -12,19 +12,19 @@ import (
 
 // User is the main user struct
 type User struct {
-	ID                  string
-	DisplayName         string
-	Token               *oauth2.Token
-	Images              []spotify.Image
-	Playlists           []spotify.SimplePlaylist
-	LastUpdated         time.Time
-	Client              spotify.Client
-	Settings            UserSettings
-	TrackListeningTimer *chan struct{}
+	ID                string
+	DisplayName       string
+	Token             *oauth2.Token
+	Images            []spotify.Image
+	Playlists         []spotify.SimplePlaylist
+	LastUpdated       time.Time
+	Client            spotify.Client
+	Settings          UserSettings
+	RecentTracksTimer *chan struct{}
 }
 
 type UserSettings struct {
-	TrackListening bool
+	RecentTracks bool
 }
 
 var usersCache []*User
@@ -59,7 +59,7 @@ func GetUser(ID string) *User {
 	}
 	user.Client = config.SpotifyAPI.NewClient(user.Token)
 
-	user.Settings.TrackListening = true
+	user.Settings.RecentTracks = true
 
 	if !exists {
 		user.Token.Expiry = time.Now()
