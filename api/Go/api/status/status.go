@@ -35,7 +35,8 @@ func Status(res http.ResponseWriter, req *http.Request) {
 	val := session.Values["username"]
 	user := userutils.GetUser(val.(string))
 	user.RefreshUser()
-	user.Save()
+	go user.UpdateTracks()
+	go user.Save()
 
 	response.Success = true
 	if user.DisplayName == "" {

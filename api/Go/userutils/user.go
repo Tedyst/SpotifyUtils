@@ -18,6 +18,12 @@ type User struct {
 	Images      []spotify.Image
 	Playlists   []spotify.SimplePlaylist
 	LastUpdated time.Time
+	Client      spotify.Client
+	Settings    UserSettings
+}
+
+type UserSettings struct {
+	TrackListening bool
 }
 
 var usersCache []*User
@@ -52,6 +58,10 @@ func GetUser(ID string) *User {
 			log.Println(err)
 		}
 	}
+	user.Client = config.SpotifyAPI.NewClient(user.Token)
+
+	user.Settings.TrackListening = true
+
 	if !exists {
 		_, err := config.DB.Exec(`INSERT INTO users (ID, Token, RefreshToken, Expiration) VALUES(?,?,?,?)`,
 			user.ID, "", "", user.Token.Expiry.Unix())
@@ -81,7 +91,7 @@ func (u *User) RefreshUser() error {
 	if !u.Token.Valid() {
 		return errors.New("Token expired")
 	}
-	if time.Since(u.LastUpdated) < time.Second*600 {
+	if time.Since(u.LastUpdated) < time.Hour {
 		return nil
 	}
 	client := config.SpotifyAPI.NewClient(u.Token)
