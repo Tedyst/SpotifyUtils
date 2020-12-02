@@ -5,6 +5,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/tedyst/spotifyutils/api/metrics"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/tedyst/spotifyutils/api/api/admin"
 
 	"github.com/tedyst/spotifyutils/api/api/status"
@@ -20,6 +23,13 @@ func checkErr(err error) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func middleware(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		metrics.RequestsServed.Inc()
+		h.ServeHTTP(w, r)
+	})
 }
 
 func main() {
@@ -41,7 +51,14 @@ func main() {
 	mux.HandleFunc("/admin", admin.Admin)
 	mux.HandleFunc("/admin/delete-all-tokens", admin.DeleteAllUserTokens)
 
+	if *config.Metrics {
+		go func() {
+			http.Handle("/metrics", promhttp.Handler())
+			http.ListenAndServe(":5001", nil)
+		}()
+	}
+
 	log.Printf("Starting server on address http://%s", *config.Address)
-	err = http.ListenAndServe(*config.Address, mux)
+	err = http.ListenAndServe(*config.Address, middleware(mux))
 	checkErr(err)
 }

@@ -22,6 +22,8 @@ var (
 
 	SpotifyAPI = spotify.NewAuthenticator(*RedirectURL, SpotifyScope)
 
+	Metrics = flag.Bool("Metrics", true, "Enable Metrics")
+
 	DB           *sql.DB
 	SessionStore *sqlitestore.SqliteStore
 )
