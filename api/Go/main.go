@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/tedyst/spotifyutils/api/api/admin"
+
 	"github.com/tedyst/spotifyutils/api/api/status"
 
 	_ "github.com/cznic/ql/driver"
@@ -36,6 +38,8 @@ func main() {
 	mux.HandleFunc("/api/auth", auth.Auth)
 	mux.HandleFunc("/api/auth-url", auth.AuthURL)
 	mux.HandleFunc("/api/status", status.Status)
+	mux.HandleFunc("/admin", admin.Admin)
+	mux.HandleFunc("/admin/delete-all-tokens", admin.DeleteAllUserTokens)
 
 	log.Printf("Starting server on address http://%s", *config.Address)
 	err = http.ListenAndServe(*config.Address, mux)
