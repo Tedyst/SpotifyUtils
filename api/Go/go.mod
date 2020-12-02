@@ -14,5 +14,3 @@ require (
 	golang.org/x/net v0.0.0-20201016165138-7b1cca2348c0 // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 )
-
-replace github.com/savsgio/gotils@latest => github.com/savsgio/gotils v0.0.0-20200607175032-c988cd3fda06
