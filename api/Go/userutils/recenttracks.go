@@ -102,4 +102,5 @@ func (u *User) StopRecentTracksUpdater() {
 		return
 	}
 	close(*u.RecentTracksTimer)
+	u.RecentTracksTimer = nil
 }
