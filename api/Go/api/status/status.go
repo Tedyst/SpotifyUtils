@@ -35,7 +35,7 @@ func Status(res http.ResponseWriter, req *http.Request) {
 	val := session.Values["username"]
 	user := userutils.GetUser(val.(string))
 	user.RefreshUser()
-	go user.UpdateRecentTracks()
+	user.StartRecentTracksUpdater()
 	go user.Save()
 
 	response.Success = true

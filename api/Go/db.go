@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"log"
+
+	"github.com/tedyst/spotifyutils/api/userutils"
 )
 
 func initDB(db *sql.DB) {
@@ -32,4 +34,17 @@ func initDB(db *sql.DB) {
 		log.Fatalln(err)
 	}
 	defer tx.Commit()
+	rows, err := tx.Query(`SELECT ID from users`)
+	if err != nil {
+		log.Println(err)
+	}
+	for rows.Next() {
+		var uid string
+		err := rows.Scan(&uid)
+		if err != nil {
+			log.Println(err)
+		}
+		u := userutils.GetUser(uid)
+		u.StartRecentTracksUpdater()
+	}
 }

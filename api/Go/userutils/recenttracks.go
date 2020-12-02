@@ -9,6 +9,8 @@ import (
 	"github.com/zmb3/spotify"
 )
 
+var updateTimer = 2 * time.Hour
+
 // UpdateRecentTracks updates the recent tracks
 func (u *User) UpdateRecentTracks() {
 	if u.Settings.RecentTracks == false {
@@ -71,9 +73,15 @@ func (u *User) UpdateRecentTracks() {
 
 func (u *User) StartRecentTracksUpdater() {
 	if u.RecentTracksTimer != nil {
+		if u.Settings.RecentTracks == false {
+			u.StopRecentTracksUpdater()
+		}
 		return
 	}
-	ticker := time.NewTicker(1 * time.Hour)
+	// Update once
+	go u.UpdateRecentTracks()
+
+	ticker := time.NewTicker(updateTimer)
 	quit := make(chan struct{})
 	u.RecentTracksTimer = &quit
 	go func(u *User) {
