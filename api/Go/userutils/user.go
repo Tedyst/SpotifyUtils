@@ -29,6 +29,8 @@ type UserSettings struct {
 
 var usersCache []*User
 
+const userRefreshTimeout = 10 * time.Minute
+
 func GetUser(ID string) *User {
 	for _, s := range usersCache {
 		if s.ID == ID {
@@ -92,7 +94,7 @@ func (u *User) RefreshUser() error {
 	if !u.Token.Valid() {
 		return errors.New("Token expired")
 	}
-	if time.Since(u.LastUpdated) < time.Hour {
+	if time.Since(u.LastUpdated) < userRefreshTimeout {
 		return nil
 	}
 	client := config.SpotifyAPI.NewClient(u.Token)

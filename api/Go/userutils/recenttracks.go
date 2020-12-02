@@ -9,7 +9,7 @@ import (
 	"github.com/zmb3/spotify"
 )
 
-var updateTimer = 2 * time.Hour
+const updateTimer = 2 * time.Hour
 
 // UpdateRecentTracks updates the recent tracks
 func (u *User) UpdateRecentTracks() {
