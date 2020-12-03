@@ -70,7 +70,7 @@ func HandlerUsername(res http.ResponseWriter, req *http.Request) {
 		Name: target.DisplayName,
 	}
 	if len(target.Images) > 0 {
-		response.Initiator.Image = target.Images[0].URL
+		response.Target.Image = target.Images[0].URL
 	}
 	response.Result = user.Compare(target)
 

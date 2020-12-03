@@ -91,6 +91,7 @@ func GetUser(ID string) *User {
 	}
 
 	usersCache = append(usersCache, user)
+	user.RefreshUser()
 	return user
 }
 
