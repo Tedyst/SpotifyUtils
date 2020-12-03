@@ -21,7 +21,7 @@ func (u *User) UpdateRecentTracks() {
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
 	items, err := u.Client.PlayerRecentlyPlayedOpt(options)
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "user.UpdateRecentTracks()"}).Inc()
+		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
 		return
 	}
 	if len(items) == 0 {
@@ -37,7 +37,7 @@ func (u *User) UpdateRecentTracks() {
 		rows, err = config.DB.Query("SELECT SongID,Time FROM listened WHERE Time >= ? AND Time <= ? AND UserID = ?", last, first, u.ID)
 	}
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "user.UpdateRecentTracks()"}).Inc()
+		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
 		return
 	}
 	defer rows.Close()
@@ -56,19 +56,19 @@ func (u *User) UpdateRecentTracks() {
 	}
 	tx, err := config.DB.Begin()
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "user.UpdateRecentTracks()"}).Inc()
+		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
 		return
 	}
 	for _, s := range items {
 		_, err := tx.Exec("INSERT INTO listened (UserID, SongID, Time) VALUES (?, ?, ?)", u.ID, s.Track.ID, s.PlayedAt.Unix())
 		if err != nil {
-			metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "user.UpdateRecentTracks()"}).Inc()
+			metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
 			return
 		}
 	}
 	err = tx.Commit()
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "user.UpdateRecentTracks()"}).Inc()
+		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
 		return
 	}
 }
