@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/tedyst/spotifyutils/api/api/compare"
+	"github.com/tedyst/spotifyutils/api/api/recenttracks"
 
 	"github.com/tedyst/spotifyutils/api/api/top"
 
@@ -57,6 +58,7 @@ func main() {
 	m.HandleFunc("/api/status", status.StatusHandler)
 	m.HandleFunc("/api/top", top.TopHandler)
 	m.HandleFunc("/api/compare", compare.HandlerNoUsername)
+	m.HandleFunc("/api/recent", recenttracks.Handler)
 	m.HandleFunc("/api/compare/{code}", compare.HandlerUsername)
 	m.HandleFunc("/admin", admin.Admin)
 	m.HandleFunc("/admin/delete-all-tokens", admin.DeleteAllUserTokens)

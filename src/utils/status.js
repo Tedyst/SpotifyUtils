@@ -32,7 +32,7 @@ export default function Update() {
             fetch('/api/compare').then(res => res.json()).then(data => {
                 dispatch(setCompare(data));
             });
-            fetch('/api/recent/me').then(res => res.json()).then(data => {
+            fetch('/api/recent').then(res => res.json()).then(data => {
                 dispatch(setRecent(data));
             });
         }

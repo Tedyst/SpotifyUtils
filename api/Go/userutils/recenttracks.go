@@ -24,6 +24,11 @@ func (u *User) UpdateRecentTracks() {
 		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
 		return
 	}
+	u.insertRecentTracks(items)
+}
+
+func (u *User) insertRecentTracks(items []spotify.RecentlyPlayedItem) {
+	var err error
 	if len(items) == 0 {
 		return
 	}
@@ -105,4 +110,17 @@ func (u *User) StopRecentTracksUpdater() {
 	}
 	close(*u.RecentTracksTimer)
 	u.RecentTracksTimer = nil
+}
+
+func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
+	options := &spotify.RecentlyPlayedOptions{Limit: 50}
+	items, err := u.Client.PlayerRecentlyPlayedOpt(options)
+	if err != nil {
+		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
+		return []spotify.RecentlyPlayedItem{}
+	}
+	if u.Settings.RecentTracks == true {
+		u.insertRecentTracks(items)
+	}
+	return items
 }
