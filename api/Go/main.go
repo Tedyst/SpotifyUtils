@@ -32,6 +32,9 @@ func middleware(h http.Handler) http.Handler {
 	})
 }
 
+// 10 days
+const maxAge = 864000
+
 func main() {
 	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
 
@@ -41,7 +44,7 @@ func main() {
 
 	initDB(config.DB)
 
-	config.SessionStore, err = sqlitestore.NewSqliteStoreFromConnection(config.DB, "sessions", "/", 3600, config.Secret)
+	config.SessionStore, err = sqlitestore.NewSqliteStoreFromConnection(config.DB, "sessions", "/", maxAge, config.Secret)
 	checkErr(err)
 
 	mux := http.NewServeMux()
