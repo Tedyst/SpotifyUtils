@@ -57,23 +57,61 @@ func HandlerUsername(res http.ResponseWriter, req *http.Request) {
 
 	response.Success = true
 	response.Initiator = RespUser{
-		ID:   user.ID,
-		Code: user.CompareCode,
-		Name: user.DisplayName,
-	}
-	if len(user.Images) > 0 {
-		response.Initiator.Image = user.Images[0].URL
+		ID:    user.ID,
+		Code:  user.CompareCode,
+		Name:  user.DisplayName,
+		Image: user.GetImageURL(),
 	}
 	response.Target = RespUser{
-		ID:   target.ID,
-		Code: target.CompareCode,
-		Name: target.DisplayName,
-	}
-	if len(target.Images) > 0 {
-		response.Target.Image = target.Images[0].URL
+		ID:    target.ID,
+		Code:  target.CompareCode,
+		Name:  target.DisplayName,
+		Image: target.GetImageURL(),
 	}
 	response.Result = user.Compare(target)
 	user.AddFriend(target)
+
+	respJSON, _ := json.Marshal(response)
+	fmt.Fprintf(res, string(respJSON))
+}
+
+func HandlerNoUsername(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+	session, _ := config.SessionStore.Get(req, "username")
+	type RespUser struct {
+		ID    string `json:"username"`
+		Name  string `json:"name"`
+		Image string `json:"image"`
+		Code  string `json:"code"`
+	}
+	type Resp struct {
+		Friends []RespUser `json:"friends"`
+		Success bool       `json:"success"`
+		Error   string     `json:"error,omitempty"`
+		Code    string     `json:"code"`
+	}
+
+	response := &Resp{}
+	if _, ok := session.Values["username"]; !ok {
+		response.Success = false
+		response.Error = "Not Logged in"
+		respJSON, _ := json.Marshal(response)
+		fmt.Fprintf(res, string(respJSON))
+		return
+	}
+	val := session.Values["username"]
+	user := userutils.GetUser(val.(string))
+
+	for _, s := range user.GetFriends() {
+		response.Friends = append(response.Friends, RespUser{
+			Code:  s.CompareCode,
+			ID:    s.ID,
+			Name:  s.DisplayName,
+			Image: s.GetImageURL(),
+		})
+	}
+	response.Success = true
+	response.Code = user.CompareCode
 
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprintf(res, string(respJSON))

@@ -56,6 +56,7 @@ func main() {
 	m.HandleFunc("/api/auth-url", auth.AuthURL)
 	m.HandleFunc("/api/status", status.StatusHandler)
 	m.HandleFunc("/api/top", top.TopHandler)
+	m.HandleFunc("/api/compare", compare.HandlerNoUsername)
 	m.HandleFunc("/api/compare/{code}", compare.HandlerUsername)
 	m.HandleFunc("/admin", admin.Admin)
 	m.HandleFunc("/admin/delete-all-tokens", admin.DeleteAllUserTokens)

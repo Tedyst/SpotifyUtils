@@ -97,17 +97,17 @@ func generateNewCompareCode() string {
 	return ""
 }
 
-func (u *User) GetFriends() []string {
+func (u *User) GetFriends() []*User {
 	rows, err := config.DB.Query("SELECT FriendID FROM friends WHERE ID = ?", u.ID)
 	if err != nil {
 		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.GetFriends()"}).Inc()
-		return []string{}
+		return []*User{}
 	}
-	var result []string
+	var result []*User
 	for rows.Next() {
 		var temp string
 		rows.Scan(&temp)
-		result = append(result, temp)
+		result = append(result, GetUser(temp))
 	}
 	return result
 }

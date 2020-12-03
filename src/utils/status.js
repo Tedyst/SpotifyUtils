@@ -29,7 +29,7 @@ export default function Update() {
             fetch('/api/top').then(res => res.json()).then(data => {
                 dispatch(setTop(data["result"]));
             });
-            fetch('/api/compare/').then(res => res.json()).then(data => {
+            fetch('/api/compare').then(res => res.json()).then(data => {
                 dispatch(setCompare(data));
             });
             fetch('/api/recent/me').then(res => res.json()).then(data => {

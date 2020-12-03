@@ -91,7 +91,7 @@ func GetUser(ID string) *User {
 	}
 
 	usersCache = append(usersCache, user)
-	user.RefreshUser()
+	go user.RefreshUser()
 	return user
 }
 
@@ -160,4 +160,11 @@ func (u *User) RefreshUser() error {
 	u.UpdateRecentTracks()
 	u.Save()
 	return nil
+}
+
+func (u *User) GetImageURL() string {
+	if len(u.Images) > 0 {
+		return u.Images[0].URL
+	}
+	return ""
 }
