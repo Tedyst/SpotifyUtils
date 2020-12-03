@@ -1,4 +1,4 @@
-package status
+package top
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	"github.com/tedyst/spotifyutils/api/userutils"
 )
 
-func StatusHandler(res http.ResponseWriter, req *http.Request) {
+func TopHandler(res http.ResponseWriter, req *http.Request) {
 	type playlistResponse struct {
 		ID     string   `json:"id,omitempty"`
 		Name   string   `json:"name,omitempty"`
@@ -34,28 +34,7 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	}
 	val := session.Values["username"]
 	user := userutils.GetUser(val.(string))
-	user.RefreshUser()
-	user.StartRecentTracksUpdater()
-	go user.Save()
-
-	response.Success = true
-	if user.DisplayName == "" {
-		response.Username = user.ID
-	} else {
-		response.Username = user.DisplayName
-	}
-
-	if len(user.Images) > 0 {
-		response.Image = user.Images[0].URL
-	}
-
-	for _, s := range user.Playlists {
-		playlist := &playlistResponse{
-			ID:   string(s.ID),
-			Name: s.Name,
-		}
-		response.Playlists = append(response.Playlists, *playlist)
-	}
+	user.Top()
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprintf(res, string(respJSON))
 }

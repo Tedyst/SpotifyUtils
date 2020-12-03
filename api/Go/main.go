@@ -5,11 +5,12 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/tedyst/spotifyutils/api/api/top"
+
 	"github.com/tedyst/spotifyutils/api/metrics"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/tedyst/spotifyutils/api/api/admin"
-
 	"github.com/tedyst/spotifyutils/api/api/status"
 
 	_ "github.com/cznic/ql/driver"
@@ -50,7 +51,8 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/auth", auth.Auth)
 	mux.HandleFunc("/api/auth-url", auth.AuthURL)
-	mux.HandleFunc("/api/status", status.Status)
+	mux.HandleFunc("/api/status", status.StatusHandler)
+	mux.HandleFunc("/api/top", top.TopHandler)
 	mux.HandleFunc("/admin", admin.Admin)
 	mux.HandleFunc("/admin/delete-all-tokens", admin.DeleteAllUserTokens)
 
