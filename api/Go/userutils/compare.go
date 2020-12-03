@@ -78,6 +78,9 @@ func (u1 *User) compare(u2 *User) CompareStruct {
 	result.Score += float32(150 * tracksScore / tracksTotal)
 	result.Score += float32(100 * artistScore / artistTotal)
 	result.Score += float32(80 * genresScore / genresTotal)
+	if result.Score > 100 {
+		result.Score = 100
+	}
 	return result
 }
 
