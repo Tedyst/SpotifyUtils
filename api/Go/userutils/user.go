@@ -2,10 +2,13 @@ package userutils
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/tedyst/spotifyutils/api/config"
+	"github.com/tedyst/spotifyutils/api/metrics"
 	"github.com/zmb3/spotify"
 	"golang.org/x/oauth2"
 )
@@ -22,6 +25,7 @@ type User struct {
 	Settings          UserSettings
 	RecentTracksTimer *chan struct{}
 	Top               TopResult
+	CompareCode       string
 }
 
 type UserSettings struct {
@@ -38,7 +42,7 @@ func GetUser(ID string) *User {
 			return s
 		}
 	}
-	rows, err := config.DB.Query("SELECT ID, RefreshToken, Expiration FROM users WHERE ID = ?", ID)
+	rows, err := config.DB.Query("SELECT ID, RefreshToken, Expiration, CompareCode FROM users WHERE ID = ?", ID)
 	if err != nil {
 		log.Println(err)
 	}
@@ -54,7 +58,8 @@ func GetUser(ID string) *User {
 		expiration := int64(0)
 		err := rows.Scan(&user.ID,
 			&user.Token.RefreshToken,
-			&expiration)
+			&expiration,
+			&user.CompareCode)
 		user.Token.Expiry = time.Unix(expiration, 0)
 		if err != nil {
 			log.Println(err)
@@ -66,9 +71,10 @@ func GetUser(ID string) *User {
 
 	if !exists {
 		user.Token.Expiry = time.Now()
+		user.CompareCode = generateNewCompareCode()
 
-		_, err := config.DB.Exec(`INSERT INTO users (ID, RefreshToken, Expiration) VALUES(?,?,?)`,
-			user.ID, "", user.Token.Expiry.Unix())
+		_, err := config.DB.Exec(`INSERT INTO users (ID, RefreshToken, Expiration, CompareCode) VALUES(?,?,?,?)`,
+			user.ID, "", user.Token.Expiry.Unix(), user.CompareCode)
 		if err != nil {
 			log.Println(err)
 		}
@@ -86,6 +92,27 @@ func GetUser(ID string) *User {
 
 	usersCache = append(usersCache, user)
 	return user
+}
+
+func GetUserFromCompareCode(code string) *User {
+	for _, s := range usersCache {
+		if s.CompareCode == code {
+			return s
+		}
+	}
+	rows, err := config.DB.Query("SELECT ID FROM users WHERE CompareCode = ?", code)
+	if err != nil {
+		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.GetUserFromCompareCode()"}).Inc()
+		return nil
+	}
+	var uid string
+	for rows.Next() {
+		rows.Scan(&uid)
+	}
+	if uid != "" {
+		return GetUser(uid)
+	}
+	return nil
 }
 
 func (u *User) Save() {

@@ -1,7 +1,7 @@
 venv/
 .env
 *.pyc
-data.db
+*.db
 asd.txt
 ui/
 __debug_bin

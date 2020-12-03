@@ -32,8 +32,8 @@ type TopResult struct {
 	Tracks  []TopTrack  `json:"tracks"`
 }
 
-// Top returns the top from user's preferences
-func (u *User) UpdateTop() error {
+// RefreshTop updated the user's top
+func (u *User) RefreshTop() error {
 	if time.Since(time.Unix(u.Top.Updated, 0)) < 10*time.Minute {
 		return nil
 	}
@@ -61,8 +61,6 @@ func (u *User) UpdateTop() error {
 		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.Top()"}).Inc()
 		return err
 	}
-	fmt.Println(shortTopTracks)
-	fmt.Println(longTopArtists)
 
 	result.Genres = sortGenres(longTopArtists)
 

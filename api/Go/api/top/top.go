@@ -27,7 +27,7 @@ func TopHandler(res http.ResponseWriter, req *http.Request) {
 	}
 	val := session.Values["username"]
 	user := userutils.GetUser(val.(string))
-	err := user.UpdateTop()
+	err := user.RefreshTop()
 	if err != nil {
 		response.Success = false
 		response.Error = fmt.Sprint(err)
