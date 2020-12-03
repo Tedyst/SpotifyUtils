@@ -34,6 +34,13 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	}
 	val := session.Values["username"]
 	user := userutils.GetUser(val.(string))
+	if !user.Token.Valid() {
+		response.Success = false
+		response.Error = "Token not valid!"
+		respJSON, _ := json.Marshal(response)
+		fmt.Fprintf(res, string(respJSON))
+		return
+	}
 	user.RefreshUser()
 	user.StartRecentTracksUpdater()
 	go user.Save()

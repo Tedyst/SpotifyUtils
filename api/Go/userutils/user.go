@@ -66,8 +66,8 @@ func GetUser(ID string) *User {
 	if !exists {
 		user.Token.Expiry = time.Now()
 
-		_, err := config.DB.Exec(`INSERT INTO users (ID, RefreshToken, Expiration) VALUES(?,?,?,?)`,
-			user.ID, "", "", user.Token.Expiry.Unix())
+		_, err := config.DB.Exec(`INSERT INTO users (ID, RefreshToken, Expiration) VALUES(?,?,?)`,
+			user.ID, "", user.Token.Expiry.Unix())
 		if err != nil {
 			log.Println(err)
 		}
