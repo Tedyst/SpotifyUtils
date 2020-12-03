@@ -73,6 +73,7 @@ func HandlerUsername(res http.ResponseWriter, req *http.Request) {
 		response.Target.Image = target.Images[0].URL
 	}
 	response.Result = user.Compare(target)
+	user.AddFriend(target)
 
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprintf(res, string(respJSON))

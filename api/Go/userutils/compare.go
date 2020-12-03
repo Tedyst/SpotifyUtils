@@ -1,10 +1,13 @@
 package userutils
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/tedyst/spotifyutils/api/config"
+	"github.com/tedyst/spotifyutils/api/metrics"
 )
 
 type CompareStruct struct {
@@ -92,4 +95,42 @@ func generateNewCompareCode() string {
 	}
 	// If this ever happens...
 	return ""
+}
+
+func (u *User) GetFriends() []string {
+	rows, err := config.DB.Query("SELECT FriendID FROM friends WHERE ID = ?", u.ID)
+	if err != nil {
+		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.GetFriends()"}).Inc()
+		return []string{}
+	}
+	var result []string
+	for rows.Next() {
+		var temp string
+		rows.Scan(&temp)
+		result = append(result, temp)
+	}
+	return result
+}
+
+func (u *User) AddFriend(target *User) {
+	u.addFriend(target)
+	target.addFriend(u)
+}
+
+func (u *User) addFriend(target *User) {
+	rows := config.DB.QueryRow("SELECT COUNT(*) FROM friends WHERE ID = ? AND FriendID = ?", u.ID, target.ID)
+	var count int
+	err := rows.Scan(&count)
+	if err != nil {
+		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.addFriend()"}).Inc()
+		return
+	}
+	if count == 1 {
+		return
+	}
+	_, err = config.DB.Exec("INSERT INTO friends (ID, FriendID) VALUES (?,?)", u.ID, target.ID)
+	if err != nil {
+		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.addFriend()"}).Inc()
+		return
+	}
 }

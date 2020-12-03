@@ -33,6 +33,14 @@ func initDB(db *sql.DB) {
 		tx.Rollback()
 		log.Fatalln(err)
 	}
+	_, err = tx.Exec(`CREATE TABLE IF NOT EXISTS "friends" (
+		"ID" VARCHAR(25) NULL,
+		"FriendID" VARCHAR(25) NULL,
+	);`)
+	if err != nil {
+		tx.Rollback()
+		log.Fatalln(err)
+	}
 	defer tx.Commit()
 	rows, err := tx.Query(`SELECT ID from users`)
 	if err != nil {

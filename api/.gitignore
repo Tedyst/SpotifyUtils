@@ -2,6 +2,7 @@ venv/
 .env
 *.pyc
 *.db
+*.db-journal
 asd.txt
 ui/
 __debug_bin
