@@ -33,6 +33,8 @@ func middleware(h http.Handler) http.Handler {
 }
 
 func main() {
+	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
+
 	datab, err := sql.Open("sqlite3", "./data.db")
 	config.DB = datab
 	checkErr(err)
@@ -41,8 +43,6 @@ func main() {
 
 	config.SessionStore, err = sqlitestore.NewSqliteStoreFromConnection(config.DB, "sessions", "/", 3600, config.Secret)
 	checkErr(err)
-
-	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/auth", auth.Auth)

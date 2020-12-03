@@ -10,4 +10,9 @@ var (
 		Name: "spotifyutils_requests_served",
 		Help: "The total number of requests served",
 	})
+
+	ErrorCount = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "spotifyutils_error_count",
+		Help: "The total number of errors returned to user",
+	}, []string{"error", "source"})
 )

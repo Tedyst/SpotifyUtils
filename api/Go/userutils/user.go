@@ -45,6 +45,7 @@ func GetUser(ID string) *User {
 		ID:    ID,
 		Token: new(oauth2.Token),
 	}
+	user.Token.TokenType = "Bearer"
 	defer rows.Close()
 	exists := false
 	for rows.Next() {
@@ -65,7 +66,7 @@ func GetUser(ID string) *User {
 
 	if !exists {
 		user.Token.Expiry = time.Now()
-		user.Token.TokenType = "Bearer"
+
 		_, err := config.DB.Exec(`INSERT INTO users (ID, Token, RefreshToken, Expiration) VALUES(?,?,?,?)`,
 			user.ID, "", "", user.Token.Expiry.Unix())
 		if err != nil {
@@ -78,6 +79,11 @@ func GetUser(ID string) *User {
 	if err != nil {
 		log.Println(err)
 	}
+	t, err := user.Client.Token()
+	if err == nil {
+		user.Token = t
+	}
+
 	usersCache = append(usersCache, user)
 	return user
 }
