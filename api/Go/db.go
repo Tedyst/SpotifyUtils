@@ -25,7 +25,6 @@ func initDB(db *sql.DB) {
 	}
 	_, err = tx.Exec(`CREATE TABLE IF NOT EXISTS "users" (
 		"ID" VARCHAR(25) UNIQUE,
-        "Token" VARCHAR(25) NULL,
 		"RefreshToken" VARCHAR(25) NULL,
 		"Expiration" INTEGER NULL
 	);`)
