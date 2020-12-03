@@ -35,7 +35,7 @@ func initDB(db *sql.DB) {
 	}
 	_, err = tx.Exec(`CREATE TABLE IF NOT EXISTS "friends" (
 		"ID" VARCHAR(25) NULL,
-		"FriendID" VARCHAR(25) NULL,
+		"FriendID" VARCHAR(25) NULL
 	);`)
 	if err != nil {
 		tx.Rollback()
