@@ -22,12 +22,12 @@ export default function Update() {
             else
                 dispatch(setUsername(data.username));
 
-            if (!data.logged)
+            if (!data.success)
                 localStorage.clear();
         })
-        if (data.logged) {
-            fetch('/api/top/me').then(res => res.json()).then(data => {
-                dispatch(setTop(data));
+        if (data.success) {
+            fetch('/api/top').then(res => res.json()).then(data => {
+                dispatch(setTop(data["result"]));
             });
             fetch('/api/compare/').then(res => res.json()).then(data => {
                 dispatch(setCompare(data));

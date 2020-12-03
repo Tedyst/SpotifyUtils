@@ -21,6 +21,7 @@ type User struct {
 	Client            spotify.Client
 	Settings          UserSettings
 	RecentTracksTimer *chan struct{}
+	Top               TopResult
 }
 
 type UserSettings struct {
