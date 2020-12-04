@@ -33,54 +33,47 @@ func (u1 *User) compare(u2 *User) CompareStruct {
 	t2 := u2.Top
 	result := CompareStruct{}
 
-	artistTotal := 1
-	artistScore := 0
+	artistCount := 0
 	artistMax := len(t1.Artists)
 	if len(t1.Artists) < len(t2.Artists) {
 		artistMax = len(t2.Artists)
 	}
-	for i1, s1 := range t1.Artists {
-		artistTotal += artistMax - i1
-		for i2, s2 := range t2.Artists {
+	for _, s1 := range t1.Artists {
+		for _, s2 := range t2.Artists {
 			if s1.ID == s2.ID {
-				artistScore += artistMax - i2
+				artistCount++
 				result.CommonArtists = append(result.CommonArtists, s1)
 			}
 		}
 	}
 
-	tracksTotal := 1
+	tracksTotal := len(t1.Tracks)
 	tracksScore := 0
-	tracksMax := len(t1.Tracks)
-	for i1, s1 := range t1.Tracks {
-		tracksTotal += tracksMax - i1
-		for i2, s2 := range t2.Tracks {
+	for _, s1 := range t1.Tracks {
+		for _, s2 := range t2.Tracks {
 			if s1.ID == s2.ID {
-				tracksScore += tracksMax - i2
+				tracksScore++
 				result.CommonTracks = append(result.CommonTracks, s1)
 			}
 		}
 	}
 
-	genresTotal := 1
+	genresTotal := len(t1.Genres)
 	genresScore := 0
-	genresMax := len(t1.Genres)
-	for i1, s1 := range t1.Genres {
-		genresTotal += genresMax - i1
-		for i2, s2 := range t2.Genres {
+	for _, s1 := range t1.Genres {
+		for _, s2 := range t2.Genres {
 			if s1 == s2 {
-				genresScore += genresMax - i2
+				genresScore++
 				result.CommonGenres = append(result.CommonGenres, s1)
 			}
 		}
 	}
 
-	result.Score += float32(150 * tracksScore / tracksTotal)
-	result.Score += float32(100 * artistScore / artistTotal)
-	result.Score += float32(80 * genresScore / genresTotal)
-	if result.Score > 100 {
-		result.Score = 100
-	}
+	result.Score += float32(100 * tracksScore / tracksTotal)
+	result.Score += float32(100 * artistCount / artistMax)
+	result.Score += float32(100 * genresScore / genresTotal)
+	result.Score = float32(result.Score / 3)
+
 	return result
 }
 

@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/cznic/b v0.0.0-20181122101859-a26611c4d92d // indirect
 	github.com/cznic/ql v1.2.0
+	github.com/gabyshev/genius-api v0.0.0-20171219135306-0b47a9d5ca7a
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/uuid v1.0.0
 	github.com/gorilla/mux v1.7.3

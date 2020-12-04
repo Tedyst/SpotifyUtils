@@ -5,6 +5,7 @@ import (
 	"flag"
 	"os"
 
+	"github.com/gabyshev/genius-api/genius"
 	"github.com/michaeljs1990/sqlitestore"
 	"github.com/zmb3/spotify"
 )
@@ -26,6 +27,9 @@ var (
 
 	DB           *sql.DB
 	SessionStore *sqlitestore.SqliteStore
+
+	GeniusToken  = flag.String("GeniusToken", lookupEnvOrString("GENIUS_TOKEN", ""), "The Genius Client Token")
+	GeniusClient = genius.NewClient(nil, *GeniusToken)
 )
 
 func lookupEnvOrString(key string, defaultVal string) string {
