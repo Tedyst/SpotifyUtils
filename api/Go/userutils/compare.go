@@ -88,7 +88,8 @@ func generateNewCompareCode() string {
 	var count int
 	for length := 6; length <= 12; length++ {
 		for i := 1; i <= 10; i++ {
-			newUUID := uuid.New().String()[:length]
+			newUUID := uuid.New().String()
+			newUUID = newUUID[len(newUUID)-12:]
 			res := config.DB.QueryRow("SELECT COUNT(*) FROM users WHERE CompareCode = ?", newUUID)
 			res.Scan(&count)
 			if count == 0 {
