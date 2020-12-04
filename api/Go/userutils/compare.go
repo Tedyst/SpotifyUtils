@@ -31,7 +31,12 @@ func (u1 *User) Compare(u2 *User) CompareStruct {
 func (u1 *User) compare(u2 *User) CompareStruct {
 	t1 := u1.Top
 	t2 := u2.Top
-	result := CompareStruct{}
+	result := CompareStruct{
+		CommonArtists: []TopArtist{},
+		CommonTracks:  []TopTrack{},
+		CommonGenres:  []string{},
+		Score:         0,
+	}
 
 	artistCount := 0
 	artistMax := len(t1.Artists)
