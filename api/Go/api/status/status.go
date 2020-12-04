@@ -35,11 +35,16 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	val := session.Values["username"]
 	user := userutils.GetUser(val.(string))
 	if !user.Token.Valid() {
-		response.Success = false
-		response.Error = "Token not valid!"
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
-		return
+		// Try to refresh the token
+		t, err := user.Client.Token()
+		if err != nil {
+			response.Success = false
+			response.Error = "Token not valid!"
+			respJSON, _ := json.Marshal(response)
+			fmt.Fprintf(res, string(respJSON))
+			return
+		}
+		user.Token = t
 	}
 	user.RefreshUser()
 	user.StartRecentTracksUpdater()
