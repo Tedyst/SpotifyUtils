@@ -8,6 +8,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/tedyst/spotifyutils/api/config"
 	"github.com/tedyst/spotifyutils/api/metrics"
+	"github.com/tedyst/spotifyutils/api/tracks"
 	"github.com/zmb3/spotify"
 )
 
@@ -24,10 +25,9 @@ func (u *User) UpdateRecentTracks() {
 		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
 		return
 	}
-	// for _, s := range items {
-	// 	t := tracks.SimpleConvertToTrack(s.Track)
-	// 	t.UpdateLyrics()
-	// }
+	t := tracks.SimpleConvertToTrack(items[0].Track)
+	t.UpdateLyrics()
+
 	u.insertRecentTracks(items)
 }
 

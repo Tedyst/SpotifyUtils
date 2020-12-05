@@ -41,6 +41,22 @@ func initDB(db *sql.DB) {
 		tx.Rollback()
 		log.Fatalln(err)
 	}
+	_, err = tx.Exec(`CREATE TABLE IF NOT EXISTS "trackLyrics" (
+		"ID" VARCHAR(25) NULL,
+		"Lyrics" VARCHAR(1000) NULL
+	);`)
+	if err != nil {
+		tx.Rollback()
+		log.Fatalln(err)
+	}
+	_, err = tx.Exec(`CREATE TABLE IF NOT EXISTS "trackFeatures" (
+		"ID" VARCHAR(25) NULL,
+		"LastUpdated" INTEGER NULL
+	);`)
+	if err != nil {
+		tx.Rollback()
+		log.Fatalln(err)
+	}
 	defer tx.Commit()
 	rows, err := tx.Query(`SELECT ID from users`)
 	if err != nil {

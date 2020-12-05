@@ -3,6 +3,7 @@ package tracks
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -34,6 +35,7 @@ func getTrackFromDB(ID string) *Track {
 		_, err := config.DB.Exec("INSERT INTO trackLyrics (ID, Lyrics) VALUES (?,?)", ID, "")
 		if err != nil {
 			metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "tracks.GetTrack()"}).Inc()
+			log.Print(err)
 		}
 		lyrics = ""
 	}
@@ -43,10 +45,11 @@ func getTrackFromDB(ID string) *Track {
 	var temp int64
 	err = rows.Scan(&temp)
 	if err == sql.ErrNoRows {
-		lastUpdated = time.Now()
+		lastUpdated = time.Unix(0, 0)
 		_, err = config.DB.Exec("INSERT INTO trackFeatures (ID, LastUpdated) VALUES (?,?)", ID, lastUpdated.Unix())
 		if err != nil {
 			metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "tracks.GetTrack()"}).Inc()
+			log.Print(err)
 		}
 	} else {
 		lastUpdated = time.Unix(temp, 0)
@@ -56,4 +59,22 @@ func getTrackFromDB(ID string) *Track {
 		Lyrics:      lyrics,
 		LastUpdated: lastUpdated,
 	}
+}
+
+func (t *Track) Save() error {
+	_, err := config.DB.Exec(`UPDATE trackLyrics SET Lyrics = ? WHERE ID = ?`,
+		t.Lyrics, t.ID)
+	if err != nil {
+		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "tracks.Save()"}).Inc()
+		log.Print(err)
+		return err
+	}
+	_, err = config.DB.Exec(`UPDATE trackFeatures SET LastUpdated = ? WHERE ID = ?`,
+		t.LastUpdated.Unix(), t.ID)
+	if err != nil {
+		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "tracks.Save()"}).Inc()
+		log.Print(err)
+		return err
+	}
+	return nil
 }
