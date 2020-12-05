@@ -27,6 +27,17 @@ func SimpleConvertToTrack(s spotify.SimpleTrack) *Track {
 	return track
 }
 
+func GetTrackFromID(cl spotify.Client, ID string) *Track {
+	spotifyTrack, err := cl.GetTrack(spotify.ID(ID))
+	if err != nil {
+		return getTrackFromDB(ID)
+	}
+	track := getTrackFromDB(ID)
+	track.Artist = spotifyTrack.Artists[0].Name
+	track.Name = spotifyTrack.Name
+	return track
+}
+
 func getTrackFromDB(ID string) *Track {
 	rows := config.DB.QueryRow("SELECT Lyrics FROM trackLyrics WHERE ID = ?", ID)
 	var lyrics string

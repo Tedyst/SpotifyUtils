@@ -15,6 +15,6 @@ require (
 	github.com/michaeljs1990/sqlitestore v0.0.0-20190919182151-25d6d7f2e768
 	github.com/prometheus/client_golang v1.8.0
 	github.com/zmb3/spotify v0.0.0-20200814173021-9bec46940cc0
-	golang.org/x/net v0.0.0-20201016165138-7b1cca2348c0 // indirect
+	golang.org/x/net v0.0.0-20201016165138-7b1cca2348c0
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 )

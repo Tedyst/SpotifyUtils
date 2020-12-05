@@ -3,6 +3,7 @@ package userutils
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -19,14 +20,20 @@ func (u *User) UpdateRecentTracks() {
 	if u.Settings.RecentTracks == false {
 		return
 	}
+	log.Printf("Updating recent tracks for %s", u.ID)
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
 	items, err := u.Client.PlayerRecentlyPlayedOpt(options)
 	if err != nil {
 		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
 		return
 	}
-	t := tracks.SimpleConvertToTrack(items[0].Track)
-	t.UpdateLyrics()
+	// for _, s := range items {
+	// 	t := tracks.SimpleConvertToTrack(s.Track)
+	// 	t.UpdateLyrics()
+	// 	log.Printf("Tried lyrics for %s-%s", t.Artist, t.Name)
+	// }
+	tr := tracks.GetTrackFromID(u.Client, "5srKMwXoeyrRnyTnNbpgIW")
+	tr.UpdateLyrics()
 
 	u.insertRecentTracks(items)
 }
