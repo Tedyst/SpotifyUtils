@@ -17,12 +17,12 @@ import (
 )
 
 func (t *Track) UpdateLyrics() error {
-	// if time.Since(t.LastUpdated) < time.Hour {
-	// 	return nil
-	// }
-	// if t.Lyrics != "" {
-	// 	return nil
-	// }
+	if time.Since(t.LastUpdated) < time.Hour {
+		return nil
+	}
+	if t.Lyrics != "" {
+		return nil
+	}
 	name := fmt.Sprintf("%s %s", t.Artist, t.Name)
 	res, err := config.GeniusClient.Search(name)
 	if err != nil {
