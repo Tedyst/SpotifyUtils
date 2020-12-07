@@ -30,20 +30,20 @@ const useStyles = makeStyles((theme) => ({
     },
     drawer: {
         [theme.breakpoints.up('sm')]: {
-        width: drawerWidth,
-        flexShrink: 0,
+            width: drawerWidth,
+            flexShrink: 0,
         },
     },
     appBar: {
         [theme.breakpoints.up('sm')]: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
+            width: `calc(100% - ${drawerWidth}px)`,
+            marginLeft: drawerWidth,
         },
     },
     menuButton: {
         marginRight: theme.spacing(2),
         [theme.breakpoints.up('sm')]: {
-        display: 'none',
+            display: 'none',
         },
     },
     toolbarName: {
@@ -74,9 +74,9 @@ function ResponsiveDrawer(props) {
     const [lastLocation, setLastLocation] = React.useState(location);
     const logged = useSelector(selectLogged);
 
-    if(!logged)
+    if (!logged)
         return null;
-    if(location !== lastLocation){
+    if (location !== lastLocation) {
         setLastLocation(location);
         setMobileOpen(false);
     }
@@ -86,65 +86,59 @@ function ResponsiveDrawer(props) {
 
     const drawer = (
         <div>
-        <div className={`${classes.toolbar} ${classes.toolbarName}`} >
-            <Typography variant="h6" noWrap className={classes.toolbarName}>
-                Spotify Utils
+            <div className={`${classes.toolbar} ${classes.toolbarName}`} >
+                <Typography variant="h6" noWrap className={classes.toolbarName}>
+                    Spotify Utils
             </Typography>
-        </div>
-        <Divider />
-        <List>
-            <ListItem button key="Home" component={Link} to="/" selected={location.pathname === "/"}>
-                <ListItemIcon>
-                    <MailIcon />
-                </ListItemIcon>
-                <ListItemText primary="Home" />
-            </ListItem>
-            <ListItem button key="PlaylistSearch" component={Link} to="/playlistsearch" selected={location.pathname === "/playlistsearch"}>
-                <ListItemIcon>
-                    <MailIcon />
-                </ListItemIcon>
-                <ListItemText primary="PlaylistSearch" />
-            </ListItem>
-            <ListItem button key="Lyrics" component={Link} to="/lyrics" selected={location.pathname === "/lyrics"}>
-                <ListItemIcon>
-                    <MailIcon />
-                </ListItemIcon>
-                <ListItemText primary="Lyrics from Playlist" />
-            </ListItem>
-            <ListItem button key="Top" component={Link} to="/top" selected={location.pathname === "/top"}>
-                <ListItemIcon>
-                    <MailIcon />
-                </ListItemIcon>
-                <ListItemText primary="Your Top" />
-            </ListItem>
-            <ListItem button key="Compare" component={Link} to="/compare" selected={location.pathname.startsWith("/compare")}>
-                <ListItemIcon>
-                    <MailIcon />
-                </ListItemIcon>
-                <ListItemText primary="Compare" />
-            </ListItem>
-            <ListItem button key="Recent-Tracks" component={Link} to="/recent" selected={location.pathname.startsWith("/recent")}>
-                <ListItemIcon>
-                    <MailIcon />
-                </ListItemIcon>
-                <ListItemText primary="Recent Tracks" />
-            </ListItem>
-            <ListItem button key="Logout" component="a" href="/logout">
-                <ListItemIcon>
-                    <MailIcon />
-                </ListItemIcon>
-                <ListItemText primary="Logout" />
-            </ListItem>
-        </List>
+            </div>
+            <Divider />
+            <List>
+                <ListItem button key="Home" component={Link} to="/" selected={location.pathname === "/"}>
+                    <ListItemIcon>
+                        <MailIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Home" />
+                </ListItem>
+                <ListItem button key="Lyrics" component={Link} to="/lyrics" selected={location.pathname === "/lyrics"}>
+                    <ListItemIcon>
+                        <MailIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Lyrics from Playlist" />
+                </ListItem>
+                <ListItem button key="Top" component={Link} to="/top" selected={location.pathname === "/top"}>
+                    <ListItemIcon>
+                        <MailIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Your Top" />
+                </ListItem>
+                <ListItem button key="Compare" component={Link} to="/compare" selected={location.pathname.startsWith("/compare")}>
+                    <ListItemIcon>
+                        <MailIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Compare" />
+                </ListItem>
+                <ListItem button key="Recent-Tracks" component={Link} to="/recent" selected={location.pathname.startsWith("/recent")}>
+                    <ListItemIcon>
+                        <MailIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Recent Tracks" />
+                </ListItem>
+                <ListItem button key="Logout" component="a" href="/logout">
+                    <ListItemIcon>
+                        <MailIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
+                </ListItem>
+            </List>
         </div>
     );
 
     const container = window !== undefined ? () => window().document.body : undefined;
 
-    const avatar = <Avatar 
-            className={classes.avatar}
-            src={props.image}
-        />;
+    const avatar = <Avatar
+        className={classes.avatar}
+        src={props.image}
+    />;
 
     const header = (
         <AppBar position="fixed" className={classes.appBar}>
@@ -165,41 +159,41 @@ function ResponsiveDrawer(props) {
             </Toolbar>
         </AppBar>
     )
-    
+
     return (
         <div className={classes.root}>
-        <CssBaseline />
-        {header}
-        <nav className={classes.drawer} aria-label="mailbox folders">
-            <Hidden smUp implementation="css">
-            <Drawer
-                container={container}
-                variant="temporary"
-                anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-                open={mobileOpen}
-                onClose={handleDrawerToggle}
-                classes={{
-                paper: classes.drawerPaper,
-                }}
-                ModalProps={{
-                keepMounted: true,
-                }}
-            >
-                {drawer}
-            </Drawer>
-            </Hidden>
-            <Hidden xsDown implementation="css">
-            <Drawer
-                classes={{
-                paper: classes.drawerPaper,
-                }}
-                variant="permanent"
-                open
-            >
-                {drawer}
-            </Drawer>
-            </Hidden>
-        </nav>
+            <CssBaseline />
+            {header}
+            <nav className={classes.drawer} aria-label="mailbox folders">
+                <Hidden smUp implementation="css">
+                    <Drawer
+                        container={container}
+                        variant="temporary"
+                        anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+                        open={mobileOpen}
+                        onClose={handleDrawerToggle}
+                        classes={{
+                            paper: classes.drawerPaper,
+                        }}
+                        ModalProps={{
+                            keepMounted: true,
+                        }}
+                    >
+                        {drawer}
+                    </Drawer>
+                </Hidden>
+                <Hidden xsDown implementation="css">
+                    <Drawer
+                        classes={{
+                            paper: classes.drawerPaper,
+                        }}
+                        variant="permanent"
+                        open
+                    >
+                        {drawer}
+                    </Drawer>
+                </Hidden>
+            </nav>
         </div>
     );
 }
