@@ -41,7 +41,7 @@ func GetUser(ID string) *User {
 		}
 	}
 	rows, err := config.DB.Query("SELECT ID, RefreshToken, Expiration, CompareCode FROM users WHERE ID = ?", ID)
-	defer rows.Close()
+
 	if err != nil {
 		logging.ReportError("userutils.GetUser()", err)
 	}
@@ -50,7 +50,6 @@ func GetUser(ID string) *User {
 		Token: new(oauth2.Token),
 	}
 	user.Token.TokenType = "Bearer"
-	defer rows.Close()
 	exists := false
 	for rows.Next() {
 		exists = true
@@ -64,6 +63,7 @@ func GetUser(ID string) *User {
 			log.Println(err)
 		}
 	}
+	rows.Close()
 	user.Client = config.SpotifyAPI.NewClient(user.Token)
 
 	user.Settings.RecentTracks = true
