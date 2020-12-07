@@ -90,6 +90,7 @@ func stripText(s string) string {
 	return strings.Trim(s, " \n")
 }
 
+// Copied straight from library implementation
 func nodeText(s *goquery.Selection) string {
 	var buf bytes.Buffer
 
