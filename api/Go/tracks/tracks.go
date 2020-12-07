@@ -73,19 +73,19 @@ func getTrackFromDB(ID string) *Track {
 }
 
 func (t *Track) Save() error {
-	// _, err := config.DB.Exec(`UPDATE trackLyrics SET Lyrics = ? WHERE ID = ?`,
-	// 	t.Lyrics, t.ID)
-	// if err != nil {
-	// 	metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "tracks.Save()"}).Inc()
-	// 	log.Print(err)
-	// 	return err
-	// }
-	// _, err = config.DB.Exec(`UPDATE trackFeatures SET LastUpdated = ? WHERE ID = ?`,
-	// 	t.LastUpdated.Unix(), t.ID)
-	// if err != nil {
-	// 	metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "tracks.Save()"}).Inc()
-	// 	log.Print(err)
-	// 	return err
-	// }
+	_, err := config.DB.Exec(`UPDATE trackLyrics SET Lyrics = ? WHERE ID = ?`,
+		t.Lyrics, t.ID)
+	if err != nil {
+		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "tracks.Save()"}).Inc()
+		log.Print(err)
+		return err
+	}
+	_, err = config.DB.Exec(`UPDATE trackFeatures SET LastUpdated = ? WHERE ID = ?`,
+		t.LastUpdated.Unix(), t.ID)
+	if err != nil {
+		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "tracks.Save()"}).Inc()
+		log.Print(err)
+		return err
+	}
 	return nil
 }
