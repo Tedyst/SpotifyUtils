@@ -66,6 +66,12 @@ func (t *Track) updateLyrics() error {
 }
 
 func validResponse(t *Track, song *genius.Hit) bool {
+	for _, s := range blacklistedSentences {
+		if strings.Contains(song.Result.FullTitle, s) {
+			return false
+		}
+	}
+
 	return song.Type == "song"
 }
 

@@ -112,15 +112,16 @@ func (t *Track) Update(cl spotify.Client) error {
 	if time.Since(t.LastUpdated) < time.Hour {
 		return nil
 	}
+	t.LastUpdated = time.Now()
 	err1 := t.updateInformation(cl)
 	err2 := t.updateLyrics()
+	err := t.Save()
 	if err1 != nil {
 		return err1
 	}
 	if err2 != nil {
 		return err2
 	}
-	err := t.Save()
 	if err != nil {
 		return err
 	}
