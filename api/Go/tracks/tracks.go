@@ -13,8 +13,11 @@ import (
 )
 
 type Track struct {
-	ID          string
-	Lyrics      string
+	ID string
+
+	Lyrics          string
+	SearchingLyrics bool `json:"-"`
+
 	LastUpdated time.Time
 	Artist      string
 	Name        string

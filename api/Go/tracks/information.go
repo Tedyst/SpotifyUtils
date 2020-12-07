@@ -35,7 +35,7 @@ type SpotifyInformation struct {
 	TrackInformation TrackInformationStruct
 	AlbumInformation AlbumInformationStruct
 	TrackFeatures    TrackFeaturesStruct
-	Updated          bool
+	Updated          bool `json:"-"`
 }
 
 func (t *Track) updateInformation(cl spotify.Client) error {

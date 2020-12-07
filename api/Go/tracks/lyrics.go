@@ -22,6 +22,10 @@ func (t *Track) updateLyrics() error {
 	if t.Lyrics != "" {
 		return nil
 	}
+	if t.SearchingLyrics == true {
+		return nil
+	}
+	t.SearchingLyrics = true
 	name := fmt.Sprintf("%s %s", t.Artist, t.Name)
 	res, err := config.GeniusClient.Search(name)
 	if err != nil {
@@ -61,7 +65,7 @@ func (t *Track) updateLyrics() error {
 			break
 		}
 	}
-
+	t.SearchingLyrics = false
 	return nil
 }
 
