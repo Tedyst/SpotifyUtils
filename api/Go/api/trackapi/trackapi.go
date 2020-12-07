@@ -44,6 +44,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	response.Result = *tr
+	response.Success = true
 
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprintf(res, string(respJSON))

@@ -31,8 +31,6 @@ func (u *User) UpdateRecentTracks() {
 		t := tracks.SimpleConvertToTrack(s.Track)
 		t.Update(u.Client)
 	}
-	// tr := tracks.GetTrackFromID(u.Client, "0lizgQ7Qw35od7CYaoMBZb")
-	// tr.Update(u.Client)
 
 	u.insertRecentTracks(items)
 }
@@ -132,5 +130,14 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 	if u.Settings.RecentTracks == true {
 		u.insertRecentTracks(items)
 	}
+
+	// Preloading the tracks in memory and updating them just in case they are used
+	go func(it []spotify.RecentlyPlayedItem) {
+		for _, s := range it {
+			t := tracks.SimpleConvertToTrack(s.Track)
+			t.Update(u.Client)
+		}
+	}(items)
+
 	return items
 }
