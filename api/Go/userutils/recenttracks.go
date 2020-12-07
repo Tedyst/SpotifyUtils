@@ -44,10 +44,12 @@ func (u *User) insertRecentTracks(items []spotify.RecentlyPlayedItem) {
 	if len(items) == 1 {
 		first := items[0].PlayedAt.Unix()
 		rows, err = config.DB.Query("SELECT SongID,Time FROM listened WHERE Time == ? AND UserID = ?", first, u.ID)
+		defer rows.Close()
 	} else {
 		first := items[0].PlayedAt.Unix()
 		last := items[len(items)-1].PlayedAt.Unix()
 		rows, err = config.DB.Query("SELECT SongID,Time FROM listened WHERE Time >= ? AND Time <= ? AND UserID = ?", last, first, u.ID)
+		defer rows.Close()
 	}
 	if err != nil {
 		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()

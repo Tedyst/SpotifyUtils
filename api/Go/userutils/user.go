@@ -43,6 +43,7 @@ func GetUser(ID string) *User {
 		}
 	}
 	rows, err := config.DB.Query("SELECT ID, RefreshToken, Expiration, CompareCode FROM users WHERE ID = ?", ID)
+	defer rows.Close()
 	if err != nil {
 		log.Println(err)
 	}
@@ -102,6 +103,7 @@ func GetUserFromCompareCode(code string) *User {
 		}
 	}
 	rows, err := config.DB.Query("SELECT ID FROM users WHERE CompareCode = ?", code)
+	defer rows.Close()
 	if err != nil {
 		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.GetUserFromCompareCode()"}).Inc()
 		return nil

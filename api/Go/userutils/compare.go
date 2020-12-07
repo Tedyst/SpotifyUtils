@@ -101,6 +101,7 @@ func generateNewCompareCode() string {
 
 func (u *User) GetFriends() []*User {
 	rows, err := config.DB.Query("SELECT FriendID FROM friends WHERE ID = ?", u.ID)
+	defer rows.Close()
 	if err != nil {
 		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.GetFriends()"}).Inc()
 		return []*User{}
