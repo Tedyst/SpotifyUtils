@@ -2,13 +2,11 @@ package userutils
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/tedyst/spotifyutils/api/config"
-	"github.com/tedyst/spotifyutils/api/metrics"
+	"github.com/tedyst/spotifyutils/api/logging"
 	"github.com/tedyst/spotifyutils/api/tracks"
 	"github.com/zmb3/spotify"
 )
@@ -24,7 +22,7 @@ func (u *User) UpdateRecentTracks() {
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
 	items, err := u.Client.PlayerRecentlyPlayedOpt(options)
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
+		logging.ReportError("userutils.UpdateRecentTracks()", err)
 		return
 	}
 	for _, s := range items {
@@ -52,7 +50,7 @@ func (u *User) insertRecentTracks(items []spotify.RecentlyPlayedItem) {
 		defer rows.Close()
 	}
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
+		logging.ReportError("userutils.UpdateRecentTracks()", err)
 		return
 	}
 	defer rows.Close()
@@ -71,19 +69,19 @@ func (u *User) insertRecentTracks(items []spotify.RecentlyPlayedItem) {
 	}
 	tx, err := config.DB.Begin()
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
+		logging.ReportError("userutils.UpdateRecentTracks()", err)
 		return
 	}
 	for _, s := range items {
 		_, err := tx.Exec("INSERT INTO listened (UserID, SongID, Time) VALUES (?, ?, ?)", u.ID, s.Track.ID, s.PlayedAt.Unix())
 		if err != nil {
-			metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
+			logging.ReportError("userutils.UpdateRecentTracks()", err)
 			return
 		}
 	}
 	err = tx.Commit()
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
+		logging.ReportError("userutils.UpdateRecentTracks()", err)
 		return
 	}
 }
@@ -126,7 +124,7 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
 	items, err := u.Client.PlayerRecentlyPlayedOpt(options)
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
+		logging.ReportError("userutils.UpdateRecentTracks()", err)
 		return []spotify.RecentlyPlayedItem{}
 	}
 	if u.Settings.RecentTracks == true {

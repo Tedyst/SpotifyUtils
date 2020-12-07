@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/tedyst/spotifyutils/api/metrics"
+	"github.com/tedyst/spotifyutils/api/logging"
 
 	"github.com/tedyst/spotifyutils/api/config"
 	"github.com/tedyst/spotifyutils/api/spotifywrapper"
@@ -56,7 +55,7 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 	client := config.SpotifyAPI.NewClient(token)
 	spotifyUser, err := client.CurrentUser()
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "/auth"}).Inc()
+		logging.ReportError("/auth", err)
 		response.Error = fmt.Sprint(err)
 		response.Success = false
 		respJSON, _ := json.Marshal(response)
@@ -77,7 +76,7 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 
 	err = session.Save(req, res)
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "/auth"}).Inc()
+		logging.ReportError("/auth", err)
 		response.Error = fmt.Sprint(err)
 		response.Success = false
 		respJSON, _ := json.Marshal(response)

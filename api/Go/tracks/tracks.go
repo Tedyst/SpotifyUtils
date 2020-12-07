@@ -2,13 +2,11 @@ package tracks
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/tedyst/spotifyutils/api/config"
-	"github.com/tedyst/spotifyutils/api/metrics"
+	"github.com/tedyst/spotifyutils/api/logging"
 	"github.com/zmb3/spotify"
 )
 
@@ -63,7 +61,7 @@ func getTrackFromDB(ID string) *Track {
 	if err == sql.ErrNoRows {
 		_, err := config.DB.Exec("INSERT INTO trackLyrics (ID, Lyrics) VALUES (?,?)", ID, "")
 		if err != nil {
-			metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "tracks.GetTrack()"}).Inc()
+			logging.ReportError("tracks.GetTrack()", err)
 			log.Print(err)
 		}
 		lyrics = ""
@@ -77,7 +75,7 @@ func getTrackFromDB(ID string) *Track {
 		lastUpdated = time.Unix(0, 0)
 		_, err = config.DB.Exec("INSERT INTO trackFeatures (ID, LastUpdated) VALUES (?,?)", ID, lastUpdated.Unix())
 		if err != nil {
-			metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "tracks.GetTrack()"}).Inc()
+			logging.ReportError("tracks.GetTrack()", err)
 			log.Print(err)
 		}
 	} else {
@@ -97,14 +95,14 @@ func (t *Track) Save() error {
 	_, err := config.DB.Exec(`UPDATE trackLyrics SET Lyrics = ? WHERE ID = ?`,
 		t.Lyrics, t.ID)
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "tracks.Save()"}).Inc()
+		logging.ReportError("tracks.Save()", err)
 		log.Print(err)
 		return err
 	}
 	_, err = config.DB.Exec(`UPDATE trackFeatures SET LastUpdated = ? WHERE ID = ?`,
 		t.LastUpdated.Unix(), t.ID)
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "tracks.Save()"}).Inc()
+		logging.ReportError("tracks.Save()", err)
 		log.Print(err)
 		return err
 	}

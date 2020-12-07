@@ -2,13 +2,11 @@ package userutils
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/tedyst/spotifyutils/api/config"
-	"github.com/tedyst/spotifyutils/api/metrics"
+	"github.com/tedyst/spotifyutils/api/logging"
 	"github.com/zmb3/spotify"
 	"golang.org/x/oauth2"
 )
@@ -45,7 +43,7 @@ func GetUser(ID string) *User {
 	rows, err := config.DB.Query("SELECT ID, RefreshToken, Expiration, CompareCode FROM users WHERE ID = ?", ID)
 	defer rows.Close()
 	if err != nil {
-		log.Println(err)
+		logging.ReportError("userutils.GetUser()", err)
 	}
 	user := &User{
 		ID:    ID,
@@ -77,7 +75,7 @@ func GetUser(ID string) *User {
 		_, err := config.DB.Exec(`INSERT INTO users (ID, RefreshToken, Expiration, CompareCode) VALUES(?,?,?,?)`,
 			user.ID, "", user.Token.Expiry.Unix(), user.CompareCode)
 		if err != nil {
-			log.Println(err)
+			logging.ReportError("userutils.GetUser()", err)
 		}
 		usersCache = append(usersCache, user)
 		return user
@@ -105,7 +103,7 @@ func GetUserFromCompareCode(code string) *User {
 	rows, err := config.DB.Query("SELECT ID FROM users WHERE CompareCode = ?", code)
 	defer rows.Close()
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.GetUserFromCompareCode()"}).Inc()
+		logging.ReportError("userutils.GetUserFromCompareCode()", err)
 		return nil
 	}
 	var uid string

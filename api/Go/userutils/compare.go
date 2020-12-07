@@ -1,13 +1,11 @@
 package userutils
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/tedyst/spotifyutils/api/config"
-	"github.com/tedyst/spotifyutils/api/metrics"
+	"github.com/tedyst/spotifyutils/api/logging"
 )
 
 type CompareStruct struct {
@@ -103,7 +101,7 @@ func (u *User) GetFriends() []*User {
 	rows, err := config.DB.Query("SELECT FriendID FROM friends WHERE ID = ?", u.ID)
 	defer rows.Close()
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.GetFriends()"}).Inc()
+		logging.ReportError("userutils.GetFriends()", err)
 		return []*User{}
 	}
 	var result []*User
@@ -125,7 +123,7 @@ func (u *User) addFriend(target *User) {
 	var count int
 	err := rows.Scan(&count)
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.addFriend()"}).Inc()
+		logging.ReportError("userutils.addFriend()", err)
 		return
 	}
 	if count == 1 {
@@ -133,7 +131,7 @@ func (u *User) addFriend(target *User) {
 	}
 	_, err = config.DB.Exec("INSERT INTO friends (ID, FriendID) VALUES (?,?)", u.ID, target.ID)
 	if err != nil {
-		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.addFriend()"}).Inc()
+		logging.ReportError("userutils.addFriend()", err)
 		return
 	}
 }
