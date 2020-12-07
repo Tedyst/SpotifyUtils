@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"regexp"
 	"strings"
 	"time"
 
@@ -68,40 +67,20 @@ func getLyricsFromURL(url string) (string, error) {
 	// Load the HTML document
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 
-	bodyBytes, err := doc.Html()
-	if err != nil {
-		log.Fatal(err)
-	}
-	regex, err := regexp.Compile("Lyrics__Container([^\" ]*)")
-	if err != nil {
-		return "", err
-	}
-	regexResult := regex.Find([]byte(bodyBytes))
-	searching := ".lyrics"
-	if regexResult != nil {
-		searching = fmt.Sprintf(".%s", string(regexResult))
-	}
-
 	if err != nil {
 		log.Print(err)
 		return "", err
 	}
 
 	lyrics := ""
-	if searching != ".lyrics" {
-		selection := doc.Find(searching)
-		selection.Children().Each(func(_ int, s *goquery.Selection) {
-			text := nodeText(s)
-			if text != "\n" && text != "" {
-				lyrics += text + "\n"
-			}
-		})
-		strings.ReplaceAll(lyrics, "\n\n", "\n")
-	} else {
-		doc.Find(searching).Each(func(_ int, s *goquery.Selection) {
-			lyrics += s.Text()
-		})
-	}
+	selection := doc.Find("div.lyrics")
+	selection.Children().Each(func(_ int, s *goquery.Selection) {
+		text := nodeText(s)
+		if text != "\n" && text != "" {
+			lyrics += text + "\n"
+		}
+	})
+	strings.ReplaceAll(lyrics, "\n\n", "\n")
 	lyrics = stripText(lyrics)
 	log.Print(lyrics)
 	return lyrics, nil
