@@ -13,12 +13,15 @@ import (
 )
 
 type Track struct {
-	ID          string
-	Lyrics      string
-	LastUpdated time.Time
-	Artist      string
-	Name        string
+	ID          string             `json:"id"`
+	Lyrics      string             `json:"lyrics"`
+	LastUpdated time.Time          `json:"last_updated"`
+	Artist      string             `json:"artist"`
+	Name        string             `json:"name"`
+	Information SpotifyInformation `json:"information"`
 }
+
+var tracksCache []*Track
 
 func SimpleConvertToTrack(s spotify.SimpleTrack) *Track {
 	track := getTrackFromDB(string(s.ID))
@@ -28,6 +31,11 @@ func SimpleConvertToTrack(s spotify.SimpleTrack) *Track {
 }
 
 func GetTrackFromID(cl spotify.Client, ID string) *Track {
+	for _, s := range tracksCache {
+		if s.ID == ID {
+			return s
+		}
+	}
 	spotifyTrack, err := cl.GetTrack(spotify.ID(ID))
 	if err != nil {
 		return getTrackFromDB(ID)
@@ -35,10 +43,17 @@ func GetTrackFromID(cl spotify.Client, ID string) *Track {
 	track := getTrackFromDB(ID)
 	track.Artist = spotifyTrack.Artists[0].Name
 	track.Name = spotifyTrack.Name
+	tracksCache = append(tracksCache, track)
 	return track
 }
 
 func getTrackFromDB(ID string) *Track {
+	if !enableSaving {
+		return &Track{
+			ID:          ID,
+			LastUpdated: time.Unix(0, 0),
+		}
+	}
 	rows := config.DB.QueryRow("SELECT Lyrics FROM trackLyrics WHERE ID = ?", ID)
 	var lyrics string
 	err := rows.Scan(&lyrics)
@@ -88,6 +103,25 @@ func (t *Track) Save() error {
 	if err != nil {
 		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "tracks.Save()"}).Inc()
 		log.Print(err)
+		return err
+	}
+	return nil
+}
+
+func (t *Track) Update(cl spotify.Client) error {
+	if time.Since(t.LastUpdated) < time.Hour {
+		return nil
+	}
+	err1 := t.updateInformation(cl)
+	err2 := t.updateLyrics()
+	if err1 != nil {
+		return err1
+	}
+	if err2 != nil {
+		return err2
+	}
+	err := t.Save()
+	if err != nil {
 		return err
 	}
 	return nil

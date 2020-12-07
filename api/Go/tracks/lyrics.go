@@ -15,11 +15,8 @@ import (
 	"github.com/tedyst/spotifyutils/api/config"
 )
 
-func (t *Track) UpdateLyrics() error {
+func (t *Track) updateLyrics() error {
 	if !enableLyricsGetter {
-		return nil
-	}
-	if time.Since(t.LastUpdated) < time.Hour {
 		return nil
 	}
 	if t.Lyrics != "" {
@@ -28,14 +25,32 @@ func (t *Track) UpdateLyrics() error {
 	name := fmt.Sprintf("%s %s", t.Artist, t.Name)
 	res, err := config.GeniusClient.Search(name)
 	if err != nil {
+		log.Print(err)
 		return err
 	}
+	if len(res.Response.Hits) == 0 {
+		log.Printf("Did not find anything matching %s", name)
+	}
 	for _, s := range res.Response.Hits {
-		if validResponse(t, s.Result) {
-			lyrics, err := getLyricsFromURL(s.Result.URL)
-			if err != nil {
-				log.Print(err)
-				break
+		if validResponse(t, s) {
+			var lyrics string
+			for i := 1; i < 5; i++ {
+				lyrics, err = getLyricsFromURL(s.Result.URL)
+				if err != nil {
+					log.Print(err)
+					break
+				}
+				if lyrics != "" {
+					log.Printf("Got lyrics for %s-%s", t.Artist, t.Name)
+					break
+				} else {
+					log.Printf("Trying again for %s", s.Result.URL)
+					time.Sleep(retryTimeout)
+				}
+			}
+			if lyrics == "" {
+
+				log.Printf("Could not extract lyrics from %s", s.Result.URL)
 			}
 			t.Lyrics = lyrics
 			t.LastUpdated = time.Now()
@@ -50,12 +65,11 @@ func (t *Track) UpdateLyrics() error {
 	return nil
 }
 
-func validResponse(t *Track, song *genius.Song) bool {
-	return true
+func validResponse(t *Track, song *genius.Hit) bool {
+	return song.Type == "song"
 }
 
 func getLyricsFromURL(url string) (string, error) {
-	url = "https://genius.com/Ariana-grande-santa-tell-me-lyrics"
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -76,7 +90,8 @@ func getLyricsFromURL(url string) (string, error) {
 	}
 
 	lyrics := ""
-	selection := doc.Find("div.lyrics")
+	selection := doc.Find(".lyrics")
+
 	selection.Children().Each(func(_ int, s *goquery.Selection) {
 		text := nodeText(s)
 		if text != "\n" && text != "" {
@@ -85,7 +100,6 @@ func getLyricsFromURL(url string) (string, error) {
 	})
 	strings.ReplaceAll(lyrics, "\n\n", "\n")
 	lyrics = stripText(lyrics)
-	log.Print(lyrics)
 	return lyrics, nil
 }
 

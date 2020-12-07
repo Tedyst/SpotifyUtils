@@ -27,13 +27,12 @@ func (u *User) UpdateRecentTracks() {
 		metrics.ErrorCount.With(prometheus.Labels{"error": fmt.Sprint(err), "source": "userutils.UpdateRecentTracks()"}).Inc()
 		return
 	}
-	// for _, s := range items {
-	// 	t := tracks.SimpleConvertToTrack(s.Track)
-	// 	t.UpdateLyrics()
-	// 	log.Printf("Tried lyrics for %s-%s", t.Artist, t.Name)
-	// }
-	tr := tracks.GetTrackFromID(u.Client, "0lizgQ7Qw35od7CYaoMBZb")
-	tr.UpdateLyrics()
+	for _, s := range items {
+		t := tracks.SimpleConvertToTrack(s.Track)
+		t.Update(u.Client)
+	}
+	// tr := tracks.GetTrackFromID(u.Client, "0lizgQ7Qw35od7CYaoMBZb")
+	// tr.Update(u.Client)
 
 	u.insertRecentTracks(items)
 }
