@@ -13,12 +13,12 @@ import (
 )
 
 type Track struct {
-	ID          string             `json:"id"`
-	Lyrics      string             `json:"lyrics"`
-	LastUpdated time.Time          `json:"last_updated"`
-	Artist      string             `json:"artist"`
-	Name        string             `json:"name"`
-	Information SpotifyInformation `json:"information"`
+	ID          string
+	Lyrics      string
+	LastUpdated time.Time
+	Artist      string
+	Name        string
+	Information SpotifyInformation
 }
 
 var tracksCache []*Track
@@ -109,21 +109,25 @@ func (t *Track) Save() error {
 }
 
 func (t *Track) Update(cl spotify.Client) error {
-	if time.Since(t.LastUpdated) < time.Hour {
-		return nil
+	var err1 error
+	var err2 error
+	if t.Information.Updated == false {
+		err1 = t.updateInformation(cl)
+	}
+	if time.Since(t.LastUpdated) >= time.Hour {
+		err2 = t.updateLyrics()
+		err := t.Save()
+		if err != nil {
+			return err
+		}
 	}
 	t.LastUpdated = time.Now()
-	err1 := t.updateInformation(cl)
-	err2 := t.updateLyrics()
-	err := t.Save()
+
 	if err1 != nil {
 		return err1
 	}
 	if err2 != nil {
 		return err2
-	}
-	if err != nil {
-		return err
 	}
 	return nil
 }

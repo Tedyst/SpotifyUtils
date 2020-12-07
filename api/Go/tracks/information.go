@@ -13,14 +13,14 @@ type TrackFeaturesStruct struct {
 }
 
 type TrackInformationStruct struct {
-	Popularity    int     `json:"popularity"`
-	Length        int     `json:"length"`
-	Markets       int     `json:"markets"`
-	Explicit      bool    `json:"explicit"`
-	Key           int     `json:"key"`
-	Mode          int     `json:"mode"`
-	Tempo         float64 `json:"tempo"`
-	TimeSignature int     `json:"time_signature"`
+	Popularity    int
+	Length        int
+	Markets       int
+	Explicit      bool
+	Key           int
+	Mode          int
+	Tempo         float64
+	TimeSignature int
 }
 
 type AlbumInformationStruct struct {
@@ -53,7 +53,7 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 	if err != nil {
 		return err
 	}
-	album, err := cl.GetAlbum(spotify.ID(t.ID))
+	album, err := cl.GetAlbum(spotify.ID(track.Album.ID))
 	if err != nil {
 		return err
 	}
