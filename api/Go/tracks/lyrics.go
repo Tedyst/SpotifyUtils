@@ -44,7 +44,7 @@ func (t *Track) updateLyrics() error {
 					log.Print(err)
 					break
 				}
-				if lyrics != "" {
+				if lyrics != "" || t.Lyrics != "" {
 					log.Printf("Got lyrics for %s-%s", t.Artist, t.Name)
 					break
 				} else {

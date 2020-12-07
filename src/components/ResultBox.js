@@ -4,7 +4,7 @@ import { Grid } from '@material-ui/core';
 import SongCard from './SongCard'
 
 export default function ResultBox(props) {
-    if(props.results === [])
+    if (props.results === null)
         return null
     let items = [];
     items = props.results.map((item, key) => (
