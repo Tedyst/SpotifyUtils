@@ -16,6 +16,9 @@ import (
 )
 
 func (t *Track) UpdateLyrics() error {
+	if !enableLyricsGetter {
+		return nil
+	}
 	if time.Since(t.LastUpdated) < time.Hour {
 		return nil
 	}

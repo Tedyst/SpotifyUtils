@@ -73,6 +73,9 @@ func getTrackFromDB(ID string) *Track {
 }
 
 func (t *Track) Save() error {
+	if !enableSaving {
+		return nil
+	}
 	_, err := config.DB.Exec(`UPDATE trackLyrics SET Lyrics = ? WHERE ID = ?`,
 		t.Lyrics, t.ID)
 	if err != nil {
