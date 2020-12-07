@@ -32,7 +32,7 @@ func (u *User) UpdateRecentTracks() {
 	// 	t.UpdateLyrics()
 	// 	log.Printf("Tried lyrics for %s-%s", t.Artist, t.Name)
 	// }
-	tr := tracks.GetTrackFromID(u.Client, "5srKMwXoeyrRnyTnNbpgIW")
+	tr := tracks.GetTrackFromID(u.Client, "0lizgQ7Qw35od7CYaoMBZb")
 	tr.UpdateLyrics()
 
 	u.insertRecentTracks(items)

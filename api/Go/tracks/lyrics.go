@@ -53,6 +53,7 @@ func validResponse(t *Track, song *genius.Song) bool {
 }
 
 func getLyricsFromURL(url string) (string, error) {
+	url = "https://genius.com/Ariana-grande-santa-tell-me-lyrics"
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -87,16 +88,27 @@ func getLyricsFromURL(url string) (string, error) {
 	}
 
 	lyrics := ""
-	selection := doc.Find(searching)
-	selection.Children().Each(func(_ int, s *goquery.Selection) {
-		text := nodeText(s)
-		if text != "\n" {
-			lyrics += text + "\n"
-		}
-	})
-	strings.ReplaceAll(lyrics, "\n\n", "\n")
+	if searching != ".lyrics" {
+		selection := doc.Find(searching)
+		selection.Children().Each(func(_ int, s *goquery.Selection) {
+			text := nodeText(s)
+			if text != "\n" && text != "" {
+				lyrics += text + "\n"
+			}
+		})
+		strings.ReplaceAll(lyrics, "\n\n", "\n")
+	} else {
+		doc.Find(searching).Each(func(_ int, s *goquery.Selection) {
+			lyrics += s.Text()
+		})
+	}
+	lyrics = stripText(lyrics)
 	log.Print(lyrics)
 	return lyrics, nil
+}
+
+func stripText(s string) string {
+	return strings.Trim(s, " \n")
 }
 
 func nodeText(s *goquery.Selection) string {
