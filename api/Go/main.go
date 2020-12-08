@@ -45,9 +45,6 @@ func middleware(h http.Handler) http.Handler {
 	})
 }
 
-// 1 month
-const maxAge = 86400 * 30
-
 func main() {
 	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
 	flag.Parse()
