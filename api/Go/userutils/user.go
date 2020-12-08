@@ -45,6 +45,7 @@ func (u *User) Client() *spotify.Client {
 func GetUser(ID string) *User {
 	var user User
 	config.DB.Where("user_id = ?", ID).FirstOrCreate(&user)
+	user.verifyifCompareCodeExists()
 	return &user
 }
 

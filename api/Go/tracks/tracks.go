@@ -30,6 +30,7 @@ func RecentlyPlayedItemToTrack(s spotify.SimpleTrack) *Track {
 
 func GetTrackFromID(ID string) *Track {
 	var track Track
+	track.TrackID = ID
 	config.DB.Where("track_id = ?", ID).FirstOrCreate(&track)
 	return &track
 }
@@ -42,6 +43,7 @@ func getTrackFromDB(ID string) *Track {
 		}
 	}
 	var track Track
+	track.TrackID = ID
 	config.DB.Where("track_id = ?", ID).FirstOrCreate(&track)
 	return &track
 }
@@ -59,6 +61,10 @@ func (t *Track) Update(cl spotify.Client) error {
 	var err2 error
 	if t.Information.Updated == false {
 		err1 = t.updateInformation(cl)
+		err := t.Save()
+		if err != nil {
+			return err
+		}
 	}
 	if time.Since(t.LastUpdated) >= time.Hour {
 		err2 = t.updateLyrics()

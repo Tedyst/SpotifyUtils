@@ -79,14 +79,22 @@ func (u1 *User) compare(u2 *User) CompareStruct {
 	return result
 }
 
+func (u *User) verifyifCompareCodeExists() {
+	if u.CompareCode != "" {
+		return
+	}
+	u.CompareCode = generateNewCompareCode()
+	u.Save()
+	return
+}
+
 func generateNewCompareCode() string {
 	for length := 6; length <= 12; length++ {
 		for i := 1; i <= 10; i++ {
 			newUUID := uuid.New().String()
 			newUUID = newUUID[len(newUUID)-length:]
 			var user User
-			result := config.DB.Where("compare_code = ?", newUUID).First(&user)
-			if result.RowsAffected == 0 {
+			if err := config.DB.Where("compare_code = ?", newUUID).First(&user).Error; err != nil {
 				return strings.ToUpper(newUUID)
 			}
 		}

@@ -82,6 +82,7 @@ func (u *User) RefreshTop() error {
 	result.Updated = time.Now().Unix()
 
 	u.Top = *result
+	u.Save()
 	return nil
 }
 
