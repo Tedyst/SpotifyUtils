@@ -1,9 +1,10 @@
 package config
 
 import (
-	"database/sql"
 	"flag"
 	"os"
+
+	"gorm.io/gorm"
 
 	"github.com/gabyshev/genius-api/genius"
 	"github.com/michaeljs1990/sqlitestore"
@@ -25,7 +26,7 @@ var (
 
 	Metrics = flag.Bool("Metrics", true, "Enable Metrics")
 
-	DB           *sql.DB
+	DB           *gorm.DB
 	SessionStore *sqlitestore.SqliteStore
 
 	GeniusToken  = flag.String("GeniusToken", lookupEnvOrString("GENIUS_TOKEN", ""), "The Genius Client Token")

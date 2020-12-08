@@ -1,13 +1,14 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 
 	"github.com/tedyst/spotifyutils/api/api/compare"
 	"github.com/tedyst/spotifyutils/api/api/recenttracks"
 	"github.com/tedyst/spotifyutils/api/api/trackapi"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 
 	"github.com/tedyst/spotifyutils/api/api/top"
 
@@ -43,13 +44,16 @@ const maxAge = 86400 * 30
 func main() {
 	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
 
-	datab, err := sql.Open("sqlite3", "./data.db")
+	datab, err := gorm.Open(sqlite.Open("data.db"), &gorm.Config{})
 	config.DB = datab
 	checkErr(err)
 
 	initDB(config.DB)
-
-	config.SessionStore, err = sqlitestore.NewSqliteStoreFromConnection(config.DB, "sessions", "/", maxAge, config.Secret)
+	sqlDB, err := config.DB.DB()
+	if err != nil {
+		log.Panic(err)
+	}
+	config.SessionStore, err = sqlitestore.NewSqliteStoreFromConnection(sqlDB, "sessions", "/", maxAge, config.Secret)
 	checkErr(err)
 
 	m := mux.NewRouter()

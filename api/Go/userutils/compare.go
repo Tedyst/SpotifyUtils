@@ -5,7 +5,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/tedyst/spotifyutils/api/config"
-	"github.com/tedyst/spotifyutils/api/logging"
 )
 
 type CompareStruct struct {
@@ -81,14 +80,13 @@ func (u1 *User) compare(u2 *User) CompareStruct {
 }
 
 func generateNewCompareCode() string {
-	var count int
 	for length := 6; length <= 12; length++ {
 		for i := 1; i <= 10; i++ {
 			newUUID := uuid.New().String()
 			newUUID = newUUID[len(newUUID)-length:]
-			res := config.DB.QueryRow("SELECT COUNT(*) FROM users WHERE CompareCode = ?", newUUID)
-			res.Scan(&count)
-			if count == 0 {
+			var user User
+			result := config.DB.Where("compare_code = ?", newUUID).First(&user)
+			if result.RowsAffected == 0 {
 				return strings.ToUpper(newUUID)
 			}
 		}
@@ -98,18 +96,7 @@ func generateNewCompareCode() string {
 }
 
 func (u *User) GetFriends() []*User {
-	rows, err := config.DB.Query("SELECT FriendID FROM friends WHERE ID = ?", u.ID)
-	defer rows.Close()
-	if err != nil {
-		logging.ReportError("userutils.GetFriends()", err)
-		return []*User{}
-	}
 	var result []*User
-	for rows.Next() {
-		var temp string
-		rows.Scan(&temp)
-		result = append(result, GetUser(temp))
-	}
 	return result
 }
 
@@ -119,19 +106,5 @@ func (u *User) AddFriend(target *User) {
 }
 
 func (u *User) addFriend(target *User) {
-	rows := config.DB.QueryRow("SELECT COUNT(*) FROM friends WHERE ID = ? AND FriendID = ?", u.ID, target.ID)
-	var count int
-	err := rows.Scan(&count)
-	if err != nil {
-		logging.ReportError("userutils.addFriend()", err)
-		return
-	}
-	if count == 1 {
-		return
-	}
-	_, err = config.DB.Exec("INSERT INTO friends (ID, FriendID) VALUES (?,?)", u.ID, target.ID)
-	if err != nil {
-		logging.ReportError("userutils.addFriend()", err)
-		return
-	}
+
 }

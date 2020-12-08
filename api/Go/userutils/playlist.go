@@ -6,7 +6,7 @@ import (
 )
 
 func (u *User) GetPlaylist(ID string) *spotify.FullPlaylist {
-	items, err := u.Client.GetPlaylist(spotify.ID(ID))
+	items, err := u.Client().GetPlaylist(spotify.ID(ID))
 	if err != nil {
 		logging.ReportError("userutils.GetPlaylist()", err)
 		return &spotify.FullPlaylist{}

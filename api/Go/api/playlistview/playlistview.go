@@ -43,7 +43,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	for _, s := range recentTracks {
 		ids = append(ids, s.Track.ID)
 	}
-	tracksinfo, err := user.Client.GetTracks(ids...)
+	tracksinfo, err := user.Client().GetTracks(ids...)
 	if err != nil {
 		response.Success = false
 		response.Error = fmt.Sprint(err)

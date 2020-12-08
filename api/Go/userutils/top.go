@@ -23,7 +23,7 @@ type TopTrack struct {
 	PreviewURL string `json:"preview_url"`
 }
 
-type TopResult struct {
+type TopStruct struct {
 	Genres  []string    `json:"genres"`
 	Updated int64       `json:"updated"`
 	Artists []TopArtist `json:"artists"`
@@ -35,7 +35,7 @@ func (u *User) RefreshTop() error {
 	if time.Since(time.Unix(u.Top.Updated, 0)) < 10*time.Minute {
 		return nil
 	}
-	result := &TopResult{}
+	result := &TopStruct{}
 	longString := string("long")
 	longOptions := &spotify.Options{
 		Timerange: &longString,
@@ -44,17 +44,17 @@ func (u *User) RefreshTop() error {
 	shortOptions := &spotify.Options{
 		Timerange: &shortString,
 	}
-	longTopArtists, err := u.Client.CurrentUsersTopArtistsOpt(longOptions)
+	longTopArtists, err := u.Client().CurrentUsersTopArtistsOpt(longOptions)
 	if err != nil {
 		logging.ReportError("userutils.Top()", err)
 		return err
 	}
-	shortTopArtists, err := u.Client.CurrentUsersTopArtistsOpt(shortOptions)
+	shortTopArtists, err := u.Client().CurrentUsersTopArtistsOpt(shortOptions)
 	if err != nil {
 		logging.ReportError("userutils.Top()", err)
 		return err
 	}
-	shortTopTracks, err := u.Client.CurrentUsersTopTracksOpt(shortOptions)
+	shortTopTracks, err := u.Client().CurrentUsersTopTracksOpt(shortOptions)
 	if err != nil {
 		logging.ReportError("userutils.Top()", err)
 		return err

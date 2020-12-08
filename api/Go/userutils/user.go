@@ -2,24 +2,23 @@ package userutils
 
 import (
 	"errors"
-	"log"
 	"time"
 
 	"github.com/tedyst/spotifyutils/api/config"
-	"github.com/tedyst/spotifyutils/api/logging"
 	"github.com/zmb3/spotify"
 	"golang.org/x/oauth2"
+	"gorm.io/gorm"
 )
 
 // User is the main user struct
 type User struct {
-	ID          string
+	gorm.Model
+	UserID      string
 	DisplayName string
 	Token       *oauth2.Token
 	Images      []spotify.Image
 	Playlists   []spotify.SimplePlaylist
 	LastUpdated time.Time
-	Client      spotify.Client
 	Settings    UserSettings
 	Top         TopStruct
 	CompareCode string
@@ -29,98 +28,34 @@ type UserSettings struct {
 	RecentTracks bool
 }
 
-var usersCache []*User
+type clientCacheStruct struct {
+	UserID string
+	Client *spotify.Client
+}
+
+var clientCache []*clientCacheStruct
 
 const userRefreshTimeout = 10 * time.Minute
 
+func (u *User) Client() *spotify.Client {
+	client := config.SpotifyAPI.NewClient(u.Token)
+	return &client
+}
+
 func GetUser(ID string) *User {
-	for _, s := range usersCache {
-		if s.ID == ID {
-			return s
-		}
-	}
-	rows, err := config.DB.Query("SELECT ID, RefreshToken, Expiration, CompareCode FROM users WHERE ID = ?", ID)
-
-	if err != nil {
-		logging.ReportError("userutils.GetUser()", err)
-	}
-	user := &User{
-		ID:    ID,
-		Token: new(oauth2.Token),
-	}
-	user.Token.TokenType = "Bearer"
-	exists := false
-	for rows.Next() {
-		exists = true
-		expiration := int64(0)
-		err := rows.Scan(&user.ID,
-			&user.Token.RefreshToken,
-			&expiration,
-			&user.CompareCode)
-		user.Token.Expiry = time.Unix(expiration, 0)
-		if err != nil {
-			log.Println(err)
-		}
-	}
-	rows.Close()
-	user.Client = config.SpotifyAPI.NewClient(user.Token)
-
-	user.Settings.RecentTracks = true
-
-	if !exists {
-		user.Token.Expiry = time.Now()
-		user.CompareCode = generateNewCompareCode()
-
-		_, err := config.DB.Exec(`INSERT INTO users (ID, RefreshToken, Expiration, CompareCode) VALUES(?,?,?,?)`,
-			user.ID, "", user.Token.Expiry.Unix(), user.CompareCode)
-		if err != nil {
-			logging.ReportError("userutils.GetUser()", err)
-		}
-		usersCache = append(usersCache, user)
-		return user
-	}
-	err = rows.Err()
-	if err != nil {
-		log.Println(err)
-	}
-	t, err := user.Client.Token()
-	if err == nil {
-		user.Token = t
-	}
-
-	usersCache = append(usersCache, user)
-	go user.RefreshUser()
-	return user
+	var user User
+	config.DB.Where("user_id = ?", ID).FirstOrCreate(&user)
+	return &user
 }
 
 func GetUserFromCompareCode(code string) *User {
-	for _, s := range usersCache {
-		if s.CompareCode == code {
-			return s
-		}
-	}
-	rows, err := config.DB.Query("SELECT ID FROM users WHERE CompareCode = ?", code)
-	defer rows.Close()
-	if err != nil {
-		logging.ReportError("userutils.GetUserFromCompareCode()", err)
-		return nil
-	}
-	var uid string
-	for rows.Next() {
-		rows.Scan(&uid)
-	}
-	if uid != "" {
-		return GetUser(uid)
-	}
-	return nil
+	var user User
+	config.DB.Where("compare_code = ?", code).FirstOrCreate(&user)
+	return &user
 }
 
 func (u *User) Save() {
-	_, err := config.DB.Exec(`UPDATE users SET RefreshToken = ?, Expiration = ? WHERE ID = ?`,
-		u.Token.RefreshToken, u.Token.Expiry.Unix(), u.ID)
-	if err != nil {
-		log.Println(err)
-	}
+	config.DB.Save(u)
 }
 
 func (u *User) RefreshUser() error {
@@ -131,7 +66,7 @@ func (u *User) RefreshUser() error {
 		return nil
 	}
 	client := config.SpotifyAPI.NewClient(u.Token)
-	playlists, err := client.GetPlaylistsForUser(u.ID)
+	playlists, err := client.GetPlaylistsForUser(u.UserID)
 	if err != nil {
 		return err
 	}

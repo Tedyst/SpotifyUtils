@@ -13,7 +13,7 @@ func TopHandler(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	session, _ := config.SessionStore.Get(req, "username")
 	type Resp struct {
-		Result  userutils.TopResult `json:"result"`
+		Result  userutils.TopStruct `json:"result"`
 		Success bool                `json:"success"`
 		Error   string              `json:"error,omitempty"`
 	}

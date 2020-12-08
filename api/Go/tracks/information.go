@@ -1,6 +1,13 @@
 package tracks
 
-import "github.com/zmb3/spotify"
+import (
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
+	"fmt"
+
+	"github.com/zmb3/spotify"
+)
 
 type TrackFeaturesStruct struct {
 	Acousticness     float32
@@ -9,7 +16,30 @@ type TrackFeaturesStruct struct {
 	Liveness         float32
 	Loudness         float32
 	Speechiness      float32
-	LoudnessGraph    []int
+	LoudnessGraph    LoudnessGraphStruct
+}
+
+type LoudnessGraphStruct json.RawMessage
+
+// Scan scan value into Jsonb, implements sql.Scanner interface
+func (j *LoudnessGraphStruct) Scan(value interface{}) error {
+	bytes, ok := value.([]byte)
+	if !ok {
+		return errors.New(fmt.Sprint("Failed to unmarshal JSONB value:", value))
+	}
+
+	result := json.RawMessage{}
+	err := json.Unmarshal(bytes, &result)
+	*j = LoudnessGraphStruct(result)
+	return err
+}
+
+// Value return json value, implement driver.Valuer interface
+func (j LoudnessGraphStruct) Value() (driver.Value, error) {
+	if len(j) == 0 {
+		return nil, nil
+	}
+	return json.RawMessage(j).MarshalJSON()
 }
 
 type TrackInformationStruct struct {
@@ -32,25 +62,25 @@ type AlbumInformationStruct struct {
 }
 
 type SpotifyInformation struct {
-	TrackInformation TrackInformationStruct
-	AlbumInformation AlbumInformationStruct
-	TrackFeatures    TrackFeaturesStruct
-	Updated          bool `json:"-"`
+	TrackInformation TrackInformationStruct `gorm:"embedded;embeddedPrefix:track_"`
+	AlbumInformation AlbumInformationStruct `gorm:"embedded;embeddedPrefix:album_"`
+	TrackFeatures    TrackFeaturesStruct    `gorm:"embedded;embeddedPrefix:features_"`
+	Updated          bool                   `json:"-"`
 }
 
 func (t *Track) updateInformation(cl spotify.Client) error {
 	if t.Information.Updated == true {
 		return nil
 	}
-	features, err := cl.GetAudioFeatures(spotify.ID(t.ID))
+	features, err := cl.GetAudioFeatures(spotify.ID(t.TrackID))
 	if err != nil {
 		return err
 	}
-	track, err := cl.GetTrack(spotify.ID(t.ID))
+	track, err := cl.GetTrack(spotify.ID(t.TrackID))
 	if err != nil {
 		return err
 	}
-	analysis, err := cl.GetAudioAnalysis(spotify.ID(t.ID))
+	analysis, err := cl.GetAudioAnalysis(spotify.ID(t.TrackID))
 	if err != nil {
 		return err
 	}

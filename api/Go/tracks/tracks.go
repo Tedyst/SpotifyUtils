@@ -1,17 +1,16 @@
 package tracks
 
 import (
-	"database/sql"
-	"log"
 	"time"
 
 	"github.com/tedyst/spotifyutils/api/config"
-	"github.com/tedyst/spotifyutils/api/logging"
 	"github.com/zmb3/spotify"
+	"gorm.io/gorm"
 )
 
 type Track struct {
-	ID string
+	gorm.Model
+	TrackID string
 
 	Lyrics          string
 	SearchingLyrics bool `json:"-"`
@@ -19,7 +18,7 @@ type Track struct {
 	LastUpdated time.Time
 	Artist      string
 	Name        string
-	Information SpotifyInformation
+	Information SpotifyInformation `gorm:"embedded;embeddedPrefix:information_"`
 }
 
 var tracksCache []*Track
@@ -33,7 +32,7 @@ func RecentlyPlayedItemToTrack(s spotify.SimpleTrack) *Track {
 
 func GetTrackFromID(cl spotify.Client, ID string) *Track {
 	for _, s := range tracksCache {
-		if s.ID == ID {
+		if s.TrackID == ID {
 			return s
 		}
 	}
@@ -51,61 +50,20 @@ func GetTrackFromID(cl spotify.Client, ID string) *Track {
 func getTrackFromDB(ID string) *Track {
 	if !enableSaving {
 		return &Track{
-			ID:          ID,
+			TrackID:     ID,
 			LastUpdated: time.Unix(0, 0),
 		}
 	}
-	rows := config.DB.QueryRow("SELECT Lyrics FROM trackLyrics WHERE ID = ?", ID)
-	var lyrics string
-	err := rows.Scan(&lyrics)
-	if err == sql.ErrNoRows {
-		_, err := config.DB.Exec("INSERT INTO trackLyrics (ID, Lyrics) VALUES (?,?)", ID, "")
-		if err != nil {
-			logging.ReportError("tracks.GetTrack()", err)
-			log.Print(err)
-		}
-		lyrics = ""
-	}
-
-	rows = config.DB.QueryRow("SELECT LastUpdated FROM trackFeatures WHERE ID = ?", ID)
-	var lastUpdated time.Time
-	var temp int64
-	err = rows.Scan(&temp)
-	if err == sql.ErrNoRows {
-		lastUpdated = time.Unix(0, 0)
-		_, err = config.DB.Exec("INSERT INTO trackFeatures (ID, LastUpdated) VALUES (?,?)", ID, lastUpdated.Unix())
-		if err != nil {
-			logging.ReportError("tracks.GetTrack()", err)
-			log.Print(err)
-		}
-	} else {
-		lastUpdated = time.Unix(temp, 0)
-	}
-	return &Track{
-		ID:          ID,
-		Lyrics:      lyrics,
-		LastUpdated: lastUpdated,
-	}
+	var track Track
+	config.DB.Where("track_id = ?", ID).Find(&track)
+	return &track
 }
 
 func (t *Track) Save() error {
 	if !enableSaving {
 		return nil
 	}
-	_, err := config.DB.Exec(`UPDATE trackLyrics SET Lyrics = ? WHERE ID = ?`,
-		t.Lyrics, t.ID)
-	if err != nil {
-		logging.ReportError("tracks.Save()", err)
-		log.Print(err)
-		return err
-	}
-	_, err = config.DB.Exec(`UPDATE trackFeatures SET LastUpdated = ? WHERE ID = ?`,
-		t.LastUpdated.Unix(), t.ID)
-	if err != nil {
-		logging.ReportError("tracks.Save()", err)
-		log.Print(err)
-		return err
-	}
+	config.DB.Save(t)
 	return nil
 }
 

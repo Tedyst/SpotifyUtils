@@ -57,13 +57,13 @@ func HandlerUsername(res http.ResponseWriter, req *http.Request) {
 
 	response.Success = true
 	response.Initiator = RespUser{
-		ID:    user.ID,
+		ID:    user.UserID,
 		Code:  user.CompareCode,
 		Name:  user.DisplayName,
 		Image: user.GetImageURL(),
 	}
 	response.Target = RespUser{
-		ID:    target.ID,
+		ID:    target.UserID,
 		Code:  target.CompareCode,
 		Name:  target.DisplayName,
 		Image: target.GetImageURL(),
@@ -105,7 +105,7 @@ func HandlerNoUsername(res http.ResponseWriter, req *http.Request) {
 	for _, s := range user.GetFriends() {
 		response.Friends = append(response.Friends, RespUser{
 			Code:  s.CompareCode,
-			ID:    s.ID,
+			ID:    s.UserID,
 			Name:  s.DisplayName,
 			Image: s.GetImageURL(),
 		})

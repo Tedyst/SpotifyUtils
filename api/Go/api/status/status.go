@@ -36,7 +36,7 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	user := userutils.GetUser(val.(string))
 	if !user.Token.Valid() {
 		// Try to refresh the token
-		t, err := user.Client.Token()
+		t, err := user.Client().Token()
 		if err != nil {
 			response.Success = false
 			response.Error = "Token not valid!"
@@ -52,7 +52,7 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 
 	response.Success = true
 	if user.DisplayName == "" {
-		response.Username = user.ID
+		response.Username = user.UserID
 	} else {
 		response.Username = user.DisplayName
 	}
