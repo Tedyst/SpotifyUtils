@@ -6,8 +6,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/gabyshev/genius-api/genius"
 	"github.com/Tedyst/gormstore"
+	"github.com/gabyshev/genius-api/genius"
 	"github.com/zmb3/spotify"
 )
 
@@ -30,6 +30,8 @@ var (
 	SessionStore *gormstore.Store
 	GeniusToken  = flag.String("GeniusToken", lookupEnvOrString("GENIUS_TOKEN", ""), "The Genius Client Token")
 	GeniusClient = genius.NewClient(nil, *GeniusToken)
+
+	Debug = flag.Bool("Debug", false, "Debug mode")
 )
 
 func lookupEnvOrString(key string, defaultVal string) string {

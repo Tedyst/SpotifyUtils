@@ -3,10 +3,11 @@ package tracks
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gabyshev/genius-api/genius"
@@ -29,11 +30,11 @@ func (t *Track) updateLyrics() error {
 	name := fmt.Sprintf("%s %s", t.Artist, t.Name)
 	res, err := config.GeniusClient.Search(name)
 	if err != nil {
-		log.Print(err)
+		log.Error(err)
 		return err
 	}
 	if len(res.Response.Hits) == 0 {
-		log.Printf("Did not find anything matching %s", name)
+		log.Info("Did not find anything matching %s", name)
 	}
 	for _, s := range res.Response.Hits {
 		if validResponse(t, s) {
@@ -41,26 +42,26 @@ func (t *Track) updateLyrics() error {
 			for i := 1; i < 5; i++ {
 				lyrics, err = getLyricsFromURL(s.Result.URL)
 				if err != nil {
-					log.Print(err)
+					log.Error(err)
 					break
 				}
 				if lyrics != "" || t.Lyrics != "" {
-					log.Printf("Got lyrics for %s-%s", t.Artist, t.Name)
+					log.Debugf("Got lyrics for %s-%s", t.Artist, t.Name)
 					break
 				} else {
-					log.Printf("Trying again for %s", s.Result.URL)
+					log.Debugf("Trying again for %s", s.Result.URL)
 					time.Sleep(retryTimeout)
 				}
 			}
 			if lyrics == "" {
 
-				log.Printf("Could not extract lyrics from %s", s.Result.URL)
+				log.Infof("Could not extract lyrics from %s", s.Result.URL)
 			}
 			t.Lyrics = lyrics
 			t.LastUpdated = time.Now()
 			err = t.Save()
 			if err != nil {
-				log.Print(err)
+				log.Error(err)
 			}
 			break
 		}
@@ -82,12 +83,12 @@ func validResponse(t *Track, song *genius.Hit) bool {
 func getLyricsFromURL(url string) (string, error) {
 	res, err := http.Get(url)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 		return "", err
 	}
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		log.Printf("status code error: %d %s", res.StatusCode, res.Status)
+		log.Errorf("status code error: %d %s", res.StatusCode, res.Status)
 		return "", fmt.Errorf("status code error: %d %s", res.StatusCode, res.Status)
 	}
 
@@ -95,7 +96,7 @@ func getLyricsFromURL(url string) (string, error) {
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 
 	if err != nil {
-		log.Print(err)
+		log.Error(err)
 		return "", err
 	}
 

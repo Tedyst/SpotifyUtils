@@ -1,8 +1,9 @@
 package userutils
 
 import (
-	"log"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/tedyst/spotifyutils/api/logging"
 	"github.com/tedyst/spotifyutils/api/tracks"
@@ -16,7 +17,7 @@ func (u *User) UpdateRecentTracks() {
 	if u.Settings.RecentTracks == false {
 		return
 	}
-	log.Printf("Updating recent tracks for %s", u.ID)
+	log.Debug("Updating recent tracks for %s", u.ID)
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
 	items, err := u.Client().PlayerRecentlyPlayedOpt(options)
 	if err != nil {

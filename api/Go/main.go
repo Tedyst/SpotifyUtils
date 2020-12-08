@@ -1,8 +1,10 @@
 package main
 
 import (
-	"log"
+	"flag"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/Tedyst/gormstore"
 
@@ -35,6 +37,10 @@ func checkErr(err error) {
 func middleware(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		metrics.RequestsServed.Inc()
+		log.WithFields(log.Fields{
+			"Method":     r.Method,
+			"RequestURI": r.RequestURI,
+		}).Debug("")
 		h.ServeHTTP(w, r)
 	})
 }
@@ -44,14 +50,22 @@ const maxAge = 86400 * 30
 
 func main() {
 	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
+	flag.Parse()
 
-	datab, err := gorm.Open(sqlite.Open("data.db?cache=shared&mode=rwc"), &gorm.Config{})
+	datab, err := gorm.Open(sqlite.Open("data.db?cache=shared&mode=rwc"), &gorm.Config{
+		Logger: &GormLogger{},
+	})
 	db, err := datab.DB()
 	checkErr(err)
 	db.Exec("PRAGMA journal_mode=WAL;")
 
 	config.DB = datab
 
+	if *config.Debug {
+		log.SetLevel(log.DebugLevel)
+	}
+
+	log.SetReportCaller(true)
 	initDB(config.DB)
 
 	sessionOptions := gormstore.Options{
@@ -78,7 +92,7 @@ func main() {
 		}()
 	}
 
-	log.Printf("Starting server on address http://%s", *config.Address)
+	log.Infof("Starting server on address http://%s", *config.Address)
 	err = http.ListenAndServe(*config.Address, middleware(m))
 	checkErr(err)
 }
