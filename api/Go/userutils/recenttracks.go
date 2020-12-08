@@ -87,7 +87,8 @@ func (u *User) insertRecentTracks(items []spotify.RecentlyPlayedItem) {
 }
 
 func (u *User) StartRecentTracksUpdater() {
-	if u.RecentTracksTimer != nil {
+	index, timer := searchTimers(u.ID)
+	if timer.Lock != nil {
 		if u.Settings.RecentTracks == false {
 			u.StopRecentTracksUpdater()
 		}
@@ -98,7 +99,7 @@ func (u *User) StartRecentTracksUpdater() {
 
 	ticker := time.NewTicker(updateTimer)
 	quit := make(chan struct{})
-	u.RecentTracksTimer = &quit
+	u.Lock = &quit
 	go func(u *User) {
 		for {
 			select {
@@ -112,12 +113,35 @@ func (u *User) StartRecentTracksUpdater() {
 	}(u)
 }
 
+type RecentTracksTimerStruct {
+	UserID string
+	Lock *chan struct{}
+}
+
+var recentTrackTimerCache []*RecentTracksTimerStruct
+
+func searchTimers(UserID string) (int,*RecentTracksTimerStruct){
+	for _, s:= range recentTrackTimerCache{
+		if s.UserID == UserID {
+			return i,s
+		}
+	}
+	result := &RecentTracksTimerStruct{
+		UserID: UserID,
+	}
+	recentTrackTimerCache = append(recentTrackTimerCache, result)
+	return len(recentTrackTimerCache)-1, result
+}
+
 func (u *User) StopRecentTracksUpdater() {
-	if u.RecentTracksTimer == nil {
+	index, timer := searchTimers(u.ID)
+	if timer.Lock == nil {
 		return
 	}
-	close(*u.RecentTracksTimer)
-	u.RecentTracksTimer = nil
+	close(*timer.Lock)
+	recentTrackTimerCache[index] = recentTrackTimerCache[len(recentTrackTimerCache)-1]
+	recentTrackTimerCache[len(recentTrackTimerCache)-1] = nil
+	recentTrackTimerCache = recentTrackTimerCache[:len(recentTrackTimerCache)-1]
 }
 
 func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
