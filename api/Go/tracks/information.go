@@ -3,8 +3,6 @@ package tracks
 import (
 	"database/sql/driver"
 	"encoding/json"
-	"errors"
-	"fmt"
 
 	"github.com/zmb3/spotify"
 )
@@ -19,27 +17,15 @@ type TrackFeaturesStruct struct {
 	LoudnessGraph    LoudnessGraphStruct
 }
 
-type LoudnessGraphStruct json.RawMessage
+type LoudnessGraphStruct []int
 
-// Scan scan value into Jsonb, implements sql.Scanner interface
-func (j *LoudnessGraphStruct) Scan(value interface{}) error {
-	bytes, ok := value.([]byte)
-	if !ok {
-		return errors.New(fmt.Sprint("Failed to unmarshal JSONB value:", value))
-	}
-
-	result := json.RawMessage{}
-	err := json.Unmarshal(bytes, &result)
-	*j = LoudnessGraphStruct(result)
-	return err
+func (sla *LoudnessGraphStruct) Scan(value interface{}) error {
+	return json.Unmarshal([]byte(value.(string)), &sla)
 }
 
-// Value return json value, implement driver.Valuer interface
-func (j LoudnessGraphStruct) Value() (driver.Value, error) {
-	if len(j) == 0 {
-		return nil, nil
-	}
-	return json.RawMessage(j).MarshalJSON()
+func (sla LoudnessGraphStruct) Value() (driver.Value, error) {
+	val, err := json.Marshal(sla)
+	return string(val), err
 }
 
 type TrackInformationStruct struct {
