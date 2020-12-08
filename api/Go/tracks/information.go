@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/zmb3/spotify"
 )
 
@@ -58,6 +59,7 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 	if t.Information.Updated == true {
 		return nil
 	}
+	log.Debugf("Getting spotify information for track %s", t.Name)
 	features, err := cl.GetAudioFeatures(spotify.ID(t.TrackID))
 	if err != nil {
 		return err

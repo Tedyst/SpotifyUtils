@@ -3,8 +3,6 @@ package userutils
 import (
 	"database/sql/driver"
 	"encoding/json"
-
-	"github.com/zmb3/spotify"
 )
 
 type GenresStruct []string
@@ -40,7 +38,7 @@ func (sla TracksStruct) Value() (driver.Value, error) {
 	return string(val), err
 }
 
-type PlaylistsStruct []spotify.SimplePlaylist
+type PlaylistsStruct []Playlist
 
 func (sla *PlaylistsStruct) Scan(value interface{}) error {
 	return json.Unmarshal(value.([]byte), &sla)
@@ -49,4 +47,9 @@ func (sla *PlaylistsStruct) Scan(value interface{}) error {
 func (sla PlaylistsStruct) Value() (driver.Value, error) {
 	val, err := json.Marshal(sla)
 	return string(val), err
+}
+
+type Playlist struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }

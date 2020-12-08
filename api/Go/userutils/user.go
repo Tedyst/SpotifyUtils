@@ -75,7 +75,12 @@ func (u *User) RefreshUser() error {
 
 	// Get Playlists
 	for playlistPage := 1; ; playlistPage++ {
-		u.Playlists = append(u.Playlists, playlists.Playlists...)
+		for _, s := range playlists.Playlists {
+			u.Playlists = append(u.Playlists, Playlist{
+				ID:   string(s.ID),
+				Name: s.Name,
+			})
+		}
 		err = client.NextPage(playlists)
 		if err == spotify.ErrNoMorePages {
 			break
