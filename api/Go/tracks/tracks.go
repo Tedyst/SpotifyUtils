@@ -3,6 +3,7 @@ package tracks
 import (
 	"time"
 
+	"github.com/prometheus/common/log"
 	"github.com/tedyst/spotifyutils/api/config"
 	"github.com/zmb3/spotify"
 	"gorm.io/gorm"
@@ -57,6 +58,7 @@ func (t *Track) Save() error {
 }
 
 func (t *Track) Update(cl spotify.Client) error {
+	log.Debugf("Starting Update for %s-%s", t.Artist, t.Name)
 	var err1 error
 	var err2 error
 	if t.Information.Updated == false {
@@ -68,6 +70,7 @@ func (t *Track) Update(cl spotify.Client) error {
 	}
 	if time.Since(t.LastUpdated) >= time.Hour {
 		err2 = t.updateLyrics()
+		t.LastUpdated = time.Now()
 		err := t.Save()
 		if err != nil {
 			return err
