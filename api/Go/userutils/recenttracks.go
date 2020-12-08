@@ -155,3 +155,9 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 
 	return items
 }
+
+func (u *User) GetRecentTrackSince(t time.Time) []RecentTracks {
+	var result []RecentTracks
+	config.DB.Where("listened_at >= ?", t.Unix()).Where("user = ?", u.ID).Find(&result)
+	return result
+}
