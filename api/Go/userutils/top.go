@@ -24,10 +24,10 @@ type TopTrack struct {
 }
 
 type TopStruct struct {
-	Genres  []string    `json:"genres"`
-	Updated int64       `json:"updated"`
-	Artists []TopArtist `json:"artists"`
-	Tracks  []TopTrack  `json:"tracks"`
+	Genres  GenresStruct  `json:"genres"`
+	Updated int64         `json:"updated"`
+	Artists ArtistsStruct `json:"artists"`
+	Tracks  TracksStruct  `json:"tracks"`
 }
 
 // RefreshTop updated the user's top

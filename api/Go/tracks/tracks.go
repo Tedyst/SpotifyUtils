@@ -21,8 +21,6 @@ type Track struct {
 	Information SpotifyInformation `gorm:"embedded;embeddedPrefix:information_"`
 }
 
-var tracksCache []*Track
-
 func RecentlyPlayedItemToTrack(s spotify.SimpleTrack) *Track {
 	track := getTrackFromDB(string(s.ID))
 	track.Artist = s.Artists[0].Name
@@ -30,21 +28,10 @@ func RecentlyPlayedItemToTrack(s spotify.SimpleTrack) *Track {
 	return track
 }
 
-func GetTrackFromID(cl spotify.Client, ID string) *Track {
-	for _, s := range tracksCache {
-		if s.TrackID == ID {
-			return s
-		}
-	}
-	spotifyTrack, err := cl.GetTrack(spotify.ID(ID))
-	if err != nil {
-		return getTrackFromDB(ID)
-	}
-	track := getTrackFromDB(ID)
-	track.Artist = spotifyTrack.Artists[0].Name
-	track.Name = spotifyTrack.Name
-	tracksCache = append(tracksCache, track)
-	return track
+func GetTrackFromID(ID string) *Track {
+	var track Track
+	config.DB.Where("track_id = ?", ID).FirstOrCreate(&track)
+	return &track
 }
 
 func getTrackFromDB(ID string) *Track {
@@ -55,7 +42,7 @@ func getTrackFromDB(ID string) *Track {
 		}
 	}
 	var track Track
-	config.DB.Where("track_id = ?", ID).Find(&track)
+	config.DB.Where("track_id = ?", ID).FirstOrCreate(&track)
 	return &track
 }
 

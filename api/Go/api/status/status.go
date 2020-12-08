@@ -57,9 +57,7 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 		response.Username = user.DisplayName
 	}
 
-	if len(user.Images) > 0 {
-		response.Image = user.Images[0].URL
-	}
+	response.Image = user.Image
 
 	for _, s := range user.Playlists {
 		playlist := &playlistResponse{

@@ -66,13 +66,15 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 	u.Token = token
 	u.DisplayName = spotifyUser.DisplayName
 	u.UserID = spotifyUser.ID
-	u.Images = spotifyUser.Images
+	if len(spotifyUser.Images) > 0 {
+		u.Image = spotifyUser.Images[0].URL
+	}
 
 	u.RefreshUser()
 	u.Save()
 
 	session, _ := config.SessionStore.Get(req, "username")
-	session.Values["username"] = u.ID
+	session.Values["username"] = u.UserID
 
 	err = session.Save(req, res)
 	if err != nil {

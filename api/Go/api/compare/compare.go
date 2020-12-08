@@ -60,13 +60,13 @@ func HandlerUsername(res http.ResponseWriter, req *http.Request) {
 		ID:    user.UserID,
 		Code:  user.CompareCode,
 		Name:  user.DisplayName,
-		Image: user.GetImageURL(),
+		Image: user.Image,
 	}
 	response.Target = RespUser{
 		ID:    target.UserID,
 		Code:  target.CompareCode,
 		Name:  target.DisplayName,
-		Image: target.GetImageURL(),
+		Image: target.Image,
 	}
 	response.Result = user.Compare(target)
 	user.AddFriend(target)
@@ -107,7 +107,7 @@ func HandlerNoUsername(res http.ResponseWriter, req *http.Request) {
 			Code:  s.CompareCode,
 			ID:    s.UserID,
 			Name:  s.DisplayName,
-			Image: s.GetImageURL(),
+			Image: s.Image,
 		})
 	}
 	response.Success = true

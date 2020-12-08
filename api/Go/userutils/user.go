@@ -15,12 +15,12 @@ type User struct {
 	gorm.Model
 	UserID      string
 	DisplayName string
-	Token       *oauth2.Token
-	Images      []spotify.Image
-	Playlists   []spotify.SimplePlaylist
+	Token       *oauth2.Token `gorm:"embedded;embeddedPrefix:token_"`
+	Image       string
+	Playlists   PlaylistsStruct
 	LastUpdated time.Time
-	Settings    UserSettings
-	Top         TopStruct
+	Settings    UserSettings `gorm:"embedded;embeddedPrefix:settings_"`
+	Top         TopStruct    `gorm:"embedded;embeddedPrefix:top_"`
 	CompareCode string
 }
 
@@ -88,16 +88,11 @@ func (u *User) RefreshUser() error {
 		return err
 	}
 	u.DisplayName = spotifyData.DisplayName
-	u.Images = spotifyData.Images
+	if len(spotifyData.Images) > 0 {
+		u.Image = spotifyData.Images[0].URL
+	}
 
 	u.LastUpdated = time.Now()
 	u.Save()
 	return nil
-}
-
-func (u *User) GetImageURL() string {
-	if len(u.Images) > 0 {
-		return u.Images[0].URL
-	}
-	return ""
 }

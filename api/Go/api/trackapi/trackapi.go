@@ -34,7 +34,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 
 	trackURI := vars["track"]
 
-	tr := tracks.GetTrackFromID(*user.Client(), trackURI)
+	tr := tracks.GetTrackFromID(trackURI)
 	err := tr.Update(*user.Client())
 	if err != nil {
 		response.Success = false
