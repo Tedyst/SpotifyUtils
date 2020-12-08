@@ -9,4 +9,5 @@ import (
 func initDB(db *gorm.DB) {
 	db.AutoMigrate(&tracks.Track{})
 	db.AutoMigrate(&userutils.User{})
+	db.AutoMigrate(&userutils.RecentTracks{})
 }

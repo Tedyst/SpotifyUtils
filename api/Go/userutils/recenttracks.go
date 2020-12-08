@@ -5,12 +5,20 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/tedyst/spotifyutils/api/config"
 	"github.com/tedyst/spotifyutils/api/logging"
 	"github.com/tedyst/spotifyutils/api/tracks"
 	"github.com/zmb3/spotify"
 )
 
 const updateTimer = 2 * time.Hour
+
+type RecentTracks struct {
+	ID         uint `gorm:"primarykey"`
+	User       uint
+	Track      string
+	ListenedAt int64 `gorm:"autoCreateTime"`
+}
 
 // UpdateRecentTracks updates the recent tracks
 func (u *User) UpdateRecentTracks() {
@@ -33,7 +41,39 @@ func (u *User) UpdateRecentTracks() {
 }
 
 func (u *User) insertRecentTracks(items []spotify.RecentlyPlayedItem) {
-
+	var recent []RecentTracks
+	var present []RecentTracks
+	var first time.Time
+	var last time.Time
+	if len(items) == 0 {
+		return
+	} else if len(items) == 1 {
+		first = items[0].PlayedAt
+		last = items[0].PlayedAt
+	} else {
+		first = items[0].PlayedAt
+		last = items[len(items)-1].PlayedAt
+	}
+	config.DB.Where("listened_at <= ?", first.Unix()).Where("listened_at >= ?", last.Unix()).Where("user = ?", u.ID).Find(&present)
+	for _, s := range items {
+		ok := true
+		for _, s2 := range present {
+			if s2.ListenedAt == s.PlayedAt.Unix() {
+				ok = false
+				break
+			}
+		}
+		if ok {
+			recent = append(recent, RecentTracks{
+				User:       u.ID,
+				Track:      string(s.Track.ID),
+				ListenedAt: s.PlayedAt.Unix(),
+			})
+		}
+	}
+	if len(recent) != 0 {
+		config.DB.Create(&recent)
+	}
 }
 
 func (u *User) StartRecentTracksUpdater() {
