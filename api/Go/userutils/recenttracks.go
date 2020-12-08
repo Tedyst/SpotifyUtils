@@ -26,7 +26,7 @@ func (u *User) UpdateRecentTracks() {
 	}
 	for _, s := range items {
 		t := tracks.RecentlyPlayedItemToTrack(s.Track)
-		t.Update(*u.Client())
+		go t.Update(*u.Client())
 	}
 
 	u.insertRecentTracks(items)
@@ -109,7 +109,7 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 	go func(it []spotify.RecentlyPlayedItem) {
 		for _, s := range it {
 			t := tracks.RecentlyPlayedItemToTrack(s.Track)
-			t.Update(*u.Client())
+			go t.Update(*u.Client())
 		}
 	}(items)
 

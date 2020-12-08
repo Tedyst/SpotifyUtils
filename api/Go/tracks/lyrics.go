@@ -34,7 +34,7 @@ func (t *Track) updateLyrics() error {
 		return err
 	}
 	if len(res.Response.Hits) == 0 {
-		log.Info("Did not find anything matching %s", name)
+		log.Debugf("Did not find anything matching %s", name)
 	}
 	for _, s := range res.Response.Hits {
 		if validResponse(t, s) {
@@ -55,7 +55,7 @@ func (t *Track) updateLyrics() error {
 			}
 			if lyrics == "" {
 
-				log.Infof("Could not extract lyrics from %s", s.Result.URL)
+				log.Debugf("Could not extract lyrics from %s", s.Result.URL)
 			}
 			t.Lyrics = lyrics
 			t.LastUpdated = time.Now()
