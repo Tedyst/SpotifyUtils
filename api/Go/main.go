@@ -45,10 +45,12 @@ const maxAge = 86400 * 30
 func main() {
 	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
 
-	datab, err := gorm.Open(sqlite.Open("data.db"), &gorm.Config{})
+	datab, err := gorm.Open(sqlite.Open("data.db?cache=shared&mode=rwc"), &gorm.Config{})
+	db, err := datab.DB()
+	checkErr(err)
+	db.Exec("PRAGMA journal_mode=WAL;")
 
 	config.DB = datab
-	checkErr(err)
 
 	initDB(config.DB)
 
