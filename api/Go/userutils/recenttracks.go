@@ -26,7 +26,7 @@ func (u *User) UpdateRecentTracks() {
 		return
 	}
 	for _, s := range items {
-		t := tracks.SimpleConvertToTrack(s.Track)
+		t := tracks.RecentlyPlayedItemToTrack(s.Track)
 		t.Update(u.Client)
 	}
 
@@ -134,7 +134,7 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 	// Preloading the tracks in memory and updating them just in case they are used
 	go func(it []spotify.RecentlyPlayedItem) {
 		for _, s := range it {
-			t := tracks.SimpleConvertToTrack(s.Track)
+			t := tracks.RecentlyPlayedItemToTrack(s.Track)
 			t.Update(u.Client)
 		}
 	}(items)

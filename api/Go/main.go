@@ -17,9 +17,8 @@ import (
 	"github.com/tedyst/spotifyutils/api/api/admin"
 	"github.com/tedyst/spotifyutils/api/api/status"
 
-	_ "github.com/cznic/ql/driver"
 	"github.com/gorilla/mux"
-	_ "github.com/mattn/go-sqlite3"
+
 	"github.com/michaeljs1990/sqlitestore"
 	"github.com/tedyst/spotifyutils/api/auth"
 	"github.com/tedyst/spotifyutils/api/config"

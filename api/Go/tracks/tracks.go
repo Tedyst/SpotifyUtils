@@ -24,7 +24,7 @@ type Track struct {
 
 var tracksCache []*Track
 
-func SimpleConvertToTrack(s spotify.SimpleTrack) *Track {
+func RecentlyPlayedItemToTrack(s spotify.SimpleTrack) *Track {
 	track := getTrackFromDB(string(s.ID))
 	track.Artist = s.Artists[0].Name
 	track.Name = s.Name
