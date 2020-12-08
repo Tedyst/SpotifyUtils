@@ -38,8 +38,8 @@ func middleware(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		metrics.RequestsServed.Inc()
 		log.WithFields(log.Fields{
-			"Method":     r.Method,
-			"RequestURI": r.RequestURI,
+			"method":  r.Method,
+			"request": r.RequestURI,
 		}).Debug("")
 		h.ServeHTTP(w, r)
 	})
