@@ -20,7 +20,7 @@ type TrackFeaturesStruct struct {
 type LoudnessGraphStruct []int
 
 func (sla *LoudnessGraphStruct) Scan(value interface{}) error {
-	return json.Unmarshal([]byte(value.(string)), &sla)
+	return json.Unmarshal(value.([]byte), &sla)
 }
 
 func (sla LoudnessGraphStruct) Value() (driver.Value, error) {
