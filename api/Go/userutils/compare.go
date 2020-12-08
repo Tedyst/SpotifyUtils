@@ -104,8 +104,7 @@ func generateNewCompareCode() string {
 }
 
 func (u *User) GetFriends() []*User {
-	var result []*User
-	return result
+	return u.Friends
 }
 
 func (u *User) AddFriend(target *User) {
@@ -114,5 +113,6 @@ func (u *User) AddFriend(target *User) {
 }
 
 func (u *User) addFriend(target *User) {
-
+	u.Friends = append(u.Friends, target)
+	u.Save()
 }

@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Tedyst/gormstore"
+
 	"github.com/tedyst/spotifyutils/api/api/compare"
 	"github.com/tedyst/spotifyutils/api/api/recenttracks"
 	"github.com/tedyst/spotifyutils/api/api/trackapi"
@@ -20,7 +22,6 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/michaeljs1990/sqlitestore"
 	"github.com/tedyst/spotifyutils/api/auth"
 	"github.com/tedyst/spotifyutils/api/config"
 )
@@ -45,16 +46,16 @@ func main() {
 	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
 
 	datab, err := gorm.Open(sqlite.Open("data.db"), &gorm.Config{})
+
 	config.DB = datab
 	checkErr(err)
 
 	initDB(config.DB)
-	sqlDB, err := config.DB.DB()
-	if err != nil {
-		log.Panic(err)
+
+	sessionOptions := gormstore.Options{
+		TableName: "sessions",
 	}
-	config.SessionStore, err = sqlitestore.NewSqliteStoreFromConnection(sqlDB, "sessions", "/", maxAge, config.Secret)
-	checkErr(err)
+	config.SessionStore = gormstore.NewOptions(config.DB, sessionOptions, config.Secret)
 
 	m := mux.NewRouter()
 	m.HandleFunc("/api/auth", auth.Auth)

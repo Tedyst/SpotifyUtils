@@ -22,6 +22,7 @@ type User struct {
 	Settings    UserSettings `gorm:"embedded;embeddedPrefix:settings_"`
 	Top         TopStruct    `gorm:"embedded;embeddedPrefix:top_"`
 	CompareCode string
+	Friends     []*User `gorm:"many2many:friends;"`
 }
 
 type UserSettings struct {
@@ -44,14 +45,14 @@ func (u *User) Client() *spotify.Client {
 
 func GetUser(ID string) *User {
 	var user User
-	config.DB.Where("user_id = ?", ID).FirstOrCreate(&user)
+	config.DB.Where("user_id = ?", ID).Preload("Friends").FirstOrCreate(&user)
 	user.verifyifCompareCodeExists()
 	return &user
 }
 
 func GetUserFromCompareCode(code string) *User {
 	var user User
-	config.DB.Where("compare_code = ?", code).FirstOrCreate(&user)
+	config.DB.Where("compare_code = ?", code).Preload("Friends").FirstOrCreate(&user)
 	return &user
 }
 

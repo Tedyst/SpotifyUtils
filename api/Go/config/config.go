@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/gabyshev/genius-api/genius"
-	"github.com/michaeljs1990/sqlitestore"
+	"github.com/Tedyst/gormstore"
 	"github.com/zmb3/spotify"
 )
 
@@ -27,8 +27,7 @@ var (
 	Metrics = flag.Bool("Metrics", true, "Enable Metrics")
 
 	DB           *gorm.DB
-	SessionStore *sqlitestore.SqliteStore
-
+	SessionStore *gormstore.Store
 	GeniusToken  = flag.String("GeniusToken", lookupEnvOrString("GENIUS_TOKEN", ""), "The Genius Client Token")
 	GeniusClient = genius.NewClient(nil, *GeniusToken)
 )
