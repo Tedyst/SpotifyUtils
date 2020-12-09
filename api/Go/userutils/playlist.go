@@ -1,14 +1,14 @@
 package userutils
 
 import (
-	"github.com/tedyst/spotifyutils/api/logging"
+	log "github.com/sirupsen/logrus"
 	"github.com/zmb3/spotify"
 )
 
 func (u *User) GetPlaylist(ID string) *spotify.FullPlaylist {
 	items, err := u.Client().GetPlaylist(spotify.ID(ID))
 	if err != nil {
-		logging.ReportError("userutils.GetPlaylist()", err)
+		log.Error(err)
 		return &spotify.FullPlaylist{}
 	}
 

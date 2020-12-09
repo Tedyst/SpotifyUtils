@@ -6,7 +6,6 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/tedyst/spotifyutils/api/config"
-	"github.com/tedyst/spotifyutils/api/logging"
 	"github.com/tedyst/spotifyutils/api/tracks"
 	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/zmb3/spotify"
@@ -26,11 +25,11 @@ func (u *User) UpdateRecentTracks() {
 	if u.Settings.RecentTracks == false {
 		return
 	}
-	log.Debug("Updating recent tracks for %s", u.ID)
+	log.Debugf("Updating recent tracks for %s", u.UserID)
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
 	items, err := u.Client().PlayerRecentlyPlayedOpt(options)
 	if err != nil {
-		logging.ReportError("userutils.UpdateRecentTracks()", err)
+		log.Error(err)
 		return
 	}
 	for _, s := range items {
@@ -139,7 +138,7 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
 	items, err := u.Client().PlayerRecentlyPlayedOpt(options)
 	if err != nil {
-		logging.ReportError("userutils.UpdateRecentTracks()", err)
+		log.Error(err)
 		return []spotify.RecentlyPlayedItem{}
 	}
 	if u.Settings.RecentTracks == true {

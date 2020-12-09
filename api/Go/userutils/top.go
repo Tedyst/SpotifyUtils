@@ -4,7 +4,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/tedyst/spotifyutils/api/logging"
+	log "github.com/sirupsen/logrus"
 	"github.com/zmb3/spotify"
 )
 
@@ -46,17 +46,17 @@ func (u *User) RefreshTop() error {
 	}
 	longTopArtists, err := u.Client().CurrentUsersTopArtistsOpt(longOptions)
 	if err != nil {
-		logging.ReportError("userutils.Top()", err)
+		log.Error(err)
 		return err
 	}
 	shortTopArtists, err := u.Client().CurrentUsersTopArtistsOpt(shortOptions)
 	if err != nil {
-		logging.ReportError("userutils.Top()", err)
+		log.Error(err)
 		return err
 	}
 	shortTopTracks, err := u.Client().CurrentUsersTopTracksOpt(shortOptions)
 	if err != nil {
-		logging.ReportError("userutils.Top()", err)
+		log.Error(err)
 		return err
 	}
 

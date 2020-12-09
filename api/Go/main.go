@@ -59,7 +59,7 @@ func main() {
 	config.DB = datab
 
 	if *config.Debug {
-		log.SetLevel(log.TraceLevel)
+		log.SetLevel(log.DebugLevel)
 	}
 
 	log.SetReportCaller(true)
