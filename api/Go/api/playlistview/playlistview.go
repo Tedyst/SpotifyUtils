@@ -5,21 +5,22 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/tedyst/spotifyutils/api/tracks"
+
+	"github.com/gorilla/mux"
 	"github.com/tedyst/spotifyutils/api/config"
 	"github.com/tedyst/spotifyutils/api/userutils"
-	"github.com/zmb3/spotify"
 )
 
 func Handler(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	session, _ := config.SessionStore.Get(req, "username")
+	vars := mux.Vars(req)
 	type RespSong struct {
-		Name       string `json:"name"`
-		Artist     string `json:"artist"`
-		Lyrics     string `json:"lyrics"`
-		URI        string `json:"uri"`
-		ImageURL   string `json:"image_url"`
-		PreviewURL string `json:"preview_url"`
+		Name     string `json:"name"`
+		Artist   string `json:"artist"`
+		URI      string `json:"uri"`
+		ImageURL string `json:"image_url"`
 	}
 	type Resp struct {
 		Results []RespSong `json:"results"`
@@ -35,29 +36,19 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	val := session.Values["username"]
+	code := vars["playlist"]
 	user := userutils.GetUser(val.(string))
 
 	response.Success = true
-	recentTracks := user.GetRecentTracks()
-	var ids []spotify.ID
-	for _, s := range recentTracks {
-		ids = append(ids, s.Track.ID)
-	}
-	tracksinfo, err := user.Client().GetTracks(ids...)
-	if err != nil {
-		response.Success = false
-		response.Error = fmt.Sprint(err)
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
-		return
-	}
-	for i, s := range recentTracks {
+	cl := user.Client()
+	playlist := user.GetPlaylistTracks(code, *cl)
+	tracks.BatchUpdate(playlist, *cl)
+	for _, s := range playlist {
 		response.Results = append(response.Results, RespSong{
-			Name:       s.Track.Name,
-			Artist:     s.Track.Artists[0].Name,
-			URI:        string(s.Track.ID),
-			ImageURL:   tracksinfo[i].Album.Images[0].URL,
-			PreviewURL: s.Track.PreviewURL,
+			ImageURL: s.Information.TrackInformation.Image,
+			URI:      s.TrackID,
+			Artist:   s.Artist,
+			Name:     s.Name,
 		})
 	}
 

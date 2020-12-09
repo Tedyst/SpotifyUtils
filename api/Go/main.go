@@ -4,6 +4,8 @@ import (
 	"flag"
 	"net/http"
 
+	"github.com/tedyst/spotifyutils/api/api/playlistview"
+
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Tedyst/gormstore"
@@ -74,6 +76,7 @@ func main() {
 	m.HandleFunc("/api/auth", auth.Auth)
 	m.HandleFunc("/api/auth-url", auth.AuthURL)
 	m.HandleFunc("/api/status", status.StatusHandler)
+	m.HandleFunc("/api/playlist/{playlist}", playlistview.Handler)
 	m.HandleFunc("/api/top", top.TopHandler)
 	m.HandleFunc("/api/top/old", top.TopHandlerSince)
 	m.HandleFunc("/api/compare", compare.HandlerNoUsername)

@@ -36,6 +36,40 @@ func GetTrackFromID(ID string) *Track {
 	return &track
 }
 
+func BatchUpdate(tracks []*Track, cl spotify.Client) {
+	newTracks := []*Track{}
+	for _, s := range tracks {
+		if s.Name == "" {
+			newTracks = append(newTracks, s)
+		}
+	}
+	ids := []spotify.ID{}
+	limit := 50
+	for _, s := range newTracks {
+		ids = append(ids, spotify.ID(s.TrackID))
+	}
+	for i := 0; i < len(ids); i += limit {
+		size := len(ids)
+		if size > i+limit {
+			size = i + limit
+		}
+		batch := ids[i:size]
+		info, err := cl.GetTracks(batch...)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		for ind, s := range info {
+			newTracks[ind+i].Artist = s.Artists[0].Name
+			newTracks[ind+i].Name = s.Name
+			newTracks[ind+i].Information.TrackInformation.Explicit = s.Explicit
+			newTracks[ind+i].Information.TrackInformation.Image = s.Album.Images[0].URL
+			newTracks[ind+i].Save()
+		}
+	}
+
+}
+
 func getTrackFromDB(ID string) *Track {
 	if !enableSaving {
 		return &Track{

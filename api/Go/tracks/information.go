@@ -59,7 +59,7 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 	if t.Information.Updated == true {
 		return nil
 	}
-	log.Debugf("Getting spotify information for track %s", t.Name)
+	log.Debugf("Getting spotify information for track %s", t.TrackID)
 	features, err := cl.GetAudioFeatures(spotify.ID(t.TrackID))
 	if err != nil {
 		return err
