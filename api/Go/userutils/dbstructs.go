@@ -49,6 +49,17 @@ func (sla PlaylistsStruct) Value() (driver.Value, error) {
 	return string(val), err
 }
 
+type FriendsStruct []string
+
+func (sla *FriendsStruct) Scan(value interface{}) error {
+	return json.Unmarshal(value.([]byte), &sla)
+}
+
+func (sla FriendsStruct) Value() (driver.Value, error) {
+	val, err := json.Marshal(sla)
+	return string(val), err
+}
+
 type Playlist struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`

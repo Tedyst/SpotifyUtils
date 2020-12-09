@@ -22,7 +22,7 @@ type User struct {
 	Settings    UserSettings `gorm:"embedded;embeddedPrefix:settings_"`
 	Top         TopStruct    `gorm:"embedded;embeddedPrefix:top_"`
 	CompareCode string
-	Friends     []*User `gorm:"many2many:friends;"`
+	Friends     FriendsStruct
 }
 
 type UserSettings struct {
