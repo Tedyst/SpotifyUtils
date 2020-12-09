@@ -11,6 +11,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
 import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
+import GitHubIcon from '@material-ui/icons/GitHub';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import QueueMusicIcon from '@material-ui/icons/QueueMusic';
@@ -59,6 +60,9 @@ const useStyles = makeStyles((theme) => ({
     avatar: {
         marginRight: 10,
     },
+    selected: {
+        backgroundColor: theme.palette.primary.main + "!important",
+    },
     // necessary for content to be below app bar
     toolbar: theme.mixins.toolbar,
     drawerPaper: {
@@ -92,43 +96,57 @@ function ResponsiveDrawer(props) {
     const drawer = (
         <div>
             <div className={`${classes.toolbar} ${classes.toolbarName}`} >
-                <Typography variant="h6" noWrap className={classes.toolbarName}>
+                {/* <GitHubIcon /> */}
+
+                <Typography variant="h5" noWrap className={classes.appName}>
                     Spotify Utils
-            </Typography>
+                </Typography>
             </div>
             <Divider />
             <List>
-                <ListItem button key="Home" component={Link} to="/" selected={location.pathname === "/"}>
+                <ListItem button key="Home" component={Link} to="/" selected={location.pathname === "/"} classes={{
+                    selected: classes.selected,
+                }}>
                     <ListItemIcon>
                         <HomeIcon />
                     </ListItemIcon>
                     <ListItemText primary="Home" />
                 </ListItem>
-                <ListItem button key="Lyrics" component={Link} to="/lyrics" selected={location.pathname === "/lyrics"}>
+                <ListItem button key="Playlist" component={Link} to="/playlist" selected={location.pathname === "/playlist"} classes={{
+                    selected: classes.selected,
+                }}>
                     <ListItemIcon>
                         <ListIcon />
                     </ListItemIcon>
                     <ListItemText primary="Playlist" />
                 </ListItem>
-                <ListItem button key="Top" component={Link} to="/top" selected={location.pathname === "/top"}>
+                <ListItem button key="Top" component={Link} to="/top" selected={location.pathname === "/top"} classes={{
+                    selected: classes.selected,
+                }}>
                     <ListItemIcon>
                         <AllInclusiveIcon />
                     </ListItemIcon>
                     <ListItemText primary="Your Top" />
                 </ListItem>
-                <ListItem button key="Compare" component={Link} to="/compare" selected={location.pathname.startsWith("/compare")}>
+                <ListItem button key="Compare" component={Link} to="/compare" selected={location.pathname.startsWith("/compare")} classes={{
+                    selected: classes.selected,
+                }}>
                     <ListItemIcon>
                         <SupervisorAccountIcon />
                     </ListItemIcon>
                     <ListItemText primary="Compare" />
                 </ListItem>
-                <ListItem button key="Recent-Tracks" component={Link} to="/recent" selected={location.pathname.startsWith("/recent")}>
+                <ListItem button key="Recent-Tracks" component={Link} to="/recent" selected={location.pathname.startsWith("/recent")} classes={{
+                    selected: classes.selected,
+                }}>
                     <ListItemIcon>
                         <QueueMusicIcon />
                     </ListItemIcon>
                     <ListItemText primary="Recent Tracks" />
                 </ListItem>
-                <ListItem button key="Logout" component="a" href="/logout">
+                <ListItem button key="Logout" component="a" href="/logout" classes={{
+                    selected: classes.selected,
+                }}>
                     <ListItemIcon>
                         <ExitToAppIcon />
                     </ListItemIcon>
