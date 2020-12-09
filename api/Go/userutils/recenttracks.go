@@ -7,7 +7,6 @@ import (
 
 	"github.com/tedyst/spotifyutils/api/config"
 	"github.com/tedyst/spotifyutils/api/tracks"
-	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/zmb3/spotify"
 )
 
@@ -200,7 +199,7 @@ type RecentTracksStatisticsStruct struct {
 	TopTracks     []RecentTracksStatisticsStructTrack
 	Hours         map[uint]int64
 	Days          map[int64]uint
-	TotalListened string
+	TotalListened int
 }
 
 type RecentTracksStatisticsStructTrack struct {
@@ -236,6 +235,6 @@ func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct 
 		result.Days[s.ListenedAt] = s.ID
 	}
 
-	result.TotalListened = utils.SecondsToHuman(int(u.getListenedTotalRecentTrackSince(t) / 1000))
+	result.TotalListened = int(u.getListenedTotalRecentTrackSince(t) / 1000)
 	return result
 }
