@@ -120,6 +120,11 @@ func (u *User) AddFriend(target *User) {
 }
 
 func (u *User) addFriend(target *User) {
+	for _, s := range u.Friends {
+		if s == target.UserID {
+			return
+		}
+	}
 	u.Friends = append(u.Friends, target.UserID)
 	u.Save()
 }
