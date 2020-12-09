@@ -21,7 +21,7 @@ import {
   selectPathname
 } from './store/user';
 import Sidebar from './views/Sidebar';
-import { makeStyles } from '@material-ui/core';
+import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core';
 import UpdateUser from './utils/status';
 
 const drawerWidth = 240;
@@ -42,6 +42,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function App() {
+  const darkTheme = createMuiTheme({
+    palette: {
+      type: 'dark',
+    },
+  });
   const logged = useSelector(selectLogged);
   const username = useSelector(selectUsername);
   const image = useSelector(selectImage);
@@ -54,43 +59,45 @@ function App() {
 
   return (
     <div className={classes.root}>
-      <Router>
-        <Sidebar
-          username={username}
-          image={image}
-        />
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <Switch>
-            <Route path="/auth">
-              <Login
-                mainUpdate={setUpdating}
-              />
-            </Route>
-            <Route path="/lyrics">
-              <PlaylistView />
-            </Route>
-            <Route path="/top">
-              <Top />
-            </Route>
-            <Route path="/compare">
-              <Compare />
-            </Route>
-            <Route path="/track">
-              <Track />
-            </Route>
-            <Route path="/recent">
-              <Recent />
-            </Route>
-            <Route path='/logout' component={() => "This does not work when using npm run start"} />
-            <Route path='/admin' component={() => "This does not work when using npm run start"} />
-            <Route path="/">
-              <Home />
-            </Route>
-          </Switch>
-          <RedirectWithSave logged={logged} />
-        </main>
-      </Router>
+      <ThemeProvider theme={darkTheme}>
+        <Router>
+          <Sidebar
+            username={username}
+            image={image}
+          />
+          <main className={classes.content}>
+            <div className={classes.toolbar} />
+            <Switch>
+              <Route path="/auth">
+                <Login
+                  mainUpdate={setUpdating}
+                />
+              </Route>
+              <Route path="/lyrics">
+                <PlaylistView />
+              </Route>
+              <Route path="/top">
+                <Top />
+              </Route>
+              <Route path="/compare">
+                <Compare />
+              </Route>
+              <Route path="/track">
+                <Track />
+              </Route>
+              <Route path="/recent">
+                <Recent />
+              </Route>
+              <Route path='/logout' component={() => "This does not work when using npm run start"} />
+              <Route path='/admin' component={() => "This does not work when using npm run start"} />
+              <Route path="/">
+                <Home />
+              </Route>
+            </Switch>
+            <RedirectWithSave logged={logged} />
+          </main>
+        </Router>
+      </ThemeProvider>
     </div>
 
   );
