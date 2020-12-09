@@ -9,7 +9,12 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import MailIcon from '@material-ui/icons/Mail';
+import HomeIcon from '@material-ui/icons/Home';
+import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import QueueMusicIcon from '@material-ui/icons/QueueMusic';
+import ListIcon from '@material-ui/icons/List';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -95,37 +100,37 @@ function ResponsiveDrawer(props) {
             <List>
                 <ListItem button key="Home" component={Link} to="/" selected={location.pathname === "/"}>
                     <ListItemIcon>
-                        <MailIcon />
+                        <HomeIcon />
                     </ListItemIcon>
                     <ListItemText primary="Home" />
                 </ListItem>
                 <ListItem button key="Lyrics" component={Link} to="/lyrics" selected={location.pathname === "/lyrics"}>
                     <ListItemIcon>
-                        <MailIcon />
+                        <ListIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Lyrics from Playlist" />
+                    <ListItemText primary="Playlist" />
                 </ListItem>
                 <ListItem button key="Top" component={Link} to="/top" selected={location.pathname === "/top"}>
                     <ListItemIcon>
-                        <MailIcon />
+                        <AllInclusiveIcon />
                     </ListItemIcon>
                     <ListItemText primary="Your Top" />
                 </ListItem>
                 <ListItem button key="Compare" component={Link} to="/compare" selected={location.pathname.startsWith("/compare")}>
                     <ListItemIcon>
-                        <MailIcon />
+                        <SupervisorAccountIcon />
                     </ListItemIcon>
                     <ListItemText primary="Compare" />
                 </ListItem>
                 <ListItem button key="Recent-Tracks" component={Link} to="/recent" selected={location.pathname.startsWith("/recent")}>
                     <ListItemIcon>
-                        <MailIcon />
+                        <QueueMusicIcon />
                     </ListItemIcon>
                     <ListItemText primary="Recent Tracks" />
                 </ListItem>
                 <ListItem button key="Logout" component="a" href="/logout">
                     <ListItemIcon>
-                        <MailIcon />
+                        <ExitToAppIcon />
                     </ListItemIcon>
                     <ListItemText primary="Logout" />
                 </ListItem>
