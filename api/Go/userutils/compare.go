@@ -108,6 +108,9 @@ func (u *User) GetFriends() []*User {
 }
 
 func (u *User) AddFriend(target *User) {
+	if target.ID == u.ID {
+		return
+	}
 	u.addFriend(target)
 	target.addFriend(u)
 }
