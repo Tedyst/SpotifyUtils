@@ -8,6 +8,7 @@ import (
 	"github.com/tedyst/spotifyutils/api/config"
 	"github.com/tedyst/spotifyutils/api/logging"
 	"github.com/tedyst/spotifyutils/api/tracks"
+	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/zmb3/spotify"
 )
 
@@ -159,5 +160,83 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 func (u *User) GetRecentTrackSince(t time.Time) []RecentTracks {
 	var result []RecentTracks
 	config.DB.Where("listened_at >= ?", t.Unix()).Where("user = ?", u.ID).Find(&result)
+	return result
+}
+
+func (u *User) getTopRecentTrackSince(t time.Time) ([]RecentTracks, int64) {
+	var result []RecentTracks
+	var trackscount int64
+	config.DB.Model(&RecentTracks{}).Select("COUNT(id) AS id, track").Where("listened_at >= ?", t.Unix()).Where("user = ?", u.ID).Group("track").Order("COUNT(id) DESC").Limit(100).Find(&result)
+	config.DB.Model(&RecentTracks{}).Where("listened_at >= ?", t.Unix()).Where("user = ?", u.ID).Group("track").Count(&trackscount)
+	return result, trackscount
+}
+
+func (u *User) getListenedHoursRecentTrackSince(t time.Time) []RecentTracks {
+	var result []RecentTracks
+	config.DB.Model(&RecentTracks{}).Select("COUNT(*) AS id, FLOOR((listened_at % 86400)/3600) AS listened_at").Where(
+		"listened_at >= ?", t.Unix()).Where("user = ?", u.ID).Group("FLOOR((listened_at % 86400)/3600)").Order(
+		"FLOOR((listened_at % 86400)/3600)").Find(&result)
+	return result
+}
+
+func (u *User) getListenedDaysRecentTrackSince(t time.Time) []RecentTracks {
+	var result []RecentTracks
+	config.DB.Model(&RecentTracks{}).Select("COUNT(*) AS id, FLOOR(listened_at / 86400)*3600 AS listened_at").Where(
+		"listened_at >= ?", t.Unix()).Where("user = ?", u.ID).Group("FLOOR(listened_at / 86400)*3600").Order(
+		"FLOOR(listened_at / 86400)*3600").Find(&result)
+	return result
+}
+
+func (u *User) getListenedTotalRecentTrackSince(t time.Time) int64 {
+	var result int64
+	config.DB.Raw(`SELECT SUM(tracks.information_track_length)
+		FROM recent_tracks INNER JOIN tracks
+			ON tracks.track_id = recent_tracks.track
+		WHERE listened_at >= 1605338312 AND user = 1;`).Scan(&result)
+	return result
+}
+
+type RecentTracksStatisticsStruct struct {
+	Count         int64
+	TopTracks     []RecentTracksStatisticsStructTrack
+	Hours         map[uint]int64
+	Days          map[int64]uint
+	TotalListened string
+}
+
+type RecentTracksStatisticsStructTrack struct {
+	Count  uint
+	Name   string
+	Artist string
+}
+
+func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct {
+	tr, count := u.getTopRecentTrackSince(t)
+	result := RecentTracksStatisticsStruct{}
+	result.Count = count
+	// TopTracks
+	for _, s := range tr {
+		var fromDB tracks.Track
+		config.DB.Model(&tracks.Track{}).Select("id, artist, name").Where("track_id = ?", s.Track).Find(&fromDB)
+		result.TopTracks = append(result.TopTracks, RecentTracksStatisticsStructTrack{
+			Count:  s.ID,
+			Name:   fromDB.Name,
+			Artist: fromDB.Artist,
+		})
+	}
+
+	hours := u.getListenedHoursRecentTrackSince(t)
+	result.Hours = make(map[uint]int64)
+	for _, s := range hours {
+		result.Hours[s.ID] = s.ListenedAt
+	}
+
+	days := u.getListenedDaysRecentTrackSince(t)
+	result.Days = make(map[int64]uint)
+	for _, s := range days {
+		result.Days[s.ListenedAt] = s.ID
+	}
+
+	result.TotalListened = utils.SecondsToHuman(int(u.getListenedTotalRecentTrackSince(t) / 1000))
 	return result
 }

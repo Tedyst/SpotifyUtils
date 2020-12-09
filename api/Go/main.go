@@ -59,7 +59,7 @@ func main() {
 	config.DB = datab
 
 	if *config.Debug {
-		log.SetLevel(log.DebugLevel)
+		log.SetLevel(log.TraceLevel)
 	}
 
 	log.SetReportCaller(true)
@@ -75,6 +75,7 @@ func main() {
 	m.HandleFunc("/api/auth-url", auth.AuthURL)
 	m.HandleFunc("/api/status", status.StatusHandler)
 	m.HandleFunc("/api/top", top.TopHandler)
+	m.HandleFunc("/api/top/old", top.TopHandlerSince)
 	m.HandleFunc("/api/compare", compare.HandlerNoUsername)
 	m.HandleFunc("/api/recent", recenttracks.Handler)
 	m.HandleFunc("/api/track/{track}", trackapi.Handler)
