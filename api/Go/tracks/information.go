@@ -100,5 +100,8 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 	t.Information.AlbumInformation.TracksAmount = album.Tracks.Total
 	t.Information.AlbumInformation.Popularity = album.Popularity
 
+	t.Name = track.Name
+	t.Artist = track.Artists[0].Name
+
 	return nil
 }
