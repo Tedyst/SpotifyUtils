@@ -1,6 +1,7 @@
 package userutils
 
 import (
+	"fmt"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -53,7 +54,7 @@ func (u *User) insertRecentTracks(items []spotify.RecentlyPlayedItem) {
 		first = items[0].PlayedAt
 		last = items[len(items)-1].PlayedAt
 	}
-	config.DB.Where("listened_at <= ?", first.Unix()).Where("listened_at >= ?", last.Unix()).Where("user = ?", u.ID).Find(&present)
+	config.DB.Where("listened_at <= ?", first.Unix()).Where("listened_at >= ?", last.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Find(&present)
 	for _, s := range items {
 		ok := true
 		for _, s2 := range present {
@@ -157,22 +158,25 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 
 func (u *User) GetRecentTrackSince(t time.Time) []RecentTracks {
 	var result []RecentTracks
-	config.DB.Where("listened_at >= ?", t.Unix()).Where("user = ?", u.ID).Find(&result)
+	config.DB.Where("listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Find(&result)
 	return result
 }
 
 func (u *User) getTopRecentTrackSince(t time.Time) ([]RecentTracks, int64) {
 	var result []RecentTracks
 	var trackscount int64
-	config.DB.Model(&RecentTracks{}).Select("COUNT(id) AS id, track").Where("listened_at >= ?", t.Unix()).Where("user = ?", u.ID).Group("track").Order("COUNT(id) DESC").Limit(100).Find(&result)
-	config.DB.Model(&RecentTracks{}).Where("listened_at >= ?", t.Unix()).Where("user = ?", u.ID).Group("track").Count(&trackscount)
+	config.DB.Model(&RecentTracks{}).Select("COUNT(id) AS id, track").Where("listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Group("track").Order("COUNT(id) DESC").Limit(100).Find(&result)
+	if len(result) == 0 {
+		return result, 0
+	}
+	config.DB.Model(&RecentTracks{}).Where("listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Count(&trackscount)
 	return result, trackscount
 }
 
 func (u *User) getListenedHoursRecentTrackSince(t time.Time) []RecentTracks {
 	var result []RecentTracks
 	config.DB.Model(&RecentTracks{}).Select("COUNT(*) AS id, FLOOR((listened_at % 86400)/3600) AS listened_at").Where(
-		"listened_at >= ?", t.Unix()).Where("user = ?", u.ID).Group("FLOOR((listened_at % 86400)/3600)").Order(
+		"listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Group("FLOOR((listened_at % 86400)/3600)").Order(
 		"FLOOR((listened_at % 86400)/3600)").Find(&result)
 	return result
 }
@@ -180,7 +184,7 @@ func (u *User) getListenedHoursRecentTrackSince(t time.Time) []RecentTracks {
 func (u *User) getListenedDaysRecentTrackSince(t time.Time) []RecentTracks {
 	var result []RecentTracks
 	config.DB.Model(&RecentTracks{}).Select("COUNT(*) AS id, FLOOR(listened_at / 86400)*3600 AS listened_at").Where(
-		"listened_at >= ?", t.Unix()).Where("user = ?", u.ID).Group("FLOOR(listened_at / 86400)*3600").Order(
+		"listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Group("FLOOR(listened_at / 86400)*3600").Order(
 		"FLOOR(listened_at / 86400)*3600").Find(&result)
 	return result
 }
@@ -190,7 +194,7 @@ func (u *User) getListenedTotalRecentTrackSince(t time.Time) int64 {
 	config.DB.Raw(`SELECT SUM(tracks.information_track_length)
 		FROM recent_tracks INNER JOIN tracks
 			ON tracks.track_id = recent_tracks.track
-		WHERE listened_at >= 1605338312 AND user = 1;`).Scan(&result)
+		WHERE listened_at >= ? AND user = ?;`, t.Unix(), u.ID).Scan(&result)
 	return result
 }
 

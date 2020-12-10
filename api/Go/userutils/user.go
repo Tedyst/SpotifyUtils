@@ -26,7 +26,7 @@ type User struct {
 }
 
 type UserSettings struct {
-	RecentTracks bool
+	RecentTracks bool `gorm:"default:true"`
 }
 
 type clientCacheStruct struct {
