@@ -87,7 +87,7 @@ func middleware(next *mux.Router) http.Handler {
 			"request":  route,
 			"code":     statusCode,
 			"duration": duration.Seconds(),
-		}).Debug("")
+		}).Debug()
 	})
 }
 
