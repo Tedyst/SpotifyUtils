@@ -133,6 +133,7 @@ func main() {
 	spa := spaHandler{
 		buildPath: *config.BuildPath,
 	}
+	m.HandleFunc("/logout", auth.Logout)
 	m.PathPrefix("/").Handler(spa)
 
 	if *config.Metrics {

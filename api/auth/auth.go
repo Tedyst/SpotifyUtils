@@ -118,3 +118,21 @@ func AuthURL(res http.ResponseWriter, req *http.Request) {
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprint(res, string(respJSON))
 }
+
+func Logout(w http.ResponseWriter, r *http.Request) {
+	session, err := config.SessionStore.Get(r, "username")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	session.Values["username"] = ""
+	session.Options.MaxAge = -1
+
+	err = session.Save(r, w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, "/", http.StatusFound)
+}
