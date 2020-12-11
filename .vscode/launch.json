@@ -6,71 +6,11 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/api/Go/",
+            "program": "${workspaceFolder}/api",
             "envFile": "${workspaceFolder}/api/.env",
             "args": [
                 "-Debug=true"
             ]
-        },
-        {
-            "name": "Python: Remote Attach",
-            "type": "python",
-            "request": "attach",
-            "port": 5678,
-            "host": "localhost",
-            "pathMappings": [
-                {
-                    "localRoot": "${workspaceFolder}/api",
-                    "remoteRoot": "/APP"
-                }
-            ]
-        },
-        {
-            "name": "Flask Debug",
-            "type": "python",
-            "request": "launch",
-            "module": "flask",
-            "env": {
-                "FLASK_APP": "app.py",
-                "FLASK_ENV": "development",
-                "FLASK_DEBUG": "1"
-            },
-            "args": [
-                "run",
-                "--no-debugger",
-                "--no-reload",
-                "--host",
-                "0.0.0.0"
-            ],
-            "jinja": true,
-            "cwd": "${workspaceFolder}/api"
-        },
-        {
-            "name": "Flask Only Run",
-            "type": "python",
-            "request": "launch",
-            "module": "flask",
-            "env": {
-                "FLASK_APP": "app.py",
-                "FLASK_ENV": "production"
-            },
-            "args": [
-                "run",
-                "--no-debugger",
-                "--host",
-                "0.0.0.0"
-            ],
-            "jinja": true,
-            "cwd": "${workspaceFolder}/api"
-        },
-        {
-            "name": "Python: Current File",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}",
-            "justMyCode": false
         }
     ]
 }

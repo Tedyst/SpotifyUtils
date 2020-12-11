@@ -2,3 +2,4 @@
 *journal
 vendor/
 .env
+__debug_bin
