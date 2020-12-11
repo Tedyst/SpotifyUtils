@@ -3,8 +3,11 @@ package main
 import (
 	"flag"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/tedyst/spotifyutils/api/api/playlistview"
+	"github.com/weaveworks/promrus"
 
 	log "github.com/sirupsen/logrus"
 
@@ -18,10 +21,8 @@ import (
 
 	"github.com/tedyst/spotifyutils/api/api/top"
 
-	"github.com/tedyst/spotifyutils/api/metrics"
-
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/tedyst/spotifyutils/api/api/admin"
 	"github.com/tedyst/spotifyutils/api/api/status"
 
 	"github.com/gorilla/mux"
@@ -36,14 +37,57 @@ func checkErr(err error) {
 	}
 }
 
-func middleware(h http.Handler) http.Handler {
+type statusRecorder struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func (rec *statusRecorder) WriteHeader(statusCode int) {
+	rec.statusCode = statusCode
+	rec.ResponseWriter.WriteHeader(statusCode)
+}
+
+func getRoutePattern(next *mux.Router, r *http.Request) string {
+	var match mux.RouteMatch
+	routeExists := next.Match(r, &match)
+	if routeExists {
+		str, err := match.Route.GetPathTemplate()
+		if err == nil {
+			return str
+		}
+	}
+
+	return "/"
+}
+
+func middleware(next *mux.Router) http.Handler {
+	buckets := []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10}
+
+	responseTimeHistogram := prometheus.NewHistogramVec(prometheus.HistogramOpts{
+		Namespace: "spotifyutils",
+		Name:      "request_duration_seconds",
+		Help:      "Histogram of response time for handler in seconds",
+		Buckets:   buckets,
+	}, []string{"route", "method", "status_code"})
+
+	prometheus.MustRegister(responseTimeHistogram)
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		metrics.RequestsServed.Inc()
+		start := time.Now()
+		rec := statusRecorder{w, 200}
+
+		next.ServeHTTP(&rec, r)
+
+		duration := time.Since(start)
+		statusCode := strconv.Itoa(rec.statusCode)
+		route := getRoutePattern(next, r)
+		responseTimeHistogram.WithLabelValues(route, r.Method, statusCode).Observe(duration.Seconds())
 		log.WithFields(log.Fields{
-			"method":  r.Method,
-			"request": r.RequestURI,
+			"method":   r.Method,
+			"request":  route,
+			"code":     statusCode,
+			"duration": duration.Seconds(),
 		}).Debug("")
-		h.ServeHTTP(w, r)
 	})
 }
 
@@ -83,10 +127,10 @@ func main() {
 	m.HandleFunc("/api/recent", recenttracks.Handler)
 	m.HandleFunc("/api/track/{track}", trackapi.Handler)
 	m.HandleFunc("/api/compare/{code}", compare.HandlerUsername)
-	m.HandleFunc("/admin", admin.Admin)
-	m.HandleFunc("/admin/delete-all-tokens", admin.DeleteAllUserTokens)
 
 	if *config.Metrics {
+		hook := promrus.MustNewPrometheusHook()
+		log.AddHook(hook)
 		go func() {
 			http.Handle("/metrics", promhttp.Handler())
 			http.ListenAndServe(":5001", nil)
