@@ -10,8 +10,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
+import SearchIcon from '@material-ui/icons/Search';
 import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
-import GitHubIcon from '@material-ui/icons/GitHub';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import QueueMusicIcon from '@material-ui/icons/QueueMusic';
@@ -119,6 +119,14 @@ function ResponsiveDrawer(props) {
                         <ListIcon />
                     </ListItemIcon>
                     <ListItemText primary="Playlist" />
+                </ListItem>
+                <ListItem button key="TrackSearch" component={Link} to="/tracksearch" selected={location.pathname === "/tracksearch"} classes={{
+                    selected: classes.selected,
+                }}>
+                    <ListItemIcon>
+                        <SearchIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="TrackSearch" />
                 </ListItem>
                 <ListItem button key="Top" component={Link} to="/top" selected={location.pathname === "/top"} classes={{
                     selected: classes.selected,

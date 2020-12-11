@@ -33,6 +33,10 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	user := userutils.GetUser(val.(string))
 
 	trackURI := vars["track"]
+	if len(trackURI) == 36 {
+		// If it contains spotify:track:
+		trackURI = trackURI[14:]
+	}
 
 	tr := tracks.GetTrackFromID(trackURI)
 	err := tr.Update(*user.Client())

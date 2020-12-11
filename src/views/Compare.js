@@ -257,7 +257,10 @@ const useStylesNoUsername = makeStyles((theme) => ({
     grid: {
         width: '100%',
         marginTop: '10px'
-    }
+    },
+    selected: {
+        color: theme.palette.info.light,
+    },
 }));
 
 function Test(props) {
@@ -274,7 +277,9 @@ function Test(props) {
     let friends = [];
     for (var val in compare.friends) {
         friends.push(
-            <ListItem key={"friend-" + compare.friends[val].username} component={Link} to={"/compare/" + compare.friends[val].code}>
+            <ListItem key={"friend-" + compare.friends[val].username} component={Link} to={"/compare/" + compare.friends[val].code} classes={{
+                root: classes.selected,
+            }}>
                 <Avatar name={compare.friends[val].name} image={compare.friends[val].image}>
                 </Avatar>
                 <ListItemText
@@ -303,7 +308,7 @@ function Test(props) {
                 </Typography>
                 <Typography variant="h5" color="textSecondary" align="center">
                     Send it to your friends and compare your music taste to theirs!
-        </Typography>
+                </Typography>
                 <br />
                 <br />
                 <TextField
@@ -349,7 +354,7 @@ function Test(props) {
             </Container>
             <Container maxWidth="xs" disableGutters={true} fixed={true}>
                 <List className={classes.root} subheader={<li />} disablePadding={true}>
-                    <ListSubheader color="primary">Your friends</ListSubheader>
+                    <ListSubheader color="secondary">Your friends</ListSubheader>
                     <ul>
                         {friends}
                     </ul>

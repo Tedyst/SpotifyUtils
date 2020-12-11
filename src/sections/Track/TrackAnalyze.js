@@ -25,11 +25,17 @@ export default function TrackAnalyze(props) {
     const [Updating, setUpdating] = useState(null);
     let { trackid } = useParams();
     const [trackInfo, setTrackInfo] = useState(null);
+    const [returnToTrackSearch, setReturn] = useState(false);
+    if (returnToTrackSearch) {
+        return <Redirect to="/tracksearch" />;
+    }
     if (trackInfo === null && Updating === null) {
         setUpdating(trackid);
         fetch('/api/track/' + trackid).then(res => res.json()).then(data => {
             if (data.Success)
                 setTrackInfo(data.Result);
+            else
+                setReturn(true);
         });
         return <Loading />;
     } else if (trackInfo === null && Updating !== null) {
@@ -105,5 +111,5 @@ export default function TrackAnalyze(props) {
 }
 
 function Loading() {
-    return "Loading...";
+    return "Loading...Please wait...";
 }

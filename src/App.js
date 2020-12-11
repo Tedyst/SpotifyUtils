@@ -23,6 +23,7 @@ import {
 import Sidebar from './views/Sidebar';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core';
 import UpdateUser from './utils/status';
+import TrackSearch from './views/TrackSearch';
 
 const drawerWidth = 240;
 
@@ -73,8 +74,11 @@ function App() {
                   mainUpdate={setUpdating}
                 />
               </Route>
-              <Route path="/lyrics">
+              <Route path="/playlist">
                 <PlaylistView />
+              </Route>
+              <Route path="/tracksearch">
+                <TrackSearch />
               </Route>
               <Route path="/top">
                 <Top />
