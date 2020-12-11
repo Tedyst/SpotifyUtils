@@ -8,6 +8,7 @@
             "mode": "debug",
             "program": "${workspaceFolder}/api",
             "envFile": "${workspaceFolder}/api/.env",
+            "cwd": "${workspaceFolder}",
             "args": [
                 "-Debug=true"
             ]

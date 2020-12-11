@@ -117,16 +117,23 @@ func main() {
 	config.SessionStore = gormstore.NewOptions(config.DB, sessionOptions, config.Secret)
 
 	m := mux.NewRouter()
-	m.HandleFunc("/api/auth", auth.Auth)
-	m.HandleFunc("/api/auth-url", auth.AuthURL)
-	m.HandleFunc("/api/status", status.StatusHandler)
-	m.HandleFunc("/api/playlist/{playlist}", playlistview.Handler)
-	m.HandleFunc("/api/top", top.TopHandler)
-	m.HandleFunc("/api/top/old", top.TopHandlerSince)
-	m.HandleFunc("/api/compare", compare.HandlerNoUsername)
-	m.HandleFunc("/api/recent", recenttracks.Handler)
-	m.HandleFunc("/api/track/{track}", trackapi.Handler)
-	m.HandleFunc("/api/compare/{code}", compare.HandlerUsername)
+
+	api := m.PathPrefix("/api").Subrouter()
+	api.HandleFunc("/auth", auth.Auth)
+	api.HandleFunc("/auth-url", auth.AuthURL)
+	api.HandleFunc("/status", status.StatusHandler)
+	api.HandleFunc("/playlist/{playlist}", playlistview.Handler)
+	api.HandleFunc("/top", top.TopHandler)
+	api.HandleFunc("/top/old", top.TopHandlerSince)
+	api.HandleFunc("/compare", compare.HandlerNoUsername)
+	api.HandleFunc("/recent", recenttracks.Handler)
+	api.HandleFunc("/track/{track}", trackapi.Handler)
+	api.HandleFunc("/compare/{code}", compare.HandlerUsername)
+
+	spa := spaHandler{
+		buildPath: *config.BuildPath,
+	}
+	m.PathPrefix("/").Handler(spa)
 
 	if *config.Metrics {
 		hook := promrus.MustNewPrometheusHook()
