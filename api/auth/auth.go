@@ -44,6 +44,11 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 
 	token, err := spotifywrapper.GetSpotifyAuthorization(request.Host, request.Code)
 	if err != nil {
+		log.WithFields(log.Fields{
+			"error": err,
+			"code":  request.Code,
+			"host":  request.Host,
+		}).Error("Cannot get authorization from code")
 		response.Error = fmt.Sprint(err)
 		response.Success = false
 		respJSON, _ := json.Marshal(response)

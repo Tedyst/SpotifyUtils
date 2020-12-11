@@ -93,8 +93,9 @@ func generateNewCompareCode() string {
 		for i := 1; i <= 10; i++ {
 			newUUID := uuid.New().String()
 			newUUID = newUUID[len(newUUID)-length:]
-			var user User
-			if err := config.DB.Where("compare_code = ?", newUUID).First(&user).Error; err != nil {
+			var count int64
+			config.DB.Model(&User{}).Where("compare_code = ?", newUUID).Count(&count)
+			if count == 0 {
 				return strings.ToUpper(newUUID)
 			}
 		}
