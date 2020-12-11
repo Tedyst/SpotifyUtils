@@ -1,6 +1,5 @@
-venv/
+*.db*
+*journal
+vendor/
 .env
-*.pyc
-data.db
-asd.txt
-ui/
+__debug_bin

@@ -25,9 +25,9 @@ const useStyles = makeStyles((theme) => ({
 export default function ListItems(props) {
     const classes = useStyles();
 
-    
+
     let items = [];
-    if(props.items.length === 0 || !props.items)
+    if (props.items.length === 0 || !props.items)
         items = (
             <ListItem key={"list-notfound-" + props.name}>
                 <ListItemText
@@ -36,8 +36,8 @@ export default function ListItems(props) {
                 />
             </ListItem>
         )
-    for(var val in props.items){
-        if(props.items[val].artist)
+    for (var val in props.items) {
+        if (props.items[val].artist)
             items.push(
                 <ListItem key={"track-" + props.items[val].id}>
                     <ListItemText
@@ -46,7 +46,7 @@ export default function ListItems(props) {
                     />
                 </ListItem>
             );
-        else if(props.items[val].id)
+        else if (props.items[val].id)
             items.push(
                 <ListItem key={"artist-" + props.items[val].id}>
                     <ListItemText
@@ -54,7 +54,7 @@ export default function ListItems(props) {
                     />
                 </ListItem>
             );
-        else if(props.items[val].name)
+        else if (props.items[val].name)
             items.push(
                 <ListItem key={`genre-` + props.items[val].name}>
                     <ListItemText
@@ -62,7 +62,7 @@ export default function ListItems(props) {
                     />
                 </ListItem>
             );
-        else 
+        else
             items.push(
                 <ListItem key={`genre-` + props.items[val]}>
                     <ListItemText
@@ -73,7 +73,7 @@ export default function ListItems(props) {
     }
     return (
         <List className={classes.root} subheader={<li />}>
-            <ListSubheader color="primary">{props.name}</ListSubheader>
+            <ListSubheader color="inherit">{props.name}</ListSubheader>
             <ul className={classes.ul}>
                 {items}
             </ul>

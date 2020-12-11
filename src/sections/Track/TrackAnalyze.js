@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  useParams
+    useParams
 } from "react-router-dom";
 import { Grid, makeStyles } from '@material-ui/core';
 import TrackInfo from './TrackInfo';
@@ -10,7 +10,7 @@ import Chart2 from './Chart2';
 import Lyrics from './Lyrics';
 import SongCard from '../Top/SongCard';
 import {
-  Redirect,
+    Redirect,
 } from "react-router-dom";
 import Container from '@material-ui/core/Container';
 
@@ -20,91 +20,96 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function TrackAnalyze(props){
+export default function TrackAnalyze(props) {
     const classes = useStyles();
     const [Updating, setUpdating] = useState(null);
     let { trackid } = useParams();
     const [trackInfo, setTrackInfo] = useState(null);
-    if(trackInfo === null && Updating === null){
+    const [returnToTrackSearch, setReturn] = useState(false);
+    if (returnToTrackSearch) {
+        return <Redirect to="/tracksearch" />;
+    }
+    if (trackInfo === null && Updating === null) {
         setUpdating(trackid);
         fetch('/api/track/' + trackid).then(res => res.json()).then(data => {
-            setTrackInfo(data);
-            if(data.success)
-                setUpdating(trackid);
+            if (data.Success)
+                setTrackInfo(data.Result);
             else
-                setUpdating(trackid);
+                setReturn(true);
         });
         return <Loading />;
-    } else if(trackInfo === null && Updating !== null) {
+    } else if (trackInfo === null && Updating !== null) {
         return <Loading />;
-    } else if(trackInfo === null){
+    } else if (trackInfo === null) {
         return <Redirect to="/" />;
     }
-    if(trackInfo["success"] === false) {
+    if (trackInfo["Success"] === false) {
         return <Redirect to="/" />;
     }
-    let lyrics = trackInfo.track.lyrics ? (<Grid item xs={12}>
-            <Container maxWidth="sm">
-                <Lyrics 
-                    lyrics={trackInfo.track.lyrics}
-                />
-            </Container>
-        </Grid>) : null;
-    return (
-    <div>
-    <Container maxWidth="xs">
-            <SongCard 
-                artist={trackInfo.track.artist}
-                name={trackInfo.track.name}
-                image={trackInfo.track.image_url}
-                className={classes.songcard}
+    let lyrics = trackInfo.Lyrics ? (<Grid item xs={12}>
+        <Container maxWidth="sm">
+            <Lyrics
+                lyrics={trackInfo.Lyrics}
             />
         </Container>
-    <br />
-    <Grid container spacing={3}>
-        <Grid item lg={6} xs={12}>
-            <TrackInfo 
-                popularity={trackInfo.analyze.popularity}
-                length={trackInfo.analyze.length}
-                markets={trackInfo.analyze.markets}
-                explicit={trackInfo.analyze.explicit ? "Yes" : "No"}
-                track_key={trackInfo.analyze.key}
-                mode={trackInfo.analyze.mode === 0 ? "Minor" : "Major"}
-                tempo={trackInfo.analyze.tempo}
-                time_signature={trackInfo.analyze.time_signature}
-            />
-        </Grid>
-        <Grid item lg={6} xs={12}>
-            <AlbumInfo 
-                popularity={trackInfo.album.popularity}
-                release_date={trackInfo.album.release}
-                tracks={trackInfo.album.tracks}
-                markets={trackInfo.album.markets}
-            />
+    </Grid>) : null;
+
+    let chart = trackInfo.Information.TrackInformation.LoudnessGraph ? (<Grid item xs={12}>
+        <Chart1
+            data={trackInfo.analyze.loudness_graph}
+        />
+    </Grid>) : null;
+    return (
+        <div>
+            <Container maxWidth="xs">
+                <SongCard
+                    artist={trackInfo.Artist}
+                    name={trackInfo.Name}
+                    image={trackInfo.Information.TrackInformation.Image}
+                    className={classes.songcard}
+                />
+            </Container>
             <br />
-            <Chart2
-                acousticness={trackInfo.analyze.acousticness}
-                danceability={trackInfo.analyze.danceability}
-                energy={trackInfo.analyze.energy}
-                instrumentalness={trackInfo.analyze.instrumentalness}
-                liveness={trackInfo.analyze.liveness}
-                loudness={(60+trackInfo.analyze.loudness)/60}
-                speechiness={trackInfo.analyze.speechiness}
-            />
-        </Grid>
-        <Grid item xs={12}>
-            <Chart1 
-                data={trackInfo.analyze.loudness_graph}
-            />
-        </Grid>
-        <Grid item xs={12}>
-            {lyrics}
-        </Grid>
-        
-    </Grid>
-    </div>);
+            <Grid container spacing={3}>
+                <Grid item lg={6} xs={12}>
+                    <TrackInfo
+                        popularity={trackInfo.Information.TrackInformation.Popularity}
+                        length={trackInfo.Information.TrackInformation.Length}
+                        markets={trackInfo.Information.TrackInformation.Markets}
+                        explicit={trackInfo.Information.TrackInformation.Explicit ? "Yes" : "No"}
+                        track_key={trackInfo.Information.TrackInformation.Key}
+                        mode={trackInfo.Information.TrackInformation.Mode === 0 ? "Minor" : "Major"}
+                        tempo={trackInfo.Information.TrackInformation.Tempo}
+                        time_signature={trackInfo.Information.TrackInformation.TimeSignature}
+                    />
+                </Grid>
+                <Grid item lg={6} xs={12}>
+                    <AlbumInfo
+                        popularity={trackInfo.Information.AlbumInformation.Popularity}
+                        release_date={trackInfo.Information.AlbumInformation.ReleaseDate}
+                        tracks={trackInfo.Information.AlbumInformation.TracksAmount}
+                        markets={trackInfo.Information.AlbumInformation.Markets}
+                    />
+                    <br />
+                    <Chart2
+                        acousticness={trackInfo.Information.TrackFeatures.Acousticness}
+                        danceability={trackInfo.Information.TrackFeatures.Danceability}
+                        energy={trackInfo.Information.TrackFeatures.Energy}
+                        instrumentalness={trackInfo.Information.TrackFeatures.Instrumentalness}
+                        liveness={trackInfo.Information.TrackFeatures.Liveness}
+                        loudness={(60 + trackInfo.Information.TrackFeatures.Loudness) / 60}
+                        speechiness={trackInfo.Information.TrackFeatures.Speechiness}
+                    />
+                </Grid>
+                {chart}
+                <Grid item xs={12}>
+                    {lyrics}
+                </Grid>
+
+            </Grid>
+        </div>);
 }
 
-function Loading(){
-    return "Loading...";
+function Loading() {
+    return "Loading...Please wait...";
 }
