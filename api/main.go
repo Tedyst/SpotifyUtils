@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NYTimes/gziphandler"
 	"github.com/tedyst/spotifyutils/api/api/playlistview"
 	"github.com/weaveworks/promrus"
 
@@ -77,6 +78,7 @@ func middleware(next *mux.Router) http.Handler {
 		start := time.Now()
 		rec := statusRecorder{w, 200}
 
+		w.Header().Set("Cache-Control", "max-age=31536000")
 		next.ServeHTTP(&rec, r)
 
 		duration := time.Since(start)
@@ -159,6 +161,6 @@ func main() {
 	}
 
 	log.Infof("Starting server on address http://%s", *config.Address)
-	err = http.ListenAndServe(*config.Address, middleware(m))
+	err = http.ListenAndServe(*config.Address, gziphandler.GzipHandler(middleware(m)))
 	checkErr(err)
 }

@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/GeertJohan/go.rice v1.0.1
+	github.com/NYTimes/gziphandler v1.1.1
 	github.com/PuerkitoBio/goquery v1.6.0
 	github.com/Tedyst/gormstore v0.0.0-20201208101936-a978cf1cc9c4
 	github.com/cznic/b v0.0.0-20181122101859-a26611c4d92d // indirect
