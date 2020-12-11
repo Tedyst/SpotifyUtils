@@ -4,6 +4,7 @@ import (
 	"flag"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/tedyst/spotifyutils/api/api/playlistview"
@@ -82,11 +83,23 @@ func middleware(next *mux.Router) http.Handler {
 		statusCode := strconv.Itoa(rec.statusCode)
 		route := getRoutePattern(next, r)
 		responseTimeHistogram.WithLabelValues(route, r.Method, statusCode).Observe(duration.Seconds())
+
+		ipAddress := r.RemoteAddr
+		fwdAddress := r.Header.Get("X-Forwarded-For")
+		if fwdAddress != "" {
+			ipAddress = fwdAddress
+			ips := strings.Split(fwdAddress, ", ")
+			if len(ips) > 1 {
+				ipAddress = ips[0]
+			}
+		}
+
 		log.WithFields(log.Fields{
 			"method":   r.Method,
 			"request":  route,
 			"code":     statusCode,
 			"duration": duration.Seconds(),
+			"ip":       ipAddress,
 		}).Debug()
 	})
 }
