@@ -104,13 +104,21 @@ function ResponsiveDrawer(props) {
             </div>
             <Divider />
             <List>
-                <ListItem button key="Home" component={Link} to="/" selected={location.pathname === "/"} classes={{
+                {/* <ListItem button key="Home" component={Link} to="/" selected={location.pathname === "/"} classes={{
                     selected: classes.selected,
                 }}>
                     <ListItemIcon>
                         <HomeIcon />
                     </ListItemIcon>
                     <ListItemText primary="Home" />
+                </ListItem> */}
+                <ListItem button key="Top" component={Link} to="/top" selected={location.pathname === "/top"} classes={{
+                    selected: classes.selected,
+                }}>
+                    <ListItemIcon>
+                        <AllInclusiveIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Your Top" />
                 </ListItem>
                 <ListItem button key="Playlist" component={Link} to="/playlist" selected={location.pathname === "/playlist"} classes={{
                     selected: classes.selected,
@@ -127,14 +135,6 @@ function ResponsiveDrawer(props) {
                         <SearchIcon />
                     </ListItemIcon>
                     <ListItemText primary="TrackSearch" />
-                </ListItem>
-                <ListItem button key="Top" component={Link} to="/top" selected={location.pathname === "/top"} classes={{
-                    selected: classes.selected,
-                }}>
-                    <ListItemIcon>
-                        <AllInclusiveIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Your Top" />
                 </ListItem>
                 <ListItem button key="Compare" component={Link} to="/compare" selected={location.pathname.startsWith("/compare")} classes={{
                     selected: classes.selected,

@@ -128,7 +128,8 @@ function RedirectWithSave(props) {
 }
 
 function Home() {
-  return "Home"
+  // Idk what to put here, I'll just redirect to top
+  return <Redirect to="/top" />
 }
 
 export default App;
