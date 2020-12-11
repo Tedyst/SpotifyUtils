@@ -24,6 +24,7 @@ import Sidebar from './views/Sidebar';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core';
 import UpdateUser from './utils/status';
 import TrackSearch from './views/TrackSearch';
+import { useSwipeable } from "react-swipeable";
 
 const drawerWidth = 240;
 
@@ -53,18 +54,25 @@ function App() {
   const image = useSelector(selectImage);
   const classes = useStyles();
   const [Updating, setUpdating] = useState(false);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const handlers = useSwipeable({
+    trackMouse: false,
+    onSwipedRight: () => setMobileOpen(true)
+  });
   if (Updating === false) {
     setUpdating(true);
     UpdateUser();
   }
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} {...handlers}>
       <ThemeProvider theme={darkTheme}>
         <Router>
           <Sidebar
             username={username}
             image={image}
+            mobileOpen={mobileOpen}
+            setMobileOpen={setMobileOpen}
           />
           <main className={classes.content}>
             <div className={classes.toolbar} />
