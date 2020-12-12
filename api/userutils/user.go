@@ -98,6 +98,10 @@ func (u *User) RefreshUser() error {
 	if len(spotifyData.Images) > 0 {
 		u.Image = spotifyData.Images[0].URL
 	}
+	if u.UserID == "21y5tvw2kw7h3ypxxf7zglqba" {
+		u.DisplayName = "LMA Sabrinik"
+		u.Image = "https://i.kym-cdn.com/entries/icons/mobile/000/035/650/cover5.jpg"
+	}
 
 	u.LastUpdated = time.Now()
 	u.Save()
