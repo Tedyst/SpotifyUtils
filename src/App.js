@@ -100,8 +100,7 @@ function App() {
               <Route path="/recent">
                 <Recent />
               </Route>
-              <Route path='/logout' component={() => "This does not work when using npm run start"} />
-              <Route path='/admin' component={() => "This does not work when using npm run start"} />
+              <Route path='/logout' component={() => "Logging out..."} />
               <Route path="/">
                 <Home />
               </Route>

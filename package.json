@@ -26,8 +26,11 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "docker": "react-scripts build && sw-precache --config=sw-precache-config.js && docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t tedyst/spotifyutils --push -f Dockerfile .",
-    "build": "react-scripts build && sw-precache --config=sw-precache-config.js",
+    "docker": "npm run build && npm run docker-package",
+    "build": "react-scripts build && npm run build-sw && npm run clean-cra-sw",
+    "clean-cra-sw": "rm -f build/precache-manifest.*.js",
+    "build-sw": "node ./src/sw-build.js",
+    "docker-package": "docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t tedyst/spotifyutils --push -f Dockerfile .",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -46,5 +49,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://127.0.0.1:5000/"
+  "proxy": "http://127.0.0.1:5000/",
+  "devDependencies": {
+    "workbox-build": "^4.3.1"
+  }
 }
