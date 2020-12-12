@@ -52,6 +52,7 @@ export default function Login(props) {
       body: JSON.stringify({
         "host": window.location.protocol + "//" + window.location.host
       }),
+      cache: "no-store",
     }).then(res => res.json()).then(data => {
       setLoginUrl(data.URL);
     });
@@ -66,6 +67,7 @@ export default function Login(props) {
           "host": window.location.protocol + "//" + window.location.host,
           "code": code
         }),
+        cache: "no-store",
       }).then(res => res.json()).then(data => {
         if (data.success === true) {
           props.mainUpdate(false);

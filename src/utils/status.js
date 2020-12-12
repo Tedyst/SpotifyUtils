@@ -12,7 +12,7 @@ import { useDispatch, batch } from 'react-redux';
 
 export default function Update() {
     const dispatch = useDispatch();
-    fetch('/api/status').then(res => res.json()).then(data => {
+    fetch('/api/status', { cache: "no-store" }).then(res => res.json()).then(data => {
         batch(() => {
             dispatch(setImage(data.image));
             dispatch(setLogged(data.success));
@@ -26,13 +26,13 @@ export default function Update() {
                 localStorage.clear();
         })
         if (data.success) {
-            fetch('/api/top').then(res => res.json()).then(data => {
+            fetch('/api/top', { cache: "no-store" }).then(res => res.json()).then(data => {
                 dispatch(setTop(data["result"]));
             });
-            fetch('/api/compare').then(res => res.json()).then(data => {
+            fetch('/api/compare', { cache: "no-store" }).then(res => res.json()).then(data => {
                 dispatch(setCompare(data));
             });
-            fetch('/api/recent').then(res => res.json()).then(data => {
+            fetch('/api/recent', { cache: "no-store" }).then(res => res.json()).then(data => {
                 dispatch(setRecent(data));
             });
         }

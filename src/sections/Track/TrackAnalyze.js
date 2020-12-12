@@ -31,7 +31,7 @@ export default function TrackAnalyze(props) {
     }
     if (trackInfo === null && Updating === null) {
         setUpdating(trackid);
-        fetch('/api/track/' + trackid).then(res => res.json()).then(data => {
+        fetch('/api/track/' + trackid, { cache: "no-store" }).then(res => res.json()).then(data => {
             if (data.Success)
                 setTrackInfo(data.Result);
             else

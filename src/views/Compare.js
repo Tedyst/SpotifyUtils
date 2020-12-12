@@ -84,7 +84,7 @@ function Username(props) {
     const [top, setTop] = useState(null);
     if (top === null && Updating === null) {
         setUpdating(code);
-        fetch('/api/compare/' + code).then(res => res.json()).then(data => {
+        fetch('/api/compare/' + code, { cache: "no-store" }).then(res => res.json()).then(data => {
             setTop(data);
             if (data.success)
                 setUpdating(code);
