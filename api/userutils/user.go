@@ -13,7 +13,7 @@ import (
 // User is the main user struct
 type User struct {
 	gorm.Model
-	UserID      string
+	UserID      string `gorm:"unique"`
 	DisplayName string
 	Token       *oauth2.Token `gorm:"embedded;embeddedPrefix:token_"`
 	Image       string
@@ -21,7 +21,7 @@ type User struct {
 	LastUpdated time.Time
 	Settings    UserSettings `gorm:"embedded;embeddedPrefix:settings_"`
 	Top         TopStruct    `gorm:"embedded;embeddedPrefix:top_"`
-	CompareCode string
+	CompareCode string       `gorm:"unique"`
 	Friends     FriendsStruct
 }
 
