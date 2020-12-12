@@ -11,7 +11,7 @@ if ('function' === typeof importScripts) {
 
         /* custom cache rules*/
         workbox.routing.registerNavigationRoute('/index.html', {
-            blacklist: [/^\/_/, /\/[^\/]+\.[^\/]+$/],
+            blacklist: [/^\/_/, /\/[^/]+\.[^/]+$/, /\/api*/, /\/logout/],
         });
 
         workbox.routing.registerRoute(

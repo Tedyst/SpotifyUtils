@@ -78,7 +78,6 @@ func middleware(next *mux.Router) http.Handler {
 		start := time.Now()
 		rec := statusRecorder{w, 200}
 
-		w.Header().Set("Cache-Control", "max-age=31536000")
 		next.ServeHTTP(&rec, r)
 
 		duration := time.Since(start)
