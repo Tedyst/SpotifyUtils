@@ -40,6 +40,10 @@ function msToText(ms) {
 export default function Top() {
     const top = useSelector(selectTop);
     const classes = useStyles();
+    if (top.success === false) {
+        return null;
+    }
+
     let bestSongForArtist = null;
     for (var val in top["tracks"]) {
         if (top["tracks"][val].artist === top["artists"][0].name && bestSongForArtist === null) {
