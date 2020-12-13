@@ -25,6 +25,21 @@ function getDate(unix) {
     return new Date(unix * 1000).toLocaleDateString("en-US");
 }
 
+function secToText(seconds) {
+    let minutes = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+    let hours = Math.floor(minutes / 60);
+    minutes = minutes % 60;
+    let text = "";
+    if (hours !== 0)
+        text += hours + " Hours, ";
+    if (seconds !== 0)
+        text += minutes + " Minutes and " + seconds + " Seconds";
+    else text += minutes + " Minutes";
+    return text;
+}
+
+
 export default function OldTop() {
     const oldtop = useSelector(selectOldTop);
     if (oldtop === null)
@@ -47,8 +62,10 @@ export default function OldTop() {
         })
     }
 
+    let totallistened = secToText(oldtop.Result.TotalListened);
     return (
         <div>
+            {totallistened}
             <Graph data={hoursdata} name="Total number of songs per hour" />
             <br />
             <Graph data={daysdata} name="Total number of songs per day" zoom={true} />
