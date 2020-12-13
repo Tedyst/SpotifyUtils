@@ -25,6 +25,7 @@ import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core';
 import UpdateUser from './utils/status';
 import TrackSearch from './views/TrackSearch';
 import { useSwipeable } from "react-swipeable";
+import OldTop from './views/OldTop';
 
 const drawerWidth = 240;
 
@@ -90,6 +91,9 @@ function App() {
               </Route>
               <Route path="/top">
                 <Top />
+              </Route>
+              <Route path="/oldtop">
+                <OldTop />
               </Route>
               <Route path="/compare">
                 <Compare />
