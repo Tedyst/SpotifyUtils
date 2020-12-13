@@ -62,10 +62,13 @@ export default function OldTop() {
         })
     }
 
-    let totallistened = secToText(oldtop.Result.TotalListened);
+    let totallistenedtime = secToText(oldtop.Result.TotalListened);
+    let totallistenedtracks = oldtop.Result.Count;
     return (
         <div>
-            {totallistened}
+            {totallistenedtracks} Tracks
+            <br />
+            {totallistenedtime}
             <Graph data={hoursdata} name="Total number of songs per hour" />
             <br />
             <Graph data={daysdata} name="Total number of songs per day" zoom={true} />
