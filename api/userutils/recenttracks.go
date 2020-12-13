@@ -183,9 +183,9 @@ func (u *User) getListenedHoursRecentTrackSince(t time.Time) []RecentTracks {
 
 func (u *User) getListenedDaysRecentTrackSince(t time.Time) []RecentTracks {
 	var result []RecentTracks
-	config.DB.Model(&RecentTracks{}).Select("COUNT(*) AS id, FLOOR(listened_at / 86400)*3600 AS listened_at").Where(
-		"listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Group("FLOOR(listened_at / 86400)*3600").Order(
-		"FLOOR(listened_at / 86400)*3600").Find(&result)
+	config.DB.Model(&RecentTracks{}).Select("COUNT(*) AS id, FLOOR(listened_at / 86400)*86400 AS listened_at").Where(
+		"listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Group("FLOOR(listened_at / 86400)*86400").Order(
+		"FLOOR(listened_at / 86400)*86400").Find(&result)
 	return result
 }
 
@@ -201,7 +201,7 @@ func (u *User) getListenedTotalRecentTrackSince(t time.Time) int64 {
 type RecentTracksStatisticsStruct struct {
 	Count         int64
 	TopTracks     []RecentTracksStatisticsStructTrack
-	Hours         map[uint]int64
+	Hours         map[int64]uint
 	Days          map[int64]uint
 	TotalListened int
 }
@@ -228,9 +228,14 @@ func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct 
 	}
 
 	hours := u.getListenedHoursRecentTrackSince(t)
-	result.Hours = make(map[uint]int64)
+	result.Hours = make(map[int64]uint)
 	for _, s := range hours {
-		result.Hours[s.ID] = s.ListenedAt
+		result.Hours[s.ListenedAt] = s.ID
+	}
+	for i := int64(0); i <= 23; i++ {
+		if _, ok := result.Hours[i]; !ok {
+			result.Hours[i] = 0
+		}
 	}
 
 	days := u.getListenedDaysRecentTrackSince(t)
