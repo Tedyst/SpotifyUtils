@@ -34,16 +34,18 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function SearchBox(props) {
+export default function SearchBox(props:{
+    Word: string,
+}) {
     const classes = useStyles();
     const [URI, setURI] = React.useState("");
     const [Refresh, setRefresh] = React.useState("");
 
-    const changeWord = (event) => {
+    const changeWord = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         setURI(event.target.value);
     }
 
-    const mySubmitHandler = (event) => {
+    const mySubmitHandler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
         if (URI !== "") {
             let newURL = "/track/" + URI
