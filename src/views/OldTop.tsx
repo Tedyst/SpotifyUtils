@@ -8,6 +8,8 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+// import SongCard from '../components/SongCard'
 
 // const useStyles = makeStyles((theme) => ({
 //     root: {
@@ -18,11 +20,11 @@ import {
 //     }
 // }));
 
-function getDate(unix) {
+function getDate(unix: number): string {
     return new Date(unix * 1000).toLocaleDateString("en-US");
 }
 
-function secToText(seconds) {
+function secToText(seconds: number): string {
     let minutes = Math.floor(seconds / 60);
     seconds = seconds % 60;
     let hours = Math.floor(minutes / 60);
@@ -38,11 +40,25 @@ function secToText(seconds) {
 
 
 export default function OldTop() {
-    const [oldTop, setOldTop] = React.useState(null);
+    const [oldTop, setOldTop] = React.useState<{
+        "Result": {
+            Count: number,
+            TopTracks: {
+                Count: number,
+                Name: string,
+                Artist: string,
+            }[],
+            Hours: number[],
+            Days: number[],
+            TotalListened: number,
+        },
+        "Success": boolean
+    }>();
     const [selectedDate, setSelectedDate] = React.useState(new Date());
 
-    const handleDateChange = (date) => {
-        setSelectedDate(date);
+    const handleDateChange = (date: MaterialUiPickersDate, value: string | null | undefined) => {
+        if(date !== null)
+            setSelectedDate(date);
     };
 
     useEffect(() => {
@@ -71,8 +87,10 @@ export default function OldTop() {
         </Grid>
     </MuiPickersUtilsProvider>);
 
-    if (oldTop === null)
+    let topsong = null;
+    if (oldTop === undefined)
         return datepicker;
+
     let hoursdata = [];
     for (const elem in oldTop.Result.Hours) {
         hoursdata.push({
@@ -82,10 +100,10 @@ export default function OldTop() {
     }
 
     let daysdata = [];
-    for (const elem in oldTop.Result.Days) {
+    for (let elem in oldTop.Result.Days) {
         daysdata.push({
             value: oldTop.Result.Days[elem],
-            argument: getDate(elem)
+            argument: getDate(parseInt(elem))
         })
     }
 
@@ -93,6 +111,8 @@ export default function OldTop() {
     let totallistenedtracks = oldTop.Result.Count;
     return (
         <Container maxWidth="sm">
+            {topsong}
+            <br />
             {datepicker}
             {totallistenedtracks} Tracks
             <br />
