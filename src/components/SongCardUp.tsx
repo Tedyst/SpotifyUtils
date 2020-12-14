@@ -68,6 +68,9 @@ const useStyles = makeStyles((theme) => ({
     button: {
         marginTop: 'auto',
         justifyContent: 'center'
+    },
+    count:{
+        marginTop: 'auto',
     }
 }));
 
@@ -76,6 +79,7 @@ export default function SongCard(props:{
     image: string,
     name: string,
     artist: string,
+    count?: number,
 }) {
     const classes = useStyles();
 
@@ -88,6 +92,11 @@ export default function SongCard(props:{
                 >Informations</Button>
             </CardActions>);
 
+    let count = null;
+    if(props.count)
+        count = (<Typography variant="subtitle2" color="textSecondary" className={classes.count}>
+                    <b>{props.count}</b> times
+                </Typography>)
     return (
     <Fade in={true}>
     <Card className={classes.root}>
@@ -104,6 +113,7 @@ export default function SongCard(props:{
                 <Typography variant="subtitle1" color="textSecondary">
                     {props.artist}
                 </Typography>
+                {count}
             </CardContent>
             {cardAction}
         </div>

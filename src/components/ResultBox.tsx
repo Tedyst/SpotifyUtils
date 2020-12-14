@@ -9,6 +9,7 @@ export default function ResultBox(props:{
         Name: string,
         Artist: string,
         Image: string,
+        Count?: number,
     }[]
 }) {
     if (props.results === undefined)
@@ -22,6 +23,7 @@ export default function ResultBox(props:{
                 name={item.Name}
                 artist={item.Artist}
                 image={item.Image}
+                count={item.Count}
             />
         </Grid>
     ));
