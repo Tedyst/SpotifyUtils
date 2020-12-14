@@ -104,7 +104,7 @@ function App() {
               <Route path="/recent">
                 <Recent />
               </Route>
-              <Route path='/logout' component={() => <div>"Logging out..."</div>} />
+              <Route path='/logout' component={() => <div>Logging out...</div>} />
               <Route path="/">
                 <Home />
               </Route>
