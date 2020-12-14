@@ -143,6 +143,7 @@ func main() {
 	api.HandleFunc("/recent", recenttracks.Handler)
 	api.HandleFunc("/track/{track}", trackapi.Handler)
 	api.HandleFunc("/compare/{code}", compare.HandlerUsername)
+	api.HandleFunc("/logout", auth.Logout)
 
 	spa := spaHandler{
 		buildPath: *config.BuildPath,

@@ -6,6 +6,10 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import {
+  setLogged,
+} from '../store/user';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -27,8 +31,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login(props: { mainUpdate: (arg0: boolean) => void; }) {
+export default function Login() {
   const [LoginUrl, setLoginUrl] = useState("");
+  const dispatch = useDispatch();
 
   let search = window.location.search;
   let params = new URLSearchParams(search);
@@ -61,7 +66,7 @@ export default function Login(props: { mainUpdate: (arg0: boolean) => void; }) {
         cache: "no-store",
       }).then(res => res.json()).then(data => {
         if (data.success === true) {
-          props.mainUpdate(false);
+          dispatch(setLogged(true));
         }
       });
     }

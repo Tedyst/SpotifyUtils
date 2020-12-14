@@ -8,7 +8,7 @@ import {
 import { useDispatch, batch } from 'react-redux';
 
 
-export default function Update() {
+export default function UpdateUser() {
     const dispatch = useDispatch();
     fetch('/api/status', { cache: "no-store" }).then(res => res.json()).then(data => {
         batch(() => {

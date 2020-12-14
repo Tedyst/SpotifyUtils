@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Login from './views/Login';
 import PlaylistView from './views/PlaylistView';
 import Track from './views/Track';
+import Logout from './views/Logout';
 import Recent from './views/Recent';
 import Top from './views/Top';
 import Compare from './views/Compare';
@@ -65,6 +66,8 @@ function App() {
     UpdateUser();
   }
 
+  useEffect(() => setUpdating(false), [logged])
+
   return (
     <div className={classes.root} {...handlers}>
       <ThemeProvider theme={darkTheme}>
@@ -79,9 +82,7 @@ function App() {
             <div className={classes.toolbar} />
             <Switch>
               <Route path="/auth">
-                <Login
-                  mainUpdate={setUpdating}
-                />
+                <Login />
               </Route>
               <Route path="/playlist">
                 <PlaylistView />
@@ -104,7 +105,9 @@ function App() {
               <Route path="/recent">
                 <Recent />
               </Route>
-              <Route path='/logout' component={() => <div>Logging out...</div>} />
+              <Route path='/logout'>
+                <Logout />
+              </Route>
               <Route path="/">
                 <Home />
               </Route>
@@ -114,7 +117,6 @@ function App() {
         </Router>
       </ThemeProvider>
     </div>
-
   );
 }
 
