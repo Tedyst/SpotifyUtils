@@ -10,6 +10,7 @@ import {
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import SongCardRight from '../components/SongCardRight'
+import ResultBox from '../components/ResultBox';
 
 
 function getDate(unix: number): string {
@@ -40,6 +41,7 @@ export default function OldTop() {
                 Name: string,
                 Artist: string,
                 Image: string,
+                URI: string,
             }[],
             Hours: number[],
             Days: number[],
@@ -113,6 +115,7 @@ export default function OldTop() {
     let totallistenedtime = secToText(oldTop.Result.TotalListened);
     let totallistenedtracks = oldTop.Result.Count;
     return (
+        <div>
         <Container maxWidth="sm">
             {topsong}
             <br />
@@ -126,6 +129,11 @@ export default function OldTop() {
             <br />
             Total number of songs per day
             <Graph data={daysdata} zoom={true} />
+            <br/>
         </Container>
+        <Container>
+            <ResultBox results={oldTop.Result.TopTracks} />
+        </Container>
+        </div>
     );
 }

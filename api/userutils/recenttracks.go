@@ -211,6 +211,7 @@ type RecentTracksStatisticsStructTrack struct {
 	Name   string
 	Artist string
 	Image  string
+	URI    string
 }
 
 func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct {
@@ -226,6 +227,7 @@ func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct 
 			Name:   fromDB.Name,
 			Artist: fromDB.Artist,
 			Image:  fromDB.Information.TrackInformation.Image,
+			URI:    fromDB.TrackID,
 		})
 	}
 
