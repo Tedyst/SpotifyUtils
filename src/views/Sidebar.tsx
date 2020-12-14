@@ -12,6 +12,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import SearchIcon from '@material-ui/icons/Search';
 import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import HistoryIcon from '@material-ui/icons/History';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import QueueMusicIcon from '@material-ui/icons/QueueMusic';
 import ListIcon from '@material-ui/icons/List';
@@ -146,6 +147,14 @@ function ResponsiveDrawer(props: {
                         <QueueMusicIcon />
                     </ListItemIcon>
                     <ListItemText primary="Recent Tracks" />
+                </ListItem>
+                <ListItem button key="old-top" component={Link} to="/oldtop" selected={location.pathname.startsWith("/oldtop")} classes={{
+                    selected: classes.selected,
+                }}>
+                    <ListItemIcon>
+                        <HistoryIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Listening Statistics" />
                 </ListItem>
                 <ListItem button key="Logout" component="a" href="/logout" classes={{
                     selected: classes.selected,

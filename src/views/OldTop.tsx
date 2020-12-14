@@ -55,7 +55,7 @@ export default function OldTop() {
         "Success": boolean
     }>();
     var today = new Date();
-    const [selectedDate, setSelectedDate] = React.useState(new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0));
+    const [selectedDate, setSelectedDate] = React.useState(new Date(today.getFullYear()-1, today.getMonth(), today.getDate(), 0, 0, 0));
 
     const handleDateChange = (date: MaterialUiPickersDate, value: string | null | undefined) => {
         if(date !== null)
