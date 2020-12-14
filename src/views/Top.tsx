@@ -6,6 +6,7 @@ import ArtistCard from '../components/ArtistCard';
 import SongCard from '../components/SongCardRight';
 import Typography from '@material-ui/core/Typography';
 import List from '../components/ItemList';
+import Loading from '../components/Loading';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -63,10 +64,10 @@ export default function Top() {
     }, [])
 
     if(top === undefined){
-        return null;
+        return <Loading />;
     }
     if (top.success === false) {
-        return null;
+        return <Loading />;;
     }
 
     let bestSongForArtist = undefined;

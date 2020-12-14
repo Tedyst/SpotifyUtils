@@ -13,6 +13,7 @@ import {
     Redirect,
 } from "react-router-dom";
 import Container from '@material-ui/core/Container';
+import Loading from '../Loading';
 
 // const useStyles = makeStyles(() => ({
 //     songcard: {
@@ -79,7 +80,7 @@ export default function TrackAnalyze() {
     }
 
     if (trackInfo === null || trackInfo === undefined) {
-        return <Loading />;
+        return <Loading />
     }
     if (trackInfo.Success === false) {
         return <Redirect to="/" />;
@@ -146,8 +147,4 @@ export default function TrackAnalyze() {
 
             </Grid>
         </div>);
-}
-
-function Loading() {
-    return <div>Loading...Please wait...</div>
 }
