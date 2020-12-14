@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -28,22 +28,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login(props) {
-  const classes = useStyles();
+export default function Login(props: { mainUpdate: (arg0: boolean) => void; }) {
   const [LoginUrl, setLoginUrl] = useState("");
-  const [Updating, setUpdating] = useState(false);
-  const [Error, setError] = useState(false);
 
-  if (Error) {
-    return <Redirect to="/" />
-  }
   let search = window.location.search;
   let params = new URLSearchParams(search);
   let code = params.get('code');
 
-  if (Updating === false) {
-    setUpdating(true);
-    // The url for login
+  useEffect(() => {
     fetch('/api/auth-url', {
       method: 'POST',
       headers: {
@@ -71,20 +63,19 @@ export default function Login(props) {
       }).then(res => res.json()).then(data => {
         if (data.success === true) {
           props.mainUpdate(false);
-        } else {
-          setError(true);
         }
       });
     }
-  }
+  })
 
   if (code !== null)
-    return loginPage(classes, LoginUrl, true);
-  return loginPage(classes, LoginUrl, false);
+    return <LoginPage loginUrl={LoginUrl} loggingIn={true} />
+  return <LoginPage loginUrl={LoginUrl} loggingIn={false} />
 }
 
-function loginPage(classes, LoginUrl, loggingIn) {
-  let buttonText = loggingIn ? "Logging in... Please wait..." : "Sign in using Spotify";
+function LoginPage(props: { loggingIn: boolean; loginUrl: string; }) {
+  const classes = useStyles();
+  let buttonText = props.loggingIn ? "Logging in... Please wait..." : "Sign in using Spotify";
   return (
     <Container maxWidth="xs">
       <CssBaseline />
@@ -105,8 +96,8 @@ function loginPage(classes, LoginUrl, loggingIn) {
             variant="contained"
             color="primary"
             className={classes.submit}
-            href={LoginUrl}
-            disabled={LoginUrl === "" || loggingIn === true ? true : false}
+            href={props.loginUrl}
+            disabled={props.loginUrl === "" || props.loggingIn === true ? true : false}
           >
             {buttonText}
           </Button>
