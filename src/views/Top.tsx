@@ -38,7 +38,26 @@ function msToText(ms) {
 
 
 export default function Top() {
-    const top = useSelector(selectTop);
+    const top = useSelector<{
+        result: {
+            genres: string[],
+            updated: number,
+            artists: {
+                name: string,
+                image: string,
+                id: string,
+            }[],
+            tracks: {
+                artist: string,
+                name: string,
+                image: string,
+                id: string,
+                duration: number,
+                preview_url: string,
+            }[]
+        },
+        success: boolean
+    }>(selectTop);
     const classes = useStyles();
     if (top.success === false) {
         return null;

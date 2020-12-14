@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function msToText(ms) {
+function msToText(ms: number) {
     let seconds = Math.floor(ms / 1000);
     let minutes = Math.floor(seconds / 60);
     seconds = seconds % 60;
@@ -68,7 +68,7 @@ export default function Compare() {
             />
         </Route>
         <Route path="/">
-            <Test
+            <NoUsername
                 Word={Word}
                 setWord={setWord}
             />
@@ -76,36 +76,73 @@ export default function Compare() {
     </Switch>);
 }
 
+interface ParamTypes {
+    code: string
+}
 
-function Username(props) {
+function Username(props: {
+    Word: string,
+    setWord: React.Dispatch<React.SetStateAction<string>>
+}) {
     const classes = useStyles();
-    const [Updating, setUpdating] = useState(null);
-    let { code } = useParams();
-    const [top, setTop] = useState(null);
-    if (top === null && Updating === null) {
+    const [Updating, setUpdating] = useState<string>();
+    let { code } = useParams<ParamTypes>();
+    const [top, setTop] = useState<{
+        result: {
+            genres: string[],
+            artists: {
+                name: string,
+                image: string,
+                id: string,
+            }[],
+            tracks: {
+                artist: string,
+                name: string,
+                image: string,
+                id: string,
+                duration: number,
+                preview_url: string,
+            }[],
+            percent: number
+        },
+        initiator: {
+            username: string,
+            name: string,
+            image: string,
+            code: string,
+        },
+        target: {
+            username: string,
+            name: string,
+            image: string,
+            code: string,
+        }
+        success: boolean
+    }>();
+    if (top === undefined && Updating === undefined) {
         setUpdating(code);
         fetch('/api/compare/' + code, { cache: "no-store" }).then(res => res.json()).then(data => {
             setTop(data);
             if (data.success)
                 setUpdating(code);
             else
-                setUpdating(null);
+                setUpdating(undefined);
         });
-        return <Test
+        return <NoUsername
             Word={props.Word}
             setWord={props.setWord}
         />
-    } else if (top === null && Updating !== null) {
-        return <Test
+    } else if (top === undefined && Updating !== undefined) {
+        return <NoUsername
             Word={props.Word}
             setWord={props.setWord}
         />
-    } else if (top === null) {
+    } else if (top === undefined) {
         return <Redirect to="/compare" />;
     }
     if (top["success"] === false) {
         return (
-            <Test
+            <NoUsername
                 Word={props.Word}
                 setWord={props.setWord}
             />
@@ -224,15 +261,17 @@ function Username(props) {
 }
 
 function copyToClipboard() {
-    var copyText = document.getElementById("link-to-be-copied");
+    var copyText = document.getElementById("link-to-be-copied") as HTMLInputElement;
 
+    if(copyText === null)
+        return;
     copyText.select();
     copyText.setSelectionRange(0, 99999);
 
     document.execCommand("copy");
 }
 
-function getLink(code) {
+function getLink(code: string) {
     return window.location.protocol + "//" + window.location.host + "/compare/" + code;
 }
 
@@ -263,11 +302,14 @@ const useStylesNoUsername = makeStyles((theme) => ({
     },
 }));
 
-function Test(props) {
+function NoUsername(props: {
+    Word: string,
+    setWord: React.Dispatch<React.SetStateAction<string>>
+}) {
     const compare = useSelector(selectCompare);
     const classes = useStylesNoUsername();
-    const [RedirectURL, setRedirectURL] = React.useState(null);
-    if (RedirectURL !== null) {
+    const [RedirectURL, setRedirectURL] = React.useState("");
+    if (RedirectURL !== "") {
         let url = "/compare/" + String(RedirectURL);
         if (String(RedirectURL).includes("/compare/"))
             url = "/compare/" + String(RedirectURL).split("/compare/")[1];
@@ -290,11 +332,11 @@ function Test(props) {
         );
     }
 
-    const changeWord = (event) => {
+    const changeWord = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         props.setWord(event.target.value);
     }
 
-    const mySubmitHandler = (event) => {
+    const mySubmitHandler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
         if (props.Word !== "")
             setRedirectURL(props.Word);
@@ -354,7 +396,7 @@ function Test(props) {
             </Container>
             <Container maxWidth="xs" disableGutters={true} fixed={true}>
                 <List className={classes.root} subheader={<li />} disablePadding={true}>
-                    <ListSubheader color="secondary">Your friends</ListSubheader>
+                    <ListSubheader color="default">Your friends</ListSubheader>
                     <ul>
                         {friends}
                     </ul>
