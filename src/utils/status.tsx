@@ -3,8 +3,7 @@ import {
     setPlaylists,
     setUsername,
     setImage,
-    setCompare,
-    setRecent
+    setCompare
 } from '../store/user';
 import { useDispatch, batch } from 'react-redux';
 
@@ -27,9 +26,6 @@ export default function Update() {
         if (data.success) {
             fetch('/api/compare', { cache: "no-store" }).then(res => res.json()).then(data => {
                 dispatch(setCompare(data));
-            });
-            fetch('/api/recent', { cache: "no-store" }).then(res => res.json()).then(data => {
-                dispatch(setRecent(data));
             });
         }
     }).catch(err => {

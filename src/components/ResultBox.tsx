@@ -14,10 +14,10 @@ export default function ResultBox(props:{
     if (props.results === null)
         return null
     let items = [];
-    items = props.results.map((item) => (
-        <Grid item xs={6} md={3} sm={4} lg={2} key={item.uri}>
+    items = props.results.map((item, index) => (
+        <Grid item xs={6} md={3} sm={4} lg={2} key={item.uri + index}>
             <SongCardUp
-                key={item.uri}
+                key={item.uri + index}
                 uri={item.uri}
                 name={item.name}
                 artist={item.artist}
