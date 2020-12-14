@@ -103,7 +103,7 @@ function ResponsiveDrawer(props: {
         <div>
             <div className={`${classes.toolbar} ${classes.toolbarName}`} >
                 <Typography variant="h5" noWrap>
-                    Spotify Utils
+                    Utils For Spotify
                 </Typography>
             </div>
             <Divider />
