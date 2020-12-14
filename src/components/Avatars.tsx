@@ -28,7 +28,7 @@ const SmallAvatar = withStyles((theme) => ({
     },
 }))(Avatar);
 
-function Acronym(str){
+function Acronym(str: string){
     var matches = str.match(/\b(\w)/g);
     if(matches === null)
         return str.charAt(0);
@@ -36,7 +36,16 @@ function Acronym(str){
     return acronym;
 }
 
-export default function Avatars(props){
+export default function Avatars(props:{
+    target: {
+        image: string,
+        name: string,
+    },
+    initiator: {
+        image: string,
+        name: string,
+    }
+}){
     const classes = useStyles();
 
     return (<Badge

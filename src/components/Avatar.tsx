@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function Acronym(str){
+function Acronym(str: string){
     var matches = str.match(/\b(\w)/g);
     if(matches === null)
         return str.charAt(0);
@@ -24,7 +24,10 @@ function Acronym(str){
     return acronym;
 }
 
-export default function Avatars(props){
+export default function Avatars(props:{
+    image: string,
+    name: string
+}){
     const classes = useStyles();
 
     return (

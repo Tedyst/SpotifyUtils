@@ -71,7 +71,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function SongCard(props) {
+export default function SongCard(props:{
+    uri: string,
+    image: string,
+    name: string,
+    artist: string,
+}) {
     const classes = useStyles();
 
     let cardAction = (<CardActions>

@@ -322,8 +322,7 @@ function NoUsername(props: {
             <ListItem key={"friend-" + compare.friends[val].username} component={Link} to={"/compare/" + compare.friends[val].code} classes={{
                 root: classes.selected,
             }}>
-                <Avatar name={compare.friends[val].name} image={compare.friends[val].image}>
-                </Avatar>
+                <Avatar name={compare.friends[val].name} image={compare.friends[val].image} />
                 <ListItemText
                     primary={compare.friends[val].name}
                     secondary={compare.friends[val].code}

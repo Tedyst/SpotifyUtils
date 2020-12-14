@@ -3,7 +3,14 @@ import Container from '@material-ui/core/Container';
 import { Grid } from '@material-ui/core';
 import SongCard from './SongCard'
 
-export default function ResultBox(props) {
+export default function ResultBox(props:{
+    results: {
+        uri: string,
+        name: string,
+        artist: string,
+        image_url: string,
+    }[]
+}) {
     if (props.results === null)
         return null
     let items = [];
@@ -15,12 +22,11 @@ export default function ResultBox(props) {
                 name={item.name}
                 artist={item.artist}
                 image={item.image_url}
-                lyrics={item.lyrics}
             />
         </Grid>
     ));
     return (
-        <Container maxWidth="lg" disableGutters={true} spacing={4}>
+        <Container maxWidth="lg" disableGutters={true}>
             <Grid container spacing={1}>
                 {items}
             </Grid>
