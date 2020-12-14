@@ -8,7 +8,9 @@ import {
   LineSeries,
 } from '@devexpress/dx-react-chart-material-ui';
 
-export default function Chart1(props){
+export default function Chart1(props:{
+    data: any,
+}){
     if(props.data === undefined)
         return null;
     let data = [];

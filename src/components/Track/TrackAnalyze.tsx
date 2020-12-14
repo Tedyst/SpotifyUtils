@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     useParams
 } from "react-router-dom";
-import { Grid, makeStyles } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import TrackInfo from './TrackInfo';
 import AlbumInfo from './AlbumInfo';
 import Chart1 from './Chart1';
@@ -14,36 +14,74 @@ import {
 } from "react-router-dom";
 import Container from '@material-ui/core/Container';
 
-const useStyles = makeStyles((theme) => ({
-    songcard: {
-        width: '100%'
-    }
-}));
+// const useStyles = makeStyles(() => ({
+//     songcard: {
+//         width: '100%'
+//     }
+// }));
 
-export default function TrackAnalyze(props) {
-    const classes = useStyles();
-    const [Updating, setUpdating] = useState(null);
-    let { trackid } = useParams();
-    const [trackInfo, setTrackInfo] = useState(null);
+interface ParamTypes {
+    trackid: string
+}
+
+export default function TrackAnalyze() {
+    // const classes = useStyles();
+    let { trackid } = useParams<ParamTypes>();
+    const [trackInfo, setTrackInfo] = useState<{
+        Success: boolean,
+        Lyrics: string,
+        Information: {
+            TrackInformation:{
+                LoudnessGraph: any,
+                Image: string,
+                Popularity: number,
+                Length: number,
+                Markets: number,
+                Explicit: boolean,
+                Key: number,
+                Mode: number,
+                Tempo: number,
+                TimeSignature: number,
+            },
+            AlbumInformation:{
+                Popularity: string,
+                ReleaseDate: string,
+                TracksAmount: string,
+                Markets: string
+            },
+            TrackFeatures:{
+                Acousticness: number,
+                Danceability: number,
+                Energy: number,
+                Instrumentalness: number,
+                Liveness: number,
+                Loudness: number,
+                Speechiness: number,
+            }
+        },
+        Artist: string,
+        Name: string,
+
+    }>();
     const [returnToTrackSearch, setReturn] = useState(false);
-    if (returnToTrackSearch) {
-        return <Redirect to="/tracksearch" />;
-    }
-    if (trackInfo === null && Updating === null) {
-        setUpdating(trackid);
+
+    useEffect(() => {
         fetch('/api/track/' + trackid, { cache: "no-store" }).then(res => res.json()).then(data => {
             if (data.Success)
                 setTrackInfo(data.Result);
             else
                 setReturn(true);
         });
-        return <Loading />;
-    } else if (trackInfo === null && Updating !== null) {
-        return <Loading />;
-    } else if (trackInfo === null) {
-        return <Redirect to="/" />;
+    }, [trackid])
+
+    if (returnToTrackSearch) {
+        return <Redirect to="/tracksearch" />;
     }
-    if (trackInfo["Success"] === false) {
+
+    if (trackInfo === null || trackInfo === undefined) {
+        return <Loading />;
+    }
+    if (trackInfo.Success === false) {
         return <Redirect to="/" />;
     }
     let lyrics = trackInfo.Lyrics ? (<Grid item xs={12}>
@@ -56,7 +94,7 @@ export default function TrackAnalyze(props) {
 
     let chart = trackInfo.Information.TrackInformation.LoudnessGraph ? (<Grid item xs={12}>
         <Chart1
-            data={trackInfo.analyze.loudness_graph}
+            data={trackInfo.Information.TrackInformation.LoudnessGraph}
         />
     </Grid>) : null;
     return (
@@ -66,7 +104,7 @@ export default function TrackAnalyze(props) {
                     artist={trackInfo.Artist}
                     name={trackInfo.Name}
                     image={trackInfo.Information.TrackInformation.Image}
-                    className={classes.songcard}
+                    // className={classes.songcard}
                 />
             </Container>
             <br />
@@ -76,9 +114,9 @@ export default function TrackAnalyze(props) {
                         popularity={trackInfo.Information.TrackInformation.Popularity}
                         length={trackInfo.Information.TrackInformation.Length}
                         markets={trackInfo.Information.TrackInformation.Markets}
-                        explicit={trackInfo.Information.TrackInformation.Explicit ? "Yes" : "No"}
+                        explicit={trackInfo.Information.TrackInformation.Explicit}
                         track_key={trackInfo.Information.TrackInformation.Key}
-                        mode={trackInfo.Information.TrackInformation.Mode === 0 ? "Minor" : "Major"}
+                        mode={trackInfo.Information.TrackInformation.Mode}
                         tempo={trackInfo.Information.TrackInformation.Tempo}
                         time_signature={trackInfo.Information.TrackInformation.TimeSignature}
                     />
@@ -111,5 +149,5 @@ export default function TrackAnalyze(props) {
 }
 
 function Loading() {
-    return "Loading...Please wait...";
+    return <div>Loading...Please wait...</div>
 }

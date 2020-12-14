@@ -4,7 +4,7 @@ import {
   Route,
   useRouteMatch
 } from "react-router-dom";
-import TrackAnalyze from '../sections/Track/TrackAnalyze';
+import TrackAnalyze from '../components/Track/TrackAnalyze';
 import {
   Redirect,
 } from "react-router-dom";

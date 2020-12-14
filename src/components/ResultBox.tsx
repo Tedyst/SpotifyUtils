@@ -1,7 +1,7 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
 import { Grid } from '@material-ui/core';
-import SongCardRight from './SongCardRight'
+import SongCardUp from './SongCardUp'
 
 export default function ResultBox(props:{
     results: {
@@ -14,10 +14,11 @@ export default function ResultBox(props:{
     if (props.results === null)
         return null
     let items = [];
-    items = props.results.map((item, key) => (
+    items = props.results.map((item) => (
         <Grid item xs={6} md={3} sm={4} lg={2} key={item.uri}>
-            <SongCardRight
+            <SongCardUp
                 key={item.uri}
+                uri={item.uri}
                 name={item.name}
                 artist={item.artist}
                 image={item.image_url}

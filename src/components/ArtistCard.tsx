@@ -28,7 +28,11 @@ const useStyles = makeStyles({
     },
 });
 
-export default function ArtistCard(props) {
+export default function ArtistCard(props:{
+    bestSong?: string,
+    image: string,
+    name: string
+}) {
     const classes = useStyles();
 
     let bestSong = null;

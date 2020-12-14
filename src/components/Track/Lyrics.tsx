@@ -10,7 +10,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Chart1(props){
+export default function Lyrics(props:{
+    lyrics: string
+}){
     const classes = useStyles();
 
     return (

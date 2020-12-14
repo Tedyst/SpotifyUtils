@@ -8,7 +8,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Grid } from '@material-ui/core';
-import ArtistCard from '../sections/Top/ArtistCard';
+import ArtistCard from '../components/ArtistCard';
 import SongCard from '../components/SongCardRight';
 import Typography from '@material-ui/core/Typography';
 import ListItems from '../components/ItemList';
@@ -148,7 +148,7 @@ function Username(props: {
             />
         )
     }
-    let bestSongForArtist = null;
+    let bestSongForArtist = undefined;
     if (top["result"]["artists"].length > 0)
         for (var val in top["result"]["tracks"]) {
             if (top["result"]["tracks"][val].artist === top["result"]["artists"][0].name && bestSongForArtist === null) {

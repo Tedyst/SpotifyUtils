@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Grid } from '@material-ui/core';
-import ArtistCard from '../sections/Top/ArtistCard';
+import ArtistCard from '../components/ArtistCard';
 import SongCard from '../components/SongCardRight';
 import Typography from '@material-ui/core/Typography';
 import List from '../components/ItemList';
@@ -69,7 +69,7 @@ export default function Top() {
         return null;
     }
 
-    let bestSongForArtist = null;
+    let bestSongForArtist = undefined;
     for (var val in top.result.tracks) {
         if (top.result.tracks[val].artist === top.result.artists[0].name && bestSongForArtist === null) {
             bestSongForArtist = top.result.tracks[val].name;

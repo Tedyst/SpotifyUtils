@@ -7,7 +7,12 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
-export default function AlbumInfo(props){
+export default function AlbumInfo(props: {
+    popularity: string;
+    release_date: string;
+    tracks: string;
+    markets: string; 
+}){
     return (
     <div>
     <Typography>

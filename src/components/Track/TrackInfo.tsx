@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-function msToText(ms){
+function msToText(ms: number){
     let seconds = Math.floor(ms / 1000);
     let minutes = Math.floor(seconds / 60);
     seconds = seconds % 60;
@@ -23,7 +23,7 @@ function msToText(ms){
     return seconds + " Seconds";
 }
 
-function keyToText(key){
+function keyToText(key: number){
     if(key === -1) return "None";
     if(key <= 1) return "C";
     if(key <= 3) return "D";
@@ -35,7 +35,16 @@ function keyToText(key){
     return "None";
 }
 
-export default function TrackInfo(props){
+export default function TrackInfo(props:{
+    popularity: number,
+    length: number,
+    markets: number,
+    explicit: boolean,
+    track_key: number,
+    mode: number,
+    tempo: number,
+    time_signature: number
+}){
     return (<div>
     <Typography>
         Track Information
@@ -65,7 +74,7 @@ export default function TrackInfo(props){
                 <TableCell component="th" scope="row">
                     Explicit
                 </TableCell>
-                <TableCell align="right">{props.explicit}</TableCell>
+                <TableCell align="right">{props.explicit ? "Yes" : "No"}</TableCell>
             </TableRow>
             <TableRow>
                 <TableCell component="th" scope="row">
@@ -77,7 +86,7 @@ export default function TrackInfo(props){
                 <TableCell component="th" scope="row">
                     Mode
                 </TableCell>
-                <TableCell align="right">{props.mode}</TableCell>
+                <TableCell align="right">{props.mode === 0 ? "Minor" : "Major"}</TableCell>
             </TableRow>
             <TableRow>
                 <TableCell component="th" scope="row">
