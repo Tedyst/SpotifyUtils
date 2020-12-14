@@ -9,16 +9,8 @@ import {
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-// import SongCard from '../components/SongCard'
+import SongCardRight from '../components/SongCardRight'
 
-// const useStyles = makeStyles((theme) => ({
-//     root: {
-//         flexGrow: 1
-//     },
-//     fullWidth: {
-//         width: '100%'
-//     }
-// }));
 
 function getDate(unix: number): string {
     return new Date(unix * 1000).toLocaleDateString("en-US");
@@ -47,6 +39,7 @@ export default function OldTop() {
                 Count: number,
                 Name: string,
                 Artist: string,
+                Image: string,
             }[],
             Hours: number[],
             Days: number[],
@@ -91,6 +84,15 @@ export default function OldTop() {
     let topsong = null;
     if (oldTop === undefined)
         return datepicker;
+
+    if(oldTop.Result.TopTracks.length > 0){
+        topsong = (<SongCardRight
+            name={oldTop.Result.TopTracks[0].Name}
+            artist={oldTop.Result.TopTracks[0].Artist}
+            image={oldTop.Result.TopTracks[0].Image}
+            count={oldTop.Result.TopTracks[0].Count}
+            />)
+    }
 
     let hoursdata = [];
     for (const elem in oldTop.Result.Hours) {

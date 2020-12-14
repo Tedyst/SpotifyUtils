@@ -35,6 +35,7 @@ export default function SongCard(props:{
     name: string,
     artist: string,
     image: string,
+    count?: number,
 }) {
     const classes = useStyles();
 
@@ -43,6 +44,14 @@ export default function SongCard(props:{
         duration = (
             <Typography variant="body2" color="textPrimary">
                 When you only have <b>{props.duration}</b>, you know what you want
+            </Typography>
+        )
+
+    let count = null;
+    if(props.count)
+        count = (
+            <Typography variant="body2" color="textPrimary">
+                You listened to this song <b>{props.count}</b> times
             </Typography>
         )
 
@@ -57,6 +66,7 @@ export default function SongCard(props:{
                 {props.artist}
             </Typography>
             {duration}
+            {count}
         </CardContent>
         </div>
         <CardMedia

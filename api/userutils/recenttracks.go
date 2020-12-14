@@ -210,6 +210,7 @@ type RecentTracksStatisticsStructTrack struct {
 	Count  uint
 	Name   string
 	Artist string
+	Image  string
 }
 
 func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct {
@@ -219,11 +220,12 @@ func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct 
 	// TopTracks
 	for _, s := range tr {
 		var fromDB tracks.Track
-		config.DB.Model(&tracks.Track{}).Select("id, artist, name").Where("track_id = ?", s.Track).Find(&fromDB)
+		config.DB.Model(&tracks.Track{}).Select("id, artist, name, information_track_image").Where("track_id = ?", s.Track).Find(&fromDB)
 		result.TopTracks = append(result.TopTracks, RecentTracksStatisticsStructTrack{
 			Count:  s.ID,
 			Name:   fromDB.Name,
 			Artist: fromDB.Artist,
+			Image:  fromDB.Information.TrackInformation.Image,
 		})
 	}
 
