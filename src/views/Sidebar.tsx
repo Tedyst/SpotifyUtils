@@ -101,22 +101,12 @@ function ResponsiveDrawer(props: {
     const drawer = (
         <div>
             <div className={`${classes.toolbar} ${classes.toolbarName}`} >
-                {/* <GitHubIcon /> */}
-
                 <Typography variant="h5" noWrap>
                     Spotify Utils
                 </Typography>
             </div>
             <Divider />
             <List>
-                {/* <ListItem button key="Home" component={Link} to="/" selected={location.pathname === "/"} classes={{
-                    selected: classes.selected,
-                }}>
-                    <ListItemIcon>
-                        <HomeIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Home" />
-                </ListItem> */}
                 <ListItem button key="Top" component={Link} to="/top" selected={location.pathname === "/top"} classes={{
                     selected: classes.selected,
                 }}>
