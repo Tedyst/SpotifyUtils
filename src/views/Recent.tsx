@@ -5,15 +5,15 @@ import Loading from '../components/Loading';
 
 export default function Recent() {
     const [Recent, setRecent] = useState<{
-        results:{
-            name: string,
-            artist: string,
-            lyrics: string,
-            uri: string,
-            image_url: string,
-            preview_url: string
+        Results:{
+            Name: string,
+            Artist: string,
+            Lyrics: string,
+            URI: string,
+            Image: string,
+            Preview: string
         }[],
-        success: boolean
+        Success: boolean
     }>();
 
     useEffect(() => {
@@ -30,7 +30,7 @@ export default function Recent() {
             Your recent tracks
         </Typography>
         <br />
-        <ResultBox results={Recent.results}/>
+        <ResultBox results={Recent.Results}/>
         </div>
     )
 }

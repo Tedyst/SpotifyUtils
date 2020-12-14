@@ -17,15 +17,15 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	session, _ := config.SessionStore.Get(req, "username")
 	vars := mux.Vars(req)
 	type RespSong struct {
-		Name     string `json:"name"`
-		Artist   string `json:"artist"`
-		URI      string `json:"uri"`
-		ImageURL string `json:"image_url"`
+		Name   string
+		Artist string
+		URI    string
+		Image  string
 	}
 	type Resp struct {
-		Results []RespSong `json:"results"`
-		Success bool       `json:"success"`
-		Error   string     `json:"error,omitempty"`
+		Results []RespSong
+		Success bool
+		Error   string
 	}
 	response := &Resp{}
 	if _, ok := session.Values["username"]; !ok {
@@ -45,10 +45,10 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	tracks.BatchUpdate(playlist, *cl)
 	for _, s := range playlist {
 		response.Results = append(response.Results, RespSong{
-			ImageURL: s.Information.TrackInformation.Image,
-			URI:      s.TrackID,
-			Artist:   s.Artist,
-			Name:     s.Name,
+			Image:  s.Information.TrackInformation.Image,
+			URI:    s.TrackID,
+			Artist: s.Artist,
+			Name:   s.Name,
 		})
 	}
 

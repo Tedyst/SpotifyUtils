@@ -5,23 +5,23 @@ import SongCardUp from './SongCardUp'
 
 export default function ResultBox(props:{
     results: {
-        uri: string,
-        name: string,
-        artist: string,
-        image_url: string,
+        URI: string,
+        Name: string,
+        Artist: string,
+        Image: string,
     }[]
 }) {
-    if (props.results === null)
+    if (props.results === undefined)
         return null
     let items = [];
     items = props.results.map((item, index) => (
-        <Grid item xs={6} md={3} sm={4} lg={2} key={item.uri + index}>
+        <Grid item xs={6} md={3} sm={4} lg={2} key={item.URI + index}>
             <SongCardUp
-                key={item.uri + index}
-                uri={item.uri}
-                name={item.name}
-                artist={item.artist}
-                image={item.image_url}
+                key={item.URI + index}
+                uri={item.URI}
+                name={item.Name}
+                artist={item.Artist}
+                image={item.Image}
             />
         </Grid>
     ));
