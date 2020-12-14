@@ -1,6 +1,6 @@
 import React from 'react';
 import App from './App';
-import store from './store/store';
+import store from './store/store.tsx';
 import { Provider } from 'react-redux';
 
 test('renders learn react link', () => {

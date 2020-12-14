@@ -1,9 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-    selectTop
-} from '../store/user';
-import { useSelector } from 'react-redux';
 import Container from '@material-ui/core/Container';
 import { Grid } from '@material-ui/core';
 import ArtistCard from '../sections/Top/ArtistCard';
@@ -20,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function msToText(ms) {
+function msToText(ms: number): string {
     let seconds = Math.floor(ms / 1000);
     let minutes = Math.floor(seconds / 60);
     seconds = seconds % 60;
@@ -38,7 +34,7 @@ function msToText(ms) {
 
 
 export default function Top() {
-    const top = useSelector<{
+    const [top, setTop] = useState<{
         result: {
             genres: string[],
             updated: number,
@@ -57,40 +53,50 @@ export default function Top() {
             }[]
         },
         success: boolean
-    }>(selectTop);
+    }>();
     const classes = useStyles();
+
+    useEffect(() => {
+        fetch('/api/top', { cache: "no-store" }).then(res => res.json()).then(data => {
+            setTop(data);
+        });
+    }, [])
+
+    if(top === undefined){
+        return null;
+    }
     if (top.success === false) {
         return null;
     }
 
     let bestSongForArtist = null;
-    for (var val in top["tracks"]) {
-        if (top["tracks"][val].artist === top["artists"][0].name && bestSongForArtist === null) {
-            bestSongForArtist = top["tracks"][val].name;
+    for (var val in top.result.tracks) {
+        if (top.result.tracks[val].artist === top.result.artists[0].name && bestSongForArtist === null) {
+            bestSongForArtist = top.result.tracks[val].name;
             break;
         }
     }
 
     let topArtist = null;
-    if (top["artists"].length > 0)
-        topArtist = (<Grid item key={top["artists"][0].id}>
+    if (top.result.artists.length > 0)
+        topArtist = (<Grid item key={top.result.artists[0].id}>
             <ArtistCard
-                key={top["artists"][0].id}
-                name={top["artists"][0].name}
-                image={top["artists"][0].image}
+                key={top.result.artists[0].id}
+                name={top.result.artists[0].name}
+                image={top.result.artists[0].image}
                 bestSong={bestSongForArtist}
             />
         </Grid>);
     let topTrack = null;
-    if (top["tracks"].length > 0)
-        topTrack = (<Grid item key={top["tracks"][0].id}>
+    if (top.result.tracks.length > 0)
+        topTrack = (<Grid item key={top.result.tracks[0].id}>
             <SongCard
-                key={top["tracks"][0].id}
-                name={top["tracks"][0].name}
-                artist={top["tracks"][0].artist}
-                image={top["tracks"][0].image}
+                key={top.result.tracks[0].id}
+                name={top.result.tracks[0].name}
+                artist={top.result.tracks[0].artist}
+                image={top.result.tracks[0].image}
                 duration={
-                    msToText(top["tracks"][0].duration)
+                    msToText(top.result.tracks[0].duration)
                 }
             />
         </Grid>)
@@ -116,19 +122,19 @@ export default function Top() {
                 <Grid container spacing={2} className={classes.root} direction="row" alignItems="stretch">
                     <Grid item key="lista-tracks" md={4} className={classes.fullWidth}>
                         <List
-                            items={top["tracks"]}
+                            items={top.result.tracks}
                             name={"Your Top Tracks"}
                         />
                     </Grid>
                     <Grid item key="lista-artists" md={4} className={classes.fullWidth}>
                         <List
-                            items={top["artists"]}
+                            items={top.result.artists}
                             name={"Your Top Artists"}
                         />
                     </Grid>
                     <Grid item key="lista-genres" md={4} className={classes.fullWidth}>
                         <List
-                            items={top["genres"]}
+                            items={top.result.genres}
                             name={"Your Top Genres"}
                         />
                     </Grid>

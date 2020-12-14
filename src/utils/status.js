@@ -3,7 +3,6 @@ import {
     setPlaylists,
     setUsername,
     setImage,
-    setTop,
     setCompare,
     setRecent
 } from '../store/user';
@@ -26,9 +25,6 @@ export default function Update() {
                 localStorage.clear();
         })
         if (data.success) {
-            fetch('/api/top', { cache: "no-store" }).then(res => res.json()).then(data => {
-                dispatch(setTop(data["result"]));
-            });
             fetch('/api/compare', { cache: "no-store" }).then(res => res.json()).then(data => {
                 dispatch(setCompare(data));
             });

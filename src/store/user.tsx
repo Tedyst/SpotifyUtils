@@ -8,11 +8,6 @@ export const userSlice = createSlice({
     name: loadState("name") ? loadState("name") : "Not Logged In",
     image: loadState("image") ? loadState("image") : "",
     playlists: loadState("playlists") ? loadState("playlists") : [],
-    top: loadState("top") ? loadState("top") : {
-      "artists": {},
-      "tracks": {},
-      "genres": {}
-    },
     pathname: loadState("pathname") ? loadState("pathname") : undefined,
     compare: loadState("compare") ? loadState("compare") : {
       "code": "NONE",
@@ -39,10 +34,6 @@ export const userSlice = createSlice({
       state.playlists = action.payload;
       saveState("playlists", action.payload);
     },
-    setTop: (state, action) => {
-      state.top = action.payload;
-      saveState("top", action.payload);
-    },
     setPathName: (state, action) => {
       saveState("pathname", action.payload);
       state.pathname = action.payload;
@@ -63,7 +54,6 @@ export const {
   setPlaylists,
   setUsername,
   setImage,
-  setTop,
   setPathName,
   setCompare,
   setRecent
@@ -82,13 +72,12 @@ export const {
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state) => state.user.value)`
-export const selectLogged = state => state.user.logged;
-export const selectPlaylists = state => state.user.playlists;
-export const selectUsername = state => state.user.name;
-export const selectImage = state => state.user.image;
-export const selectTop = state => state.user.top;
-export const selectPathname = state => state.user.pathname;
-export const selectCompare = state => state.user.compare;
-export const selectRecent = state => state.user.recent;
+export const selectLogged = (state: any) => state.user.logged;
+export const selectPlaylists = (state: any) => state.user.playlists;
+export const selectUsername = (state: any) => state.user.name;
+export const selectImage = (state: any) => state.user.image;
+export const selectPathname = (state: any) => state.user.pathname;
+export const selectCompare = (state: any) => state.user.compare;
+export const selectRecent = (state: any) => state.user.recent;
 
 export default userSlice.reducer;
