@@ -11,7 +11,10 @@ import {
 
 import { EventTracker } from '@devexpress/dx-react-chart';
 
-export default function Graph(props) {
+export default function Graph(props:{
+    data: any,
+    zoom?: boolean,
+}) {
     let zoom = null;
     if (props.zoom === true) {
         zoom = <ZoomAndPan />;

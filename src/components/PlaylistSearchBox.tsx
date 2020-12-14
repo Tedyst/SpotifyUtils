@@ -33,17 +33,21 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function SearchBox(props) {
+export default function SearchBox(props:{
+    playlists: any,
+    setResults: React.Dispatch<React.SetStateAction<never[]>>
+}) {
     const classes = useStyles();
     const playlists = props.playlists;
 
-    let idk = <MenuItem value="none" disabled>
+    let noplaylistfound = <MenuItem value="none" disabled>
         No playlist found!
             </MenuItem>;
+    let list: any[] = [];
     if (playlists !== undefined) {
-        idk = [];
+        list = [];
         for (var key in playlists) {
-            idk.push(
+            list.push(
                 <MenuItem
                     value={playlists[key].id}
                     key={playlists[key].id}
@@ -53,6 +57,7 @@ export default function SearchBox(props) {
             );
         };
     }
+    let shown = playlists !== undefined ? list : noplaylistfound;
     const [selectedPlaylist, setselectedPlaylist] = React.useState('none');
     const [Updating, setUpdating] = React.useState(false);
     const [ButtonText, setButtonText] = React.useState("");
@@ -80,7 +85,7 @@ export default function SearchBox(props) {
                 {ButtonText}
             </Button>);
 
-    const changePlaylist = (event) => {
+    const changePlaylist = (event: any) => {
         setselectedPlaylist(event.target.value);
     };
 
@@ -93,7 +98,7 @@ export default function SearchBox(props) {
         });
     }
 
-    const mySubmitHandler = (event) => {
+    const mySubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (selectedPlaylist === 'none')
             return;
@@ -126,8 +131,8 @@ export default function SearchBox(props) {
                         >
                             <MenuItem value="none" disabled>
                                 Select a playlist to search into
-                    </MenuItem>
-                            {idk}
+                            </MenuItem>
+                            {shown}
                         </Select>
                         {button}
                     </form>

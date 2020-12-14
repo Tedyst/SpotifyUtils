@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 // import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Container } from '@material-ui/core';
-import Graph from '../sections/OldTop/Graph';
+import Graph from '../components/Graph';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import {

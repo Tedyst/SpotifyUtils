@@ -30,7 +30,12 @@ const useStyles = makeStyles({
     },
 });
 
-export default function SongCard(props) {
+export default function SongCard(props:{
+    duration?: string,
+    name: string,
+    artist: string,
+    image: string,
+}) {
     const classes = useStyles();
 
     let duration = null;

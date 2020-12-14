@@ -8,7 +8,7 @@ import AlbumInfo from './AlbumInfo';
 import Chart1 from './Chart1';
 import Chart2 from './Chart2';
 import Lyrics from './Lyrics';
-import SongCard from '../Top/SongCard';
+import SongCard from '../../components/SongCardRight';
 import {
     Redirect,
 } from "react-router-dom";

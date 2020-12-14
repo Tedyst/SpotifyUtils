@@ -3,9 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Grid } from '@material-ui/core';
 import ArtistCard from '../sections/Top/ArtistCard';
-import SongCard from '../sections/Top/SongCard';
+import SongCard from '../components/SongCardRight';
 import Typography from '@material-ui/core/Typography';
-import List from '../sections/Top/List';
+import List from '../components/ItemsList';
 
 const useStyles = makeStyles((theme) => ({
     root: {
