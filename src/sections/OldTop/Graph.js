@@ -4,7 +4,6 @@ import {
     ArgumentAxis,
     ValueAxis,
     Chart,
-    Legend,
     Tooltip,
     ZoomAndPan,
     SplineSeries,
@@ -18,15 +17,14 @@ export default function Graph(props) {
         zoom = <ZoomAndPan />;
     }
     return (<Paper>
-        <Chart
+        <Chart height={250}
             data={props.data}
         >
 
             <ArgumentAxis />
             <ValueAxis />
 
-            <SplineSeries name={props.name} valueField="value" argumentField="argument" />
-            <Legend />
+            <SplineSeries valueField="value" argumentField="argument" />
             <EventTracker />
             <Tooltip />
             {zoom}

@@ -5,8 +5,7 @@ import {
     setImage,
     setTop,
     setCompare,
-    setRecent,
-    setOldTop
+    setRecent
 } from '../store/user';
 import { useDispatch, batch } from 'react-redux';
 

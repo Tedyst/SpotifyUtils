@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 // import { makeStyles } from '@material-ui/core/styles';
-import { Grid } from '@material-ui/core';
+import { Grid, Container } from '@material-ui/core';
 import Graph from '../sections/OldTop/Graph';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -92,14 +92,17 @@ export default function OldTop() {
     let totallistenedtime = secToText(oldTop.Result.TotalListened);
     let totallistenedtracks = oldTop.Result.Count;
     return (
-        <div>
+        <Container maxWidth="sm">
             {datepicker}
             {totallistenedtracks} Tracks
             <br />
             {totallistenedtime}
-            <Graph data={hoursdata} name="Total number of songs per hour" />
             <br />
-            <Graph data={daysdata} name="Total number of songs per day" zoom={true} />
-        </div>
+            Total number of songs per hour
+            <Graph data={hoursdata} />
+            <br />
+            Total number of songs per day
+            <Graph data={daysdata} zoom={true} />
+        </Container>
     );
 }
