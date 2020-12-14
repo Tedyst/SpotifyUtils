@@ -22,19 +22,26 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ListItems(props) {
+export default function ListItems(props:{
+    items: any[],
+    name: string
+}) {
     const classes = useStyles();
 
-
-    let items = [];
+    let items: any[] = [];
     if (props.items.length === 0 || !props.items)
-        items = (
-            <ListItem key={"list-notfound-" + props.name}>
+        return (
+            <List className={classes.root} subheader={<li />}>
+            <ListSubheader color="inherit">{props.name}</ListSubheader>
+            <ul className={classes.ul}>
+                <ListItem key={"list-notfound-" + props.name}>
                 <ListItemText
                     primary={""}
                     secondary={"Could not find anything"}
                 />
             </ListItem>
+            </ul>
+        </List>
         )
     for (var val in props.items) {
         if (props.items[val].artist)

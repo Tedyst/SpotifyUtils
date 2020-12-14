@@ -11,7 +11,7 @@ import { Grid } from '@material-ui/core';
 import ArtistCard from '../sections/Top/ArtistCard';
 import SongCard from '../components/SongCardRight';
 import Typography from '@material-ui/core/Typography';
-import ListItems from '../components/ItemsList';
+import ListItems from '../components/ItemList';
 import Avatars from '../components/Avatars';
 import {
     selectCompare

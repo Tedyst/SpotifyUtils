@@ -5,7 +5,7 @@ import { Grid } from '@material-ui/core';
 import ArtistCard from '../sections/Top/ArtistCard';
 import SongCard from '../components/SongCardRight';
 import Typography from '@material-ui/core/Typography';
-import List from '../components/ItemsList';
+import List from '../components/ItemList';
 
 const useStyles = makeStyles((theme) => ({
     root: {
