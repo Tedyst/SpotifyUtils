@@ -11,6 +11,7 @@ import {
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import SongCardRight from '../components/SongCardRight'
 import ResultBox from '../components/ResultBox';
+import Loading from '../components/Loading';
 
 
 function getDate(unix: number): string {
@@ -85,7 +86,12 @@ export default function OldTop() {
 
     let topsong = null;
     if (oldTop === undefined)
-        return datepicker;
+        return (
+            <div>
+                {datepicker}
+                <Loading />
+            </div>)
+        ;
 
     if(oldTop.Result.TopTracks.length > 0){
         topsong = (<SongCardRight
@@ -117,9 +123,9 @@ export default function OldTop() {
     return (
         <div>
         <Container maxWidth="sm">
-            {topsong}
-            <br />
             {datepicker}
+            <br />
+            {topsong}
             {totallistenedtracks} Tracks
             <br />
             {totallistenedtime}
