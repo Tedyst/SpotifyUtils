@@ -138,7 +138,7 @@ func main() {
 	api.HandleFunc("/status", status.StatusHandler)
 	api.HandleFunc("/playlist/{playlist}", playlistview.Handler)
 	api.HandleFunc("/top", top.TopHandler)
-	api.HandleFunc("/top/old", top.TopHandlerSince)
+	api.HandleFunc("/top/old/{unixdate}", top.TopHandlerSince)
 	api.HandleFunc("/compare", compare.HandlerNoUsername)
 	api.HandleFunc("/recent", recenttracks.Handler)
 	api.HandleFunc("/track/{track}", trackapi.Handler)

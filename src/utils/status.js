@@ -36,9 +36,6 @@ export default function Update() {
             fetch('/api/recent', { cache: "no-store" }).then(res => res.json()).then(data => {
                 dispatch(setRecent(data));
             });
-            fetch('/api/top/old', { cache: "no-store" }).then(res => res.json()).then(data => {
-                dispatch(setOldTop(data));
-            });
         }
     }).catch(err => {
         localStorage.clear();

@@ -8,7 +8,6 @@ export const userSlice = createSlice({
     name: loadState("name") ? loadState("name") : "Not Logged In",
     image: loadState("image") ? loadState("image") : "",
     playlists: loadState("playlists") ? loadState("playlists") : [],
-    oldtop: loadState("oldtop") ? loadState("oldtop") : null,
     top: loadState("top") ? loadState("top") : {
       "artists": {},
       "tracks": {},
@@ -44,10 +43,6 @@ export const userSlice = createSlice({
       state.top = action.payload;
       saveState("top", action.payload);
     },
-    setOldTop: (state, action) => {
-      state.oldtop = action.payload;
-      saveState("oldtop", action.payload);
-    },
     setPathName: (state, action) => {
       saveState("pathname", action.payload);
       state.pathname = action.payload;
@@ -69,7 +64,6 @@ export const {
   setUsername,
   setImage,
   setTop,
-  setOldTop,
   setPathName,
   setCompare,
   setRecent
@@ -93,7 +87,6 @@ export const selectPlaylists = state => state.user.playlists;
 export const selectUsername = state => state.user.name;
 export const selectImage = state => state.user.image;
 export const selectTop = state => state.user.top;
-export const selectOldTop = state => state.user.oldtop;
 export const selectPathname = state => state.user.pathname;
 export const selectCompare = state => state.user.compare;
 export const selectRecent = state => state.user.recent;
