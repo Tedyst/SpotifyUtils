@@ -74,7 +74,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function ResponsiveDrawer(props) {
+function ResponsiveDrawer(props: {
+    setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    mobileOpen: boolean,
+    image: string,
+    username: string,
+    window: any,
+}) {
     const { window } = props;
     const classes = useStyles();
     const theme = useTheme();
@@ -97,7 +103,7 @@ function ResponsiveDrawer(props) {
             <div className={`${classes.toolbar} ${classes.toolbarName}`} >
                 {/* <GitHubIcon /> */}
 
-                <Typography variant="h5" noWrap className={classes.appName}>
+                <Typography variant="h5" noWrap>
                     Spotify Utils
                 </Typography>
             </div>
