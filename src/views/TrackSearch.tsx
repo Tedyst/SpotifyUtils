@@ -34,9 +34,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function SearchBox(props:{
-    Word: string,
-}) {
+export default function SearchBox() {
     const classes = useStyles();
     const [URI, setURI] = React.useState("");
     const [Refresh, setRefresh] = React.useState("");
@@ -77,7 +75,6 @@ export default function SearchBox(props:{
                             label="Enter a track URI to search it"
                             variant="outlined"
                             className={classes.grid}
-                            defaultValue={props.Word}
                             onChange={changeWord}
                         />
                         <Button

@@ -104,7 +104,7 @@ function App() {
               <Route path="/recent">
                 <Recent />
               </Route>
-              <Route path='/logout' component={() => "Logging out..."} />
+              <Route path='/logout' component={() => <div>"Logging out..."</div>} />
               <Route path="/">
                 <Home />
               </Route>
@@ -118,7 +118,7 @@ function App() {
   );
 }
 
-function RedirectWithSave(props) {
+function RedirectWithSave(props: { logged: boolean; }) {
   const location = useLocation();
   const dispatch = useDispatch();
   const pathname = useSelector(selectPathname);
