@@ -22,6 +22,6 @@ export default function Track(){
 }
 
 
-function NoTrack(props){
+function NoTrack(){
     return <Redirect to="/" />;
 }
