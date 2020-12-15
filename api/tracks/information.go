@@ -93,7 +93,9 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 	t.Information.TrackInformation.Tempo = analysis.Track.Tempo
 	t.Information.TrackInformation.TimeSignature = analysis.Track.TimeSignature
 
-	t.Information.TrackInformation.Image = album.Images[0].URL
+	if len(album.Images) > 0 {
+		t.Information.TrackInformation.Image = album.Images[0].URL
+	}
 
 	t.Information.AlbumInformation.Markets = len(album.AvailableMarkets)
 	t.Information.AlbumInformation.ReleaseDate = album.ReleaseDate

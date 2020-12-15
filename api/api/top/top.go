@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/tedyst/spotifyutils/api/config"
 	"github.com/tedyst/spotifyutils/api/userutils"
 )
@@ -46,6 +48,7 @@ func TopHandler(res http.ResponseWriter, req *http.Request) {
 func TopHandlerSince(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	session, _ := config.SessionStore.Get(req, "username")
+	vars := mux.Vars(req)
 	type Resp struct {
 		Result  userutils.RecentTracksStatisticsStruct
 		Success bool
@@ -70,7 +73,15 @@ func TopHandlerSince(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	response.Success = true
-	response.Result = user.RecentTracksStatistics(time.Now().Add(-600 * time.Hour))
+	date, err := strconv.ParseInt(vars["unixdate"], 10, 32)
+	if err != nil {
+		response.Success = false
+		response.Error = fmt.Sprint(err)
+		respJSON, _ := json.Marshal(response)
+		fmt.Fprintf(res, string(respJSON))
+		return
+	}
+	response.Result = user.RecentTracksStatistics(time.Unix(date, 0))
 
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprintf(res, string(respJSON))

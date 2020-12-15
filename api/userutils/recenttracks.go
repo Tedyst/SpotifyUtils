@@ -25,6 +25,10 @@ func (u *User) UpdateRecentTracks() {
 	if u.Settings.RecentTracks == false {
 		return
 	}
+	err := u.RefreshToken()
+	if err != nil {
+		return
+	}
 	log.Debugf("Updating recent tracks for %s", u.UserID)
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
 	items, err := u.Client().PlayerRecentlyPlayedOpt(options)
@@ -76,7 +80,7 @@ func (u *User) insertRecentTracks(items []spotify.RecentlyPlayedItem) {
 	}
 }
 
-func (u *User) StartRecentTracksUpdater() {
+func (u User) StartRecentTracksUpdater() {
 	_, timer := searchTimers(u.UserID)
 	if timer.Lock != nil {
 		if u.Settings.RecentTracks == false {
@@ -90,7 +94,7 @@ func (u *User) StartRecentTracksUpdater() {
 	ticker := time.NewTicker(updateTimer)
 	quit := make(chan struct{})
 	timer.Lock = &quit
-	go func(u *User) {
+	go func(u User) {
 		for {
 			select {
 			case <-ticker.C:
@@ -183,9 +187,9 @@ func (u *User) getListenedHoursRecentTrackSince(t time.Time) []RecentTracks {
 
 func (u *User) getListenedDaysRecentTrackSince(t time.Time) []RecentTracks {
 	var result []RecentTracks
-	config.DB.Model(&RecentTracks{}).Select("COUNT(*) AS id, FLOOR(listened_at / 86400)*3600 AS listened_at").Where(
-		"listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Group("FLOOR(listened_at / 86400)*3600").Order(
-		"FLOOR(listened_at / 86400)*3600").Find(&result)
+	config.DB.Model(&RecentTracks{}).Select("COUNT(*) AS id, FLOOR(listened_at / 86400)*86400 AS listened_at").Where(
+		"listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Group("FLOOR(listened_at / 86400)*86400").Order(
+		"FLOOR(listened_at / 86400)*86400").Find(&result)
 	return result
 }
 
@@ -201,7 +205,7 @@ func (u *User) getListenedTotalRecentTrackSince(t time.Time) int64 {
 type RecentTracksStatisticsStruct struct {
 	Count         int64
 	TopTracks     []RecentTracksStatisticsStructTrack
-	Hours         map[uint]int64
+	Hours         map[int64]uint
 	Days          map[int64]uint
 	TotalListened int
 }
@@ -210,6 +214,8 @@ type RecentTracksStatisticsStructTrack struct {
 	Count  uint
 	Name   string
 	Artist string
+	Image  string
+	URI    string
 }
 
 func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct {
@@ -217,20 +223,28 @@ func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct 
 	result := RecentTracksStatisticsStruct{}
 	result.Count = count
 	// TopTracks
+	result.TopTracks = make([]RecentTracksStatisticsStructTrack, 0)
 	for _, s := range tr {
 		var fromDB tracks.Track
-		config.DB.Model(&tracks.Track{}).Select("id, artist, name").Where("track_id = ?", s.Track).Find(&fromDB)
+		config.DB.Model(&tracks.Track{}).Select("id, artist, name, information_track_image").Where("track_id = ?", s.Track).Find(&fromDB)
 		result.TopTracks = append(result.TopTracks, RecentTracksStatisticsStructTrack{
 			Count:  s.ID,
 			Name:   fromDB.Name,
 			Artist: fromDB.Artist,
+			Image:  fromDB.Information.TrackInformation.Image,
+			URI:    fromDB.TrackID,
 		})
 	}
 
 	hours := u.getListenedHoursRecentTrackSince(t)
-	result.Hours = make(map[uint]int64)
+	result.Hours = make(map[int64]uint)
 	for _, s := range hours {
-		result.Hours[s.ID] = s.ListenedAt
+		result.Hours[s.ListenedAt] = s.ID
+	}
+	for i := int64(0); i <= 23; i++ {
+		if _, ok := result.Hours[i]; !ok {
+			result.Hours[i] = 0
+		}
 	}
 
 	days := u.getListenedDaysRecentTrackSince(t)

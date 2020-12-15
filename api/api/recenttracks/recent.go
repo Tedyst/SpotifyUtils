@@ -14,17 +14,17 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	session, _ := config.SessionStore.Get(req, "username")
 	type RespSong struct {
-		Name       string `json:"name"`
-		Artist     string `json:"artist"`
-		Lyrics     string `json:"lyrics"`
-		URI        string `json:"uri"`
-		ImageURL   string `json:"image_url"`
-		PreviewURL string `json:"preview_url"`
+		Name    string
+		Artist  string
+		Lyrics  string
+		URI     string
+		Image   string
+		Preview string
 	}
 	type Resp struct {
-		Results []RespSong `json:"results"`
-		Success bool       `json:"success"`
-		Error   string     `json:"error,omitempty"`
+		Results []RespSong
+		Success bool
+		Error   string
 	}
 	response := &Resp{}
 	if _, ok := session.Values["username"]; !ok {
@@ -52,12 +52,17 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	for i, s := range recentTracks {
+		image := ""
+		if len(tracksinfo[i].Album.Images) > 0 {
+			image = tracksinfo[i].Album.Images[0].URL
+		}
+
 		response.Results = append(response.Results, RespSong{
-			Name:       s.Track.Name,
-			Artist:     s.Track.Artists[0].Name,
-			URI:        string(s.Track.ID),
-			ImageURL:   tracksinfo[i].Album.Images[0].URL,
-			PreviewURL: s.Track.PreviewURL,
+			Name:    s.Track.Name,
+			Artist:  s.Track.Artists[0].Name,
+			URI:     string(s.Track.ID),
+			Image:   image,
+			Preview: s.Track.PreviewURL,
 		})
 	}
 
