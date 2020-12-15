@@ -4,9 +4,11 @@ import (
 	"errors"
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/api/config"
 	"github.com/zmb3/spotify"
 	"golang.org/x/oauth2"
+
 	"gorm.io/gorm"
 )
 
@@ -58,6 +60,19 @@ func GetUserFromCompareCode(code string) *User {
 
 func (u *User) Save() {
 	config.DB.Save(u)
+}
+
+func (u *User) RefreshToken() error {
+	if !u.Token.Valid() {
+		// Try to refresh the token
+		t, err := u.Client().Token()
+		if err != nil {
+			log.Infof("Could not refresh token for user %s", u.UserID)
+			return err
+		}
+		u.Token = t
+	}
+	return nil
 }
 
 func (u *User) RefreshUser() error {

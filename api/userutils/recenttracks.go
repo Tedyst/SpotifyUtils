@@ -25,6 +25,10 @@ func (u *User) UpdateRecentTracks() {
 	if u.Settings.RecentTracks == false {
 		return
 	}
+	err := u.RefreshToken()
+	if err != nil {
+		return
+	}
 	log.Debugf("Updating recent tracks for %s", u.UserID)
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
 	items, err := u.Client().PlayerRecentlyPlayedOpt(options)
@@ -76,7 +80,7 @@ func (u *User) insertRecentTracks(items []spotify.RecentlyPlayedItem) {
 	}
 }
 
-func (u *User) StartRecentTracksUpdater() {
+func (u User) StartRecentTracksUpdater() {
 	_, timer := searchTimers(u.UserID)
 	if timer.Lock != nil {
 		if u.Settings.RecentTracks == false {
@@ -90,7 +94,7 @@ func (u *User) StartRecentTracksUpdater() {
 	ticker := time.NewTicker(updateTimer)
 	quit := make(chan struct{})
 	timer.Lock = &quit
-	go func(u *User) {
+	go func(u User) {
 		for {
 			select {
 			case <-ticker.C:
