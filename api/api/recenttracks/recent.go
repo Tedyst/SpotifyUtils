@@ -52,11 +52,16 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	for i, s := range recentTracks {
+		image := ""
+		if len(tracksinfo[i].Album.Images) > 0 {
+			image = tracksinfo[i].Album.Images[0].URL
+		}
+
 		response.Results = append(response.Results, RespSong{
 			Name:    s.Track.Name,
 			Artist:  s.Track.Artists[0].Name,
 			URI:     string(s.Track.ID),
-			Image:   tracksinfo[i].Album.Images[0].URL,
+			Image:   image,
 			Preview: s.Track.PreviewURL,
 		})
 	}
