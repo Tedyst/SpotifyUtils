@@ -3,12 +3,25 @@ package userutils
 import (
 	"database/sql/driver"
 	"encoding/json"
+	"log"
+
+	"github.com/sirupsen/logrus"
 )
 
 type GenresStruct []string
 
 func (sla *GenresStruct) Scan(value interface{}) error {
-	return json.Unmarshal(value.([]byte), &sla)
+	switch v := value.(type) {
+	case []byte:
+		logrus.Tracef("Using []byte as type, value %v", v)
+		return json.Unmarshal(value.([]byte), &sla)
+	case string:
+		logrus.Tracef("Using string as type, value %v", v)
+		return json.Unmarshal([]byte(value.(string)), &sla)
+	default:
+		log.Panic("Not found interface type")
+	}
+	return nil
 }
 
 func (sla GenresStruct) Value() (driver.Value, error) {
@@ -19,7 +32,17 @@ func (sla GenresStruct) Value() (driver.Value, error) {
 type ArtistsStruct []TopArtist
 
 func (sla *ArtistsStruct) Scan(value interface{}) error {
-	return json.Unmarshal(value.([]byte), &sla)
+	switch v := value.(type) {
+	case []byte:
+		logrus.Tracef("Using []byte as type, value %v", v)
+		return json.Unmarshal(value.([]byte), &sla)
+	case string:
+		logrus.Tracef("Using string as type, value %v", v)
+		return json.Unmarshal([]byte(value.(string)), &sla)
+	default:
+		log.Panic("Not found interface type")
+	}
+	return nil
 }
 
 func (sla ArtistsStruct) Value() (driver.Value, error) {
@@ -30,7 +53,17 @@ func (sla ArtistsStruct) Value() (driver.Value, error) {
 type TracksStruct []TopTrack
 
 func (sla *TracksStruct) Scan(value interface{}) error {
-	return json.Unmarshal(value.([]byte), &sla)
+	switch v := value.(type) {
+	case []byte:
+		logrus.Tracef("Using []byte as type, value %v", v)
+		return json.Unmarshal(value.([]byte), &sla)
+	case string:
+		logrus.Tracef("Using string as type, value %v", v)
+		return json.Unmarshal([]byte(value.(string)), &sla)
+	default:
+		log.Panic("Not found interface type")
+	}
+	return nil
 }
 
 func (sla TracksStruct) Value() (driver.Value, error) {
@@ -41,7 +74,17 @@ func (sla TracksStruct) Value() (driver.Value, error) {
 type PlaylistsStruct []Playlist
 
 func (sla *PlaylistsStruct) Scan(value interface{}) error {
-	return json.Unmarshal(value.([]byte), &sla)
+	switch v := value.(type) {
+	case []byte:
+		logrus.Tracef("Using []byte as type, value %v", v)
+		return json.Unmarshal(value.([]byte), &sla)
+	case string:
+		logrus.Tracef("Using string as type, value %v", v)
+		return json.Unmarshal([]byte(value.(string)), &sla)
+	default:
+		log.Panic("Not found interface type")
+	}
+	return nil
 }
 
 func (sla PlaylistsStruct) Value() (driver.Value, error) {
@@ -52,7 +95,17 @@ func (sla PlaylistsStruct) Value() (driver.Value, error) {
 type FriendsStruct []string
 
 func (sla *FriendsStruct) Scan(value interface{}) error {
-	return json.Unmarshal(value.([]byte), &sla)
+	switch v := value.(type) {
+	case []byte:
+		logrus.Tracef("Using []byte as type, value %v", v)
+		return json.Unmarshal(value.([]byte), &sla)
+	case string:
+		logrus.Tracef("Using string as type, value %v", v)
+		return json.Unmarshal([]byte(value.(string)), &sla)
+	default:
+		log.Panic("Not found interface type")
+	}
+	return nil
 }
 
 func (sla FriendsStruct) Value() (driver.Value, error) {

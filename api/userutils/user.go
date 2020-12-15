@@ -114,6 +114,7 @@ func (u *User) RefreshUser() error {
 		u.Image = spotifyData.Images[0].URL
 	}
 
+	u.UserID = spotifyData.ID
 	u.LastUpdated = time.Now()
 	u.Save()
 	return nil

@@ -15,11 +15,13 @@ require (
 	github.com/gorilla/mux v1.7.3
 	github.com/gorilla/sessions v1.2.1 // indirect
 	github.com/jinzhu/gorm v1.9.16
+	github.com/joho/godotenv v1.3.0
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/michaeljs1990/sqlitestore v0.0.0-20190919182151-25d6d7f2e768
 	github.com/prometheus/client_golang v1.8.0
 	github.com/prometheus/common v0.14.0
 	github.com/sirupsen/logrus v1.7.0
+	github.com/wader/gormstore v0.0.0-20200328121358-65a111a20c23
 	github.com/weaveworks/promrus v1.2.0
 	github.com/zmb3/spotify v0.0.0-20200814173021-9bec46940cc0
 	golang.org/x/net v0.0.0-20201016165138-7b1cca2348c0
