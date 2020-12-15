@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/Tedyst/gormstore"
 	"github.com/joho/godotenv"
@@ -53,19 +54,64 @@ func setupTests() {
 	testuser := GetUser("vq0u2761le51p2idib6f89y78")
 	testuser.Token.RefreshToken = lookupEnvOrString("USER_REFRESH_TOKEN", "")
 	testuser.UserID = "vq0u2761le51p2idib6f89y78"
+	testuser.CompareCode = "AAAAAA"
 	testuser.RefreshToken()
 	testuser.RefreshUser()
 	testuser.Save()
 }
 
 func TestGetUser(t *testing.T) {
-	var users []User
-	config.DB.Find(&users)
 	user := GetUser("vq0u2761le51p2idib6f89y78")
 	if user.CompareCode == "" {
 		t.Fail()
 	}
 	if user.UserID != "vq0u2761le51p2idib6f89y78" {
+		t.Fail()
+	}
+}
+
+func TestGetUserFromCompareCode(t *testing.T) {
+	user := GetUserFromCompareCode("AAAAAA")
+	if user.UserID != "vq0u2761le51p2idib6f89y78" {
+		t.Fail()
+	}
+}
+
+func TestClient(t *testing.T) {
+	user := GetUser("vq0u2761le51p2idib6f89y78")
+	client := user.Client()
+	current, err := client.CurrentUser()
+	if err != nil {
+		t.Fail()
+	}
+	if current.ID != user.UserID {
+		t.Fail()
+	}
+}
+
+func TestSave(t *testing.T) {
+	user := GetUser("vq0u2761le51p2idib6f89y78")
+	user.CompareCode = "BBBBBB"
+	user.Save()
+	user2 := GetUser("vq0u2761le51p2idib6f89y78")
+	if user2.CompareCode != "BBBBBB" {
+		t.Fail()
+	}
+	user2.CompareCode = "AAAAAA"
+	user2.Save()
+}
+
+func TestRefresh(t *testing.T) {
+	user := GetUser("vq0u2761le51p2idib6f89y78")
+	user.DisplayName = ""
+	user.Image = ""
+	user.LastUpdated = time.Unix(0, 0)
+	user.Save()
+	user.RefreshUser()
+	if user.DisplayName != "Tedy" {
+		t.Fail()
+	}
+	if user.Image == "" {
 		t.Fail()
 	}
 }
