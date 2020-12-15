@@ -223,6 +223,7 @@ func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct 
 	result := RecentTracksStatisticsStruct{}
 	result.Count = count
 	// TopTracks
+	result.TopTracks = make([]RecentTracksStatisticsStructTrack, 0)
 	for _, s := range tr {
 		var fromDB tracks.Track
 		config.DB.Model(&tracks.Track{}).Select("id, artist, name, information_track_image").Where("track_id = ?", s.Track).Find(&fromDB)
