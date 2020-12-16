@@ -82,7 +82,7 @@ func TestClient(t *testing.T) {
 	client := user.Client()
 	current, err := client.CurrentUser()
 	if err != nil {
-		t.Fail()
+		t.FailNow()
 	}
 	if current.ID != user.UserID {
 		t.Fail()
