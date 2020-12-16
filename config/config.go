@@ -14,7 +14,7 @@ import (
 const SpotifyScope = "user-library-read playlist-read-private playlist-read-collaborative user-top-read user-read-recently-played user-read-private playlist-modify-private playlist-modify-public user-follow-modify"
 
 var (
-	BuildPath = flag.String("BuildPath", "build", "The Path where is the react app stored")
+	BuildPath = flag.String("BuildPath", "frontend/build", "The Path where is the react app stored")
 
 	SpotifyClientID     = flag.String("SpotifyClientID", lookupEnvOrString("SPOTIFY_CLIENT_ID", ""), "The Spotify Client ID")
 	SpotifyClientSecret = flag.String("SpotifyClientSecret", lookupEnvOrString("SPOTIFY_CLIENT_SECRET", ""), "The Spotify Client Secret")
