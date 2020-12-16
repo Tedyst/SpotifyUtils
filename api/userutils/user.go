@@ -88,6 +88,7 @@ func (u *User) RefreshUser() error {
 		return err
 	}
 
+	u.Playlists = PlaylistsStruct{}
 	// Get Playlists
 	for playlistPage := 1; ; playlistPage++ {
 		for _, s := range playlists.Playlists {
