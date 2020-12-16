@@ -130,7 +130,7 @@ function ResponsiveDrawer(props: {
                     <ListItemIcon>
                         <SearchIcon />
                     </ListItemIcon>
-                    <ListItemText primary="TrackSearch" />
+                    <ListItemText primary="Search Tracks" />
                 </ListItem>
                 <ListItem button key="Compare" component={Link} to="/compare" selected={location.pathname.startsWith("/compare")} classes={{
                     selected: classes.selected,

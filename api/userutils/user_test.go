@@ -115,3 +115,12 @@ func TestRefresh(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestFriends(t *testing.T) {
+	user := GetUser("vq0u2761le51p2idib6f89y78")
+	user.AddFriend(user)
+	friends := user.GetFriends()
+	if len(friends) != 1 {
+		t.Fail()
+	}
+}

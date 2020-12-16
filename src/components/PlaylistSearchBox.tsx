@@ -50,7 +50,7 @@ export default function SearchBox(props:{
             list.push(
                 <MenuItem
                     value={playlists[key].id}
-                    key={playlists[key].id}
+                    key={playlists[key].id + "-" + key}
                     className={classes.fullWidth} >
                     {playlists[key].name}
                 </MenuItem>

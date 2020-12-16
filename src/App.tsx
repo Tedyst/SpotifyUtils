@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Login from './views/Login';
 import PlaylistView from './views/PlaylistView';
 import Track from './views/Track';
@@ -65,8 +65,6 @@ function App() {
     setUpdating(true);
     UpdateUser();
   }
-
-  useEffect(() => setUpdating(false), [logged])
 
   return (
     <div className={classes.root} {...handlers}>
