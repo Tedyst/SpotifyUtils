@@ -8,29 +8,29 @@ import (
 	"time"
 
 	"github.com/NYTimes/gziphandler"
-	"github.com/tedyst/spotifyutils/api/api/playlistview"
+	"github.com/tedyst/spotifyutils/api/playlistview"
 	"github.com/weaveworks/promrus"
 
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Tedyst/gormstore"
 
-	"github.com/tedyst/spotifyutils/api/api/compare"
-	"github.com/tedyst/spotifyutils/api/api/recenttracks"
-	"github.com/tedyst/spotifyutils/api/api/trackapi"
+	"github.com/tedyst/spotifyutils/api/compare"
+	"github.com/tedyst/spotifyutils/api/recenttracks"
+	"github.com/tedyst/spotifyutils/api/trackapi"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
-	"github.com/tedyst/spotifyutils/api/api/top"
+	"github.com/tedyst/spotifyutils/api/top"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/tedyst/spotifyutils/api/api/status"
+	"github.com/tedyst/spotifyutils/api/status"
 
 	"github.com/gorilla/mux"
 
-	"github.com/tedyst/spotifyutils/api/auth"
-	"github.com/tedyst/spotifyutils/api/config"
+	"github.com/tedyst/spotifyutils/auth"
+	"github.com/tedyst/spotifyutils/config"
 )
 
 func checkErr(err error) {

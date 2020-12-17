@@ -4,7 +4,7 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/tedyst/spotifyutils/api/config"
+	"github.com/tedyst/spotifyutils/config"
 	"github.com/zmb3/spotify"
 	"gorm.io/gorm"
 )

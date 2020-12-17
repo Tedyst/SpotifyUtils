@@ -2,7 +2,7 @@ package userutils
 
 import (
 	log "github.com/sirupsen/logrus"
-	"github.com/tedyst/spotifyutils/api/tracks"
+	"github.com/tedyst/spotifyutils/tracks"
 	"github.com/zmb3/spotify"
 )
 

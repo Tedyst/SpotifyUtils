@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/tedyst/spotifyutils/api/tracks"
+	"github.com/tedyst/spotifyutils/tracks"
 
 	"github.com/gorilla/mux"
-	"github.com/tedyst/spotifyutils/api/config"
-	"github.com/tedyst/spotifyutils/api/userutils"
+	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/userutils"
 )
 
 func Handler(res http.ResponseWriter, req *http.Request) {

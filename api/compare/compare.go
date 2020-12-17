@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/tedyst/spotifyutils/api/config"
-	"github.com/tedyst/spotifyutils/api/userutils"
+	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/userutils"
 )
 
 func HandlerUsername(res http.ResponseWriter, req *http.Request) {

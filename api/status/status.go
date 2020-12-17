@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/tedyst/spotifyutils/api/config"
-	"github.com/tedyst/spotifyutils/api/userutils"
+	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/userutils"
 )
 
 func StatusHandler(res http.ResponseWriter, req *http.Request) {

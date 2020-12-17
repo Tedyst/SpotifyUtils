@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/tedyst/spotifyutils/api/config"
-	"github.com/tedyst/spotifyutils/api/tracks"
-	"github.com/tedyst/spotifyutils/api/userutils"
+	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/tracks"
+	"github.com/tedyst/spotifyutils/userutils"
 	"gorm.io/gorm"
 )
 

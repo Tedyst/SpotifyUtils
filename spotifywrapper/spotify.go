@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/tedyst/spotifyutils/api/config"
+	"github.com/tedyst/spotifyutils/config"
 	"github.com/zmb3/spotify"
 	"golang.org/x/oauth2"
 )

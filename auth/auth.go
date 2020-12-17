@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/tedyst/spotifyutils/api/config"
-	"github.com/tedyst/spotifyutils/api/spotifywrapper"
-	"github.com/tedyst/spotifyutils/api/userutils"
+	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/spotifywrapper"
+	"github.com/tedyst/spotifyutils/userutils"
 )
 
 func Auth(res http.ResponseWriter, req *http.Request) {

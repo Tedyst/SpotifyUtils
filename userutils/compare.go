@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/tedyst/spotifyutils/api/config"
+	"github.com/tedyst/spotifyutils/config"
 )
 
 type CompareStruct struct {

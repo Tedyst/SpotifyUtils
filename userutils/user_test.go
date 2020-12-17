@@ -9,8 +9,8 @@ import (
 
 	"github.com/Tedyst/gormstore"
 	"github.com/joho/godotenv"
-	"github.com/tedyst/spotifyutils/api/config"
-	"github.com/tedyst/spotifyutils/api/tracks"
+	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/tracks"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )

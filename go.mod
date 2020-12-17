@@ -1,4 +1,4 @@
-module github.com/tedyst/spotifyutils/api
+module github.com/tedyst/spotifyutils
 
 go 1.15
 

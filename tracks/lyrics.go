@@ -13,7 +13,7 @@ import (
 	"github.com/gabyshev/genius-api/genius"
 	"golang.org/x/net/html"
 
-	"github.com/tedyst/spotifyutils/api/config"
+	"github.com/tedyst/spotifyutils/config"
 )
 
 func (t *Track) updateLyrics() error {
