@@ -24,7 +24,7 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 		response.Success = false
 		response.Error = "Not Logged in!"
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	val := session.Values["username"]
@@ -36,7 +36,7 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 			response.Success = false
 			response.Error = "Token not valid!"
 			respJSON, _ := json.Marshal(response)
-			fmt.Fprintf(res, string(respJSON))
+			fmt.Fprint(res, string(respJSON))
 			return
 		}
 		user.Token = t
@@ -57,5 +57,5 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	response.Playlists = user.Playlists
 
 	respJSON, _ := json.Marshal(response)
-	fmt.Fprintf(res, string(respJSON))
+	fmt.Fprint(res, string(respJSON))
 }

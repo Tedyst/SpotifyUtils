@@ -32,7 +32,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		response.Success = false
 		response.Error = "Not logged in"
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	val := session.Values["username"]
@@ -53,5 +53,5 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	}
 
 	respJSON, _ := json.Marshal(response)
-	fmt.Fprintf(res, string(respJSON))
+	fmt.Fprint(res, string(respJSON))
 }

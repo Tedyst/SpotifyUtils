@@ -16,7 +16,6 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	type RespSong struct {
 		Name    string
 		Artist  string
-		Lyrics  string
 		URI     string
 		Image   string
 		Preview string
@@ -31,7 +30,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		response.Success = false
 		response.Error = "Not logged in"
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	val := session.Values["username"]
@@ -48,7 +47,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		response.Success = false
 		response.Error = fmt.Sprint(err)
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	for i, s := range recentTracks {
@@ -66,6 +65,13 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		})
 	}
 
-	respJSON, _ := json.Marshal(response)
-	fmt.Fprintf(res, string(respJSON))
+	respJSON, err := json.Marshal(response)
+	if err != nil {
+		response.Success = false
+		response.Error = fmt.Sprint(err)
+		respJSON, _ := json.Marshal(response)
+		fmt.Fprint(res, string(respJSON))
+		return
+	}
+	fmt.Fprint(res, string(respJSON))
 }

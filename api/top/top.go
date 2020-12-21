@@ -25,7 +25,7 @@ func TopHandler(res http.ResponseWriter, req *http.Request) {
 		response.Success = false
 		response.Error = "Not Logged in!"
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	val := session.Values["username"]
@@ -35,14 +35,14 @@ func TopHandler(res http.ResponseWriter, req *http.Request) {
 		response.Success = false
 		response.Error = fmt.Sprint(err)
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	response.Success = true
 	response.Result = user.Top
 
 	respJSON, _ := json.Marshal(response)
-	fmt.Fprintf(res, string(respJSON))
+	fmt.Fprint(res, string(respJSON))
 }
 
 func TopHandlerSince(res http.ResponseWriter, req *http.Request) {
@@ -59,7 +59,7 @@ func TopHandlerSince(res http.ResponseWriter, req *http.Request) {
 		response.Success = false
 		response.Error = "Not Logged in!"
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	val := session.Values["username"]
@@ -69,7 +69,7 @@ func TopHandlerSince(res http.ResponseWriter, req *http.Request) {
 		response.Success = false
 		response.Error = fmt.Sprint(err)
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	response.Success = true
@@ -78,11 +78,11 @@ func TopHandlerSince(res http.ResponseWriter, req *http.Request) {
 		response.Success = false
 		response.Error = fmt.Sprint(err)
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	response.Result = user.RecentTracksStatistics(time.Unix(date, 0))
 
 	respJSON, _ := json.Marshal(response)
-	fmt.Fprintf(res, string(respJSON))
+	fmt.Fprint(res, string(respJSON))
 }

@@ -33,14 +33,14 @@ func HandlerUsername(res http.ResponseWriter, req *http.Request) {
 		response.Success = false
 		response.Error = "Not Logged in"
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	if _, ok := vars["code"]; !ok {
 		response.Success = false
 		response.Error = "No Code Specified"
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	val := session.Values["username"]
@@ -51,7 +51,7 @@ func HandlerUsername(res http.ResponseWriter, req *http.Request) {
 		response.Success = false
 		response.Error = "User not found"
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 
@@ -72,7 +72,7 @@ func HandlerUsername(res http.ResponseWriter, req *http.Request) {
 	go user.AddFriend(target)
 
 	respJSON, _ := json.Marshal(response)
-	fmt.Fprintf(res, string(respJSON))
+	fmt.Fprint(res, string(respJSON))
 }
 
 func HandlerNoUsername(res http.ResponseWriter, req *http.Request) {
@@ -96,7 +96,7 @@ func HandlerNoUsername(res http.ResponseWriter, req *http.Request) {
 		response.Success = false
 		response.Error = "Not Logged in"
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	val := session.Values["username"]
@@ -114,5 +114,5 @@ func HandlerNoUsername(res http.ResponseWriter, req *http.Request) {
 	response.Code = user.CompareCode
 
 	respJSON, _ := json.Marshal(response)
-	fmt.Fprintf(res, string(respJSON))
+	fmt.Fprint(res, string(respJSON))
 }

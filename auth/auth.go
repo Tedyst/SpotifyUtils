@@ -27,7 +27,7 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 		response.Error = "Invalid Method"
 		response.Success = false
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 
@@ -38,7 +38,7 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 		response.Error = "Invalid Request"
 		response.Success = false
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 
@@ -52,7 +52,7 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 		response.Error = fmt.Sprint(err)
 		response.Success = false
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 
@@ -63,7 +63,7 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 		response.Error = fmt.Sprint(err)
 		response.Success = false
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	u := userutils.GetUser(spotifyUser.ID)
@@ -86,7 +86,7 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 		response.Error = fmt.Sprint(err)
 		response.Success = false
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 
@@ -114,7 +114,7 @@ func AuthURL(res http.ResponseWriter, req *http.Request) {
 	err := decoder.Decode(request)
 	if err != nil || request.Host == "" {
 		respJSON, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(respJSON))
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	response.URL = spotifywrapper.GetSpotifyURL(request.Host)
