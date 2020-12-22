@@ -18,13 +18,6 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	session, _ := config.SessionStore.Get(req, "username")
 	response := &Response{}
-	if req.Method != "POST" {
-		response.Error = "Invalid Method"
-		response.Success = false
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
-		return
-	}
 	if _, ok := session.Values["username"]; !ok {
 		response.Success = false
 		response.Error = "Not Logged in"
@@ -34,6 +27,14 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	}
 	val := session.Values["username"]
 	user := userutils.GetUser(val.(string))
+
+	if req.Method != "POST" {
+		response.Success = true
+		response.Settings = user.Settings
+		respJSON, _ := json.Marshal(response)
+		fmt.Fprint(res, string(respJSON))
+		return
+	}
 
 	request := &userutils.UserSettings{}
 	decoder := json.NewDecoder(req.Body)

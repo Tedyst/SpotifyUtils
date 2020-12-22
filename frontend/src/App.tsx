@@ -4,6 +4,7 @@ import PlaylistView from "./views/PlaylistView";
 import Track from "./views/Track";
 import Logout from "./views/Logout";
 import Recent from "./views/Recent";
+import Settings from "./views/Settings";
 import Top from "./views/Top";
 import Compare from "./views/Compare";
 import { useSelector, useDispatch } from "react-redux";
@@ -102,6 +103,9 @@ function App() {
               </Route>
               <Route path="/recent">
                 <Recent />
+              </Route>
+              <Route path="/settings">
+                <Settings />
               </Route>
               <Route path="/logout">
                 <Logout />
