@@ -5,8 +5,7 @@ import {
     setImage,
     setCompare,
 } from "../store/user";
-import { batch, useDispatch } from "react-redux";
-import { Dispatch } from "react";
+import { batch } from "react-redux";
 import store from "../store/store";
 
 export default function UpdateUser() {
