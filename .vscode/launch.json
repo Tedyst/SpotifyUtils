@@ -15,7 +15,6 @@
             "mode": "debug",
             "program": "${workspaceFolder}",
             "envFile": "${workspaceFolder}/.env",
-            "cwd": "${workspaceFolder}",
             "args": [
                 "-Debug=true"
             ]

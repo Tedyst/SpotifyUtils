@@ -15,7 +15,6 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 	type authAPIResponse struct {
 		Success bool   `json:"success"`
 		Error   string `json:"error,omitempty"`
-		URL     string
 	}
 	type authAPIRequest struct {
 		Host string `json:"host"`
@@ -26,6 +25,14 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
 		response.Error = "Invalid Method"
 		response.Success = false
+		respJSON, _ := json.Marshal(response)
+		fmt.Fprint(res, string(respJSON))
+		return
+	}
+
+	session, _ := config.SessionStore.Get(req, "username")
+	if _, ok := session.Values["username"]; ok {
+		response.Success = true
 		respJSON, _ := json.Marshal(response)
 		fmt.Fprint(res, string(respJSON))
 		return
@@ -77,7 +84,6 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 	u.RefreshUser()
 	u.Save()
 
-	session, _ := config.SessionStore.Get(req, "username")
 	session.Values["username"] = u.UserID
 
 	err = session.Save(req, res)

@@ -18,7 +18,7 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Cache-Control", "max-age=31536000")
 
-	path = filepath.Join("build", path)
+	path = filepath.Join(h.buildPath, path)
 
 	_, err = os.Stat(path)
 	if os.IsNotExist(err) {

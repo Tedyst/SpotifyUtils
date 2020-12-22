@@ -3,33 +3,36 @@ import {
     setPlaylists,
     setUsername,
     setImage,
-    setCompare
-} from '../store/user';
-import { useDispatch, batch } from 'react-redux';
-
+    setCompare,
+} from "../store/user";
+import { batch, useDispatch } from "react-redux";
+import { Dispatch } from "react";
+import store from "../store/store";
 
 export default function UpdateUser() {
-    const dispatch = useDispatch();
-    fetch('/api/status', { cache: "no-store" }).then(res => res.json()).then(data => {
-        batch(() => {
-            dispatch(setImage(data.image));
-            dispatch(setLogged(data.success));
-            dispatch(setPlaylists(data.playlists));
-            if (!data.username)
-                dispatch(setUsername("Not Logged In"));
-            else
-                dispatch(setUsername(data.username));
+    
+    fetch("/api/status", { cache: "no-store" })
+        .then((res) => res.json())
+        .then((data) => {
+            batch(() => {
+                store.dispatch(setImage(data.image));
+                store.dispatch(setLogged(data.success));
+                store.dispatch(setPlaylists(data.playlists));
+                if (!data.username) store.dispatch(setUsername("Not Logged In"));
+                else store.dispatch(setUsername(data.username));
 
-            if (!data.success)
-                localStorage.clear();
-        })
-        if (data.success) {
-            fetch('/api/compare', { cache: "no-store" }).then(res => res.json()).then(data => {
-                dispatch(setCompare(data));
+                if (!data.success) localStorage.clear();
             });
-        }
-    }).catch(err => {
-        localStorage.clear();
-        console.log(err);
-    });
+            if (data.success) {
+                fetch("/api/compare", { cache: "no-store" })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        store.dispatch(setCompare(data));
+                    });
+            }
+        })
+        .catch((err) => {
+            localStorage.clear();
+            console.log(err);
+        });
 }

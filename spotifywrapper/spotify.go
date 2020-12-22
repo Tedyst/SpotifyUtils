@@ -25,14 +25,8 @@ func GetSpotifyURL(host string) string {
 }
 
 func GetSpotifyAuthorization(host string, code string) (*oauth2.Token, error) {
-	u, _ := url.Parse("https://accounts.spotify.com/api/token")
-	q, _ := url.ParseQuery(u.RawQuery)
-	q.Add("grant_type", "authorization_code")
-	q.Add("code", code)
-	q.Add("redirect_uri", fmt.Sprintf("%s/auth", host))
-	u.RawQuery = q.Encode()
-
-	auth := spotify.NewAuthenticator(fmt.Sprintf("%s/auth", host), config.SpotifyScope)
+	newHost := fmt.Sprintf("%s/auth", host)
+	auth := spotify.NewAuthenticator(newHost, config.SpotifyScope)
 	auth.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
 	token, err := auth.Exchange(code)
 	if err != nil {

@@ -1,38 +1,38 @@
-import React, { useState } from 'react';
-import Login from './views/Login';
-import PlaylistView from './views/PlaylistView';
-import Track from './views/Track';
-import Logout from './views/Logout';
-import Recent from './views/Recent';
-import Top from './views/Top';
-import Compare from './views/Compare';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState } from "react";
+import Login from "./views/Login";
+import PlaylistView from "./views/PlaylistView";
+import Track from "./views/Track";
+import Logout from "./views/Logout";
+import Recent from "./views/Recent";
+import Top from "./views/Top";
+import Compare from "./views/Compare";
+import { useSelector, useDispatch } from "react-redux";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
-  useLocation
+  useLocation,
 } from "react-router-dom";
 import {
   selectLogged,
   selectUsername,
   selectImage,
   setPathName,
-  selectPathname
-} from './store/user';
-import Sidebar from './views/Sidebar';
-import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core';
-import UpdateUser from './utils/status';
-import TrackSearch from './views/TrackSearch';
+  selectPathname,
+} from "./store/user";
+import Sidebar from "./views/Sidebar";
+import { createMuiTheme, makeStyles, ThemeProvider } from "@material-ui/core";
+import UpdateUser from "./utils/status";
+import TrackSearch from "./views/TrackSearch";
 import { useSwipeable } from "react-swipeable";
-import OldTop from './views/OldTop';
+import OldTop from "./views/OldTop";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
+    display: "flex",
   },
   // necessary for content to be below app bar
   toolbar: theme.mixins.toolbar,
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const darkTheme = createMuiTheme({
     palette: {
-      type: 'dark',
+      type: "dark",
     },
   });
   const logged = useSelector(selectLogged);
@@ -59,7 +59,7 @@ function App() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const handlers = useSwipeable({
     trackMouse: false,
-    onSwipedRight: () => setMobileOpen(true)
+    onSwipedRight: () => setMobileOpen(true),
   });
   if (Updating === false) {
     setUpdating(true);
@@ -103,7 +103,7 @@ function App() {
               <Route path="/recent">
                 <Recent />
               </Route>
-              <Route path='/logout'>
+              <Route path="/logout">
                 <Logout />
               </Route>
               <Route path="/">
@@ -118,13 +118,13 @@ function App() {
   );
 }
 
-function RedirectWithSave(props: { logged: boolean; }) {
+function RedirectWithSave(props: { logged: boolean }) {
   const location = useLocation();
   const dispatch = useDispatch();
   const pathname = useSelector(selectPathname);
   if (props.logged === true && location.pathname === "/auth") {
-    if (pathname !== "/auth") {
-      return <Redirect to={pathname} />
+    if (pathname !== "/auth" && pathname !== undefined) {
+      return <Redirect to={pathname} />;
     }
     return null;
   }
@@ -133,14 +133,14 @@ function RedirectWithSave(props: { logged: boolean; }) {
   }
   if (location.pathname !== "/auth") {
     dispatch(setPathName(location.pathname));
-    return <Redirect to="/auth" />
+    return <Redirect to="/auth" />;
   }
   return null;
 }
 
 function Home() {
   // Idk what to put here, I'll just redirect to top
-  return <Redirect to="/top" />
+  return <Redirect to="/top" />;
 }
 
 export default App;
