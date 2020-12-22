@@ -31,7 +31,9 @@ func (t *Track) updateLyrics() error {
 	name := fmt.Sprintf("%s %s", t.Artist, t.Name)
 	res, err := config.GeniusClient.Search(name)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"type": "genius",
+		}).Error(err)
 		return err
 	}
 	if len(res.Response.Hits) == 0 {
@@ -43,7 +45,9 @@ func (t *Track) updateLyrics() error {
 			for i := 1; i < 5; i++ {
 				lyrics, err = getLyricsFromURL(s.Result.URL)
 				if err != nil {
-					log.Error(err)
+					log.WithFields(log.Fields{
+						"type": "genius",
+					}).Error(err)
 					break
 				}
 				if lyrics != "" || t.Lyrics != "" {
@@ -62,7 +66,9 @@ func (t *Track) updateLyrics() error {
 			t.LastUpdated = time.Now()
 			err = t.Save()
 			if err != nil {
-				log.Error(err)
+				log.WithFields(log.Fields{
+					"type": "genius",
+				}).Error(err)
 			}
 			break
 		}

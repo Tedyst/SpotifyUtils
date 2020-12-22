@@ -73,18 +73,30 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 	log.Debugf("Getting spotify information for track %s", t.TrackID)
 	features, err := cl.GetAudioFeatures(spotify.ID(t.TrackID))
 	if err != nil {
+		log.WithFields(log.Fields{
+			"type": "spotify-api",
+		}).Error(err)
 		return err
 	}
 	track, err := cl.GetTrack(spotify.ID(t.TrackID))
 	if err != nil {
+		log.WithFields(log.Fields{
+			"type": "spotify-api",
+		}).Error(err)
 		return err
 	}
 	analysis, err := cl.GetAudioAnalysis(spotify.ID(t.TrackID))
 	if err != nil {
+		log.WithFields(log.Fields{
+			"type": "spotify-api",
+		}).Error(err)
 		return err
 	}
 	album, err := cl.GetAlbum(spotify.ID(track.Album.ID))
 	if err != nil {
+		log.WithFields(log.Fields{
+			"type": "spotify-api",
+		}).Error(err)
 		return err
 	}
 	t.Information.Updated = true
