@@ -13,9 +13,8 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/api",
-            "envFile": "${workspaceFolder}/api/.env",
-            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
             "args": [
                 "-Debug=true"
             ]

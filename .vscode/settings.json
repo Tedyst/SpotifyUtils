@@ -12,4 +12,5 @@
     "python.linting.pylintEnabled": true,
     "python.pythonPath": "/mnt/hddext4/Git/SpotifyUtils/venv/bin/python3.8",
     "jupyter.debugJustMyCode": false,
+    "git.ignoreLimitWarning": true,
 }
