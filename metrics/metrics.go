@@ -21,4 +21,9 @@ var (
 		Name:      "users",
 		Help:      "The total number of users",
 	})
+	TrackingUserCount = promauto.NewGauge(prometheus.GaugeOpts{
+		Namespace: "spotifyutils",
+		Name:      "users_tracking",
+		Help:      "The total number of users that are tracked",
+	})
 )
