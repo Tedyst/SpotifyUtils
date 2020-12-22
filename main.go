@@ -17,6 +17,7 @@ import (
 
 	"github.com/tedyst/spotifyutils/api/compare"
 	"github.com/tedyst/spotifyutils/api/recenttracks"
+	"github.com/tedyst/spotifyutils/api/settings"
 	"github.com/tedyst/spotifyutils/api/trackapi"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -144,6 +145,7 @@ func main() {
 	api.HandleFunc("/track/{track}", trackapi.Handler)
 	api.HandleFunc("/compare/{code}", compare.HandlerUsername)
 	api.HandleFunc("/logout", auth.Logout)
+	api.HandleFunc("/settings", settings.Handler)
 
 	spa := spaHandler{
 		buildPath: *config.BuildPath,
