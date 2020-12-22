@@ -1,10 +1,5 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import { Select, MenuItem, Grid } from '@material-ui/core';
+import { Button, CssBaseline, Typography, makeStyles, Container, Select, MenuItem, Grid } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -33,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function SearchBox(props:{
+export default function SearchBox(props: {
     playlists: any,
     setResults: React.Dispatch<React.SetStateAction<never[]>>
 }) {

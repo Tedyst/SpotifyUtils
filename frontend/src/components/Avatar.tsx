@@ -1,6 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
+import { makeStyles, Avatar } from '@material-ui/core';
 import { deepOrange } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,18 +15,18 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function Acronym(str: string){
+function Acronym(str: string) {
     var matches = str.match(/\b(\w)/g);
-    if(matches === null)
+    if (matches === null)
         return str.charAt(0);
     var acronym = matches.join('');
     return acronym;
 }
 
-export default function Avatars(props:{
+export default function Avatars(props: {
     image: string,
     name: string
-}){
+}) {
     const classes = useStyles();
 
     return (

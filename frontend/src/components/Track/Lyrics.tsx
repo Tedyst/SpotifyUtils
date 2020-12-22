@@ -1,8 +1,5 @@
 import React from 'react';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { Card, CardContent, Typography, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     lyrics: {
@@ -10,23 +7,23 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Lyrics(props:{
+export default function Lyrics(props: {
     lyrics: string
-}){
+}) {
     const classes = useStyles();
 
     return (
         <div>
-        <Typography>
-            Lyrics
+            <Typography>
+                Lyrics
         </Typography>
-        <Card>
-            <CardContent>
-                <Typography className={classes.lyrics}>
-                    {props.lyrics}
-                </Typography>
-            </CardContent>
-        </Card>
+            <Card>
+                <CardContent>
+                    <Typography className={classes.lyrics}>
+                        {props.lyrics}
+                    </Typography>
+                </CardContent>
+            </Card>
         </div>
     )
 }

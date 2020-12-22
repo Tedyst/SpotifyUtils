@@ -1,9 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
+import { makeStyles, Card, CardContent, CardMedia, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles({
     root: {
@@ -30,7 +26,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function SongCard(props:{
+export default function SongCard(props: {
     duration?: string,
     name: string,
     artist: string,
@@ -40,7 +36,7 @@ export default function SongCard(props:{
     const classes = useStyles();
 
     let duration = null;
-    if(props.duration)
+    if (props.duration)
         duration = (
             <Typography variant="body2" color="textPrimary">
                 When you only have <b>{props.duration}</b>, you know what you want
@@ -48,7 +44,7 @@ export default function SongCard(props:{
         )
 
     let count = null;
-    if(props.count)
+    if (props.count)
         count = (
             <Typography variant="body2" color="textPrimary">
                 You listened to this song <b>{props.count}</b> times
@@ -56,22 +52,22 @@ export default function SongCard(props:{
         )
 
     return (
-    <Card className={classes.root}>
-        <div className={classes.details}>
-        <CardContent className={classes.content}>
-            <Typography component="h6" variant="h6">
-                {props.name}
-            </Typography>
-            <Typography variant="subtitle1" color="textSecondary">
-                {props.artist}
-            </Typography>
-            {duration}
-            {count}
-        </CardContent>
-        </div>
-        <CardMedia
-            className={classes.cover}
-            image={props.image}
-        />
-    </Card>);
+        <Card className={classes.root}>
+            <div className={classes.details}>
+                <CardContent className={classes.content}>
+                    <Typography component="h6" variant="h6">
+                        {props.name}
+                    </Typography>
+                    <Typography variant="subtitle1" color="textSecondary">
+                        {props.artist}
+                    </Typography>
+                    {duration}
+                    {count}
+                </CardContent>
+            </div>
+            <CardMedia
+                className={classes.cover}
+                image={props.image}
+            />
+        </Card>);
 }

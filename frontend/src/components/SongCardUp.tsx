@@ -1,13 +1,6 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
+import { makeStyles, Card, CardContent, CardMedia, Typography, Fade, CardActions, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import Fade from '@material-ui/core/Fade';
-import CardActions from '@material-ui/core/CardActions';
-import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -49,12 +42,12 @@ const useStyles = makeStyles((theme) => ({
     },
     modalRoot: {
         minWidth: 300,
-        position:'absolute',
-        top:'10%',
+        position: 'absolute',
+        top: '10%',
         bottom: '10%',
-        overflow:'scroll',
+        overflow: 'scroll',
         height: '80%',
-        display:'block'
+        display: 'block'
     },
     modalTitle: {
         fontSize: 14,
@@ -69,12 +62,12 @@ const useStyles = makeStyles((theme) => ({
         marginTop: 'auto',
         justifyContent: 'center'
     },
-    count:{
+    count: {
         marginTop: 'auto',
     }
 }));
 
-export default function SongCard(props:{
+export default function SongCard(props: {
     uri: string,
     image: string,
     name: string,
@@ -84,41 +77,41 @@ export default function SongCard(props:{
     const classes = useStyles();
 
     let cardAction = (<CardActions>
-                <Button
-                    size="small"
-                    component={Link}
-                    to={"/track/" + props.uri}
-                    className={classes.button}
-                >Informations</Button>
-            </CardActions>);
+        <Button
+            size="small"
+            component={Link}
+            to={"/track/" + props.uri}
+            className={classes.button}
+        >Informations</Button>
+    </CardActions>);
 
     let count = null;
-    if(props.count)
+    if (props.count)
         count = (<Typography variant="subtitle2" color="textSecondary" className={classes.count}>
-                    <b>{props.count}</b> times
-                </Typography>)
+            <b>{props.count}</b> times
+        </Typography>)
     return (
-    <Fade in={true}>
-    <Card className={classes.root}>
-        <CardMedia
-            className={classes.cover}
-            image={props.image}
-            title={props.name}
-        />
-        <div className={classes.details}>
-            <CardContent className={classes.content}>
-                <Typography component="h6" variant="h6">
-                    {props.name}
-                </Typography>
-                <Typography variant="subtitle1" color="textSecondary">
-                    {props.artist}
-                </Typography>
-                {count}
-            </CardContent>
-            {cardAction}
-        </div>
-    </Card>
-    </Fade>
+        <Fade in={true}>
+            <Card className={classes.root}>
+                <CardMedia
+                    className={classes.cover}
+                    image={props.image}
+                    title={props.name}
+                />
+                <div className={classes.details}>
+                    <CardContent className={classes.content}>
+                        <Typography component="h6" variant="h6">
+                            {props.name}
+                        </Typography>
+                        <Typography variant="subtitle1" color="textSecondary">
+                            {props.artist}
+                        </Typography>
+                        {count}
+                    </CardContent>
+                    {cardAction}
+                </div>
+            </Card>
+        </Fade>
     );
 }
 

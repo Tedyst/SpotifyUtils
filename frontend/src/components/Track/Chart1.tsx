@@ -1,17 +1,16 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import { Paper, Typography } from '@material-ui/core';
 import {
-  ArgumentAxis,
-  ValueAxis,
-  Chart,
-  LineSeries,
+    ArgumentAxis,
+    ValueAxis,
+    Chart,
+    LineSeries,
 } from '@devexpress/dx-react-chart-material-ui';
 
-export default function Chart1(props:{
+export default function Chart1(props: {
     data: any,
-}){
-    if(props.data === undefined)
+}) {
+    if (props.data === undefined)
         return null;
     let data = [];
     for (let i in props.data) {
@@ -19,24 +18,24 @@ export default function Chart1(props:{
     }
 
     return (<div>
-    <Typography>
-        Loudness
+        <Typography>
+            Loudness
     </Typography>
-    <Paper>
-    <Chart
-        data={data}
-        height={150}
-    >
-        <ArgumentAxis 
-            showLabels={false}
-        />
-        <ValueAxis 
-            tickSize={10}
-        />
+        <Paper>
+            <Chart
+                data={data}
+                height={150}
+            >
+                <ArgumentAxis
+                    showLabels={false}
+                />
+                <ValueAxis
+                    tickSize={10}
+                />
 
-        <LineSeries valueField="lineValue" argumentField="argument" />
-    </Chart>
-    </Paper>
+                <LineSeries valueField="lineValue" argumentField="argument" />
+            </Chart>
+        </Paper>
     </div>
     )
 }

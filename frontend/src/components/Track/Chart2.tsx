@@ -1,13 +1,12 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import { Paper, Typography } from '@material-ui/core';
 import {
-  BarSeries,
-  ArgumentAxis,
-  Chart,
+    BarSeries,
+    ArgumentAxis,
+    Chart,
 } from '@devexpress/dx-react-chart-material-ui';
 
-export default function Chart2(props:{
+export default function Chart2(props: {
     acousticness: number,
     danceability: number,
     energy: number,
@@ -15,7 +14,7 @@ export default function Chart2(props:{
     liveness: number,
     loudness: number,
     speechiness: number,
-}){
+}) {
     let data = [
         {
             lineValue: props.acousticness,
@@ -48,19 +47,19 @@ export default function Chart2(props:{
     ];
 
     return (<div>
-    <Typography>
-        Track Features
+        <Typography>
+            Track Features
     </Typography>
-    <Paper>
-    <Chart
-        data={data}
-        height={120}
-    >
-        <BarSeries valueField="lineValue" argumentField="argument"
-        />
-        <ArgumentAxis />
-    </Chart>
-    </Paper>
+        <Paper>
+            <Chart
+                data={data}
+                height={120}
+            >
+                <BarSeries valueField="lineValue" argumentField="argument"
+                />
+                <ArgumentAxis />
+            </Chart>
+        </Paper>
     </div>
     )
 }
