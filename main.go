@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -110,7 +111,7 @@ func main() {
 	flag.Parse()
 	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
 
-	datab, err := gorm.Open(mysql.Open("root:parola@tcp(127.0.0.1:3306)/spotifyutils?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{
+	datab, err := gorm.Open(mysql.Open(fmt.Sprintf("%s?charset=utf8mb4&parseTime=True&loc=Local", *config.Database)), &gorm.Config{
 		Logger: &GormLogger{},
 	})
 	db, err := datab.DB()

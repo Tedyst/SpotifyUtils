@@ -5,3 +5,4 @@ src
 .vscode
 api/data.db
 api/.env
+frontend/node_modules

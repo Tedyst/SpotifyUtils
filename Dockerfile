@@ -1,13 +1,18 @@
-FROM python:3.7@sha256:c1e36afba1c3c230a6846801fb284cf4383a8a0080fcf32c2ec625c066c56361
+FROM golang:rc-alpine
+WORKDIR /app
+COPY . .
 
-WORKDIR /app/api
-VOLUME /data
+RUN ["go", "mod", "download"]
+RUN ["go", "build", "-o", "/app/build"]
 
-COPY api/requirements.txt /app/api/requirements.txt
-RUN ["pip", "install", "-r", "/app/api/requirements.txt"]
+FROM alpine:latest
 
-CMD ["flask", "run", "--host", "0.0.0.0"]
-ENV APP_ENV=docker
+WORKDIR /app
+EXPOSE 5000
+EXPOSE 5001
 
-COPY api/ /app/api
-COPY build/ /app/build
+RUN ["mkdir", "/frontend"]
+COPY --from=0 /app/build /app/build
+ADD frontend/build /app/frontend/build
+
+ENTRYPOINT [ "/app/build" ]
