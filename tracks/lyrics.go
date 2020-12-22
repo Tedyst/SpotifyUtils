@@ -14,6 +14,7 @@ import (
 	"golang.org/x/net/html"
 
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/metrics"
 )
 
 func (t *Track) updateLyrics() error {
@@ -33,6 +34,7 @@ func (t *Track) updateLyrics() error {
 		return nil
 	}
 	t.SearchingLyrics = true
+	metrics.TrackLyricsSearched.Add(1)
 	log.Debugf("Starting Update Lyrics for %s-%s", t.Artist, t.Name)
 	name := fmt.Sprintf("%s %s", t.Artist, t.Name)
 	res, err := config.GeniusClient.Search(name)

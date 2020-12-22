@@ -19,4 +19,6 @@ func initDB(db *gorm.DB) {
 			s.StartRecentTracksUpdater()
 		}
 	}
+
+	userutils.UpdateUserCount()
 }

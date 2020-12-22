@@ -84,6 +84,8 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 	u.RefreshUser()
 	u.Save()
 
+	go userutils.UpdateUserCount()
+
 	session.Values["username"] = u.UserID
 
 	err = session.Save(req, res)
