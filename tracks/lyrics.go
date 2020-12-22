@@ -59,7 +59,6 @@ func (t *Track) updateLyrics() error {
 				}
 			}
 			if lyrics == "" {
-
 				log.Debugf("Could not extract lyrics from %s", s.Result.URL)
 			}
 			t.Lyrics = lyrics
