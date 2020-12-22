@@ -22,7 +22,7 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	response := &statusAPIResponse{}
 	if _, ok := session.Values["username"]; !ok {
 		response.Success = false
-		response.Error = "Not Logged in!"
+		response.Error = "Not Logged in"
 		respJSON, _ := json.Marshal(response)
 		fmt.Fprint(res, string(respJSON))
 		return
