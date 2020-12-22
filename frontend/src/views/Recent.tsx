@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import ResultBox from '../components/ResultBox';
-import Typography from '@material-ui/core/Typography';
+import { Typography } from '@material-ui/core';
 import Loading from '../components/Loading';
 
 export default function Recent() {
     const [Recent, setRecent] = useState<{
-        Results:{
+        Results: {
             Name: string,
             Artist: string,
             Lyrics: string,
@@ -22,15 +22,15 @@ export default function Recent() {
         });
     }, [])
 
-    if(Recent === undefined)
+    if (Recent === undefined)
         return <Loading />
     return (
         <div>
-        <Typography component="h4" variant="h4" align="center">
-            Your recent tracks
+            <Typography component="h4" variant="h4" align="center">
+                Your recent tracks
         </Typography>
-        <br />
-        <ResultBox results={Recent.Results}/>
+            <br />
+            <ResultBox results={Recent.Results} />
         </div>
     )
 }

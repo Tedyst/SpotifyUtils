@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import { Grid } from '@material-ui/core';
+import { makeStyles, Container, Grid, Typography } from '@material-ui/core';
 import ArtistCard from '../components/ArtistCard';
 import SongCard from '../components/SongCardRight';
-import Typography from '@material-ui/core/Typography';
 import List from '../components/ItemList';
 import Loading from '../components/Loading';
 
@@ -63,7 +60,7 @@ export default function Top() {
         });
     }, [])
 
-    if(top === undefined){
+    if (top === undefined) {
         return <Loading />;
     }
     if (top.success === false) {

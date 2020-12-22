@@ -1,10 +1,5 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import { TextField, Grid } from '@material-ui/core';
+import { Button, CssBaseline, Typography, makeStyles, Container, TextField, Grid } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({

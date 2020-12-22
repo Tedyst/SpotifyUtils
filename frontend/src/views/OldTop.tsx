@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Container } from '@material-ui/core';
+import { makeStyles, Grid, Container, Card, CardContent, Typography } from '@material-ui/core';
 import Graph from '../components/Graph';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -12,11 +11,6 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import SongCardRight from '../components/SongCardRight'
 import ResultBox from '../components/ResultBox';
 import Loading from '../components/Loading';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 
 
 const useStyles = makeStyles({
@@ -152,7 +146,7 @@ export default function OldTop() {
             <Container maxWidth="md">
                 <Grid container spacing={2} >
                     <Grid item md={4} xs={12}>
-                        <Card variant="outlined">
+                        <Card >
                             <CardContent>
                                 <Typography className={classes.title} color="textSecondary" gutterBottom>
                                     You listened to
@@ -164,7 +158,7 @@ export default function OldTop() {
                         </Card>
                     </Grid>
                     <Grid item md={8} xs={12}>
-                        <Card variant="outlined">
+                        <Card >
                             <CardContent>
                                 <Typography className={classes.title} color="textSecondary" gutterBottom>
                                     You spent
@@ -179,8 +173,15 @@ export default function OldTop() {
             </Container>
             <Container maxWidth="md">
                 <Grid container spacing={2} >
+                    <Grid item xs={12}>
+                        {topsong}
+                    </Grid>
+                </Grid>
+            </Container>
+            <Container maxWidth="md">
+                <Grid container spacing={2} >
                     <Grid item md={6} xs={12}>
-                        <Card variant="outlined">
+                        <Card >
                             <CardContent>
                                 <Typography className={classes.title} color="textSecondary" gutterBottom>
                                     Total number of tracks per hour
@@ -190,7 +191,7 @@ export default function OldTop() {
                         </Card>
                     </Grid>
                     <Grid item md={6} xs={12}>
-                        <Card variant="outlined">
+                        <Card >
                             <CardContent>
                                 <Typography className={classes.title} color="textSecondary" gutterBottom>
                                     Total number of tracks per day
