@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-// import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Container } from '@material-ui/core';
 import Graph from '../components/Graph';
 import 'date-fns';
@@ -12,7 +12,29 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import SongCardRight from '../components/SongCardRight'
 import ResultBox from '../components/ResultBox';
 import Loading from '../components/Loading';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 
+
+const useStyles = makeStyles({
+    root: {
+        minWidth: 275,
+    },
+    bullet: {
+        display: 'inline-block',
+        margin: '0 2px',
+        transform: 'scale(0.8)',
+    },
+    title: {
+        fontSize: 14,
+    },
+    pos: {
+        marginBottom: 12,
+    },
+});
 
 function getDate(unix: number): string {
     return new Date(unix * 1000).toLocaleDateString("en-US");
@@ -51,10 +73,11 @@ export default function OldTop() {
         "Success": boolean
     }>();
     var today = new Date();
-    const [selectedDate, setSelectedDate] = React.useState(new Date(today.getFullYear(), today.getMonth()-1, today.getDate(), 0, 0, 0));
+    const [selectedDate, setSelectedDate] = React.useState(new Date(today.getFullYear(), today.getMonth() - 1, today.getDate(), 0, 0, 0));
+    const classes = useStyles();
 
     const handleDateChange = (date: MaterialUiPickersDate, value: string | null | undefined) => {
-        if(date !== null)
+        if (date !== null)
             setSelectedDate(date);
     };
 
@@ -91,15 +114,15 @@ export default function OldTop() {
                 {datepicker}
                 <Loading />
             </div>)
-        ;
+            ;
 
-    if(oldTop.Result.TopTracks.length > 0){
+    if (oldTop.Result.TopTracks.length > 0) {
         topsong = (<SongCardRight
             name={oldTop.Result.TopTracks[0].Name}
             artist={oldTop.Result.TopTracks[0].Artist}
             image={oldTop.Result.TopTracks[0].Image}
             count={oldTop.Result.TopTracks[0].Count}
-            />)
+        />)
     }
 
     let hoursdata = [];
@@ -122,24 +145,69 @@ export default function OldTop() {
     let totallistenedtracks = oldTop.Result.Count;
     return (
         <div>
-        <Container maxWidth="sm">
-            {datepicker}
+            <Container maxWidth="sm">
+                {datepicker}
+            </Container>
             <br />
-            {topsong}
-            {totallistenedtracks} Tracks
+            <Container maxWidth="md">
+                <Grid container spacing={2} >
+                    <Grid item md={4} xs={12}>
+                        <Card variant="outlined">
+                            <CardContent>
+                                <Typography className={classes.title} color="textSecondary" gutterBottom>
+                                    You listened to
+                                </Typography>
+                                <Typography variant="h5" component="h2">
+                                    {totallistenedtracks} Tracks
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item md={8} xs={12}>
+                        <Card variant="outlined">
+                            <CardContent>
+                                <Typography className={classes.title} color="textSecondary" gutterBottom>
+                                    You spent
+                                </Typography>
+                                <Typography variant="h5" component="h2">
+                                    {totallistenedtime}
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                </Grid>
+            </Container>
+            <Container maxWidth="md">
+                <Grid container spacing={2} >
+                    <Grid item md={6} xs={12}>
+                        <Card variant="outlined">
+                            <CardContent>
+                                <Typography className={classes.title} color="textSecondary" gutterBottom>
+                                    Total number of tracks per hour
+                                </Typography>
+                                <Graph data={hoursdata} argument={true} />
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                        <Card variant="outlined">
+                            <CardContent>
+                                <Typography className={classes.title} color="textSecondary" gutterBottom>
+                                    Total number of tracks per day
+                                </Typography>
+                                <Graph data={daysdata} zoom={true} />
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                </Grid>
+            </Container>
             <br />
-            {totallistenedtime}
-            <br />
-            Total number of songs per hour
-            <Graph data={hoursdata} />
-            <br />
-            Total number of songs per day
-            <Graph data={daysdata} zoom={true} />
-            <br/>
-        </Container>
-        <Container>
-            <ResultBox results={oldTop.Result.TopTracks} />
-        </Container>
-        </div>
+            <Typography component="h4" variant="h4" align="center">
+                Here are your most listened tracks from this period
+            </Typography>
+            <Container>
+                <ResultBox results={oldTop.Result.TopTracks} />
+            </Container>
+        </div >
     );
 }

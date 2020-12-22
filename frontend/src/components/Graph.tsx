@@ -1,5 +1,4 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
 import {
     ArgumentAxis,
     ValueAxis,
@@ -11,26 +10,30 @@ import {
 
 import { EventTracker } from '@devexpress/dx-react-chart';
 
-export default function Graph(props:{
+export default function Graph(props: {
     data: any,
     zoom?: boolean,
+    argument?: boolean
 }) {
     let zoom = null;
     if (props.zoom === true) {
         zoom = <ZoomAndPan />;
     }
-    return (<Paper>
-        <Chart height={250}
-            data={props.data}
-        >
+    let argument = null;
+    if (props.argument === true) {
+        argument = <ArgumentAxis />
+    }
+    return (<Chart height={250}
+        data={props.data}
+    >
 
-            <ArgumentAxis />
-            <ValueAxis />
+        {argument}
+        <ValueAxis />
 
-            <SplineSeries valueField="value" argumentField="argument" />
-            <EventTracker />
-            <Tooltip />
-            {zoom}
-        </Chart>
-    </Paper>)
+        <SplineSeries valueField="value" argumentField="argument" />
+        <EventTracker />
+        <Tooltip />
+        {zoom}
+    </Chart>
+    )
 }
