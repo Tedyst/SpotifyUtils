@@ -5,12 +5,9 @@ import {
     useRouteMatch,
     useParams
 } from "react-router-dom";
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import { Grid } from '@material-ui/core';
+import { makeStyles, Container, Grid, Typography, TextField, List, ListItem, ListItemText, ListSubheader, Button } from '@material-ui/core';
 import ArtistCard from '../components/ArtistCard';
 import SongCard from '../components/SongCardRight';
-import Typography from '@material-ui/core/Typography';
 import ListItems from '../components/ItemList';
 import Avatars from '../components/Avatars';
 import {
@@ -18,13 +15,7 @@ import {
 } from '../store/user';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import TextField from '@material-ui/core/TextField';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import Avatar from '../components/Avatar';
-import Button from '@material-ui/core/Button';
 import {
     Redirect,
 } from "react-router-dom";
@@ -263,7 +254,7 @@ function Username(props: {
 function copyToClipboard() {
     var copyText = document.getElementById("link-to-be-copied") as HTMLInputElement;
 
-    if(copyText === null)
+    if (copyText === null)
         return;
     copyText.select();
     copyText.setSelectionRange(0, 99999);

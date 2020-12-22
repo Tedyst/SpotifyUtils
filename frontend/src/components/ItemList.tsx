@@ -1,9 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
+import { makeStyles, List, ListItem, ListItemText, ListSubheader } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -22,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ListItems(props:{
+export default function ListItems(props: {
     items: any[],
     name: string
 }) {
@@ -32,16 +28,16 @@ export default function ListItems(props:{
     if (props.items.length === 0 || !props.items)
         return (
             <List className={classes.root} subheader={<li />}>
-            <ListSubheader color="inherit">{props.name}</ListSubheader>
-            <ul className={classes.ul}>
-                <ListItem key={"list-notfound-" + props.name}>
-                <ListItemText
-                    primary={""}
-                    secondary={"Could not find anything"}
-                />
-            </ListItem>
-            </ul>
-        </List>
+                <ListSubheader color="inherit">{props.name}</ListSubheader>
+                <ul className={classes.ul}>
+                    <ListItem key={"list-notfound-" + props.name}>
+                        <ListItemText
+                            primary={""}
+                            secondary={"Could not find anything"}
+                        />
+                    </ListItem>
+                </ul>
+            </List>
         )
     for (var val in props.items) {
         if (props.items[val].artist)

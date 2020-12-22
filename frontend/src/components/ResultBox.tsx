@@ -1,9 +1,8 @@
 import React from 'react';
-import Container from '@material-ui/core/Container';
-import { Grid } from '@material-ui/core';
+import { Grid, Container } from '@material-ui/core';
 import SongCardUp from './SongCardUp'
 
-export default function ResultBox(props:{
+export default function ResultBox(props: {
     results: {
         URI: string,
         Name: string,

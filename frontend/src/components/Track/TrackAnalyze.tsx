@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     useParams
 } from "react-router-dom";
-import { Grid } from '@material-ui/core';
+import { Grid, Container } from '@material-ui/core';
 import TrackInfo from './TrackInfo';
 import AlbumInfo from './AlbumInfo';
 import Chart1 from './Chart1';
@@ -12,27 +12,20 @@ import SongCard from '../../components/SongCardRight';
 import {
     Redirect,
 } from "react-router-dom";
-import Container from '@material-ui/core/Container';
 import Loading from '../Loading';
 
-// const useStyles = makeStyles(() => ({
-//     songcard: {
-//         width: '100%'
-//     }
-// }));
 
 interface ParamTypes {
     trackid: string
 }
 
 export default function TrackAnalyze() {
-    // const classes = useStyles();
     let { trackid } = useParams<ParamTypes>();
     const [trackInfo, setTrackInfo] = useState<{
         Success: boolean,
         Lyrics: string,
         Information: {
-            TrackInformation:{
+            TrackInformation: {
                 LoudnessGraph: any,
                 Image: string,
                 Popularity: number,
@@ -44,13 +37,13 @@ export default function TrackAnalyze() {
                 Tempo: number,
                 TimeSignature: number,
             },
-            AlbumInformation:{
+            AlbumInformation: {
                 Popularity: string,
                 ReleaseDate: string,
                 TracksAmount: string,
                 Markets: string
             },
-            TrackFeatures:{
+            TrackFeatures: {
                 Acousticness: number,
                 Danceability: number,
                 Energy: number,
@@ -105,7 +98,6 @@ export default function TrackAnalyze() {
                     artist={trackInfo.Artist}
                     name={trackInfo.Name}
                     image={trackInfo.Information.TrackInformation.Image}
-                    // className={classes.songcard}
                 />
             </Container>
             <br />

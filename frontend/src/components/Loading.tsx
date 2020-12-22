@@ -1,8 +1,5 @@
 import React from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import { CircularProgress } from '@material-ui/core';
+import { CssBaseline, makeStyles, Container, CircularProgress } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -27,11 +24,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Loading() {
     const classes = useStyles();
     return (
-    <Container maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
-            <CircularProgress color="secondary" />
-        </div>
-    </Container>
+        <Container maxWidth="xs">
+            <CssBaseline />
+            <div className={classes.paper}>
+                <CircularProgress color="secondary" />
+            </div>
+        </Container>
     )
 }

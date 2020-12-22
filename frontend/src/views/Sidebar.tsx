@@ -1,28 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
-import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import SearchIcon from '@material-ui/icons/Search';
-import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
-import SettingsIcon from '@material-ui/icons/Settings';
-import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
-import HistoryIcon from '@material-ui/icons/History';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import QueueMusicIcon from '@material-ui/icons/QueueMusic';
+import { CssBaseline, Divider, Drawer, Hidden, List, IconButton, ListItem, ListItemIcon, ListItemText, Toolbar, Typography, makeStyles, useTheme, AppBar, Avatar } from '@material-ui/core';
+import { Search, AllInclusive, Settings, SupervisorAccount, History, ExitToApp, QueueMusic, Menu } from '@material-ui/icons';
 import ListIcon from '@material-ui/icons/List';
-import MenuIcon from '@material-ui/icons/Menu';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Avatar from '@material-ui/core/Avatar';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -113,7 +93,7 @@ function ResponsiveDrawer(props: {
                     selected: classes.selected,
                 }}>
                     <ListItemIcon>
-                        <AllInclusiveIcon />
+                        <AllInclusive />
                     </ListItemIcon>
                     <ListItemText primary="Your Top" />
                 </ListItem>
@@ -129,7 +109,7 @@ function ResponsiveDrawer(props: {
                     selected: classes.selected,
                 }}>
                     <ListItemIcon>
-                        <SearchIcon />
+                        <Search />
                     </ListItemIcon>
                     <ListItemText primary="Search Tracks" />
                 </ListItem>
@@ -137,7 +117,7 @@ function ResponsiveDrawer(props: {
                     selected: classes.selected,
                 }}>
                     <ListItemIcon>
-                        <SupervisorAccountIcon />
+                        <SupervisorAccount />
                     </ListItemIcon>
                     <ListItemText primary="Compare" />
                 </ListItem>
@@ -145,7 +125,7 @@ function ResponsiveDrawer(props: {
                     selected: classes.selected,
                 }}>
                     <ListItemIcon>
-                        <QueueMusicIcon />
+                        <QueueMusic />
                     </ListItemIcon>
                     <ListItemText primary="Recent Tracks" />
                 </ListItem>
@@ -153,7 +133,7 @@ function ResponsiveDrawer(props: {
                     selected: classes.selected,
                 }}>
                     <ListItemIcon>
-                        <HistoryIcon />
+                        <History />
                     </ListItemIcon>
                     <ListItemText primary="Listening Statistics" />
                 </ListItem>
@@ -161,7 +141,7 @@ function ResponsiveDrawer(props: {
                     selected: classes.selected,
                 }}>
                     <ListItemIcon>
-                        <SettingsIcon />
+                        <Settings />
                     </ListItemIcon>
                     <ListItemText primary="Settings" />
                 </ListItem>
@@ -169,7 +149,7 @@ function ResponsiveDrawer(props: {
                     selected: classes.selected,
                 }}>
                     <ListItemIcon>
-                        <ExitToAppIcon />
+                        <ExitToApp />
                     </ListItemIcon>
                     <ListItemText primary="Logout" />
                 </ListItem>
@@ -194,7 +174,7 @@ function ResponsiveDrawer(props: {
                     onClick={handleDrawerToggle}
                     className={classes.menuButton}
                 >
-                    <MenuIcon />
+                    <Menu />
                 </IconButton>
                 {avatar}
                 <Typography variant="h6" noWrap>

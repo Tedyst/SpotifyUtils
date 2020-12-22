@@ -1,8 +1,6 @@
 import React from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
+import { makeStyles, withStyles, Avatar, Badge } from '@material-ui/core';
 import { deepOrange, deepPurple } from '@material-ui/core/colors';
-import Badge from '@material-ui/core/Badge';
 
 const useStyles = makeStyles((theme) => ({
     purple: {
@@ -28,15 +26,15 @@ const SmallAvatar = withStyles((theme) => ({
     },
 }))(Avatar);
 
-function Acronym(str: string){
+function Acronym(str: string) {
     var matches = str.match(/\b(\w)/g);
-    if(matches === null)
+    if (matches === null)
         return str.charAt(0);
     var acronym = matches.join('');
     return acronym;
 }
 
-export default function Avatars(props:{
+export default function Avatars(props: {
     target: {
         image: string,
         name: string,
@@ -45,23 +43,23 @@ export default function Avatars(props:{
         image: string,
         name: string,
     }
-}){
+}) {
     const classes = useStyles();
 
     return (<Badge
-                overlap="circle"
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                className={classes.root}
-                badgeContent={<SmallAvatar src={props.initiator.image} className={classes.purple}>
-                                {Acronym(props.initiator.name)}
-                            </SmallAvatar>}
-            >
-                <Avatar src={props.target.image} className={classes.large} sizes={"120"}>
-                    {Acronym(props.target.name)}
-                </Avatar>
-            </Badge>
+        overlap="circle"
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+        }}
+        className={classes.root}
+        badgeContent={<SmallAvatar src={props.initiator.image} className={classes.purple}>
+            {Acronym(props.initiator.name)}
+        </SmallAvatar>}
+    >
+        <Avatar src={props.target.image} className={classes.large} sizes={"120"}>
+            {Acronym(props.target.name)}
+        </Avatar>
+    </Badge>
     )
 }
