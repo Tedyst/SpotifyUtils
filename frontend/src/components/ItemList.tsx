@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: 'inherit',
         padding: 0,
     },
+    textColor: {
+        color: theme.palette.info.light
+    }
 }));
 
 export default function ListItems(props: {
@@ -28,7 +31,7 @@ export default function ListItems(props: {
     if (props.items.length === 0 || !props.items)
         return (
             <List className={classes.root} subheader={<li />}>
-                <ListSubheader color="inherit">{props.name}</ListSubheader>
+                <ListSubheader className={classes.textColor} color="default">{props.name}</ListSubheader>
                 <ul className={classes.ul}>
                     <ListItem key={"list-notfound-" + props.name}>
                         <ListItemText
@@ -76,7 +79,7 @@ export default function ListItems(props: {
     }
     return (
         <List className={classes.root} subheader={<li />}>
-            <ListSubheader color="inherit">{props.name}</ListSubheader>
+            <ListSubheader className={classes.textColor}>{props.name}</ListSubheader>
             <ul className={classes.ul}>
                 {items}
             </ul>

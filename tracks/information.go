@@ -71,19 +71,33 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 		return nil
 	}
 	log.Debugf("Getting spotify information for track %s", t.TrackID)
-	features, err := cl.GetAudioFeatures(spotify.ID(t.TrackID))
-	if err != nil {
-		log.WithFields(log.Fields{
-			"type": "spotify-api",
-		}).Error(err)
-		return err
-	}
 	track, err := cl.GetTrack(spotify.ID(t.TrackID))
 	if err != nil {
 		log.WithFields(log.Fields{
 			"type": "spotify-api",
 		}).Error(err)
 		return err
+	}
+	t.Name = track.Name
+	t.Artist = track.Artists[0].Name
+
+	if t.Information.TrackFeatures.Energy == 0 {
+		features, err := cl.GetAudioFeatures(spotify.ID(t.TrackID))
+		if err != nil {
+			log.WithFields(log.Fields{
+				"type": "spotify-api",
+			}).Error(err)
+			// time.Sleep(retryTimeout)
+			// return err
+		}
+		if len(features) != 0 {
+			t.Information.TrackFeatures.Acousticness = features[0].Acousticness
+			t.Information.TrackFeatures.Energy = features[0].Energy
+			t.Information.TrackFeatures.Instrumentalness = features[0].Instrumentalness
+			t.Information.TrackFeatures.Liveness = features[0].Liveness
+			t.Information.TrackFeatures.Loudness = features[0].Loudness
+			t.Information.TrackFeatures.Speechiness = features[0].Speechiness
+		}
 	}
 	analysis, err := cl.GetAudioAnalysis(spotify.ID(t.TrackID))
 	if err != nil {
@@ -100,12 +114,6 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 		return err
 	}
 	t.Information.Updated = true
-	t.Information.TrackFeatures.Acousticness = features[0].Acousticness
-	t.Information.TrackFeatures.Energy = features[0].Energy
-	t.Information.TrackFeatures.Instrumentalness = features[0].Instrumentalness
-	t.Information.TrackFeatures.Liveness = features[0].Liveness
-	t.Information.TrackFeatures.Loudness = features[0].Loudness
-	t.Information.TrackFeatures.Speechiness = features[0].Speechiness
 
 	t.Information.TrackInformation.Explicit = track.Explicit
 	t.Information.TrackInformation.Key = int(analysis.Track.Key)
@@ -124,9 +132,6 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 	t.Information.AlbumInformation.ReleaseDate = album.ReleaseDate
 	t.Information.AlbumInformation.TracksAmount = album.Tracks.Total
 	t.Information.AlbumInformation.Popularity = album.Popularity
-
-	t.Name = track.Name
-	t.Artist = track.Artists[0].Name
 
 	return nil
 }

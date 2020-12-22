@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Login from "./views/Login";
 import PlaylistView from "./views/PlaylistView";
 import Track from "./views/Track";
@@ -56,16 +56,15 @@ function App() {
   const username = useSelector(selectUsername);
   const image = useSelector(selectImage);
   const classes = useStyles();
-  const [Updating, setUpdating] = useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const handlers = useSwipeable({
     trackMouse: false,
     onSwipedRight: () => setMobileOpen(true),
   });
-  if (Updating === false) {
-    setUpdating(true);
+
+  useEffect(() => {
     UpdateUser();
-  }
+  }, [])
 
   return (
     <div className={classes.root} {...handlers}>

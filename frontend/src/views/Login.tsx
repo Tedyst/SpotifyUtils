@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, Button, CssBaseline, Typography, makeStyles, Container } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { useDispatch } from "react-redux";
 import UpdateUser from "../utils/status";
+import {
+  Redirect,
+} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -25,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Login() {
-  const dispatch = useDispatch();
+  const [logged, setLogged] = React.useState(false);
 
   let search = window.location.search;
   let params = new URLSearchParams(search);
@@ -49,10 +51,15 @@ export default function Login() {
         .then((data) => {
           if (data.success === true) {
             UpdateUser();
+            setLogged(true);
           }
         });
     }
-  }, [code, dispatch]);
+  }, [code]);
+
+  if (logged) {
+    return <Redirect to="/" />
+  }
 
   return <LoginPage loggingIn={code !== null} />;
 }
