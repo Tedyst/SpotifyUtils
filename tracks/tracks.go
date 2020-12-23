@@ -32,7 +32,7 @@ func GetTrackFromID(ID string) *Track {
 func BatchUpdate(tracks []*Track, cl spotify.Client) {
 	newTracks := []*Track{}
 	for _, s := range tracks {
-		if s.Name == "" {
+		if s.Name == "" || s.Information.Updated == false {
 			newTracks = append(newTracks, s)
 		}
 	}
