@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/tracks"
 	"github.com/tedyst/spotifyutils/userutils"
 	"github.com/zmb3/spotify"
 )
@@ -14,11 +15,10 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	session, _ := config.SessionStore.Get(req, "username")
 	type RespSong struct {
-		Name    string
-		Artist  string
-		URI     string
-		Image   string
-		Preview string
+		Name   string
+		Artist string
+		URI    string
+		Image  string
 	}
 	type Resp struct {
 		Results []RespSong
@@ -55,14 +55,25 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		if len(tracksinfo[i].Album.Images) > 0 {
 			image = tracksinfo[i].Album.Images[0].URL
 		}
+		respsong := RespSong{
+			Name:   s.Track.Name,
+			Artist: s.Track.Artists[0].Name,
+			URI:    string(s.Track.ID),
+			Image:  image,
+		}
 
-		response.Results = append(response.Results, RespSong{
-			Name:    s.Track.Name,
-			Artist:  s.Track.Artists[0].Name,
-			URI:     string(s.Track.ID),
-			Image:   image,
-			Preview: s.Track.PreviewURL,
-		})
+		go func(resp RespSong) {
+			track := tracks.GetTrackFromID(resp.URI)
+			if track.Artist == "" || track.Information.TrackInformation.Image == "" || track.Name == "" {
+				track.Artist = resp.Artist
+				track.Information.TrackInformation.Image = resp.Image
+				track.Name = resp.Name
+				track.TrackID = resp.URI
+				track.Save()
+			}
+		}(respsong)
+
+		response.Results = append(response.Results, respsong)
 	}
 
 	respJSON, err := json.Marshal(response)

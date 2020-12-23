@@ -42,6 +42,8 @@ func (t *Track) updateLyrics() error {
 		log.WithFields(log.Fields{
 			"type": "genius",
 		}).Error(err)
+		t.LastUpdated = time.Now()
+		t.Save()
 		return err
 	}
 	if len(res.Response.Hits) == 0 {
@@ -81,6 +83,8 @@ func (t *Track) updateLyrics() error {
 		}
 	}
 	t.SearchingLyrics = false
+	t.LastUpdated = time.Now()
+	t.Save()
 	return nil
 }
 

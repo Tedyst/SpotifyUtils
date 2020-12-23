@@ -68,7 +68,7 @@ type SpotifyInformation struct {
 }
 
 func (t *Track) updateInformation(cl spotify.Client) error {
-	if t.Information.Updated == true || t.Information.TrackFeatures.Energy == 0 || t.Information.AlbumInformation.Markets == 0 {
+	if t.Information.Updated == true && t.Information.TrackFeatures.Energy != 0 && t.Information.AlbumInformation.Markets != 0 {
 		return nil
 	}
 	metrics.TrackInformationSearched.Add(1)

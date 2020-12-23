@@ -22,17 +22,10 @@ type Track struct {
 	Information SpotifyInformation `gorm:"embedded;embeddedPrefix:information_"`
 }
 
-func RecentlyPlayedItemToTrack(s spotify.SimpleTrack) *Track {
-	track := getTrackFromDB(string(s.ID))
-	track.Artist = s.Artists[0].Name
-	track.Name = s.Name
-	return track
-}
-
 func GetTrackFromID(ID string) *Track {
 	var track Track
-	track.TrackID = ID
 	config.DB.Where("track_id = ?", ID).FirstOrCreate(&track)
+	track.TrackID = ID
 	return &track
 }
 
@@ -59,15 +52,23 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			log.Error(err)
 			return
 		}
+
 		for ind, s := range info {
 			newTracks[ind+i].Artist = s.Artists[0].Name
 			newTracks[ind+i].Name = s.Name
 			newTracks[ind+i].Information.TrackInformation.Explicit = s.Explicit
 			newTracks[ind+i].Information.TrackInformation.Image = s.Album.Images[0].URL
+			newTracks[ind+i].Information.TrackInformation.Length = s.Duration
 			newTracks[ind+i].Save()
+			go newTracks[ind+i].updateLyrics()
 		}
-	}
 
+		go func(client *spotify.Client, tr []*Track) {
+			for _, s := range tr {
+				s.Update(cl)
+			}
+		}(&cl, newTracks)
+	}
 }
 
 func getTrackFromDB(ID string) *Track {

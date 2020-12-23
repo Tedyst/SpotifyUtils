@@ -27,13 +27,7 @@ func (u *User) GetPlaylistTracks(ID string, cl spotify.Client) []*tracks.Track {
 		}
 	}
 
-	// Preloading the tracks in memory and updating them just in case they are used
-	go func(it []*tracks.Track, cl spotify.Client) {
-		for _, s := range it {
-			t := tracks.GetTrackFromID(s.TrackID)
-			t.Update(cl)
-		}
-	}(result, cl)
+	tracks.BatchUpdate(result, cl)
 
 	return result
 }

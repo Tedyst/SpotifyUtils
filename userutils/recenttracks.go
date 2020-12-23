@@ -37,10 +37,12 @@ func (u *User) UpdateRecentTracks() {
 		log.Error(err)
 		return
 	}
+	list := []*tracks.Track{}
 	for _, s := range items {
-		t := tracks.RecentlyPlayedItemToTrack(s.Track)
-		t.Update(*u.Client())
+		t := tracks.GetTrackFromID(string(s.Track.ID))
+		list = append(list, t)
 	}
+	tracks.BatchUpdate(list, *u.Client())
 
 	u.insertRecentTracks(items)
 }
@@ -151,12 +153,12 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 		u.insertRecentTracks(items)
 	}
 
-	go func(it []spotify.RecentlyPlayedItem) {
-		for _, s := range it {
-			t := tracks.RecentlyPlayedItemToTrack(s.Track)
-			t.Update(*u.Client())
-		}
-	}(items)
+	list := []*tracks.Track{}
+	for _, s := range items {
+		t := tracks.GetTrackFromID(string(s.Track.ID))
+		list = append(list, t)
+	}
+	tracks.BatchUpdate(list, *u.Client())
 
 	return items
 }
@@ -227,7 +229,7 @@ func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct 
 	result.TopTracks = make([]RecentTracksStatisticsStructTrack, 0)
 	for _, s := range tr {
 		var fromDB tracks.Track
-		config.DB.Model(&tracks.Track{}).Select("id, artist, name, information_track_image").Where("track_id = ?", s.Track).Find(&fromDB)
+		config.DB.Model(&tracks.Track{}).Select("id, track_id, artist, name, information_track_image").Where("track_id = ?", s.Track).Find(&fromDB)
 		result.TopTracks = append(result.TopTracks, RecentTracksStatisticsStructTrack{
 			Count:  s.ID,
 			Name:   fromDB.Name,
