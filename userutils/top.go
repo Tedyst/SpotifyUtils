@@ -30,7 +30,7 @@ type TopStruct struct {
 	Tracks  TracksStruct  `json:"tracks"`
 }
 
-// RefreshTop updated the user's top
+// RefreshTop updates the user's top
 func (u *User) RefreshTop() error {
 	if time.Since(time.Unix(u.Top.Updated, 0)) < 10*time.Minute {
 		return nil
