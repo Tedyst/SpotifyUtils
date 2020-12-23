@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/tedyst/spotifyutils/tracks"
 	"github.com/zmb3/spotify"
 )
@@ -41,6 +42,7 @@ func (u *User) UpdateRecentTracks() {
 		t.Update(*u.Client())
 	}
 
+	metrics.RecentTracksAdded.Add(float64(len(items)))
 	u.insertRecentTracks(items)
 }
 
@@ -149,7 +151,6 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 		u.insertRecentTracks(items)
 	}
 
-	// Preloading the tracks in memory and updating them just in case they are used
 	go func(it []spotify.RecentlyPlayedItem) {
 		for _, s := range it {
 			t := tracks.RecentlyPlayedItemToTrack(s.Track)

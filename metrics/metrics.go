@@ -26,4 +26,9 @@ var (
 		Name:      "users_tracking",
 		Help:      "The total number of users that are tracked",
 	})
+	RecentTracksAdded = promauto.NewGauge(prometheus.GaugeOpts{
+		Namespace: "spotifyutils",
+		Name:      "recent_tracks_added",
+		Help:      "The total number of recent tracks that are added across all users",
+	})
 )
