@@ -127,7 +127,7 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 		t.Information.TrackInformation.TimeSignature = analysis.Track.TimeSignature
 	}
 
-	if t.Information.AlbumInformation.Markets == 0 {
+	if t.Information.AlbumInformation.Markets == 0 && t.Information.AlbumInformation.ID != "" {
 		album, err := cl.GetAlbum(spotify.ID(t.Information.AlbumInformation.ID))
 		if err != nil {
 			log.WithFields(log.Fields{
