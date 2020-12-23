@@ -13,7 +13,7 @@ import (
 // GormLogger struct
 type GormLogger struct{}
 
-const slowThreshold = 200 * time.Millisecond
+const slowThreshold = 1000 * time.Millisecond
 
 func (*GormLogger) Info(ctx context.Context, msg string, data ...interface{}) {
 	log.WithFields(log.Fields{"module": "gorm", "msg": msg}).Info(
