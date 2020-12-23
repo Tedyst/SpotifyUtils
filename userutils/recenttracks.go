@@ -42,11 +42,11 @@ func (u *User) UpdateRecentTracks() {
 		t.Update(*u.Client())
 	}
 
-	metrics.RecentTracksAdded.Add(float64(len(items)))
 	u.insertRecentTracks(items)
 }
 
 func (u *User) insertRecentTracks(items []spotify.RecentlyPlayedItem) {
+	metrics.RecentTracksAdded.Add(float64(len(items)))
 	var recent []RecentTracks
 	var present []RecentTracks
 	var first time.Time
