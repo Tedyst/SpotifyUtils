@@ -58,6 +58,7 @@ type AlbumInformationStruct struct {
 	ReleaseDate  string
 	TracksAmount int
 	Markets      int
+	ID           string
 }
 
 type SpotifyInformation struct {
@@ -73,61 +74,80 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 	}
 	metrics.TrackInformationSearched.Add(1)
 	log.Debugf("Getting spotify information for track %s", t.TrackID)
-	track, err := cl.GetTrack(spotify.ID(t.TrackID))
-	if err != nil {
-		log.WithFields(log.Fields{
-			"type": "spotify-api",
-		}).Error(err)
-		return err
-	}
-	t.Name = track.Name
-	t.Artist = track.Artists[0].Name
 
-	features, err := cl.GetAudioFeatures(spotify.ID(t.TrackID))
-	if err != nil {
-		log.WithFields(log.Fields{
-			"type": "spotify-api",
-		}).Error(err)
+	if t.Information.TrackInformation.Length == 0 {
+		track, err := cl.GetTrack(spotify.ID(t.TrackID))
+		if err != nil {
+			log.WithFields(log.Fields{
+				"type": "spotify-api",
+				"api":  "track",
+			}).Error(err)
+			return err
+		}
+		t.Name = track.Name
+		t.Artist = track.Artists[0].Name
+		t.Information.TrackInformation.Explicit = track.Explicit
+		t.Information.TrackInformation.Length = track.Duration
+		t.Information.TrackInformation.Markets = len(track.AvailableMarkets)
+		t.Information.TrackInformation.Popularity = track.Popularity
+		t.Information.AlbumInformation.ID = string(track.Album.ID)
 	}
-	if len(features) != 0 {
-		t.Information.TrackFeatures.Acousticness = features[0].Acousticness
-		t.Information.TrackFeatures.Energy = features[0].Energy
-		t.Information.TrackFeatures.Instrumentalness = features[0].Instrumentalness
-		t.Information.TrackFeatures.Liveness = features[0].Liveness
-		t.Information.TrackFeatures.Loudness = features[0].Loudness
-		t.Information.TrackFeatures.Speechiness = features[0].Speechiness
+
+	if t.Information.TrackFeatures.Energy == 0 {
+		features, err := cl.GetAudioFeatures(spotify.ID(t.TrackID))
+		if err != nil {
+			log.WithFields(log.Fields{
+				"type": "spotify-api",
+				"api":  "features",
+			}).Error(err)
+			return err
+		}
+		if len(features) != 0 {
+			t.Information.TrackFeatures.Acousticness = features[0].Acousticness
+			t.Information.TrackFeatures.Energy = features[0].Energy
+			t.Information.TrackFeatures.Instrumentalness = features[0].Instrumentalness
+			t.Information.TrackFeatures.Liveness = features[0].Liveness
+			t.Information.TrackFeatures.Loudness = features[0].Loudness
+			t.Information.TrackFeatures.Speechiness = features[0].Speechiness
+		}
 	}
-	analysis, err := cl.GetAudioAnalysis(spotify.ID(t.TrackID))
-	if err != nil {
-		log.WithFields(log.Fields{
-			"type": "spotify-api",
-		}).Error(err)
+
+	if t.Information.TrackInformation.Tempo == 0 {
+		analysis, err := cl.GetAudioAnalysis(spotify.ID(t.TrackID))
+		if err != nil {
+			log.WithFields(log.Fields{
+				"type": "spotify-api",
+				"api":  "analysis",
+			}).Error(err)
+			return err
+		}
+		t.Information.TrackInformation.Mode = int(analysis.Track.Mode)
+		t.Information.TrackInformation.Tempo = analysis.Track.Tempo
+		t.Information.TrackInformation.Key = int(analysis.Track.Key)
+		t.Information.TrackInformation.TimeSignature = analysis.Track.TimeSignature
 	}
-	album, err := cl.GetAlbum(spotify.ID(track.Album.ID))
-	if err != nil {
-		log.WithFields(log.Fields{
-			"type": "spotify-api",
-		}).Error(err)
+
+	if t.Information.AlbumInformation.Markets == 0 {
+		album, err := cl.GetAlbum(spotify.ID(t.Information.AlbumInformation.ID))
+		if err != nil {
+			log.WithFields(log.Fields{
+				"type": "spotify-api",
+				"api":  "album",
+			}).Error(err)
+			return err
+		}
+
+		if len(album.Images) > 0 {
+			t.Information.TrackInformation.Image = album.Images[0].URL
+		}
+
+		t.Information.AlbumInformation.Markets = len(album.AvailableMarkets)
+		t.Information.AlbumInformation.ReleaseDate = album.ReleaseDate
+		t.Information.AlbumInformation.TracksAmount = album.Tracks.Total
+		t.Information.AlbumInformation.Popularity = album.Popularity
 	}
+
 	t.Information.Updated = true
-
-	t.Information.TrackInformation.Explicit = track.Explicit
-	t.Information.TrackInformation.Key = int(analysis.Track.Key)
-	t.Information.TrackInformation.Length = track.Duration
-	t.Information.TrackInformation.Markets = len(track.AvailableMarkets)
-	t.Information.TrackInformation.Mode = int(analysis.Track.Mode)
-	t.Information.TrackInformation.Popularity = track.Popularity
-	t.Information.TrackInformation.Tempo = analysis.Track.Tempo
-	t.Information.TrackInformation.TimeSignature = analysis.Track.TimeSignature
-
-	if len(album.Images) > 0 {
-		t.Information.TrackInformation.Image = album.Images[0].URL
-	}
-
-	t.Information.AlbumInformation.Markets = len(album.AvailableMarkets)
-	t.Information.AlbumInformation.ReleaseDate = album.ReleaseDate
-	t.Information.AlbumInformation.TracksAmount = album.Tracks.Total
-	t.Information.AlbumInformation.Popularity = album.Popularity
 
 	return nil
 }
