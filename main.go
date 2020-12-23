@@ -117,6 +117,7 @@ func main() {
 	db, err := datab.DB()
 	checkErr(err)
 	db.Exec("PRAGMA journal_mode=WAL;")
+	db.SetConnMaxLifetime(time.Minute * 4)
 
 	config.DB = datab
 
