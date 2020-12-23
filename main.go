@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"fmt"
 	"net/http"
@@ -107,17 +108,36 @@ func middleware(next *mux.Router) http.Handler {
 	})
 }
 
+func createDB() {
+	uri := strings.Split(*config.Database, "/")
+	if len(uri) != 2 {
+		return
+	}
+	databaseuri := uri[0] + "/"
+	name := uri[1]
+
+	db, err := sql.Open("mysql", databaseuri)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	db.Exec("CREATE DATABASE " + name)
+}
+
 func main() {
 	flag.Parse()
 	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
 
+	createDB()
+
 	datab, err := gorm.Open(mysql.Open(fmt.Sprintf("%s?charset=utf8mb4&parseTime=True&loc=Local", *config.Database)), &gorm.Config{
 		Logger: &GormLogger{},
 	})
+	checkErr(err)
 	db, err := datab.DB()
 	checkErr(err)
 	db.Exec("PRAGMA journal_mode=WAL;")
-	db.Exec("CREATE DATABASE IF NOT EXISTS spotifyutils;")
 	db.SetConnMaxLifetime(time.Minute * 4)
 
 	config.DB = datab
