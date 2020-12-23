@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
   const [logged, setLogged] = React.useState(false);
+  const [error, setError] = React.useState(false);
 
   let search = window.location.search;
   let params = new URLSearchParams(search);
@@ -52,10 +53,19 @@ export default function Login() {
           if (data.success === true) {
             UpdateUser();
             setLogged(true);
+          } else {
+            setError(true)
           }
+        }).catch(() => {
+          setError(true);
         });
     }
   }, [code]);
+
+  console.log(error)
+  if (code !== null && error === true) {
+    return <Redirect to="/" />
+  }
 
   if (logged) {
     return <Redirect to="/" />

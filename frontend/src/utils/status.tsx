@@ -9,7 +9,6 @@ import { batch } from "react-redux";
 import store from "../store/store";
 
 export default function UpdateUser() {
-    
     fetch("/api/status", { cache: "no-store" })
         .then((res) => res.json())
         .then((data) => {
