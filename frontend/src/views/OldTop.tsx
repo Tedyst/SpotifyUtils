@@ -75,6 +75,18 @@ export default function OldTop() {
             setSelectedDate(date);
     };
 
+    const titleText = (
+        <div>
+            <Typography align="center" color="textPrimary" variant="h4">
+                Your Listening Statistics
+            </Typography>
+            <Typography variant="subtitle1" color="textSecondary" align="center">
+                This app does not have access to information older than the moment that you first used the app
+                <br />
+                To disable user tracking, go to Settings and uncheck Recent Tracks Tracking
+            </Typography>
+        </div>);
+
     useEffect(() => {
         if (selectedDate !== null)
             fetch('/api/top/old/' + selectedDate.getTime() / 1000, { cache: "no-store" }).then(res => res.json()).then(data => {
@@ -105,6 +117,7 @@ export default function OldTop() {
     if (oldTop === undefined)
         return (
             <div>
+                {titleText}
                 {datepicker}
                 <Loading />
             </div>)
@@ -139,6 +152,7 @@ export default function OldTop() {
     let totallistenedtracks = oldTop.Result.Count;
     return (
         <div>
+            {titleText}
             <Container maxWidth="sm">
                 {datepicker}
             </Container>

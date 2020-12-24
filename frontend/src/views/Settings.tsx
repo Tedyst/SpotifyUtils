@@ -25,6 +25,9 @@ const useStyles = makeStyles((theme) => ({
         width: "100%", // Fix IE 11 issue.
         marginTop: theme.spacing(1),
     },
+    a: {
+        color: "inherit",
+    }
 }));
 
 export default function Recent() {
@@ -79,6 +82,9 @@ export default function Recent() {
     return <div>
         <Typography color="textPrimary" gutterBottom variant="h5" align="center">
             Here you can adjust your user settings
+        </Typography>
+        <Typography variant="subtitle1" color="textSecondary" align="center">
+            If you want to see what the app is doing in the background, you can check the <a href="https://github.com/Tedyst/SpotifyUtils" className={classes.a}>GitHub page</a>
         </Typography>
         <Container maxWidth="xs">
             <Card className={classes.root}>
