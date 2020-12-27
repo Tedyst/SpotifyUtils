@@ -70,14 +70,17 @@ func (u *User) RefreshTop() error {
 		})
 	}
 	for _, s := range shortTopTracks.Tracks {
-		result.Tracks = append(result.Tracks, TopTrack{
+		toptrack := TopTrack{
 			Artist:     string(s.Artists[0].Name),
 			Duration:   s.Duration,
 			ID:         string(s.ID),
-			Image:      s.Album.Images[0].URL,
 			Name:       s.Name,
 			PreviewURL: s.PreviewURL,
-		})
+		}
+		if len(s.Album.Images) > 0 {
+			toptrack.Image = s.Album.Images[0].URL
+		}
+		result.Tracks = append(result.Tracks, toptrack)
 	}
 	result.Updated = time.Now().Unix()
 

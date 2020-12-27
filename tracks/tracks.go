@@ -62,18 +62,24 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			newTracks[ind+i].Artist = s.Artists[0].Name
 			newTracks[ind+i].Name = s.Name
 			newTracks[ind+i].Information.TrackInformation.Explicit = s.Explicit
-			newTracks[ind+i].Information.TrackInformation.Image = s.Album.Images[0].URL
+
+			if len(s.Album.Images) > 0 {
+				newTracks[ind+i].Information.TrackInformation.Image = s.Album.Images[0].URL
+			}
+
 			newTracks[ind+i].Information.TrackInformation.Length = s.Duration
 			newTracks[ind+i].Information.TrackInformation.Markets = len(s.AvailableMarkets)
 			newTracks[ind+i].Information.TrackInformation.Popularity = s.Popularity
 			newTracks[ind+i].Information.TrackInformation.Explicit = s.Explicit
 
-			newTracks[ind+i].Information.TrackFeatures.Acousticness = features[ind].Acousticness
-			newTracks[ind+i].Information.TrackFeatures.Energy = features[ind].Energy
-			newTracks[ind+i].Information.TrackFeatures.Instrumentalness = features[ind].Instrumentalness
-			newTracks[ind+i].Information.TrackFeatures.Liveness = features[ind].Liveness
-			newTracks[ind+i].Information.TrackFeatures.Loudness = features[ind].Loudness
-			newTracks[ind+i].Information.TrackFeatures.Speechiness = features[ind].Speechiness
+			if len(features) > 0 {
+				newTracks[ind+i].Information.TrackFeatures.Acousticness = features[ind].Acousticness
+				newTracks[ind+i].Information.TrackFeatures.Energy = features[ind].Energy
+				newTracks[ind+i].Information.TrackFeatures.Instrumentalness = features[ind].Instrumentalness
+				newTracks[ind+i].Information.TrackFeatures.Liveness = features[ind].Liveness
+				newTracks[ind+i].Information.TrackFeatures.Loudness = features[ind].Loudness
+				newTracks[ind+i].Information.TrackFeatures.Speechiness = features[ind].Speechiness
+			}
 
 			newTracks[ind+i].Save()
 			go newTracks[ind+i].updateLyrics()
