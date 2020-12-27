@@ -102,7 +102,7 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 			}).Error(err)
 			return err
 		}
-		if len(features) != 0 {
+		if len(features) != 0 && features[0] != nil {
 			t.Information.TrackFeatures.Acousticness = features[0].Acousticness
 			t.Information.TrackFeatures.Energy = features[0].Energy
 			t.Information.TrackFeatures.Instrumentalness = features[0].Instrumentalness
