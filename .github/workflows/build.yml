@@ -24,7 +24,10 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "15.5"
-      - run: npm install
-      - run: npm run build
+      - run: |
+          cd frontend/
+          npm install
+          npm run build
+          cd ../
       - name: Build Docker Package
         run: docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t ghcr.io/tedyst/spotifyutils:${{ github.ref }} .
