@@ -32,5 +32,7 @@ jobs:
           npm install
           npm run build
           cd ../
-      - name: Build Docker Package
+      - name: Build Docker Package - tagged
         run: docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t ghcr.io/tedyst/spotifyutils:${{ steps.get_version.outputs.VERSION }} .
+      - name: Build Docker Package - latest
+        run: docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t ghcr.io/tedyst/spotifyutils:latest .
