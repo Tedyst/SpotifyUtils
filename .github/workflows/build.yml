@@ -2,6 +2,7 @@ name: Build Docker app
 
 on:
   release:
+    types: [published]
 
 jobs:
   buildx:
@@ -26,4 +27,4 @@ jobs:
       - run: npm install
       - run: npm run build
       - name: Build Docker Package
-        run: docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t ghcr.io/tedyst/spotifyutils .
+        run: docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t ghcr.io/tedyst/spotifyutils:${{ github.ref }} .
