@@ -41,6 +41,7 @@ var clientCache []*clientCacheStruct
 const userRefreshTimeout = 10 * time.Minute
 
 func (u *User) Client() *spotify.Client {
+	u.RefreshToken()
 	client := config.SpotifyAPI.NewClient(u.Token)
 	return &client
 }
