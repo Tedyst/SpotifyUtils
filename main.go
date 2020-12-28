@@ -122,6 +122,8 @@ func createDB() {
 	}
 	defer db.Close()
 
+	// This should create the DB with utf8, the second one is just to be sure because SQLite
+	db.Exec("CREATE DATABASE " + name + "DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci")
 	db.Exec("CREATE DATABASE " + name)
 }
 
