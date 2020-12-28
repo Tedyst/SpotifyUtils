@@ -79,8 +79,9 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 		track, err := cl.GetTrack(spotify.ID(t.TrackID))
 		if err != nil {
 			log.WithFields(log.Fields{
-				"type": "spotify-api",
-				"api":  "track",
+				"type":  "spotify-api",
+				"api":   "track",
+				"track": t.TrackID,
 			}).Error(err)
 			return err
 		}
@@ -97,8 +98,9 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 		features, err := cl.GetAudioFeatures(spotify.ID(t.TrackID))
 		if err != nil {
 			log.WithFields(log.Fields{
-				"type": "spotify-api",
-				"api":  "features",
+				"type":  "spotify-api",
+				"api":   "features",
+				"track": t.TrackID,
 			}).Error(err)
 			return err
 		}
@@ -116,8 +118,9 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 		analysis, err := cl.GetAudioAnalysis(spotify.ID(t.TrackID))
 		if err != nil {
 			log.WithFields(log.Fields{
-				"type": "spotify-api",
-				"api":  "analysis",
+				"type":  "spotify-api",
+				"api":   "analysis",
+				"track": t.TrackID,
 			}).Error(err)
 			return err
 		}
@@ -131,8 +134,9 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 		album, err := cl.GetAlbum(spotify.ID(t.Information.AlbumInformation.ID))
 		if err != nil {
 			log.WithFields(log.Fields{
-				"type": "spotify-api",
-				"api":  "album",
+				"type":  "spotify-api",
+				"api":   "album",
+				"track": t.TrackID,
 			}).Error(err)
 			return err
 		}
