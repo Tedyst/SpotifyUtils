@@ -2,13 +2,13 @@ package userutils
 
 import (
 	"flag"
-	"log"
 	"os"
 	"testing"
 	"time"
 
 	"github.com/Tedyst/gormstore"
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/tracks"
 	"gorm.io/driver/sqlite"
@@ -31,7 +31,7 @@ func lookupEnvOrString(key string, defaultVal string) string {
 func setupTests() {
 	err := godotenv.Load("../.env")
 	if err != nil {
-		log.Panic()
+		logrus.Info("Could not load .env file")
 	}
 	flag.Parse()
 	clientid := lookupEnvOrString("SPOTIFY_CLIENT_ID", "")
@@ -41,7 +41,7 @@ func setupTests() {
 	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
 	config.DB, err = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
 	if err != nil {
-		log.Panic()
+		logrus.Panic()
 	}
 	config.DB.AutoMigrate(&tracks.Track{})
 	config.DB.AutoMigrate(&User{})
