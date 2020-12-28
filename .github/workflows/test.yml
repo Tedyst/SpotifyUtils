@@ -20,8 +20,11 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - run: |
+      - name: Download dependencies
+        run: |
           go mod download
+      - name: Test the app
+        run: |
           go test -v ./...
         env:
           SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
