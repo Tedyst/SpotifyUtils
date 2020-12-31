@@ -48,7 +48,6 @@ func (u *User) UpdateRecentTracks() {
 }
 
 func (u *User) insertRecentTracks(items []spotify.RecentlyPlayedItem) {
-	metrics.RecentTracksAdded.Add(float64(len(items)))
 	var recent []RecentTracks
 	var present []RecentTracks
 	var first time.Time
@@ -80,6 +79,7 @@ func (u *User) insertRecentTracks(items []spotify.RecentlyPlayedItem) {
 		}
 	}
 	if len(recent) != 0 {
+		metrics.RecentTracksAdded.Add(float64(len(recent)))
 		config.DB.Create(&recent)
 	}
 }
