@@ -223,6 +223,7 @@ type RecentTracksStatisticsStructTrack struct {
 
 func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct {
 	tr, count := u.getTopRecentTrackSince(t)
+	var countMap = map[string]uint{}
 	result := RecentTracksStatisticsStruct{}
 	result.Count = count
 	// TopTracks
@@ -230,12 +231,13 @@ func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct 
 	list := []*tracks.Track{}
 	for _, s := range tr {
 		fromDB := tracks.GetTrackFromID(s.Track)
+		countMap[s.Track] = s.ID
 		list = append(list, fromDB)
 	}
 	tracks.BatchUpdate(list, *u.Client())
 	for _, s := range list {
 		result.TopTracks = append(result.TopTracks, RecentTracksStatisticsStructTrack{
-			Count:  s.ID,
+			Count:  countMap[s.TrackID],
 			Name:   s.Name,
 			Artist: s.Artist,
 			Image:  s.Information.TrackInformation.Image,
