@@ -11,7 +11,7 @@ import (
 
 type Track struct {
 	gorm.Model
-	TrackID string
+	TrackID string `gorm:"type:VARCHAR(30)"`
 
 	Lyrics          string
 	SearchingLyrics bool `json:"-"`

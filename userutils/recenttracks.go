@@ -227,9 +227,15 @@ func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct 
 	result.Count = count
 	// TopTracks
 	result.TopTracks = make([]RecentTracksStatisticsStructTrack, 0)
+	list := []*tracks.Track{}
+	for _, s := range tr {
+		fromDB := tracks.GetTrackFromID(s.Track)
+		list = append(list, fromDB)
+	}
+	tracks.BatchUpdate(list, *u.Client())
 	for _, s := range tr {
 		var fromDB tracks.Track
-		config.DB.Model(&tracks.Track{}).Select("id, track_id, artist, name, information_track_image").Where("track_id = ?", s.Track).Find(&fromDB)
+		config.DB.Model(&tracks.Track{}).Where("track_id = ?", s.Track).Find(&fromDB)
 		result.TopTracks = append(result.TopTracks, RecentTracksStatisticsStructTrack{
 			Count:  s.ID,
 			Name:   fromDB.Name,

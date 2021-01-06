@@ -131,6 +131,10 @@ func main() {
 	flag.Parse()
 	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
 
+	if *config.Debug {
+		log.SetLevel(log.DebugLevel)
+	}
+
 	createDB()
 
 	datab, err := gorm.Open(mysql.Open(fmt.Sprintf("%s?charset=utf8mb4&parseTime=True&loc=Local", *config.Database)), &gorm.Config{
@@ -144,10 +148,6 @@ func main() {
 	db.SetConnMaxLifetime(time.Minute * 4)
 
 	config.DB = datab
-
-	if *config.Debug {
-		log.SetLevel(log.DebugLevel)
-	}
 
 	log.SetReportCaller(true)
 	initDB(config.DB)

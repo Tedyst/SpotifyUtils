@@ -1,10 +1,6 @@
 package tracks
 
 import (
-	"database/sql/driver"
-	"encoding/json"
-
-	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/zmb3/spotify"
@@ -17,28 +13,6 @@ type TrackFeaturesStruct struct {
 	Liveness         float32
 	Loudness         float32
 	Speechiness      float32
-	LoudnessGraph    LoudnessGraphStruct
-}
-
-type LoudnessGraphStruct []int
-
-func (sla *LoudnessGraphStruct) Scan(value interface{}) error {
-	switch v := value.(type) {
-	case []byte:
-		logrus.Tracef("Using []byte as type, value %v", v)
-		return json.Unmarshal(value.([]byte), &sla)
-	case string:
-		logrus.Tracef("Using string as type, value %v", v)
-		return json.Unmarshal([]byte(value.(string)), &sla)
-	default:
-		log.Panic("Not found interface type")
-	}
-	return nil
-}
-
-func (sla LoudnessGraphStruct) Value() (driver.Value, error) {
-	val, err := json.Marshal(sla)
-	return string(val), err
 }
 
 type TrackInformationStruct struct {
