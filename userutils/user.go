@@ -64,8 +64,9 @@ func (u *User) Save() {
 }
 
 func (u *User) RefreshToken() error {
-	if !u.Token.Valid() {
+	if !u.Token.Valid() || u.Token.Expiry.Sub(time.Now()) < 3*time.Minute {
 		// Try to refresh the token
+		log.Debugf("Trying to refresh token for user %s", u.UserID)
 		client := config.SpotifyAPI.NewClient(u.Token)
 		t, err := client.Token()
 		if err != nil {
