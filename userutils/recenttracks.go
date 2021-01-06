@@ -233,15 +233,13 @@ func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct 
 		list = append(list, fromDB)
 	}
 	tracks.BatchUpdate(list, *u.Client())
-	for _, s := range tr {
-		var fromDB tracks.Track
-		config.DB.Model(&tracks.Track{}).Where("track_id = ?", s.Track).Find(&fromDB)
+	for _, s := range list {
 		result.TopTracks = append(result.TopTracks, RecentTracksStatisticsStructTrack{
 			Count:  s.ID,
-			Name:   fromDB.Name,
-			Artist: fromDB.Artist,
-			Image:  fromDB.Information.TrackInformation.Image,
-			URI:    fromDB.TrackID,
+			Name:   s.Name,
+			Artist: s.Artist,
+			Image:  s.Information.TrackInformation.Image,
+			URI:    s.TrackID,
 		})
 	}
 
