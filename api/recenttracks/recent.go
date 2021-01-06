@@ -69,7 +69,6 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 				track.Information.TrackInformation.Image = resp.Image
 				track.Name = resp.Name
 				track.TrackID = resp.URI
-				track.Save()
 			}
 		}(respsong)
 

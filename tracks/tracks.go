@@ -1,17 +1,19 @@
 package tracks
 
 import (
+	"fmt"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/zmb3/spotify"
+	"google.golang.org/protobuf/internal/errors"
 	"gorm.io/gorm"
 )
 
 type Track struct {
 	gorm.Model
-	TrackID string `gorm:"type:VARCHAR(30)"`
+	TrackID string `gorm:"type:VARCHAR(30) NOT NULL UNIQUE"`
 
 	Lyrics          string
 	SearchingLyrics bool `json:"-"`
@@ -23,10 +25,11 @@ type Track struct {
 }
 
 func GetTrackFromID(ID string) *Track {
-	var track Track
-	config.DB.Where("track_id = ?", ID).FirstOrCreate(&track)
-	track.TrackID = ID
-	return &track
+	var tr Track
+	config.DB.Where("track_id = ?", ID).FirstOrCreate(&tr, Track{
+		TrackID: ID,
+	})
+	return &tr
 }
 
 func BatchUpdate(tracks []*Track, cl spotify.Client) {
@@ -62,6 +65,7 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			newTracks[ind+i].Artist = s.Artists[0].Name
 			newTracks[ind+i].Name = s.Name
 			newTracks[ind+i].Information.TrackInformation.Explicit = s.Explicit
+			newTracks[ind+i].TrackID = s.ID.String()
 
 			if len(s.Album.Images) > 0 {
 				newTracks[ind+i].Information.TrackInformation.Image = s.Album.Images[0].URL
@@ -97,22 +101,20 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 	}
 }
 
-func getTrackFromDB(ID string) *Track {
-	if !enableSaving {
-		return &Track{
-			TrackID:     ID,
-			LastUpdated: time.Unix(0, 0),
-		}
-	}
-	var track Track
-	track.TrackID = ID
-	config.DB.Where("track_id = ?", ID).FirstOrCreate(&track)
-	return &track
-}
-
 func (t *Track) Save() error {
 	if !enableSaving {
 		return nil
+	}
+	inDB := GetTrackFromID(t.TrackID)
+	if inDB.ID != t.ID {
+		msg := fmt.Sprintf("Duplicate entry detected: %s and %s", inDB.ID, t.ID)
+		log.Error(msg)
+		return errors.Error(msg)
+	}
+	if t.TrackID == "" {
+		msg := fmt.Sprintf("Tried to save empty track_id, ID = %s", t.ID)
+		log.Error(msg)
+		return errors.Error(msg)
 	}
 	config.DB.Save(t)
 	return nil

@@ -43,7 +43,6 @@ func (t *Track) updateLyrics() error {
 			"type": "genius",
 		}).Error(err)
 		t.LastUpdated = time.Now()
-		t.Save()
 		return err
 	}
 	if len(res.Response.Hits) == 0 {
@@ -72,19 +71,11 @@ func (t *Track) updateLyrics() error {
 				log.Debugf("Could not extract lyrics from %s", s.Result.URL)
 			}
 			t.Lyrics = lyrics
-			t.LastUpdated = time.Now()
-			err = t.Save()
-			if err != nil {
-				log.WithFields(log.Fields{
-					"type": "genius",
-				}).Error(err)
-			}
 			break
 		}
 	}
 	t.SearchingLyrics = false
 	t.LastUpdated = time.Now()
-	t.Save()
 	return nil
 }
 
