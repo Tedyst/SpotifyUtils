@@ -42,14 +42,36 @@ type SpotifyInformation struct {
 	Updated          bool                   `json:"-"`
 }
 
-func (t *Track) updateInformation(cl spotify.Client) error {
+func (t *Track) NeedUpdate() bool {
 	if t.Information.Updated == true {
+		return false
+	}
+	if t.Information.AlbumInformation.ID == "" {
+		return true
+	}
+	if t.Information.TrackInformation.Length == 0 {
+		return true
+	}
+	if t.Information.TrackFeatures.Energy == 0 {
+		return true
+	}
+	if t.Information.TrackInformation.Tempo == 0 {
+		return true
+	}
+	if t.Information.AlbumInformation.Markets == 0 {
+		return true
+	}
+	return false
+}
+
+func (t *Track) updateInformation(cl spotify.Client) error {
+	if !t.NeedUpdate() {
 		return nil
 	}
 	metrics.TrackInformationSearched.Add(1)
 	log.Debugf("Getting spotify information for track %s", t.TrackID)
 
-	if t.Information.TrackInformation.Length == 0 {
+	if t.Information.AlbumInformation.ID == "" {
 		track, err := cl.GetTrack(spotify.ID(t.TrackID))
 		if err != nil {
 			log.WithFields(log.Fields{

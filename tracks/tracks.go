@@ -72,6 +72,8 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			newTracks[ind+i].Information.TrackInformation.Popularity = s.Popularity
 			newTracks[ind+i].Information.TrackInformation.Explicit = s.Explicit
 
+			newTracks[ind+i].Information.AlbumInformation.ID = s.Album.ID.String()
+
 			// Sometimes it is possible for the features to be nil, for Monstercat Instinct Songs for example
 			if len(features) > 0 && features[ind] != nil {
 				newTracks[ind+i].Information.TrackFeatures.Acousticness = features[ind].Acousticness
