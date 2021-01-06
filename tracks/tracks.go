@@ -1,13 +1,13 @@
 package tracks
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/zmb3/spotify"
-	"google.golang.org/protobuf/internal/errors"
 	"gorm.io/gorm"
 )
 
@@ -109,12 +109,12 @@ func (t *Track) Save() error {
 	if inDB.ID != t.ID {
 		msg := fmt.Sprintf("Duplicate entry detected: %s and %s", inDB.ID, t.ID)
 		log.Error(msg)
-		return errors.Error(msg)
+		return errors.New(msg)
 	}
 	if t.TrackID == "" {
 		msg := fmt.Sprintf("Tried to save empty track_id, ID = %s", t.ID)
 		log.Error(msg)
-		return errors.Error(msg)
+		return errors.New(msg)
 	}
 	config.DB.Save(t)
 	return nil
