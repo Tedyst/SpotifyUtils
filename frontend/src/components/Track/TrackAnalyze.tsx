@@ -60,7 +60,7 @@ export default function TrackAnalyze() {
     const [returnToTrackSearch, setReturn] = useState(false);
 
     useEffect(() => {
-        fetch('/api/track/' + trackid, { cache: "no-store" }).then(res => res.json()).then(data => {
+        fetch('/api/track/' + trackid, { cache: "no-store", credentials: "same-origin" }).then(res => res.json()).then(data => {
             if (data.Success)
                 setTrackInfo(data.Result);
             else

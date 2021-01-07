@@ -89,7 +89,7 @@ export default function OldTop() {
 
     useEffect(() => {
         if (selectedDate !== null)
-            fetch('/api/top/old/' + selectedDate.getTime() / 1000, { cache: "no-store" }).then(res => res.json()).then(data => {
+            fetch('/api/top/old/' + selectedDate.getTime() / 1000, { cache: "no-store", credentials: "same-origin" }).then(res => res.json()).then(data => {
                 if (data.Success === true)
                     setOldTop(data);
             });

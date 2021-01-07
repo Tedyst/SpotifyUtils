@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { Button, Container, Card, Typography, makeStyles, CardContent, Checkbox, FormControlLabel } from '@material-ui/core';
 import Loading from '../components/Loading';
+import { useSelector } from 'react-redux';
+import { selectCSRFToken } from '../store/user';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -44,6 +46,7 @@ export default function Recent() {
         fetch("/api/settings", {
             method: "GET",
             cache: "no-store",
+            credentials: "same-origin"
         })
             .then((res) => res.json())
             .then((data) => {
@@ -54,17 +57,20 @@ export default function Recent() {
             });
     }, []);
 
+    const CSRFToken = useSelector(selectCSRFToken);
     const onSubmit = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
         fetch("/api/settings", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "X-CSRF-Token": CSRFToken,
             },
             body: JSON.stringify({
                 RecentTracks: recentTracks,
             }),
             cache: "no-store",
+            credentials: "same-origin"
         })
             .then((res) => res.json())
             .then((data) => {

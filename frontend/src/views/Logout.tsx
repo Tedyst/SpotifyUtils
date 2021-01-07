@@ -1,18 +1,18 @@
 import React, { useEffect } from 'react';
 import {
-  setLogged,
+    setLogged,
 } from '../store/user';
 import { useDispatch } from 'react-redux';
 
-export default function Track(){
+export default function Track() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        fetch('/api/logout', { cache: "no-store" }).then(res => res.json()).then(data => {
+        fetch('/api/logout', { cache: "no-store", credentials: "same-origin" }).then(res => res.json()).then(data => {
             dispatch(setLogged(false));
             localStorage.clear();
         });
-        
+
     })
     return <div>Logging out...</div>;
 }

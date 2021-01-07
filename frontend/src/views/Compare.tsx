@@ -112,7 +112,7 @@ function Username(props: {
     }>();
     if (top === undefined && Updating === undefined) {
         setUpdating(code);
-        fetch('/api/compare/' + code, { cache: "no-store" }).then(res => res.json()).then(data => {
+        fetch('/api/compare/' + code, { cache: "no-store", credentials: "same-origin" }).then(res => res.json()).then(data => {
             setTop(data);
             if (data.success)
                 setUpdating(code);

@@ -4,13 +4,17 @@ import {
     setUsername,
     setImage,
     setCompare,
+    setCSRFToken,
 } from "../store/user";
 import { batch } from "react-redux";
 import store from "../store/store";
 
 export default function UpdateUser() {
-    fetch("/api/status", { cache: "no-store" })
-        .then((res) => res.json())
+    fetch("/api/status", { cache: "no-store", credentials: "same-origin" })
+        .then((res) => {
+            store.dispatch(setCSRFToken(res.headers.get("X-CSRF-Token")))
+            return res.json()
+        })
         .then((data) => {
             batch(() => {
                 store.dispatch(setImage(data.image));
@@ -22,7 +26,7 @@ export default function UpdateUser() {
                 if (!data.success) localStorage.clear();
             });
             if (data.success) {
-                fetch("/api/compare", { cache: "no-store" })
+                fetch("/api/compare", { cache: "no-store", credentials: "same-origin" })
                     .then((res) => res.json())
                     .then((data) => {
                         store.dispatch(setCompare(data));

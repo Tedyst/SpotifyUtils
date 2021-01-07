@@ -55,7 +55,7 @@ export default function Top() {
     const classes = useStyles();
 
     useEffect(() => {
-        fetch('/api/top', { cache: "no-store" }).then(res => res.json()).then(data => {
+        fetch('/api/top', { cache: "no-store", credentials: "same-origin" }).then(res => res.json()).then(data => {
             setTop(data);
         });
     }, [])

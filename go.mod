@@ -8,6 +8,7 @@ require (
 	github.com/Tedyst/gormstore v0.0.0-20201208101936-a978cf1cc9c4
 	github.com/gabyshev/genius-api v0.0.0-20171219135306-0b47a9d5ca7a
 	github.com/google/uuid v1.0.0
+	github.com/gorilla/csrf v1.7.0
 	github.com/gorilla/mux v1.7.3
 	github.com/gorilla/sessions v1.2.1 // indirect
 	github.com/joho/godotenv v1.3.0

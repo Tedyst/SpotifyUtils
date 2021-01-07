@@ -15,7 +15,8 @@ export const userSlice = createSlice({
     },
     recent: {
       "results": []
-    }
+    },
+    CSRFToken: undefined
   },
   reducers: {
     setLogged: (state, action) => {
@@ -46,6 +47,9 @@ export const userSlice = createSlice({
       saveState("recent", action.payload);
       state.recent = action.payload;
     },
+    setCSRFToken: (state, action) => {
+      state.CSRFToken = action.payload;
+    },
   },
 });
 
@@ -56,7 +60,8 @@ export const {
   setImage,
   setPathName,
   setCompare,
-  setRecent
+  setRecent,
+  setCSRFToken
 } = userSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -79,5 +84,6 @@ export const selectImage = (state: any) => state.user.image;
 export const selectPathname = (state: any) => state.user.pathname;
 export const selectCompare = (state: any) => state.user.compare;
 export const selectRecent = (state: any) => state.user.recent;
+export const selectCSRFToken = (state: any) => state.user.CSRFToken;
 
 export default userSlice.reducer;

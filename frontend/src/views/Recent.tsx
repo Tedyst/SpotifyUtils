@@ -17,7 +17,7 @@ export default function Recent() {
     }>();
 
     useEffect(() => {
-        fetch('/api/recent', { cache: "no-store" }).then(res => res.json()).then(data => {
+        fetch('/api/recent', { cache: "no-store", credentials: "same-origin" }).then(res => res.json()).then(data => {
             setRecent(data);
         });
     }, [])

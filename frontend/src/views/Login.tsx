@@ -5,6 +5,9 @@ import UpdateUser from "../utils/status";
 import {
   Redirect,
 } from "react-router-dom";
+import store from "../store/store";
+import { selectCSRFToken, setCSRFToken } from "../store/user";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -29,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const [logged, setLogged] = React.useState(false);
   const [error, setError] = React.useState(false);
+  const CSRFToken = useSelector(selectCSRFToken);
 
   let search = window.location.search;
   let params = new URLSearchParams(search);
@@ -41,12 +45,14 @@ export default function Login() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-CSRF-Token": CSRFToken,
         },
         body: JSON.stringify({
           host: window.location.protocol + "//" + window.location.host,
           code: code,
         }),
         cache: "no-store",
+        credentials: "same-origin"
       })
         .then((res) => res.json())
         .then((data) => {
@@ -60,7 +66,7 @@ export default function Login() {
           setError(true);
         });
     }
-  }, [code]);
+  }, [code, CSRFToken]);
 
   console.log(error)
   if (code !== null && error === true) {
@@ -78,20 +84,33 @@ function LoginPage(props: { loggingIn: boolean }) {
   const [LoginUrl, setLoginUrl] = useState("");
   const classes = useStyles();
   useEffect(() => {
-    fetch("/api/auth-url", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        host: window.location.protocol + "//" + window.location.host,
-      }),
-      cache: "no-store",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setLoginUrl(data.URL);
-      });
+    let CSRFToken: string = "";
+    fetch("/api/status", { cache: "no-store", credentials: "same-origin" })
+      .then((res) => {
+        let asd = res.headers.get("X-CSRF-Token");
+        if (asd !== null) {
+          CSRFToken = asd;
+          store.dispatch(setCSRFToken(asd))
+        }
+      }).then(() => {
+        console.log(CSRFToken);
+        fetch("/api/auth-url", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": CSRFToken
+          },
+          body: JSON.stringify({
+            host: window.location.protocol + "//" + window.location.host,
+          }),
+          cache: "no-store",
+          credentials: "same-origin"
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            setLoginUrl(data.URL);
+          });
+      })
   }, []);
 
   let buttonText = props.loggingIn

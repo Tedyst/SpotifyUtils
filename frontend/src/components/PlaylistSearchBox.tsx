@@ -86,7 +86,7 @@ export default function SearchBox(props: {
 
     const update = function () {
         setButtonText("Searching...");
-        fetch('/api/playlist/' + selectedPlaylist, { cache: "no-store" }).then(res => res.json()).then(data => {
+        fetch('/api/playlist/' + selectedPlaylist, { cache: "no-store", credentials: "same-origin" }).then(res => res.json()).then(data => {
             setUpdating(!data.finished);
             props.setResults(data.Results);
             setUpdating(false);
