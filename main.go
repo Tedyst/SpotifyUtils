@@ -67,7 +67,7 @@ func getRoutePattern(next *mux.Router, r *http.Request) string {
 }
 
 func middleware(next *mux.Router) http.Handler {
-	CSRF := csrf.Protect([]byte("32-byte-long-auth-key"))
+	CSRF := csrf.Protect(config.Secret)
 	buckets := []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10}
 
 	responseTimeHistogram := prometheus.NewHistogramVec(prometheus.HistogramOpts{
