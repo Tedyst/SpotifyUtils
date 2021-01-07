@@ -172,7 +172,7 @@ func (u *User) GetRecentTrackSince(t time.Time) []RecentTracks {
 func (u *User) getTopRecentTrackSince(t time.Time) ([]RecentTracks, int64) {
 	var result []RecentTracks
 	var trackscount int64
-	config.DB.Model(&RecentTracks{}).Select("COUNT(id) AS id, track").Where("listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Group("track").Order("COUNT(id) DESC").Limit(100).Find(&result)
+	config.DB.Model(&RecentTracks{}).Select("COUNT(id) AS id, track").Where("listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Group("track").Order("COUNT(id) DESC").Limit(96).Find(&result)
 	if len(result) == 0 {
 		return result, 0
 	}
