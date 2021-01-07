@@ -68,7 +68,6 @@ export default function Login() {
     }
   }, [code, CSRFToken]);
 
-  console.log(error)
   if (code !== null && error === true) {
     return <Redirect to="/" />
   }
@@ -93,7 +92,6 @@ function LoginPage(props: { loggingIn: boolean }) {
           store.dispatch(setCSRFToken(asd))
         }
       }).then(() => {
-        console.log(CSRFToken);
         fetch("/api/auth-url", {
           method: "POST",
           headers: {
