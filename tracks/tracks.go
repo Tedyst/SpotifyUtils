@@ -107,12 +107,12 @@ func (t *Track) Save() error {
 	}
 	inDB := GetTrackFromID(t.TrackID)
 	if inDB.ID != t.ID {
-		msg := fmt.Sprintf("Duplicate entry detected: %s and %s", inDB.ID, t.ID)
+		msg := fmt.Sprintf("Duplicate entry detected: %d and %d", inDB.ID, t.ID)
 		log.Error(msg)
 		return errors.New(msg)
 	}
 	if t.TrackID == "" {
-		msg := fmt.Sprintf("Tried to save empty track_id, ID = %s", t.ID)
+		msg := fmt.Sprintf("Tried to save empty track_id, ID = %d", t.ID)
 		log.Error(msg)
 		return errors.New(msg)
 	}
