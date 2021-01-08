@@ -49,11 +49,11 @@ export default function RecentWrapper() {
     if (status === "loading" || status === "error" || data === undefined || data.data.Success === false) {
         return <Loading />
     }
-    return <Recent settings={data.data.Settings} />
+    return <Recent settings={data.data.Settings} CSRFToken={data.headers["x-csrf-token"]} />
 }
 
 
-function Recent(props: { settings: Settings }) {
+function Recent(props: { settings: Settings, CSRFToken: string }) {
     const classes = useStyles();
     const queryClient = useQueryClient()
     const [settings, setSettings] = React.useState(props.settings);
@@ -71,6 +71,9 @@ function Recent(props: { settings: Settings }) {
     const mutation = useMutation((settings: Settings) =>
         axios.post<Settings>('/api/settings', JSON.stringify(settings), {
             withCredentials: true,
+            headers: {
+                "X-CSRF-Token": props.CSRFToken
+            }
         }),
         {
             onSuccess: () => {

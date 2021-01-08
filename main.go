@@ -30,6 +30,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/tedyst/spotifyutils/api/status"
 
+	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 
 	"github.com/tedyst/spotifyutils/auth"
@@ -77,7 +78,15 @@ func routerMiddleware(next *mux.Router) http.Handler {
 
 	prometheus.MustRegister(responseTimeHistogram)
 
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	CSRF := csrf.Protect(config.Secret)
+	if *config.Debug {
+		csrf.Secure(false)
+	}
+	csrf.Path("/")
+
+	return CSRF(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token := csrf.Token(r)
+		w.Header().Set("X-CSRF-Token", token)
 		start := time.Now()
 		rec := statusRecorder{w, 200}
 
@@ -105,7 +114,7 @@ func routerMiddleware(next *mux.Router) http.Handler {
 			"duration": duration.Seconds(),
 			"ip":       ipAddress,
 		}).Debug()
-	})
+	}))
 }
 
 func createDB() {

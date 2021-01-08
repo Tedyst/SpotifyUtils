@@ -4,6 +4,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 import Alert from '@material-ui/lab/Alert';
+import { StatusInterface } from "../App";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -25,14 +26,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function LoginWithCode(props: { code: string }) {
+function LoginWithCode(props: { code: string, CSRFToken: string }) {
   const queryClient = useQueryClient()
+  console.log(props.CSRFToken);
   const { isLoading, error, data } = useQuery('auth', () =>
     axios.post<AuthInterface>('/api/auth', {
       host: window.location.protocol + "//" + window.location.host,
       code: props.code,
     }, {
-      withCredentials: true
+      withCredentials: true,
+      headers: {
+        "X-CSRF-Token": props.CSRFToken
+      }
     }))
   if (isLoading) {
     return <LoginPage loggingIn={true} />
@@ -52,11 +57,17 @@ export default function Login() {
   let search = window.location.search;
   let params = new URLSearchParams(search);
   let code = params.get("code");
+  const { data, status } = useQuery('status', () =>
+    axios.get<StatusInterface>('/api/status', {
+      withCredentials: true
+    }))
+  if (status === "error" || status === "loading" || data === undefined)
+    return <LoginPage loggingIn={false} />
   if (code === null) {
     return <LoginPage loggingIn={false} />
   }
 
-  return <LoginWithCode code={code} />
+  return <LoginWithCode code={code} CSRFToken={data.headers["x-csrf-token"]} />
 }
 interface AuthURLInterface {
   success: boolean;
