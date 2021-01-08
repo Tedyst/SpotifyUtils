@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginWithCode(props: { code: string, CSRFToken: string }) {
   const queryClient = useQueryClient()
-  console.log(props.CSRFToken);
   const { isLoading, error, data } = useQuery('auth', () =>
     axios.post<AuthInterface>('/api/auth', {
       host: window.location.protocol + "//" + window.location.host,
