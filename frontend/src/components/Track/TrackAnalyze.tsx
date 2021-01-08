@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
     useParams
 } from "react-router-dom";
 import { Grid, Container } from '@material-ui/core';
 import TrackInfo from './TrackInfo';
 import AlbumInfo from './AlbumInfo';
-import Chart1 from './Chart1';
 import Chart2 from './Chart2';
 import Lyrics from './Lyrics';
 import SongCard from '../../components/SongCardRight';
@@ -13,70 +12,90 @@ import {
     Redirect,
 } from "react-router-dom";
 import Loading from '../Loading';
+import axios from 'axios';
+import { useQuery } from 'react-query';
 
 
 interface ParamTypes {
     trackid: string
 }
 
+export interface TrackInterface {
+    Result: Result;
+    Success: boolean;
+}
+
+export interface Result {
+    ID: number;
+    CreatedAt: string;
+    UpdatedAt: string;
+    DeletedAt: null;
+    TrackID: string;
+    Lyrics: string;
+    LastUpdated: string;
+    Artist: string;
+    Name: string;
+    Information: Information;
+}
+
+export interface Information {
+    TrackInformation: TrackInformation;
+    AlbumInformation: AlbumInformation;
+    TrackFeatures: TrackFeatures;
+}
+
+export interface AlbumInformation {
+    Popularity: number;
+    ReleaseDate: string;
+    TracksAmount: number;
+    Markets: number;
+    ID: string;
+}
+
+export interface TrackFeatures {
+    Acousticness: number;
+    Danceability: number;
+    Energy: number;
+    Instrumentalness: number;
+    Liveness: number;
+    Loudness: number;
+    Speechiness: number;
+}
+
+export interface TrackInformation {
+    Image: string;
+    Popularity: number;
+    Length: number;
+    Markets: number;
+    Explicit: boolean;
+    Key: number;
+    Mode: number;
+    Tempo: number;
+    TimeSignature: number;
+}
+
 export default function TrackAnalyze() {
     let { trackid } = useParams<ParamTypes>();
-    const [trackInfo, setTrackInfo] = useState<{
-        Success: boolean,
-        Lyrics: string,
-        Information: {
-            TrackInformation: {
-                LoudnessGraph: any,
-                Image: string,
-                Popularity: number,
-                Length: number,
-                Markets: number,
-                Explicit: boolean,
-                Key: number,
-                Mode: number,
-                Tempo: number,
-                TimeSignature: number,
-            },
-            AlbumInformation: {
-                Popularity: string,
-                ReleaseDate: string,
-                TracksAmount: string,
-                Markets: string
-            },
-            TrackFeatures: {
-                Acousticness: number,
-                Danceability: number,
-                Energy: number,
-                Instrumentalness: number,
-                Liveness: number,
-                Loudness: number,
-                Speechiness: number,
-            }
-        },
-        Artist: string,
-        Name: string,
-
-    }>();
-    const [returnToTrackSearch, setReturn] = useState(false);
-
-    useEffect(() => {
-        fetch('/api/track/' + trackid, { cache: "no-store", credentials: "same-origin" }).then(res => res.json()).then(data => {
-            if (data.Success)
-                setTrackInfo(data.Result);
-            else
-                setReturn(true);
-        });
-    }, [trackid])
-
-    if (returnToTrackSearch) {
-        return <Redirect to="/tracksearch" />;
+    const { data, status } = useQuery(['track', trackid], () =>
+        axios.get<TrackInterface>('/api/track/' + trackid, {
+            withCredentials: true
+        }))
+    if (status === "loading") {
+        return <Loading />
     }
+    if (status === "error") {
+        return <Redirect to="/tracksearch" />
+    }
+    if (data === undefined) {
+        return <Loading />
+    }
+    if (data.data.Success === false) {
+        return <Redirect to="/tracksearch" />
+    }
+    let trackInfo = data.data.Result;
 
     if (trackInfo === null || trackInfo === undefined) {
         return <Loading />
-    }
-    if (trackInfo.Success === false) {
-        return <Redirect to="/" />;
     }
     let lyrics = trackInfo.Lyrics ? (<Grid item xs={12}>
         <Container maxWidth="sm">
@@ -86,11 +105,6 @@ export default function TrackAnalyze() {
         </Container>
     </Grid>) : null;
 
-    let chart = trackInfo.Information.TrackInformation.LoudnessGraph ? (<Grid item xs={12}>
-        <Chart1
-            data={trackInfo.Information.TrackInformation.LoudnessGraph}
-        />
-    </Grid>) : null;
     return (
         <div>
             <Container maxWidth="xs">
@@ -132,7 +146,6 @@ export default function TrackAnalyze() {
                         speechiness={trackInfo.Information.TrackFeatures.Speechiness}
                     />
                 </Grid>
-                {chart}
                 <Grid item xs={12}>
                     {lyrics}
                 </Grid>

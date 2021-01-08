@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Avatar, Button, CssBaseline, Typography, makeStyles, Container } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import UpdateUser from "../utils/status";
-import {
-  Redirect,
-} from "react-router-dom";
-import store from "../store/store";
-import { selectCSRFToken, setCSRFToken } from "../store/user";
-import { useSelector } from "react-redux";
+import { useQuery, useQueryClient } from "react-query";
+import axios from "axios";
+import Loading from "../components/Loading";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -29,87 +25,60 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
-  const [logged, setLogged] = React.useState(false);
-  const [error, setError] = React.useState(false);
-  const CSRFToken = useSelector(selectCSRFToken);
+function LoginWithCode(props: { code: string }) {
+  const queryClient = useQueryClient()
+  const { isLoading, error, data } = useQuery('auth', () =>
+    axios.post<AuthInterface>('/api/auth', {
+      host: window.location.protocol + "//" + window.location.host,
+      code: props.code,
+    }, {
+      withCredentials: true
+    }))
+  if (isLoading) {
+    return <LoginPage loggingIn={true} />
+  }
+  if (error) {
+    return <LoginPage loggingIn={false} />
+  }
+  if (data?.data.success) {
+    queryClient.invalidateQueries('status')
+    queryClient.invalidateQueries('top')
+    return <LoginPage loggingIn={true} />
+  }
+  return <LoginPage loggingIn={true} />
+}
 
+export default function Login() {
   let search = window.location.search;
   let params = new URLSearchParams(search);
   let code = params.get("code");
-
-  useEffect(() => {
-    if (code !== null) {
-      // Check if the code works
-      fetch("/api/auth", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": CSRFToken,
-        },
-        body: JSON.stringify({
-          host: window.location.protocol + "//" + window.location.host,
-          code: code,
-        }),
-        cache: "no-store",
-        credentials: "same-origin"
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success === true) {
-            UpdateUser();
-            setLogged(true);
-          } else {
-            setError(true)
-          }
-        }).catch(() => {
-          setError(true);
-        });
-    }
-  }, [code, CSRFToken]);
-
-  if (code !== null && error === true) {
-    return <Redirect to="/" />
+  if (code === null) {
+    return <LoginPage loggingIn={false} />
   }
 
-  if (logged) {
-    return <Redirect to="/" />
-  }
+  return <LoginWithCode code={code} />
+}
+interface AuthURLInterface {
+  success: boolean;
+  URL: string;
+}
 
-  return <LoginPage loggingIn={code !== null} />;
+interface AuthInterface {
+  success: boolean;
 }
 
 function LoginPage(props: { loggingIn: boolean }) {
-  const [LoginUrl, setLoginUrl] = useState("");
   const classes = useStyles();
-  useEffect(() => {
-    let CSRFToken: string = "";
-    fetch("/api/status", { cache: "no-store", credentials: "same-origin" })
-      .then((res) => {
-        let asd = res.headers.get("X-CSRF-Token");
-        if (asd !== null) {
-          CSRFToken = asd;
-          store.dispatch(setCSRFToken(asd))
-        }
-      }).then(() => {
-        fetch("/api/auth-url", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-Token": CSRFToken
-          },
-          body: JSON.stringify({
-            host: window.location.protocol + "//" + window.location.host,
-          }),
-          cache: "no-store",
-          credentials: "same-origin"
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            setLoginUrl(data.URL);
-          });
-      })
-  }, []);
+  const { data, status } = useQuery('authURL', () =>
+    axios.get<AuthURLInterface>('/api/auth-url?host=' + window.location.protocol + "//" + window.location.host, {
+      withCredentials: true
+    }))
+  if (status === "loading" || status === "error") {
+    return <Loading />
+  }
+  if (data === undefined) {
+    return <Loading />
+  }
 
   let buttonText = props.loggingIn
     ? "Logging in... Please wait..."
@@ -132,9 +101,9 @@ function LoginPage(props: { loggingIn: boolean }) {
             variant="contained"
             color="primary"
             className={classes.submit}
-            href={LoginUrl}
+            href={data.data.URL}
             disabled={
-              LoginUrl === "" || props.loggingIn === true ? true : false
+              props.loggingIn
             }
           >
             {buttonText}

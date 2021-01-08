@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { makeStyles, Container, Grid, Typography } from '@material-ui/core';
 import ArtistCard from '../components/ArtistCard';
 import SongCard from '../components/SongCardRight';
 import List from '../components/ItemList';
 import Loading from '../components/Loading';
+import { useQuery } from 'react-query';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -30,41 +32,54 @@ function msToText(ms: number): string {
     return seconds + " Seconds";
 }
 
+export interface TopInterface {
+    result: Result;
+    success: boolean;
+}
+
+export interface Result {
+    genres: string[];
+    updated: number;
+    artists: Artist[];
+    tracks: Track[];
+}
+
+export interface Artist {
+    name: string;
+    image: string;
+    id: string;
+}
+
+export interface Track {
+    artist: string;
+    name: string;
+    image: string;
+    id: string;
+    duration: number;
+    preview_url: string;
+}
+
 
 export default function Top() {
-    const [top, setTop] = useState<{
-        result: {
-            genres: string[],
-            updated: number,
-            artists: {
-                name: string,
-                image: string,
-                id: string,
-            }[],
-            tracks: {
-                artist: string,
-                name: string,
-                image: string,
-                id: string,
-                duration: number,
-                preview_url: string,
-            }[]
-        },
-        success: boolean
-    }>();
     const classes = useStyles();
 
-    useEffect(() => {
-        fetch('/api/top', { cache: "no-store", credentials: "same-origin" }).then(res => res.json()).then(data => {
-            setTop(data);
-        });
-    }, [])
+    const { data, status } = useQuery('top', () =>
+        axios.get<TopInterface>('/api/top', {
+            withCredentials: true
+        }))
+
+    if (status === "error") {
+        return <Loading />
+    }
+    if (data === undefined || status === "loading")
+        return <Loading />
+    const top = data?.data;
 
     if (top === undefined) {
-        return <Loading />;
+        return <Loading />
     }
     if (top.success === false) {
-        return <Loading />;;
+        return <Loading />
     }
 
     let bestSongForArtist = undefined;

@@ -30,7 +30,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/tedyst/spotifyutils/api/status"
 
-	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 
 	"github.com/tedyst/spotifyutils/auth"
@@ -66,8 +65,7 @@ func getRoutePattern(next *mux.Router, r *http.Request) string {
 	return "/"
 }
 
-func middleware(next *mux.Router) http.Handler {
-	CSRF := csrf.Protect(config.Secret)
+func routerMiddleware(next *mux.Router) http.Handler {
 	buckets := []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10}
 
 	responseTimeHistogram := prometheus.NewHistogramVec(prometheus.HistogramOpts{
@@ -79,14 +77,7 @@ func middleware(next *mux.Router) http.Handler {
 
 	prometheus.MustRegister(responseTimeHistogram)
 
-	if *config.Debug {
-		csrf.Secure(false)
-	}
-	csrf.Path("/")
-
-	return CSRF(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		token := csrf.Token(r)
-		w.Header().Set("X-CSRF-Token", token)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		rec := statusRecorder{w, 200}
 
@@ -114,7 +105,7 @@ func middleware(next *mux.Router) http.Handler {
 			"duration": duration.Seconds(),
 			"ip":       ipAddress,
 		}).Debug()
-	}))
+	})
 }
 
 func createDB() {
@@ -198,6 +189,7 @@ func main() {
 	}
 
 	log.Infof("Starting server on address http://%s", *config.Address)
-	err = http.ListenAndServe(*config.Address, gziphandler.GzipHandler(middleware(m)))
+	m.Use(gziphandler.GzipHandler)
+	err = http.ListenAndServe(*config.Address, routerMiddleware(m))
 	checkErr(err)
 }

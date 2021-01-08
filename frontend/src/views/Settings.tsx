@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Button, Container, Card, Typography, makeStyles, CardContent, Checkbox, FormControlLabel } from '@material-ui/core';
 import Loading from '../components/Loading';
-import { useSelector } from 'react-redux';
-import { selectCSRFToken } from '../store/user';
+import axios from 'axios';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,58 +32,57 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function Recent() {
+export interface SettingsInterface {
+    Success: boolean;
+    Settings: Settings;
+}
+
+export interface Settings {
+    RecentTracks: boolean;
+}
+
+export default function RecentWrapper() {
+    const { data, status } = useQuery('settings', () =>
+        axios.get<SettingsInterface>('/api/settings', {
+            withCredentials: true
+        }))
+    if (status === "loading" || status === "error" || data === undefined || data.data.Success === false) {
+        return <Loading />
+    }
+    return <Recent settings={data.data.Settings} />
+}
+
+
+function Recent(props: { settings: Settings }) {
     const classes = useStyles();
-    const [recentTracks, setRecentTracks] = React.useState(true);
-    const [loading, setLoading] = React.useState(true);
+    const queryClient = useQueryClient()
+    const [settings, setSettings] = React.useState(props.settings);
 
 
     const handleChangeRecentTracks = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRecentTracks(Boolean((event.target as HTMLInputElement).checked));
+        setSettings({
+            ...settings,
+            RecentTracks: Boolean((event.target as HTMLInputElement).checked)
+        });
     };
 
-    useEffect(() => {
-        fetch("/api/settings", {
-            method: "GET",
-            cache: "no-store",
-            credentials: "same-origin"
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (data.Success) {
-                    setRecentTracks(data.Settings.RecentTracks);
-                    setLoading(false);
-                }
-            });
-    }, []);
 
-    const CSRFToken = useSelector(selectCSRFToken);
+
+    const mutation = useMutation((settings: Settings) =>
+        axios.post<Settings>('/api/settings', JSON.stringify(settings), {
+            withCredentials: true,
+        }),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries('settings')
+            }
+        })
+
     const onSubmit = (event: { preventDefault: () => void; }) => {
-        event.preventDefault();
-        fetch("/api/settings", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-Token": CSRFToken,
-            },
-            body: JSON.stringify({
-                RecentTracks: recentTracks,
-            }),
-            cache: "no-store",
-            credentials: "same-origin"
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (data.Success) {
-                    setRecentTracks(data.Settings.RecentTracks);
-                }
-            });
-
+        event.preventDefault()
+        mutation.mutate(settings)
     }
 
-    if (loading === true) {
-        return <Loading />
-    }
 
     return <div>
         <Typography color="textPrimary" gutterBottom variant="h5" align="center">
@@ -99,7 +98,7 @@ export default function Recent() {
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                    checked={recentTracks}
+                                    checked={settings.RecentTracks}
                                     onChange={handleChangeRecentTracks}
                                     name="checkedB"
                                     color="primary"

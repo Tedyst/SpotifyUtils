@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Switch,
     Route,
@@ -10,15 +10,14 @@ import ArtistCard from '../components/ArtistCard';
 import SongCard from '../components/SongCardRight';
 import ListItems from '../components/ItemList';
 import Avatars from '../components/Avatars';
-import {
-    selectCompare
-} from '../store/user';
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Avatar from '../components/Avatar';
 import {
     Redirect,
 } from "react-router-dom";
+import axios from 'axios';
+import { useQuery } from 'react-query';
+import Loading from '../components/Loading';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -70,67 +69,76 @@ export default function Compare() {
 interface ParamTypes {
     code: string
 }
+export interface UsernameInterface {
+    initiator: Initiator;
+    target: Initiator;
+    result: Result;
+    success: boolean;
+}
+
+export interface Initiator {
+    username: string;
+    name: string;
+    image: string;
+    code: string;
+}
+
+export interface Result {
+    artists: Artist[];
+    tracks: Track[];
+    genres: string[];
+    percent: number;
+}
+
+export interface Artist {
+    name: string;
+    image: string;
+    id: string;
+}
+
+export interface Track {
+    artist: string;
+    name: string;
+    image: string;
+    id: string;
+    duration: number;
+    preview_url: string;
+}
+
+
+
+export interface NoUsernameCompareInterface {
+    friends: Friend[];
+    success: boolean;
+    code: string;
+}
+
+export interface Friend {
+    username: string;
+    name: string;
+    image: string;
+    code: string;
+}
+
 
 function Username(props: {
     Word: string,
     setWord: React.Dispatch<React.SetStateAction<string>>
 }) {
     const classes = useStyles();
-    const [Updating, setUpdating] = useState<string>();
-    let { code } = useParams<ParamTypes>();
-    const [top, setTop] = useState<{
-        result: {
-            genres: string[],
-            artists: {
-                name: string,
-                image: string,
-                id: string,
-            }[],
-            tracks: {
-                artist: string,
-                name: string,
-                image: string,
-                id: string,
-                duration: number,
-                preview_url: string,
-            }[],
-            percent: number
-        },
-        initiator: {
-            username: string,
-            name: string,
-            image: string,
-            code: string,
-        },
-        target: {
-            username: string,
-            name: string,
-            image: string,
-            code: string,
-        }
-        success: boolean
-    }>();
-    if (top === undefined && Updating === undefined) {
-        setUpdating(code);
-        fetch('/api/compare/' + code, { cache: "no-store", credentials: "same-origin" }).then(res => res.json()).then(data => {
-            setTop(data);
-            if (data.success)
-                setUpdating(code);
-            else
-                setUpdating(undefined);
-        });
-        return <NoUsername
-            Word={props.Word}
-            setWord={props.setWord}
-        />
-    } else if (top === undefined && Updating !== undefined) {
-        return <NoUsername
-            Word={props.Word}
-            setWord={props.setWord}
-        />
-    } else if (top === undefined) {
+    const { code } = useParams<ParamTypes>();
+    const { data, status } = useQuery(['compare', code], () =>
+        axios.get<UsernameInterface>('/api/compare/' + code, {
+            withCredentials: true
+        }))
+    let top = data?.data;
+    if (status === "error" || data?.data.success === false) {
         return <Redirect to="/compare" />;
     }
+    if (top === undefined || status === "loading") {
+        return <Loading />;
+    }
+
     if (top["success"] === false) {
         return (
             <NoUsername
@@ -297,9 +305,12 @@ function NoUsername(props: {
     Word: string,
     setWord: React.Dispatch<React.SetStateAction<string>>
 }) {
-    const compare = useSelector(selectCompare);
     const classes = useStylesNoUsername();
     const [RedirectURL, setRedirectURL] = React.useState("");
+    const { data, status } = useQuery('compare', () =>
+        axios.get<NoUsernameCompareInterface>('/api/compare', {
+            withCredentials: true
+        }))
     if (RedirectURL !== "") {
         let url = "/compare/" + String(RedirectURL);
         if (String(RedirectURL).includes("/compare/"))
@@ -307,7 +318,15 @@ function NoUsername(props: {
         return <Redirect to={url} />
     }
 
+    if (status === "loading")
+        return <Loading />
+    if (status === "error")
+        return null;
+    if (data === undefined)
+        return <Loading />;
+    let compare = data?.data;
     let friends = [];
+
     for (var val in compare.friends) {
         friends.push(
             <ListItem key={"friend-" + compare.friends[val].username} component={Link} to={"/compare/" + compare.friends[val].code} classes={{

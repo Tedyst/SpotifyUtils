@@ -4,11 +4,9 @@ import { CssBaseline, Divider, Drawer, Hidden, List, IconButton, ListItem, ListI
 import { Search, AllInclusive, Settings, SupervisorAccount, History, ExitToApp, QueueMusic, Menu } from '@material-ui/icons';
 import ListIcon from '@material-ui/icons/List';
 import { Link, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
-import {
-    selectLogged,
-} from '../store/user';
+import { useQuery } from 'react-query';
+import axios from 'axios';
+import { StatusInterface } from '../App';
 
 const drawerWidth = 240;
 
@@ -59,8 +57,6 @@ const useStyles = makeStyles((theme) => ({
 function ResponsiveDrawer(props: {
     setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>,
     mobileOpen: boolean,
-    image: string,
-    username: string,
     window: any,
 }) {
     const { window } = props;
@@ -68,7 +64,14 @@ function ResponsiveDrawer(props: {
     const theme = useTheme();
     const location = useLocation();
     const [lastLocation, setLastLocation] = React.useState(location);
-    const logged = useSelector(selectLogged);
+
+    const { data } = useQuery('status', () =>
+        axios.get<StatusInterface>('/api/status', {
+            withCredentials: true
+        }))
+    const username = data?.data.username === undefined ? "Not logged in" : data.data.username;
+    const image = data?.data.image === undefined ? "" : data.data.image;
+    const logged = data?.data.success === undefined ? false : data?.data.success;
 
     if (!logged)
         return null;
@@ -145,7 +148,7 @@ function ResponsiveDrawer(props: {
                     </ListItemIcon>
                     <ListItemText primary="Settings" />
                 </ListItem>
-                <ListItem button key="Logout" component="a" href="/logout" classes={{
+                <ListItem button key="logout" component={Link} to="/logout" selected={location.pathname.startsWith("/logout")} classes={{
                     selected: classes.selected,
                 }}>
                     <ListItemIcon>
@@ -161,7 +164,7 @@ function ResponsiveDrawer(props: {
 
     const avatar = <Avatar
         className={classes.avatar}
-        src={props.image}
+        src={image}
     />;
 
     const header = (
@@ -178,7 +181,7 @@ function ResponsiveDrawer(props: {
                 </IconButton>
                 {avatar}
                 <Typography variant="h6" noWrap>
-                    {props.username}
+                    {username}
                 </Typography>
             </Toolbar>
         </AppBar>
