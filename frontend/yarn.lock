@@ -2732,7 +2732,7 @@
   dependencies:
     "pako" "~1.0.5"
 
-"browserslist@^4.0.0", "browserslist@^4.12.0", "browserslist@^4.6.2", "browserslist@^4.6.4", "browserslist@^4.8.5", "browserslist@^4.9.1":
+"browserslist@^4.0.0", "browserslist@^4.12.0", "browserslist@^4.14.2", "browserslist@^4.6.2", "browserslist@^4.6.4", "browserslist@^4.8.5", "browserslist@^4.9.1":
   "integrity" "sha512-HI4lPveGKUR0x2StIz+2FXfDk9SfVMrxn6PLh1JeGUwcuoDkdKZebWiyLRJ68iIPDpMI4JLVDf7S7XzslgWOhw=="
   "resolved" "https://registry.npmjs.org/browserslist/-/browserslist-4.14.2.tgz"
   "version" "4.14.2"

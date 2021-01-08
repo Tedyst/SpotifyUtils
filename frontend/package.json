@@ -12,6 +12,7 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/pickers": "^3.2.10",
     "axios": "^0.21.1",
+    "browserslist": "^4.14.2",
     "material-ui": "^0.20.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -39,7 +40,8 @@
     "production": [
       ">0.2%",
       "not dead",
-      "not op_mini all"
+      "not op_mini all",
+      "supports es6-module"
     ],
     "development": [
       "last 1 chrome version",

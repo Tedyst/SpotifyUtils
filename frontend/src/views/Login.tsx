@@ -4,7 +4,6 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 import Alert from '@material-ui/lab/Alert';
-import { StatusInterface } from "../App";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
