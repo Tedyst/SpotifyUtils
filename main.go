@@ -85,6 +85,13 @@ func routerMiddleware(next *mux.Router) http.Handler {
 	csrf.Path("/")
 
 	return CSRF(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-Frame-Options", "SAMEORIGIN")
+		w.Header().Set("Referrer-Policy", "same-origin")
+		w.Header().Set("Permissions-Policy", "geolocation=(), microphone=()")
+		w.Header().Set("Content-Security-Policy", "default-src 'self'")
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.Header().Set("Expect-CT", "max-age=86400, enforce, report-uri=\"https://github.com/Tedyst/SpotifyUtils\"")
+
 		token := csrf.Token(r)
 		w.Header().Set("X-CSRF-Token", token)
 		start := time.Now()
@@ -105,6 +112,10 @@ func routerMiddleware(next *mux.Router) http.Handler {
 			if len(ips) > 1 {
 				ipAddress = ips[0]
 			}
+		}
+
+		if !(strings.Contains(ipAddress, "localhost") || strings.Contains(ipAddress, "127.0.0.1")) {
+			w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 		}
 
 		log.WithFields(log.Fields{
