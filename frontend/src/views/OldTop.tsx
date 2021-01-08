@@ -13,6 +13,7 @@ import ResultBox from '../components/ResultBox';
 import Loading from '../components/Loading';
 import axios from 'axios';
 import { useQuery } from 'react-query';
+import Alert from '@material-ui/lab/Alert';
 
 
 const useStyles = makeStyles({
@@ -76,7 +77,7 @@ export default function OldTop() {
     var today = new Date();
     const [selectedDate, setSelectedDate] = React.useState(new Date(today.getFullYear(), today.getMonth() - 1, today.getDate(), 0, 0, 0));
     const classes = useStyles();
-    const { data, status } = useQuery(['oldtop', selectedDate], () =>
+    const { data, status, error } = useQuery(['oldtop', selectedDate], () =>
         axios.get<OldTopInterface>('/api/top/old/' + selectedDate.getTime() / 1000, {
             withCredentials: true
         }))
@@ -117,7 +118,28 @@ export default function OldTop() {
     </MuiPickersUtilsProvider>);
 
     let topsong = null
-    if (status === "loading" || status === "error" || data === undefined)
+    let errorComponent = null;
+    if (status === "error" || data?.data.Success === false) {
+        if (typeof error === "object" && error != null) {
+            if (error.toString() !== "") {
+                errorComponent =
+                    <Container maxWidth="xs">
+                        <Alert severity="error">{error.toString()}</Alert>
+                    </Container>
+            }
+        } else {
+            errorComponent =
+                <Container maxWidth="xs">
+                    <Alert severity="error">Could not extract data from server</Alert>
+                </Container>
+        }
+        return <div>
+            {titleText}
+            {datepicker}
+            {errorComponent}
+        </div>
+    }
+    if (status === "loading" || data === undefined)
         return (
             <div>
                 {titleText}

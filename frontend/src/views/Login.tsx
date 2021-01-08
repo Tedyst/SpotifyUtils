@@ -3,7 +3,7 @@ import { Avatar, Button, CssBaseline, Typography, makeStyles, Container } from "
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useQuery, useQueryClient } from "react-query";
 import axios from "axios";
-import Loading from "../components/Loading";
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -69,23 +69,27 @@ interface AuthInterface {
 
 function LoginPage(props: { loggingIn: boolean }) {
   const classes = useStyles();
-  const { data, status } = useQuery('authURL', () =>
+  const { data, status, error } = useQuery('authURL', () =>
     axios.get<AuthURLInterface>('/api/auth-url?host=' + window.location.protocol + "//" + window.location.host, {
       withCredentials: true
     }))
-  if (status === "loading" || status === "error") {
-    return <Loading />
-  }
-  if (data === undefined) {
-    return <Loading />
-  }
 
   let buttonText = props.loggingIn
     ? "Logging in... Please wait..."
     : "Sign in using Spotify";
+  let errorComponent = null;
+  if (status === "error") {
+    buttonText = "Cannot contact server"
+    if (typeof error === "object" && error != null) {
+      if (error.toString() !== "") {
+        errorComponent = <Alert severity="error">{error.toString()}</Alert>
+      }
+    }
+  }
   return (
     <Container maxWidth="xs">
       <CssBaseline />
+      {errorComponent}
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
@@ -101,9 +105,9 @@ function LoginPage(props: { loggingIn: boolean }) {
             variant="contained"
             color="primary"
             className={classes.submit}
-            href={data.data.URL}
+            href={data?.data.URL}
             disabled={
-              props.loggingIn
+              props.loggingIn || status === "loading" || data === undefined
             }
           >
             {buttonText}

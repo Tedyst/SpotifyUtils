@@ -6,6 +6,7 @@ import List from '../components/ItemList';
 import Loading from '../components/Loading';
 import { useQuery } from 'react-query';
 import axios from 'axios';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -63,13 +64,30 @@ export interface Track {
 export default function Top() {
     const classes = useStyles();
 
-    const { data, status } = useQuery('top', () =>
+    const { data, status, error } = useQuery('top', () =>
         axios.get<TopInterface>('/api/top', {
             withCredentials: true
         }))
 
-    if (status === "error") {
-        return <Loading />
+    let errorComponent = null;
+    if (status === "error" || data?.data.success === false) {
+        if (typeof error === "object" && error != null) {
+            if (error.toString() !== "") {
+                errorComponent =
+                    <Container maxWidth="xs">
+                        <Alert severity="error">{error.toString()}</Alert>
+                    </Container>
+            }
+        } else {
+            errorComponent =
+                <Container maxWidth="xs">
+                    <Alert severity="error">Could not extract data from server</Alert>
+                </Container>
+        }
+        return <div>
+            {errorComponent}
+            <Loading />
+        </div>
     }
     if (data === undefined || status === "loading")
         return <Loading />
