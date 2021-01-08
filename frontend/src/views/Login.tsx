@@ -58,7 +58,7 @@ export default function Login() {
   let params = new URLSearchParams(search);
   let code = params.get("code");
   const { data, status } = useQuery('status', () =>
-    axios.get<StatusInterface>('/api/status', {
+    axios.get('/api/auth-url?host=' + window.location.protocol + "//" + window.location.host, {
       withCredentials: true
     }))
   if (status === "error" || status === "loading" || data === undefined)
