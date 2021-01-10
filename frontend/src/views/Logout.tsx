@@ -1,18 +1,17 @@
 import React, { useEffect } from 'react';
-import {
-    setLogged,
-} from '../store/user';
-import { useDispatch } from 'react-redux';
+import { QueryClient } from 'react-query';
+import Loading from '../components/Loading';
 
-export default function Track() {
-    const dispatch = useDispatch();
+export default function Logout() {
+    const queryClient = new QueryClient();
 
     useEffect(() => {
-        fetch('/api/logout', { cache: "no-store", credentials: "same-origin" }).then(res => res.json()).then(data => {
-            dispatch(setLogged(false));
+        fetch('/api/logout', { cache: "no-store", credentials: "same-origin" }).then(() => {
             localStorage.clear();
+            queryClient.invalidateQueries();
+            window.location.reload();
         });
-
     })
-    return <div>Logging out...</div>;
+
+    return <Loading />;
 }

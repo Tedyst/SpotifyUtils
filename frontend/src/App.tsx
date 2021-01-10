@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Login from "./views/Login";
 import PlaylistView from "./views/PlaylistView";
 import Track from "./views/Track";
@@ -7,7 +7,6 @@ import Recent from "./views/Recent";
 import Settings from "./views/Settings";
 import Top from "./views/Top";
 import Compare from "./views/Compare";
-import { useSelector, useDispatch } from "react-redux";
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,19 +14,14 @@ import {
   Redirect,
   useLocation,
 } from "react-router-dom";
-import {
-  selectLogged,
-  selectUsername,
-  selectImage,
-  setPathName,
-  selectPathname,
-} from "./store/user";
 import Sidebar from "./views/Sidebar";
 import { createMuiTheme, makeStyles, ThemeProvider } from "@material-ui/core";
-import UpdateUser from "./utils/status";
 import TrackSearch from "./views/TrackSearch";
 import { useSwipeable } from "react-swipeable";
 import OldTop from "./views/OldTop";
+import axios from "axios";
+import { useQuery } from "react-query";
+import ServiceWorkerPopup from "./components/ServiceWorkerPopup";
 
 const drawerWidth = 240;
 
@@ -45,6 +39,17 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
 }));
+export interface StatusInterface {
+  success: boolean;
+  username: string;
+  image: string;
+  playlists: Playlist[];
+}
+
+export interface Playlist {
+  id: string;
+  name: string;
+}
 
 function App() {
   const darkTheme = createMuiTheme({
@@ -52,9 +57,6 @@ function App() {
       type: "dark",
     },
   });
-  const logged = useSelector(selectLogged);
-  const username = useSelector(selectUsername);
-  const image = useSelector(selectImage);
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const handlers = useSwipeable({
@@ -62,17 +64,11 @@ function App() {
     onSwipedRight: () => setMobileOpen(true),
   });
 
-  useEffect(() => {
-    UpdateUser();
-  }, [])
-
   return (
     <div className={classes.root} {...handlers}>
       <ThemeProvider theme={darkTheme}>
         <Router>
           <Sidebar
-            username={username}
-            image={image}
             mobileOpen={mobileOpen}
             setMobileOpen={setMobileOpen}
           />
@@ -113,7 +109,8 @@ function App() {
                 <Home />
               </Route>
             </Switch>
-            <RedirectWithSave logged={logged} />
+            <RedirectToAuth />
+            <ServiceWorkerPopup />
           </main>
         </Router>
       </ThemeProvider>
@@ -121,22 +118,19 @@ function App() {
   );
 }
 
-function RedirectWithSave(props: { logged: boolean }) {
+function RedirectToAuth() {
+  const { data } = useQuery('status', () =>
+    axios.get<StatusInterface>('/api/status', {
+      withCredentials: true
+    }))
+  let logged = data?.data.success;
   const location = useLocation();
-  const dispatch = useDispatch();
-  const pathname = useSelector(selectPathname);
-  if (props.logged === true && location.pathname === "/auth") {
-    if (pathname !== "/auth" && pathname !== undefined) {
-      return <Redirect to={pathname} />;
-    }
-    return null;
+  const pathname = location.pathname;
+  if (!logged && pathname !== "/auth") {
+    return <Redirect to="/auth" />
   }
-  if (props.logged) {
-    return null;
-  }
-  if (location.pathname !== "/auth") {
-    dispatch(setPathName(location.pathname));
-    return <Redirect to="/auth" />;
+  if (logged && pathname === "/auth") {
+    return <Redirect to="/" />
   }
   return null;
 }

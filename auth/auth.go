@@ -109,23 +109,19 @@ func AuthURL(res http.ResponseWriter, req *http.Request) {
 		Error   string `json:"error,omitempty"`
 		URL     string `json:",omitempty"`
 	}
-	type authURLAPIRequest struct {
-		Host string `json:"host"`
-	}
 	res.Header().Set("Content-Type", "application/json")
 	response := &authURLAPIResponse{
 		Success: false,
 		Error:   "Invalid Request",
 	}
-	request := &authURLAPIRequest{}
-	decoder := json.NewDecoder(req.Body)
-	err := decoder.Decode(request)
-	if err != nil || request.Host == "" {
+	host := req.URL.Query().Get("host")
+	if host == "" {
 		respJSON, _ := json.Marshal(response)
 		fmt.Fprint(res, string(respJSON))
 		return
 	}
-	response.URL = spotifywrapper.GetSpotifyURL(request.Host)
+
+	response.URL = spotifywrapper.GetSpotifyURL(host)
 	response.Success = true
 	response.Error = ""
 	respJSON, _ := json.Marshal(response)

@@ -2,10 +2,10 @@ import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Typography } from '@material-ui/core';
 
 export default function AlbumInfo(props: {
-    popularity: string;
+    popularity: number;
     release_date: string;
-    tracks: string;
-    markets: string;
+    tracks: number;
+    markets: number;
 }) {
     return (
         <div>

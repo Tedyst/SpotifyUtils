@@ -9,12 +9,14 @@
     "@devexpress/dx-react-core": "^2.7.1",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/pickers": "^3.2.10",
-    "@reduxjs/toolkit": "^1.4.0",
+    "axios": "^0.21.1",
+    "browserslist": "^4.14.2",
     "material-ui": "^0.20.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-redux": "^7.2.1",
+    "react-query": "^3.5.11",
     "react-router-dom": "^5.2.0",
     "react-swipeable": "^6.0.1",
     "redux-thunk": "^2.3.0",
@@ -24,9 +26,7 @@
   "scripts": {
     "start": "react-scripts start",
     "docker": "npm run build && npm run docker-package",
-    "build": "react-scripts build && npm run build-sw && npm run clean-cra-sw",
-    "clean-cra-sw": "rm -f build/precache-manifest.*.js",
-    "build-sw": "node ./src/sw-build.js",
+    "build": "react-scripts build",
     "docker-package": "docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t tedyst/spotifyutils --push -f Dockerfile .",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -38,7 +38,8 @@
     "production": [
       ">0.2%",
       "not dead",
-      "not op_mini all"
+      "not op_mini all",
+      "supports es6-module"
     ],
     "development": [
       "last 1 chrome version",
@@ -50,7 +51,6 @@
   "devDependencies": {
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
-    "@types/react-redux": "^7.1.12",
     "@types/react-router-dom": "^5.1.6",
     "react-scripts": "^3.4.3",
     "source-map-explorer": "^2.5.1"

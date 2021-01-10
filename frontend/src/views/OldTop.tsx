@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { makeStyles, Grid, Container, Card, CardContent, Typography } from '@material-ui/core';
 import Graph from '../components/Graph';
 import 'date-fns';
@@ -11,6 +11,9 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import SongCardRight from '../components/SongCardRight'
 import ResultBox from '../components/ResultBox';
 import Loading from '../components/Loading';
+import axios from 'axios';
+import { useQuery } from 'react-query';
+import Alert from '@material-ui/lab/Alert';
 
 
 const useStyles = makeStyles({
@@ -48,27 +51,36 @@ function secToText(seconds: number): string {
     return text;
 }
 
+export interface OldTopInterface {
+    Result: Result;
+    Success: boolean;
+}
+
+export interface Result {
+    Count: number;
+    TopTracks: TopTrack[];
+    Hours: { [key: string]: number };
+    Days: { [key: string]: number };
+    TotalListened: number;
+}
+
+export interface TopTrack {
+    Count: number;
+    Name: string;
+    Artist: string;
+    Image: string;
+    URI: string;
+}
+
 
 export default function OldTop() {
-    const [oldTop, setOldTop] = React.useState<{
-        "Result": {
-            Count: number,
-            TopTracks: {
-                Count: number,
-                Name: string,
-                Artist: string,
-                Image: string,
-                URI: string,
-            }[],
-            Hours: number[],
-            Days: number[],
-            TotalListened: number,
-        },
-        "Success": boolean
-    }>();
     var today = new Date();
     const [selectedDate, setSelectedDate] = React.useState(new Date(today.getFullYear(), today.getMonth() - 1, today.getDate(), 0, 0, 0));
     const classes = useStyles();
+    const { data, status, error } = useQuery(['oldtop', selectedDate], () =>
+        axios.get<OldTopInterface>('/api/top/old/' + selectedDate.getTime() / 1000, {
+            withCredentials: true
+        }))
 
     const handleDateChange = (date: MaterialUiPickersDate, value: string | null | undefined) => {
         if (date !== null)
@@ -86,14 +98,6 @@ export default function OldTop() {
                 To disable user tracking, go to Settings and uncheck Recent Tracks Tracking
             </Typography>
         </div>);
-
-    useEffect(() => {
-        if (selectedDate !== null)
-            fetch('/api/top/old/' + selectedDate.getTime() / 1000, { cache: "no-store", credentials: "same-origin" }).then(res => res.json()).then(data => {
-                if (data.Success === true)
-                    setOldTop(data);
-            });
-    }, [selectedDate])
 
     let datepicker = (<MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Grid container justify="space-around">
@@ -113,15 +117,36 @@ export default function OldTop() {
         </Grid>
     </MuiPickersUtilsProvider>);
 
-    let topsong = null;
-    if (oldTop === undefined)
+    let topsong = null
+    let errorComponent = null;
+    if (status === "error" || data?.data.Success === false) {
+        if (typeof error === "object" && error != null) {
+            if (error.toString() !== "") {
+                errorComponent =
+                    <Container maxWidth="xs">
+                        <Alert severity="error">{error.toString()}</Alert>
+                    </Container>
+            }
+        } else {
+            errorComponent =
+                <Container maxWidth="xs">
+                    <Alert severity="error">Could not extract data from server</Alert>
+                </Container>
+        }
+        return <div>
+            {titleText}
+            {datepicker}
+            {errorComponent}
+        </div>
+    }
+    if (status === "loading" || data === undefined)
         return (
             <div>
                 {titleText}
                 {datepicker}
                 <Loading />
             </div>)
-            ;
+    let oldTop = data?.data
 
     if (oldTop.Result.TopTracks.length > 0) {
         topsong = (<SongCardRight
