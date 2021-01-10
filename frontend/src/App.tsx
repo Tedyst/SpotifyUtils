@@ -21,6 +21,7 @@ import { useSwipeable } from "react-swipeable";
 import OldTop from "./views/OldTop";
 import axios from "axios";
 import { useQuery } from "react-query";
+import ServiceWorkerPopup from "./components/ServiceWorkerPopup";
 
 const drawerWidth = 240;
 
@@ -109,6 +110,7 @@ function App() {
               </Route>
             </Switch>
             <RedirectToAuth />
+            <ServiceWorkerPopup />
           </main>
         </Router>
       </ThemeProvider>
@@ -131,6 +133,10 @@ function RedirectToAuth() {
     return <Redirect to="/" />
   }
   return null;
+}
+
+function UpdateButton() {
+
 }
 
 function Home() {

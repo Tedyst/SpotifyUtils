@@ -16,13 +16,14 @@ if ('function' === typeof importScripts) {
 
         workbox.routing.registerRoute(
             /\.(?:png|gif|jpg|jpeg)$/,
-            workbox.strategies.networkFirst({
+            workbox.strategies.staleWhileRevalidate({
                 cacheName: 'images',
                 plugins: [
                     new workbox.expiration.Plugin({
                         maxEntries: 60,
                         maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
                     }),
+                    new workbox.broadcastUpdate.Plugin('precache-channel')
                 ],
             })
         );

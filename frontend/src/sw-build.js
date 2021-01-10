@@ -10,7 +10,7 @@ const buildSW = () => {
             globPatterns: [
                 '**/!(service-worker|precache-manifest.*).{js,css,html,png,ico}'
             ], // precaching jpg files,
-            maximumFileSizeToCacheInBytes: 2597152
+            maximumFileSizeToCacheInBytes: 25971520
         })
         .then(({ count, size, warnings }) => {
             // Optionally, log any warnings and details.
