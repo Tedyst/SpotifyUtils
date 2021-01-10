@@ -135,10 +135,6 @@ function RedirectToAuth() {
   return null;
 }
 
-function UpdateButton() {
-
-}
-
 function Home() {
   // Idk what to put here, I'll just redirect to top
   return <Redirect to="/top" />;

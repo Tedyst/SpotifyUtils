@@ -7,15 +7,11 @@ export default function ServiceWorkerWrapper() {
     const [waitingWorker, setWaitingWorker] = React.useState<ServiceWorker | null>(null);
 
     const onSWUpdate = (registration: ServiceWorkerRegistration) => {
-        console.log("onSWUpdate");
         setShowReload(true);
         setWaitingWorker(registration.waiting);
     };
 
-    console.log("ServiceWorkerWrapper");
-    console.log(waitingWorker);
     useEffect(() => {
-        console.log("register")
         serviceWorker.register({ onUpdate: onSWUpdate });
     }, []);
 
@@ -27,10 +23,14 @@ export default function ServiceWorkerWrapper() {
 
     return (
         <Snackbar
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+            }}
             open={showReload}
             message="A new version is available!"
+            autoHideDuration={6000}
             onClick={reloadPage}
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             action={
                 <Button
                     color="inherit"
@@ -38,7 +38,7 @@ export default function ServiceWorkerWrapper() {
                     onClick={reloadPage}
                 >
                     Reload
-        </Button>
+                </Button>
             }
         />
     );

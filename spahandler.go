@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type spaHandler struct {
@@ -16,10 +17,11 @@ func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	w.Header().Set("Cache-Control", "max-age=31536000")
 
 	path = filepath.Join(h.buildPath, path)
-
+	if !(strings.Contains(path, "service-worker") || strings.Contains(path, "manifest")) {
+		w.Header().Set("Cache-Control", "max-age=31536000")
+	}
 	_, err = os.Stat(path)
 	if os.IsNotExist(err) {
 		http.ServeFile(w, r, h.buildPath+"/index.html")
