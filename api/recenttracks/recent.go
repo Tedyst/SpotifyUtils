@@ -64,8 +64,8 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 
 		go func(resp RespSong) {
 			track := tracks.GetTrackFromID(resp.URI)
-			if track.Artist == "" || track.Information.TrackInformation.Image == "" || track.Name == "" {
-				track.Artist = resp.Artist
+			if track.Artists[0].Name == "" || track.Information.TrackInformation.Image == "" || track.Name == "" {
+				track.Artists[0].Name = resp.Artist
 				track.Information.TrackInformation.Image = resp.Image
 				track.Name = resp.Name
 				track.TrackID = resp.URI

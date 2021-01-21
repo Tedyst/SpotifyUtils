@@ -60,10 +60,7 @@ func Lyrics(trackName string, trackArtist string) (string, error) {
 			break
 		}
 	}
-	if lyrics == "" {
-		return "", errors.New("Did not find Genius Lyrics")
-	}
-	return lyrics, nil
+	return "", errors.New("Did not find Genius Lyrics")
 }
 
 func validResponse(name string, artist string, song *genius.Hit) bool {

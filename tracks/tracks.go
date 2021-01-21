@@ -19,7 +19,7 @@ type Track struct {
 	SearchingLyrics bool `json:"-"`
 
 	LastUpdated time.Time
-	Artist      string
+	Artists     []Artist `gorm:"many2many:track_artists;"`
 	Name        string
 	Information SpotifyInformation `gorm:"embedded;embeddedPrefix:information_"`
 }
@@ -62,7 +62,14 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 		}
 
 		for ind, s := range info {
-			newTracks[ind+i].Artist = s.Artists[0].Name
+			var artists []Artist
+			// for i, _ := range track.Artists {
+			// 	artists = append(artists, Artist{
+			// 		ArtistID: track.Artists[i].ID.String(),
+			// 		Name:     track.Artists[i].Name,
+			// 	})
+			// }
+			newTracks[ind+i].Artists = artists
 			newTracks[ind+i].Name = s.Name
 			newTracks[ind+i].Information.TrackInformation.Explicit = s.Explicit
 			newTracks[ind+i].TrackID = s.ID.String()

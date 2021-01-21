@@ -17,7 +17,7 @@ func (t *Track) updateLyrics() error {
 	if t.SearchingLyrics == true {
 		return nil
 	}
-	if t.Name == "" || t.Artist == "" {
+	if t.Name == "" || t.Artists[0].Name == "" {
 		log.WithFields(log.Fields{
 			"type": "genius",
 		}).Errorf("Name or Artist field not set for %s", t.TrackID)
@@ -26,8 +26,8 @@ func (t *Track) updateLyrics() error {
 	t.SearchingLyrics = true
 	t.Save()
 	metrics.TrackLyricsSearched.Add(1)
-	log.Debugf("Starting Update Lyrics for %s-%s", t.Artist, t.Name)
-	genius, err := genius.Lyrics(t.Name, t.Artist)
+	log.Debugf("Starting Update Lyrics for %s-%s", t.Artists[0].Name, t.Name)
+	genius, err := genius.Lyrics(t.Name, t.Artists[0].Name)
 	if err == nil {
 		t.Lyrics = genius
 		t.SearchingLyrics = false

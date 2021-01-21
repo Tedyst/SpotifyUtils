@@ -1,14 +1,13 @@
-package playlistview
+package playlistanalyzer
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
 
-	"github.com/tedyst/spotifyutils/tracks"
-
 	"github.com/gorilla/mux"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/playlist"
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
@@ -23,7 +22,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		Image  string
 	}
 	type Resp struct {
-		Results []RespSong
+		Result  playlist.AnalyzeStruct
 		Success bool
 		Error   string
 	}
@@ -38,20 +37,8 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	val := session.Values["username"]
 	code := vars["playlist"]
 	user := userutils.GetUser(val.(string))
+	pl := user.GetPlaylistTracks(code, *user.Client())
 
-	response.Success = true
-	cl := user.Client()
-	playlist := user.GetPlaylistTracks(code, *cl)
-	tracks.BatchUpdate(playlist, *cl)
-	for _, s := range playlist {
-		response.Results = append(response.Results, RespSong{
-			Image:  s.Information.TrackInformation.Image,
-			URI:    s.TrackID,
-			Artist: s.Artists[0].Name,
-			Name:   s.Name,
-		})
-	}
-
-	respJSON, _ := json.Marshal(response)
-	fmt.Fprint(res, string(respJSON))
+	response.Result = playlist.Analyze(pl)
+	return
 }
