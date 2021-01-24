@@ -50,6 +50,12 @@ func GetArtistFromID(ID string) *Artist {
 	return &ar
 }
 
+func (a *Artist) Update(cl spotify.Client) {
+	var artists []*Artist
+	artists = append(artists, a)
+	BatchUpdateArtists(artists, cl)
+}
+
 func BatchUpdateArtists(artists []*Artist, cl spotify.Client) {
 	newArtists := []*Artist{}
 	for _, s := range artists {
