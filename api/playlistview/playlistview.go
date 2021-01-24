@@ -47,7 +47,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		response.Results = append(response.Results, RespSong{
 			Image:  s.Information.TrackInformation.Image,
 			URI:    s.TrackID,
-			Artist: s.Artists[0].Name,
+			Artist: s.ArtistString(),
 			Name:   s.Name,
 		})
 	}

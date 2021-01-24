@@ -82,14 +82,14 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 			return err
 		}
 		t.Name = track.Name
-		// var artists []Artist
-		// for i, _ := range track.Artists {
-		// 	artists = append(artists, Artist{
-		// 		ArtistID: track.Artists[i].ID.String(),
-		// 		Name:     track.Artists[i].Name,
-		// 	})
-		// }
-		t.Artists[0].Name = track.Artists[0].Name
+
+		var artists []Artist
+		for _, s := range track.Artists {
+			a := GetArtistFromID(s.ID.String())
+			artists = append(artists, *a)
+		}
+		t.Artists = artists
+
 		t.Information.TrackInformation.Explicit = track.Explicit
 		t.Information.TrackInformation.Length = track.Duration
 		t.Information.TrackInformation.Markets = len(track.AvailableMarkets)
