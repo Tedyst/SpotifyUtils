@@ -95,7 +95,6 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			}
 
 			newTracks[ind+i].Save()
-			go newTracks[ind+i].updateLyrics()
 		}
 
 		go BatchUpdateArtists(artistUpdate, cl)

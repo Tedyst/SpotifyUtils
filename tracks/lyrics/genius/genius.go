@@ -46,7 +46,6 @@ func Lyrics(trackName string, trackArtist string) (string, error) {
 					break
 				}
 				if lyrics != "" {
-					log.Debugf("Got lyrics for %s-%s", trackArtist, trackName)
 					return lyrics, nil
 				} else {
 					log.Debugf("Trying again for %s", s.Result.URL)
