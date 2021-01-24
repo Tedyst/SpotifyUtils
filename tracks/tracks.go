@@ -165,5 +165,8 @@ func (t *Track) ArtistString() string {
 	for _, s := range t.Artists {
 		str += s.Name + ", "
 	}
+	if str == "" {
+		log.Error("Artists is set but string is nil, track %s", t.TrackID)
+	}
 	return str[:len(str)-2]
 }
