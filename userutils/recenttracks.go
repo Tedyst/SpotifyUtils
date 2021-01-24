@@ -239,7 +239,7 @@ func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct 
 		result.TopTracks = append(result.TopTracks, RecentTracksStatisticsStructTrack{
 			Count:  countMap[s.TrackID],
 			Name:   s.Name,
-			Artist: s.Artists[0].Name,
+			Artist: s.ArtistString(),
 			Image:  s.Information.TrackInformation.Image,
 			URI:    s.TrackID,
 		})

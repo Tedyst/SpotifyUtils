@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/tedyst/spotifyutils/config"
-	"github.com/tedyst/spotifyutils/tracks"
 	"github.com/tedyst/spotifyutils/userutils"
 	"github.com/zmb3/spotify"
 )
@@ -61,16 +60,6 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 			URI:    string(s.Track.ID),
 			Image:  image,
 		}
-
-		go func(resp RespSong) {
-			track := tracks.GetTrackFromID(resp.URI)
-			if track.Artists[0].Name == "" || track.Information.TrackInformation.Image == "" || track.Name == "" {
-				track.Artists[0].Name = resp.Artist
-				track.Information.TrackInformation.Image = resp.Image
-				track.Name = resp.Name
-				track.TrackID = resp.URI
-			}
-		}(respsong)
 
 		response.Results = append(response.Results, respsong)
 	}

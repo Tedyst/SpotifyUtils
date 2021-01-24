@@ -15,8 +15,7 @@ type Track struct {
 	gorm.Model
 	TrackID string `gorm:"type:VARCHAR(30) NOT NULL UNIQUE"`
 
-	Lyrics          string
-	SearchingLyrics bool `json:"-"`
+	Lyrics string
 
 	LastUpdated time.Time
 	Artists     []Artist `gorm:"many2many:track_artists;"`
@@ -26,7 +25,7 @@ type Track struct {
 
 func GetTrackFromID(ID string) *Track {
 	var tr Track
-	config.DB.Where("track_id = ?", ID).FirstOrCreate(&tr, Track{
+	config.DB.Where("track_id = ?", ID).Preload("Artists").FirstOrCreate(&tr, Track{
 		TrackID: ID,
 	})
 	return &tr
@@ -61,14 +60,14 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			return
 		}
 
+		var artistUpdate []*Artist
 		for ind, s := range info {
 			var artists []Artist
-			// for i, _ := range track.Artists {
-			// 	artists = append(artists, Artist{
-			// 		ArtistID: track.Artists[i].ID.String(),
-			// 		Name:     track.Artists[i].Name,
-			// 	})
-			// }
+			for _, s := range s.Artists {
+				a := GetArtistFromID(s.ID.String())
+				artists = append(artists, *a)
+				artistUpdate = append(artistUpdate, a)
+			}
 			newTracks[ind+i].Artists = artists
 			newTracks[ind+i].Name = s.Name
 			newTracks[ind+i].Information.TrackInformation.Explicit = s.Explicit
@@ -99,6 +98,7 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			go newTracks[ind+i].updateLyrics()
 		}
 
+		go BatchUpdateArtists(artistUpdate, cl)
 		go func(client *spotify.Client, tr []*Track) {
 			for _, s := range tr {
 				s.Update(cl)
@@ -154,4 +154,16 @@ func (t *Track) Update(cl spotify.Client) error {
 		return err2
 	}
 	return nil
+}
+
+func (t *Track) ArtistString() string {
+	if len(t.Artists) == 0 {
+		log.Errorf("No Artists for track %d", t.ID)
+		return ""
+	}
+	var str string
+	for _, s := range t.Artists {
+		str += s.Name + ", "
+	}
+	return str[:len(str)-2]
 }

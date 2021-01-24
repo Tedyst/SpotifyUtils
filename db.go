@@ -12,6 +12,7 @@ import (
 const spreadStartupUsers = 30 * time.Minute // 30 minutes
 
 func initDB(db *gorm.DB) {
+	db.AutoMigrate(&tracks.Artist{})
 	db.AutoMigrate(&tracks.Track{})
 	db.AutoMigrate(&userutils.User{})
 	db.AutoMigrate(&userutils.RecentTracks{})

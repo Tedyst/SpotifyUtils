@@ -17,7 +17,12 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	session, _ := config.SessionStore.Get(req, "username")
 	vars := mux.Vars(req)
 	type Resp struct {
-		Result  tracks.Track
+		Result struct {
+			Artist      string
+			Name        string
+			Information tracks.SpotifyInformation
+			Lyrics      string
+		}
 		Success bool
 		Error   string `json:",omitempty"`
 	}
@@ -47,7 +52,10 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		fmt.Fprint(res, string(respJSON))
 		return
 	}
-	response.Result = *tr
+	response.Result.Artist = tr.ArtistString()
+	response.Result.Information = tr.Information
+	response.Result.Name = tr.Name
+	response.Result.Lyrics = tr.Lyrics
 	response.Success = true
 
 	respJSON, _ := json.Marshal(response)
