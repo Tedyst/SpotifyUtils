@@ -24,8 +24,5 @@ type AnalyzeStruct struct {
 
 func Analyze(tracks []*tracks.Track) AnalyzeStruct {
 	response := AnalyzeStruct{}
-	for _, s := range tracks {
-		response.Artists[s.ArtistString()]++
-	}
 	return response
 }
