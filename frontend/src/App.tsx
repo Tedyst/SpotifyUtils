@@ -153,7 +153,7 @@ function App() {
 function RedirectToSaved() {
   let lastURL = window.localStorage.getItem("lastURL");
   console.log(lastURL);
-  if (lastURL !== "") {
+  if (lastURL !== "" && lastURL) {
     window.localStorage.removeItem("lastURL");
     return <Redirect to={"" + lastURL} />
   }

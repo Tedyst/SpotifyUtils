@@ -57,7 +57,9 @@ func GetUser(ID string) *User {
 
 func GetUserFromCompareCode(code string) *User {
 	var user User
-	config.DB.Where("compare_code = ?", code).FirstOrCreate(&user)
+	if err := config.DB.Where("compare_code = ?", code).First(&user).Error; err != nil {
+		return nil
+	}
 	return &user
 }
 
