@@ -78,11 +78,12 @@ func routerMiddleware(next *mux.Router) http.Handler {
 
 	prometheus.MustRegister(responseTimeHistogram)
 
-	CSRF := csrf.Protect(config.Secret)
+	opts := []csrf.Option{}
 	if *config.Debug {
-		csrf.Secure(false)
+		opts = append(opts, csrf.Secure(false))
 	}
-	csrf.Path("/")
+	opts = append(opts, csrf.Path("/"))
+	CSRF := csrf.Protect(config.Secret, opts...)
 
 	return CSRF(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("X-Frame-Options", "SAMEORIGIN")
@@ -153,6 +154,7 @@ func main() {
 
 	if *config.Debug {
 		log.SetLevel(log.DebugLevel)
+		csrf.Secure(false)
 	}
 
 	createDB()

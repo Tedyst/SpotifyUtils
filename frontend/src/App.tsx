@@ -22,6 +22,7 @@ import OldTop from "./views/OldTop";
 import axios from "axios";
 import { useQuery } from "react-query";
 import ServiceWorkerPopup from "./components/ServiceWorkerPopup";
+import { DesktopWindows } from "@material-ui/icons";
 
 const drawerWidth = 240;
 
@@ -64,8 +65,17 @@ function App() {
     onSwipedRight: () => setMobileOpen(true),
   });
 
-  return (
-    <div className={classes.root} {...handlers}>
+  const { data } = useQuery('status', () =>
+    axios.get<StatusInterface>('/api/status', {
+      withCredentials: true
+    }))
+  let logged = data?.data.success;
+
+  if (!logged) {
+    if (window.location.pathname !== "/" && window.location.pathname !== "/auth" && window.location.pathname !== "/logout") {
+      window.localStorage.setItem("lastURL", window.location.pathname);
+    }
+    return <div className={classes.root} {...handlers}>
       <ThemeProvider theme={darkTheme}>
         <Router>
           <Sidebar
@@ -78,6 +88,28 @@ function App() {
               <Route path="/auth">
                 <Login />
               </Route>
+              <Route path="/">
+                <Redirect to="/auth" />
+              </Route>
+            </Switch>
+            <ServiceWorkerPopup />
+          </main>
+        </Router>
+      </ThemeProvider>
+    </div>
+  }
+
+  return (
+    <div className={classes.root} {...handlers}>
+      <ThemeProvider theme={darkTheme}>
+        <Router>
+          <Sidebar
+            mobileOpen={mobileOpen}
+            setMobileOpen={setMobileOpen}
+          />
+          <main className={classes.content}>
+            <div className={classes.toolbar} />
+            <Switch>
               <Route path="/playlist">
                 <PlaylistView />
               </Route>
@@ -106,10 +138,10 @@ function App() {
                 <Logout />
               </Route>
               <Route path="/">
-                <Home />
+                <Top />
               </Route>
             </Switch>
-            <RedirectToAuth />
+            <RedirectToSaved />
             <ServiceWorkerPopup />
           </main>
         </Router>
@@ -118,21 +150,14 @@ function App() {
   );
 }
 
-function RedirectToAuth() {
-  const { data } = useQuery('status', () =>
-    axios.get<StatusInterface>('/api/status', {
-      withCredentials: true
-    }))
-  let logged = data?.data.success;
-  const location = useLocation();
-  const pathname = location.pathname;
-  if (!logged && pathname !== "/auth") {
-    return <Redirect to="/auth" />
+function RedirectToSaved() {
+  let lastURL = window.localStorage.getItem("lastURL");
+  console.log(lastURL);
+  if (lastURL !== "") {
+    window.localStorage.removeItem("lastURL");
+    return <Redirect to={"" + lastURL} />
   }
-  if (logged && pathname === "/auth") {
-    return <Redirect to="/" />
-  }
-  return null;
+  return null
 }
 
 function Home() {

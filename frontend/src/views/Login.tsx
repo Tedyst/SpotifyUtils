@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Avatar, Button, CssBaseline, Typography, makeStyles, Container } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useQuery, useQueryClient } from "react-query";
@@ -55,13 +55,16 @@ export default function Login() {
   let search = window.location.search;
   let params = new URLSearchParams(search);
   let code = params.get("code");
-  const { data, status } = useQuery('status', () =>
-    axios.get('/api/auth-url?host=' + window.location.protocol + "//" + window.location.host, {
+  const { data, status } = useQuery('authURL', () =>
+    axios.get<AuthURLInterface>('/api/auth-url?host=' + window.location.protocol + "//" + window.location.host, {
       withCredentials: true
     }))
   if (status === "error" || status === "loading" || data === undefined)
     return <LoginPage loggingIn={false} />
   if (code === null) {
+    return <LoginPage loggingIn={false} />
+  }
+  if (data.data.success === false) {
     return <LoginPage loggingIn={false} />
   }
 
