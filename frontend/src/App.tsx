@@ -12,7 +12,6 @@ import {
   Switch,
   Route,
   Redirect,
-  useLocation,
 } from "react-router-dom";
 import Sidebar from "./views/Sidebar";
 import { createMuiTheme, makeStyles, ThemeProvider } from "@material-ui/core";
@@ -22,7 +21,6 @@ import OldTop from "./views/OldTop";
 import axios from "axios";
 import { useQuery } from "react-query";
 import ServiceWorkerPopup from "./components/ServiceWorkerPopup";
-import { DesktopWindows } from "@material-ui/icons";
 
 const drawerWidth = 240;
 

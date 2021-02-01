@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Avatar, Button, CssBaseline, Typography, makeStyles, Container } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useQuery, useQueryClient } from "react-query";
@@ -119,7 +119,7 @@ function LoginPage(props: { loggingIn: boolean }) {
             className={classes.submit}
             href={data?.data.URL}
             disabled={
-              props.loggingIn || status === "loading" || data === undefined
+              props.loggingIn || status === "loading" || data === undefined || status === "error"
             }
           >
             {buttonText}
