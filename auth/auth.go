@@ -31,12 +31,6 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 	}
 
 	session, _ := config.SessionStore.Get(req, "username")
-	if _, ok := session.Values["username"]; ok {
-		response.Success = true
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
-		return
-	}
 
 	request := &authAPIRequest{}
 	decoder := json.NewDecoder(req.Body)

@@ -53,6 +53,8 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	response.Success = true
 	response.Settings = user.Settings
 
+	config.DB.Where("user = ?", fmt.Sprint(user.ID)).Delete(userutils.RecentTracks{})
+
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprint(res, string(respJSON))
 }

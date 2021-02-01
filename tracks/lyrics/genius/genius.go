@@ -34,7 +34,6 @@ func Lyrics(trackName string, trackArtist string) (string, error) {
 		log.Debugf("Did not find anything matching %s", name)
 		return "", errors.New("Did not find any song on Genius")
 	}
-	var lyrics string
 	for _, s := range res.Response.Hits {
 		if validResponse(trackName, trackArtist, s) {
 			var lyrics string
@@ -47,7 +46,6 @@ func Lyrics(trackName string, trackArtist string) (string, error) {
 					break
 				}
 				if lyrics != "" {
-					log.Debugf("Got lyrics for %s-%s", trackArtist, trackName)
 					return lyrics, nil
 				} else {
 					log.Debugf("Trying again for %s", s.Result.URL)
@@ -60,10 +58,7 @@ func Lyrics(trackName string, trackArtist string) (string, error) {
 			break
 		}
 	}
-	if lyrics == "" {
-		return "", errors.New("Did not find Genius Lyrics")
-	}
-	return lyrics, nil
+	return "", errors.New("Did not find Genius Lyrics")
 }
 
 func validResponse(name string, artist string, song *genius.Hit) bool {

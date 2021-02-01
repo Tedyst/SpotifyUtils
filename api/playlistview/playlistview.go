@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/tedyst/spotifyutils/playlist"
 	"github.com/tedyst/spotifyutils/tracks"
 
 	"github.com/gorilla/mux"
@@ -26,6 +27,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		Results []RespSong
 		Success bool
 		Error   string
+		Analyze playlist.AnalyzeStruct
 	}
 	response := &Resp{}
 	if _, ok := session.Values["username"]; !ok {
@@ -41,16 +43,17 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 
 	response.Success = true
 	cl := user.Client()
-	playlist := user.GetPlaylistTracks(code, *cl)
-	tracks.BatchUpdate(playlist, *cl)
-	for _, s := range playlist {
+	pl := user.GetPlaylistTracks(code, *cl)
+	tracks.BatchUpdate(pl, *cl)
+	for _, s := range pl {
 		response.Results = append(response.Results, RespSong{
 			Image:  s.Information.TrackInformation.Image,
 			URI:    s.TrackID,
-			Artist: s.Artist,
+			Artist: s.ArtistString(),
 			Name:   s.Name,
 		})
 	}
+	response.Analyze = playlist.Analyze(pl)
 
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprint(res, string(respJSON))

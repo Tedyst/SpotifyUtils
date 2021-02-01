@@ -32,7 +32,8 @@ type TopStruct struct {
 
 // RefreshTop updates the user's top
 func (u *User) RefreshTop() error {
-	if time.Since(time.Unix(u.Top.Updated, 0)) < 10*time.Minute {
+	t := time.Since(time.Unix(u.Top.Updated, 0))
+	if t < 10*time.Minute {
 		return nil
 	}
 	result := &TopStruct{}
@@ -84,7 +85,10 @@ func (u *User) RefreshTop() error {
 	}
 	result.Updated = time.Now().Unix()
 
-	u.Top = *result
+	u.Top.Artists = result.Artists
+	u.Top.Genres = result.Genres
+	u.Top.Tracks = result.Tracks
+	u.Top.Updated = result.Updated
 	u.Save()
 	return nil
 }

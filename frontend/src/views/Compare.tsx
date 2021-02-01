@@ -150,7 +150,7 @@ function Username(props: {
     let bestSongForArtist = undefined;
     if (top["result"]["artists"].length > 0)
         for (var val in top["result"]["tracks"]) {
-            if (top["result"]["tracks"][val].artist === top["result"]["artists"][0].name && bestSongForArtist === null) {
+            if (top["result"]["tracks"][val].artist === top["result"]["artists"][0].name && bestSongForArtist === undefined) {
                 bestSongForArtist = top["result"]["tracks"][val].name;
                 break;
             }

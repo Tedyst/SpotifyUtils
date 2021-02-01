@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/tedyst/spotifyutils/config"
-	"github.com/tedyst/spotifyutils/tracks"
 	"github.com/tedyst/spotifyutils/userutils"
 	"github.com/zmb3/spotify"
 )
@@ -55,22 +54,17 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		if len(tracksinfo[i].Album.Images) > 0 {
 			image = tracksinfo[i].Album.Images[0].URL
 		}
+		var artistsStr string
+		for _, s := range s.Track.Artists {
+			artistsStr += s.Name + ", "
+		}
+		artistsStr = artistsStr[:len(artistsStr)-2]
 		respsong := RespSong{
 			Name:   s.Track.Name,
-			Artist: s.Track.Artists[0].Name,
+			Artist: artistsStr,
 			URI:    string(s.Track.ID),
 			Image:  image,
 		}
-
-		go func(resp RespSong) {
-			track := tracks.GetTrackFromID(resp.URI)
-			if track.Artist == "" || track.Information.TrackInformation.Image == "" || track.Name == "" {
-				track.Artist = resp.Artist
-				track.Information.TrackInformation.Image = resp.Image
-				track.Name = resp.Name
-				track.TrackID = resp.URI
-			}
-		}(respsong)
 
 		response.Results = append(response.Results, respsong)
 	}

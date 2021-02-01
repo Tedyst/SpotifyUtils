@@ -15,18 +15,17 @@ type Track struct {
 	gorm.Model
 	TrackID string `gorm:"type:VARCHAR(30) NOT NULL UNIQUE"`
 
-	Lyrics          string
-	SearchingLyrics bool `json:"-"`
+	Lyrics string
 
 	LastUpdated time.Time
-	Artist      string
+	Artists     []Artist `gorm:"many2many:track_artists;"`
 	Name        string
 	Information SpotifyInformation `gorm:"embedded;embeddedPrefix:information_"`
 }
 
 func GetTrackFromID(ID string) *Track {
 	var tr Track
-	config.DB.Where("track_id = ?", ID).FirstOrCreate(&tr, Track{
+	config.DB.Where("track_id = ?", ID).Preload("Artists").FirstOrCreate(&tr, Track{
 		TrackID: ID,
 	})
 	return &tr
@@ -61,8 +60,15 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			return
 		}
 
+		var artistUpdate []*Artist
 		for ind, s := range info {
-			newTracks[ind+i].Artist = s.Artists[0].Name
+			var artists []Artist
+			for _, s := range s.Artists {
+				a := GetArtistFromID(s.ID.String())
+				artists = append(artists, *a)
+				artistUpdate = append(artistUpdate, a)
+			}
+			newTracks[ind+i].Artists = artists
 			newTracks[ind+i].Name = s.Name
 			newTracks[ind+i].Information.TrackInformation.Explicit = s.Explicit
 			newTracks[ind+i].TrackID = s.ID.String()
@@ -89,15 +95,15 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			}
 
 			newTracks[ind+i].Save()
-			go newTracks[ind+i].updateLyrics()
 		}
 
-		go func(client *spotify.Client, tr []*Track) {
+		go func(client *spotify.Client, tr []*Track, artists []*Artist) {
+			BatchUpdateArtists(artists, cl)
 			for _, s := range tr {
 				s.Update(cl)
 				time.Sleep(1 * time.Second)
 			}
-		}(&cl, newTracks)
+		}(&cl, newTracks, artistUpdate)
 	}
 }
 
@@ -147,4 +153,19 @@ func (t *Track) Update(cl spotify.Client) error {
 		return err2
 	}
 	return nil
+}
+
+func (t *Track) ArtistString() string {
+	if len(t.Artists) == 0 {
+		log.Errorf("No Artists for track %d", t.ID)
+		return ""
+	}
+	var str string
+	for _, s := range t.Artists {
+		str += s.Name + ", "
+	}
+	if str == "" {
+		log.Error("Artists is set but string is nil, track %s", t.TrackID)
+	}
+	return str[:len(str)-2]
 }

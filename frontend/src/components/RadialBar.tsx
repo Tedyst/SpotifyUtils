@@ -36,7 +36,7 @@ const RadialBar: React.SFC<RadialBarProps> = ({
         },
     }));
     let max = 0;
-    for (let i = 0; i <= values.length; i++) {
+    for (let i = 0; i < values.length; i++) {
         if (max < values[i])
             max = values[i];
     }
