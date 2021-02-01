@@ -114,7 +114,7 @@ function App() {
               <Route path="/tracksearch">
                 <TrackSearch />
               </Route>
-              <Route path="/oldtop">
+              <Route path="/listeningstatistics">
                 <OldTop />
               </Route>
               <Route path="/compare">

@@ -132,7 +132,7 @@ function ResponsiveDrawer(props: {
                     </ListItemIcon>
                     <ListItemText primary="Recent Tracks" />
                 </ListItem>
-                <ListItem button key="old-top" component={Link} to="/oldtop" selected={location.pathname.startsWith("/oldtop")} classes={{
+                <ListItem button key="old-top" component={Link} to="/listeningstatistics" selected={location.pathname.startsWith("/listeningstatistics")} classes={{
                     selected: classes.selected,
                 }}>
                     <ListItemIcon>

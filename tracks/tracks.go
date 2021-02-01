@@ -101,7 +101,7 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			BatchUpdateArtists(artists, cl)
 			for _, s := range tr {
 				s.Update(cl)
-				time.Sleep(1 * time.Second)
+				time.Sleep(5 * time.Second)
 			}
 		}(&cl, newTracks, artistUpdate)
 	}
