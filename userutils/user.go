@@ -73,7 +73,7 @@ func (u *User) Save() error {
 }
 
 func (u *User) RefreshToken() error {
-	if u.Token.AccessToken == "" {
+	if u.Token.RefreshToken == "" {
 		return errors.New("Cannot refresh token, user deleted access to application")
 	}
 	if !u.Token.Valid() || u.Token.Expiry.Sub(time.Now()) < 3*time.Minute {
@@ -86,7 +86,7 @@ func (u *User) RefreshToken() error {
 			if strings.Contains(fmt.Sprint(err), "Refresh token revoked") {
 				u.StopRecentTracksUpdater()
 				u.Settings.RecentTracks = false
-				u.Token.AccessToken = ""
+				u.Token.RefreshToken = ""
 				u.Save()
 			}
 			return err
