@@ -54,9 +54,14 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		if len(tracksinfo[i].Album.Images) > 0 {
 			image = tracksinfo[i].Album.Images[0].URL
 		}
+		var artistsStr string
+		for _, s := range s.Track.Artists {
+			artistsStr += s.Name + ", "
+		}
+		artistsStr = artistsStr[:len(artistsStr)-2]
 		respsong := RespSong{
 			Name:   s.Track.Name,
-			Artist: s.Track.Artists[0].Name,
+			Artist: artistsStr,
 			URI:    string(s.Track.ID),
 			Image:  image,
 		}

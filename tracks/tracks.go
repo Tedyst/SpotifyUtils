@@ -97,13 +97,13 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			newTracks[ind+i].Save()
 		}
 
-		go BatchUpdateArtists(artistUpdate, cl)
-		go func(client *spotify.Client, tr []*Track) {
+		go func(client *spotify.Client, tr []*Track, artists []*Artist) {
+			BatchUpdateArtists(artists, cl)
 			for _, s := range tr {
 				s.Update(cl)
 				time.Sleep(1 * time.Second)
 			}
-		}(&cl, newTracks)
+		}(&cl, newTracks, artistUpdate)
 	}
 }
 
