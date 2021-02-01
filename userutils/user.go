@@ -2,6 +2,8 @@ package userutils
 
 import (
 	"errors"
+	"fmt"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -63,18 +65,30 @@ func GetUserFromCompareCode(code string) *User {
 	return &user
 }
 
-func (u *User) Save() {
-	config.DB.Save(u)
+func (u *User) Save() error {
+	if err := config.DB.Save(u).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 func (u *User) RefreshToken() error {
+	if u.Token.AccessToken == "" {
+		return errors.New("Cannot refresh token, user deleted access to application")
+	}
 	if !u.Token.Valid() || u.Token.Expiry.Sub(time.Now()) < 3*time.Minute {
 		// Try to refresh the token
 		log.Debugf("Trying to refresh token for user %s", u.UserID)
 		client := config.SpotifyAPI.NewClient(u.Token)
 		t, err := client.Token()
 		if err != nil {
-			log.Infof("Could not refresh token for user %s", u.UserID)
+			log.Errorf("Could not refresh token for user %s, error: %s", u.UserID, err)
+			if strings.Contains(fmt.Sprint(err), "Refresh token revoked") {
+				u.StopRecentTracksUpdater()
+				u.Settings.RecentTracks = false
+				u.Token.AccessToken = ""
+				u.Save()
+			}
 			return err
 		}
 		u.Token = t

@@ -17,7 +17,7 @@ func initDB(db *gorm.DB) {
 	db.AutoMigrate(&userutils.User{})
 	db.AutoMigrate(&userutils.RecentTracks{})
 
-	if *config.Debug == false {
+	if *config.Debug == true {
 		go func() {
 			var usercount int64
 			config.DB.Model(&userutils.User{}).Count(&usercount)
@@ -25,6 +25,10 @@ func initDB(db *gorm.DB) {
 			users := []userutils.User{}
 			config.DB.Model(&userutils.User{}).Where("settings_recent_tracks = ?", 1).Find(&users)
 
+			if usercount == 0 {
+				// Divide by 0 in the next line, you know the drill
+				usercount = 1
+			}
 			sleep := time.Duration(int64(spreadStartupUsers) / usercount)
 			for _, s := range users {
 				s.StartRecentTracksUpdater()
