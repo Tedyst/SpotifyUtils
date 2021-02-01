@@ -92,7 +92,7 @@ function ResponsiveDrawer(props: {
             </div>
             <Divider />
             <List>
-                <ListItem button key="Top" component={Link} to="/top" selected={location.pathname === "/top"} classes={{
+                <ListItem button key="Top" component={Link} to="/" selected={location.pathname === "/"} classes={{
                     selected: classes.selected,
                 }}>
                     <ListItemIcon>

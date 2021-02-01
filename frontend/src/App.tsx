@@ -116,9 +116,6 @@ function App() {
               <Route path="/tracksearch">
                 <TrackSearch />
               </Route>
-              <Route path="/top">
-                <Top />
-              </Route>
               <Route path="/oldtop">
                 <OldTop />
               </Route>
