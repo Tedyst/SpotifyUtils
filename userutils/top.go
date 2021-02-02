@@ -32,6 +32,7 @@ type TopStruct struct {
 
 // RefreshTop updates the user's top
 func (u *User) RefreshTop() error {
+	u.RefreshToken()
 	t := time.Since(time.Unix(u.Top.Updated, 0))
 	if t < 10*time.Minute {
 		return nil

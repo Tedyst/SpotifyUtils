@@ -17,8 +17,9 @@ func (t *Track) updateLyrics() error {
 	}
 	if t.Name == "" || len(t.Artists) == 0 || t.ArtistString() == "" {
 		log.WithFields(log.Fields{
-			"type": "lyrics",
-		}).Errorf("Name or Artist field not set for %s", t.TrackID)
+			"type":  "lyrics",
+			"track": t.TrackID,
+		}).Debugf("Name or Artist field not set")
 		return nil
 	}
 	t.Save()
