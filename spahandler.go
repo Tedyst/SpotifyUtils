@@ -3,8 +3,9 @@ package main
 import (
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
+
+	securejoin "github.com/cyphar/filepath-securejoin"
 )
 
 type spaHandler struct {
@@ -12,13 +13,11 @@ type spaHandler struct {
 }
 
 func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	p, err := filepath.Abs(r.URL.Path)
+	path, err := securejoin.SecureJoin(h.buildPath, r.URL.Path)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	path := filepath.Join(h.buildPath, p)
 	if !(strings.Contains(path, "service-worker") || strings.Contains(path, "manifest")) {
 		w.Header().Set("Cache-Control", "max-age=31536000")
 	}
