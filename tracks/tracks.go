@@ -157,7 +157,10 @@ func (t *Track) Update(cl spotify.Client) error {
 
 func (t *Track) ArtistString() string {
 	if len(t.Artists) == 0 {
-		log.Errorf("No Artists for track %d", t.ID)
+		log.WithFields(log.Fields{
+			"type":  "tracks",
+			"track": t.TrackID,
+		}).Error("No Artists")
 		return ""
 	}
 	var str string
@@ -165,7 +168,10 @@ func (t *Track) ArtistString() string {
 		str += s.Name + ", "
 	}
 	if str == "" {
-		log.Error("Artists is set but string is nil, track %s", t.TrackID)
+		log.WithFields(log.Fields{
+			"type":  "tracks",
+			"track": t.TrackID,
+		}).Error("Artists is set but string is nil")
 	}
 	return str[:len(str)-2]
 }
