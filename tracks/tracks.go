@@ -34,7 +34,7 @@ func GetTrackFromID(ID string) *Track {
 func BatchUpdate(tracks []*Track, cl spotify.Client) {
 	newTracks := []*Track{}
 	for _, s := range tracks {
-		if s.Name == "" || s.Information.Updated == false {
+		if s.Name == "" || !s.Information.Updated {
 			newTracks = append(newTracks, s)
 		}
 	}
@@ -129,7 +129,7 @@ func (t *Track) Save() error {
 func (t *Track) Update(cl spotify.Client) error {
 	var err1 error
 	var err2 error
-	if t.Information.Updated == false {
+	if !t.Information.Updated {
 		err1 = t.updateInformation(cl)
 		err := t.Save()
 		if err != nil {

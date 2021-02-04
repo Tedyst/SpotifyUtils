@@ -23,7 +23,7 @@ type RecentTracks struct {
 
 // UpdateRecentTracks updates the recent tracks
 func (u *User) UpdateRecentTracks() {
-	if u.Settings.RecentTracks == false {
+	if !u.Settings.RecentTracks {
 		return
 	}
 	err := u.RefreshToken()
@@ -87,7 +87,7 @@ func (u *User) insertRecentTracks(items []spotify.RecentlyPlayedItem) {
 func (u User) StartRecentTracksUpdater() {
 	_, timer := searchTimers(u.UserID)
 	if timer.Lock != nil {
-		if u.Settings.RecentTracks == false {
+		if !u.Settings.RecentTracks {
 			u.StopRecentTracksUpdater()
 		}
 		return
@@ -149,7 +149,7 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 		log.Error(err)
 		return []spotify.RecentlyPlayedItem{}
 	}
-	if u.Settings.RecentTracks == true {
+	if u.Settings.RecentTracks {
 		u.insertRecentTracks(items)
 	}
 
