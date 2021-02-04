@@ -76,7 +76,7 @@ func (u *User) RefreshToken() error {
 	if u.Token.RefreshToken == "" {
 		return errors.New("Cannot refresh token, user deleted access to application")
 	}
-	if !u.Token.Valid() || u.Token.Expiry.Sub(time.Now()) < 3*time.Minute {
+	if !u.Token.Valid() || time.Until(u.Token.Expiry) < 3*time.Minute {
 		// Try to refresh the token
 		log.Debugf("Trying to refresh token for user %s", u.UserID)
 		client := config.SpotifyAPI.NewClient(u.Token)
