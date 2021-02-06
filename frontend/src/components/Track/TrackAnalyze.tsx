@@ -1,6 +1,8 @@
 import React from 'react';
 import {
-    useParams
+    useParams,
+,
+    Redirect,
 } from "react-router-dom";
 import { Grid, Container } from '@material-ui/core';
 import TrackInfo from './TrackInfo';
@@ -8,13 +10,10 @@ import AlbumInfo from './AlbumInfo';
 import Chart2 from './Chart2';
 import Lyrics from './Lyrics';
 import SongCard from '../../components/SongCardRight';
-import {
-    Redirect,
-} from "react-router-dom";
+
 import Loading from '../Loading';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-
 
 interface ParamTypes {
     trackid: string
@@ -75,30 +74,29 @@ export interface TrackInformation {
 }
 
 export default function TrackAnalyze() {
-    let { trackid } = useParams<ParamTypes>();
-    const sanitizedTrack = trackid.replace(/[^a-zA-Z]+/g, '');
-    const { data, status } = useQuery(['track', sanitizedTrack], () =>
-        axios.get<TrackInterface>('/api/track/' + sanitizedTrack, {
-            withCredentials: true
-        }))
-    if (status === "loading") {
-        return <Loading />
+    const { trackid } = useParams<ParamTypes>();
+    const sanitizedTrack = trackid.replace(/[^a-zA-Z]+/g, '').substring(0, 6);
+    const { data, status } = useQuery(['track', sanitizedTrack], () => axios.get<TrackInterface>(`/api/track/${sanitizedTrack}`, {
+        withCredentials: true,
+    }));
+    if (status === 'loading') {
+        return <Loading />;
     }
-    if (status === "error") {
-        return <Redirect to="/tracksearch" />
+    if (status === 'error') {
+        return <Redirect to="/tracksearch" />;
     }
     if (data === undefined) {
-        return <Loading />
+        return <Loading />;
     }
     if (data.data.Success === false) {
-        return <Redirect to="/tracksearch" />
+        return <Redirect to="/tracksearch" />;
     }
-    let trackInfo = data.data.Result;
+    const trackInfo = data.data.Result;
 
     if (trackInfo === null || trackInfo === undefined) {
-        return <Loading />
+        return <Loading />;
     }
-    let lyrics = trackInfo.Lyrics ? (<Grid item xs={12}>
+    const lyrics = trackInfo.Lyrics ? (<Grid item xs={12}>
         <Container maxWidth="sm">
             <Lyrics
                 lyrics={trackInfo.Lyrics}
@@ -152,5 +150,6 @@ export default function TrackAnalyze() {
                 </Grid>
 
             </Grid>
-        </div>);
+        </div>
+    );
 }
