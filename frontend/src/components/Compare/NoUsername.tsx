@@ -74,7 +74,7 @@ export interface Friend {
 }
 
 function copyToClipboard() {
-    var copyText = document.getElementById("link-to-be-copied") as HTMLInputElement;
+    let copyText = document.getElementById("link-to-be-copied") as HTMLInputElement;
 
     if (copyText === null) {
         return;
@@ -143,15 +143,16 @@ export default function NoUsername(props: {
     if (data === undefined) {
         return <Loading />;
     }
-    let compare = data?.data;
-    let friends = [];
+    const compare = data?.data;
+    const friends = [];
 
-    for (var val in compare.friends) {
+    for (let val in compare.friends) {
         friends.push(
-            <ListItem key={"friend-" + compare.friends[val].username} component={Link} to={"/compare/" + compare.friends[val].code} classes={{
+            <ListItem
+key={"friend-" + compare.friends[val].username} component={Link} to={"/compare/" + compare.friends[val].code} classes={{
                 root: classes.selected,
             }}>
-                <Avatar name={compare.friends[val].name} image={compare.friends[val].image} />
+                <Avatar image={compare.friends[val].image} name={compare.friends[val].name} />
                 <ListItemText
                     primary={compare.friends[val].name}
                     secondary={compare.friends[val].code}
@@ -173,11 +174,13 @@ export default function NoUsername(props: {
 
     return (
         <div>
-            <Container maxWidth="md" disableGutters={true} fixed={true}>
-                <Typography variant="h4" color="textPrimary" align="center">
-                    Your code is <b>{compare.code}</b>
+            <Container disableGutters={true} fixed={true} maxWidth="md">
+                <Typography align="center" color="textPrimary" variant="h4">
+                    Your code is 
+{' '}
+<b>{compare.code}</b>
                 </Typography>
-                <Typography variant="h5" color="textSecondary" align="center">
+                <Typography align="center" color="textSecondary" variant="h5">
                     Send it to your friends and compare your music taste to theirs!
                 </Typography>
                 <br />
@@ -186,10 +189,10 @@ export default function NoUsername(props: {
                     InputProps={{
                         readOnly: true,
                     }}
-                    onClick={() => { copyToClipboard(); }}
-                    id="link-to-be-copied"
                     fullWidth
+                    id="link-to-be-copied"
                     label="Click to copy"
+                    onClick={() => { copyToClipboard(); }}
                     value={getLink(compare.code)}
                     variant="outlined"
                 />
@@ -202,19 +205,19 @@ export default function NoUsername(props: {
                     onSubmit={mySubmitHandler}
                 >
                     <TextField
-                        id="standard-basic"
-                        label="Enter an user code to compare to it"
-                        variant="outlined"
                         className={classes.grid}
                         defaultValue={props.Word}
+                        id="standard-basic"
+                        label="Enter an user code to compare to it"
                         onChange={changeWord}
+                        variant="outlined"
                     />
                     <Button
-                        fullWidth
-                        variant="contained"
-                        color="primary"
                         className={classes.submit}
+                        color="primary"
+                        fullWidth
                         type="submit"
+                        variant="contained"
                     >
                         Search
             </Button>
@@ -223,9 +226,11 @@ export default function NoUsername(props: {
             <Container className={classes.spacer}>
                 <br />
             </Container>
-            <Container maxWidth="xs" disableGutters={true} fixed={true}>
-                <List className={classes.root} subheader={<li />} disablePadding={true}>
-                    <ListSubheader color="default">Your friends</ListSubheader>
+            <Container disableGutters={true} fixed={true} maxWidth="xs">
+                <List className={classes.root} disablePadding={true} subheader={<li />}>
+                    <ListSubheader color="default">
+Your friends
+</ListSubheader>
                     <ul>
                         {friends}
                     </ul>
