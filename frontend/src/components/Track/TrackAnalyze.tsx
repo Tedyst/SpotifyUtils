@@ -76,7 +76,7 @@ export interface TrackInformation {
 
 export default function TrackAnalyze() {
     let { trackid } = useParams<ParamTypes>();
-    let sanitizedTrack = trackid.replace(/[^a-zA-Z]+/g, '');
+    const sanitizedTrack = trackid.replace(/[^a-zA-Z]+/g, '');
     const { data, status } = useQuery(['track', sanitizedTrack], () =>
         axios.get<TrackInterface>('/api/track/' + sanitizedTrack, {
             withCredentials: true

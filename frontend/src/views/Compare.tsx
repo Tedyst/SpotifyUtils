@@ -5,18 +5,33 @@ import {
     useRouteMatch,
     useParams
 } from "react-router-dom";
-import { makeStyles, Container, Grid, Typography, TextField, List, ListItem, ListItemText, ListSubheader, Button } from '@material-ui/core';
+import {
+    makeStyles,
+    Container,
+    Grid,
+    Typography,
+    TextField,
+    List,
+    ListItem,
+    ListItemText,
+    ListSubheader,
+    Button
+} from '@material-ui/core';
 import ArtistCard from '../components/ArtistCard';
 import SongCard from '../components/SongCardRight';
 import ListItems from '../components/ItemList';
 import Avatars from '../components/Avatars';
-import { Link } from 'react-router-dom';
+import {
+    Link
+} from 'react-router-dom';
 import Avatar from '../components/Avatar';
 import {
-    Redirect,
+    Redirect
 } from "react-router-dom";
 import axios from 'axios';
-import { useQuery } from 'react-query';
+import {
+    useQuery
+} from 'react-query';
 import Loading from '../components/Loading';
 
 const useStyles = makeStyles((theme) => ({
@@ -127,7 +142,7 @@ function Username(props: {
 }) {
     const classes = useStyles();
     const { code } = useParams<ParamTypes>();
-    let sanitizedCode = code.replace(/[^a-zA-Z]+/g, '');
+    const sanitizedCode = code.replace(/[^a-zA-Z]+/g, '');
     if (sanitizedCode.length != 6) {
         return <Redirect to="/compare" />;
     }
@@ -152,16 +167,17 @@ function Username(props: {
         )
     }
     let bestSongForArtist = undefined;
-    if (top["result"]["artists"].length > 0)
+    if (top["result"]["artists"].length > 0) {
         for (var val in top["result"]["tracks"]) {
             if (top["result"]["tracks"][val].artist === top["result"]["artists"][0].name && bestSongForArtist === undefined) {
                 bestSongForArtist = top["result"]["tracks"][val].name;
                 break;
             }
         }
+    }
 
     let topArtist = null;
-    if (top["result"]["artists"].length > 0)
+    if (top["result"]["artists"].length > 0) {
         topArtist = (<Grid item key={top["result"]["artists"][0].id}>
             <ArtistCard
                 key={top["result"]["artists"][0].id}
@@ -170,8 +186,9 @@ function Username(props: {
                 bestSong={bestSongForArtist}
             />
         </Grid>);
+    }
     let topTrack = null;
-    if (top["result"]["tracks"].length > 0)
+    if (top["result"]["tracks"].length > 0) {
         topTrack = (<Grid item key={top["result"]["tracks"][0].id}>
             <SongCard
                 key={top["result"]["tracks"][0].id}
@@ -183,24 +200,29 @@ function Username(props: {
                 }
             />
         </Grid>)
+    }
 
     let commonTopArtistTrackText = null;
-    if (topArtist === null && topTrack === null)
+    if (topArtist === null && topTrack === null) {
         commonTopArtistTrackText = (<Typography component="h5" variant="h5" align="center">
             Could not find any top tracks or artists that you both like
         </Typography>)
-    else if (topArtist === null)
+    }
+    else if (topArtist === null) {
         commonTopArtistTrackText = (<Typography component="h5" variant="h5" align="center">
             You both like this track
         </Typography>)
-    else if (topTrack === null)
+    }
+    else if (topTrack === null) {
         commonTopArtistTrackText = (<Typography component="h5" variant="h5" align="center">
             You both like this artist
         </Typography>)
-    else
+    }
+    else {
         commonTopArtistTrackText = (<Typography component="h5" variant="h5" align="center">
             You both like this artist and track
         </Typography>)
+    }
     return (
         <div>
             <Container maxWidth="md" disableGutters={true} fixed={true}>
@@ -266,8 +288,9 @@ function Username(props: {
 function copyToClipboard() {
     var copyText = document.getElementById("link-to-be-copied") as HTMLInputElement;
 
-    if (copyText === null)
+    if (copyText === null) {
         return;
+    }
     copyText.select();
     copyText.setSelectionRange(0, 99999);
 
@@ -317,17 +340,21 @@ function NoUsername(props: {
         }))
     if (RedirectURL !== "") {
         let url = "/compare/" + String(RedirectURL);
-        if (String(RedirectURL).includes("/compare/"))
+        if (String(RedirectURL).includes("/compare/")) {
             url = "/compare/" + String(RedirectURL).split("/compare/")[1];
+        }
         return <Redirect to={url} />
     }
 
-    if (status === "loading")
+    if (status === "loading") {
         return <Loading />
-    if (status === "error")
+    }
+    if (status === "error") {
         return null;
-    if (data === undefined)
+    }
+    if (data === undefined) {
         return <Loading />;
+    }
     let compare = data?.data;
     let friends = [];
 
@@ -351,8 +378,9 @@ function NoUsername(props: {
 
     const mySubmitHandler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
-        if (props.Word !== "")
+        if (props.Word !== "") {
             setRedirectURL(props.Word);
+        }
     }
 
     return (
