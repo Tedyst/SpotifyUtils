@@ -36,8 +36,8 @@ function Graph(props: {
 }
 
 Graph.defaultProps = {
-    zoom: false,
     argument: false,
+    zoom: false,
 };
 
 export default Graph;

@@ -126,7 +126,7 @@ export default function TrackAnalyze() {
                         popularity={trackInfo.Information.TrackInformation.Popularity}
                         tempo={trackInfo.Information.TrackInformation.Tempo}
                         timeSignature={trackInfo.Information.TrackInformation.TimeSignature}
-                        track_key={trackInfo.Information.TrackInformation.Key}
+                        trackKey={trackInfo.Information.TrackInformation.Key}
                     />
                 </Grid>
                 <Grid item lg={6} xs={12}>

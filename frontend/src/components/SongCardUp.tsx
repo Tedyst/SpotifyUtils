@@ -103,8 +103,8 @@ function SongCardUp(props: {
         countComponent = (
             <Typography className={classes.count} color="textSecondary" variant="subtitle2">
                 <b>
-{count}
-</b>
+                    {count}
+                </b>
                 {' '}
                 times
             </Typography>

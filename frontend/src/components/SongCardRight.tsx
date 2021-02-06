@@ -50,8 +50,8 @@ function SongCard(props: {
                 When you only have
                 {' '}
                 <b>
-{props.duration}
-</b>
+                    {props.duration}
+                </b>
                 , you know what you want
             </Typography>
         );
@@ -64,8 +64,8 @@ function SongCard(props: {
                 You listened to this song
                 {' '}
                 <b>
-{props.count}
-</b>
+                    {props.count}
+                </b>
                 {' '}
                 times
             </Typography>
@@ -95,8 +95,8 @@ function SongCard(props: {
 }
 
 SongCard.defaultProps = {
-    duration: undefined,
     count: undefined,
+    duration: undefined,
 };
 
 export default SongCard;
