@@ -113,7 +113,7 @@ func sortGenres(TopArtists *spotify.FullArtistPage) []string {
 			count: s,
 		})
 	}
-	sort.Slice(sorting[:], func(i, j int) bool {
+	sort.Slice(sorting, func(i, j int) bool {
 		return sorting[i].count > sorting[j].count
 	})
 

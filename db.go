@@ -17,7 +17,7 @@ func initDB(db *gorm.DB) {
 	db.AutoMigrate(&userutils.User{})
 	db.AutoMigrate(&userutils.RecentTracks{})
 
-	if *config.Debug == false {
+	if !*config.Debug {
 		go func() {
 			var usercount int64
 			config.DB.Model(&userutils.User{}).Count(&usercount)

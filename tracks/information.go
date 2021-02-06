@@ -43,7 +43,7 @@ type SpotifyInformation struct {
 }
 
 func (t *Track) NeedUpdate() bool {
-	if t.Information.Updated == true {
+	if t.Information.Updated {
 		return false
 	}
 	if t.Information.AlbumInformation.ID == "" {
