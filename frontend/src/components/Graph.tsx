@@ -10,30 +10,34 @@ import {
 
 import { EventTracker } from '@devexpress/dx-react-chart';
 
-export default function Graph(props: {
+function Graph(props: {
     data: any,
     zoom?: boolean,
     argument?: boolean
 }) {
-    let zoom = null;
-    if (props.zoom === true) {
-        zoom = <ZoomAndPan />;
-    }
-    let argument = null;
-    if (props.argument === true) {
-        argument = <ArgumentAxis />
-    }
-    return (<Chart height={250}
-        data={props.data}
-    >
+    const { data, zoom, argument } = props;
+    const zoomComponent = zoom === true ? <ZoomAndPan /> : null;
+    const argumentComponent = argument === true ? <ArgumentAxis /> : null;
+    return (
+        <Chart
+            height={250}
+            data={data}
+        >
 
-        {argument}
-        <ValueAxis />
+            {argumentComponent}
+            <ValueAxis />
 
-        <SplineSeries valueField="value" argumentField="argument" />
-        <EventTracker />
-        <Tooltip />
-        {zoom}
-    </Chart>
-    )
+            <SplineSeries valueField="value" argumentField="argument" />
+            <EventTracker />
+            <Tooltip />
+            {zoomComponent}
+        </Chart>
+    );
 }
+
+Graph.defaultProps = {
+    zoom: false,
+    argument: false,
+};
+
+export default Graph;

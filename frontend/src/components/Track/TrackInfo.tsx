@@ -37,7 +37,7 @@ export default function TrackInfo(props: {
     track_key: number,
     mode: number,
     tempo: number,
-    time_signature: number
+    timeSignature: number
 }) {
     return (<div>
         <Typography>
@@ -92,7 +92,7 @@ export default function TrackInfo(props: {
                         <TableCell component="th" scope="row">
                             Time signature
                 </TableCell>
-                        <TableCell align="right">{props.time_signature}</TableCell>
+                        <TableCell align="right">{props.timeSignature}</TableCell>
                     </TableRow>
                 </TableBody>
             </Table>

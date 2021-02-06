@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Container } from '@material-ui/core';
-import SongCardUp from './SongCardUp'
+import SongCardUp from './SongCardUp';
 
 export default function ResultBox(props: {
     results: {
@@ -11,13 +11,13 @@ export default function ResultBox(props: {
         Count?: number,
     }[]
 }) {
-    if (props.results === undefined)
-        return null
+    const { results } = props;
+    if (results === undefined) return null;
     let items = [];
-    items = props.results.map((item, index) => (
-        <Grid item xs={6} md={3} sm={4} lg={2} key={item.URI + index}>
+    items = results.map((item) => (
+        <Grid item xs={6} md={3} sm={4} lg={2} key={`${item.URI}-result`}>
             <SongCardUp
-                key={item.URI + index}
+                key={`${item.URI}-result`}
                 uri={item.URI}
                 name={item.Name}
                 artist={item.Artist}
@@ -27,10 +27,10 @@ export default function ResultBox(props: {
         </Grid>
     ));
     return (
-        <Container maxWidth="lg" disableGutters={true}>
+        <Container maxWidth="lg" disableGutters>
             <Grid container spacing={1}>
                 {items}
             </Grid>
         </Container>
-    )
+    );
 }

@@ -6,12 +6,12 @@ export default function Logout() {
     const queryClient = new QueryClient();
 
     useEffect(() => {
-        fetch('/api/logout', { cache: "no-store", credentials: "same-origin" }).then(() => {
+        fetch('/api/logout', { cache: 'no-store', credentials: 'same-origin' }).then(() => {
             localStorage.clear();
             queryClient.invalidateQueries();
             window.location.reload();
         });
-    })
+    });
 
     return <Loading />;
 }

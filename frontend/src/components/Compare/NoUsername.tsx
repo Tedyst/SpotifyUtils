@@ -57,7 +57,7 @@ export interface Track {
     image: string;
     id: string;
     duration: number;
-    preview_url: string;
+    previewURL: string;
 }
 
 export interface NoUsernameCompareInterface {
@@ -149,9 +149,9 @@ export default function NoUsername(props: {
     for (let val in compare.friends) {
         friends.push(
             <ListItem
-key={"friend-" + compare.friends[val].username} component={Link} to={"/compare/" + compare.friends[val].code} classes={{
-                root: classes.selected,
-            }}>
+                key={"friend-" + compare.friends[val].username} component={Link} to={"/compare/" + compare.friends[val].code} classes={{
+                    root: classes.selected,
+                }}>
                 <Avatar image={compare.friends[val].image} name={compare.friends[val].name} />
                 <ListItemText
                     primary={compare.friends[val].name}
@@ -176,9 +176,9 @@ key={"friend-" + compare.friends[val].username} component={Link} to={"/compare/"
         <div>
             <Container disableGutters={true} fixed={true} maxWidth="md">
                 <Typography align="center" color="textPrimary" variant="h4">
-                    Your code is 
+                    Your code is
 {' '}
-<b>{compare.code}</b>
+                    <b>{compare.code}</b>
                 </Typography>
                 <Typography align="center" color="textSecondary" variant="h5">
                     Send it to your friends and compare your music taste to theirs!
@@ -229,7 +229,7 @@ key={"friend-" + compare.friends[val].username} component={Link} to={"/compare/"
             <Container disableGutters={true} fixed={true} maxWidth="xs">
                 <List className={classes.root} disablePadding={true} subheader={<li />}>
                     <ListSubheader color="default">
-Your friends
+                        Your friends
 </ListSubheader>
                     <ul>
                         {friends}

@@ -20,7 +20,7 @@ type TopTrack struct {
 	Image      string `json:"image"`
 	ID         string `json:"id"`
 	Duration   int    `json:"duration"`
-	PreviewURL string `json:"preview_url"`
+	PreviewURL string `json:"previewURL"`
 }
 
 type TopStruct struct {

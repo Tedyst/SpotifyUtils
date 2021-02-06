@@ -1,24 +1,26 @@
 import React from 'react';
-import { makeStyles, Card, CardContent, CardMedia, Typography } from '@material-ui/core';
+import {
+    makeStyles, Card, CardContent, CardMedia, Typography,
+} from '@material-ui/core';
 
 const useStyles = makeStyles({
     root: {
         display: 'flex',
         minHeight: 150,
-        maxWidth: '100%'
+        maxWidth: '100%',
     },
     details: {
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'hidden'
+        overflow: 'hidden',
     },
     content: {
-        flex: '1 0 auto'
+        flex: '1 0 auto',
     },
     cover: {
         minWidth: 150,
         marginLeft: 'auto',
-        overflowX: "visible"
+        overflowX: 'visible',
     },
     playIcon: {
         height: 38,
@@ -26,7 +28,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function SongCard(props: {
+function SongCard(props: {
     duration?: string,
     name: string,
     artist: string,
@@ -34,40 +36,63 @@ export default function SongCard(props: {
     count?: number,
 }) {
     const classes = useStyles();
-
-    let duration = null;
-    if (props.duration)
-        duration = (
+    const {
+        duration,
+        name,
+        artist,
+        image,
+        count,
+    } = props;
+    let durationComponent = null;
+    if (duration) {
+        durationComponent = (
             <Typography variant="body2" color="textPrimary">
-                When you only have <b>{props.duration}</b>, you know what you want
+                When you only have
+                {' '}
+                <b>{props.duration}</b>
+                , you know what you want
             </Typography>
-        )
+        );
+    }
 
-    let count = null;
-    if (props.count)
-        count = (
+    let countComponent = null;
+    if (count) {
+        countComponent = (
             <Typography variant="body2" color="textPrimary">
-                You listened to this song <b>{props.count}</b> times
+                You listened to this song
+                {' '}
+                <b>{props.count}</b>
+                {' '}
+                times
             </Typography>
-        )
+        );
+    }
 
     return (
         <Card className={classes.root}>
             <div className={classes.details}>
                 <CardContent className={classes.content}>
                     <Typography component="h6" variant="h6">
-                        {props.name}
+                        {name}
                     </Typography>
                     <Typography variant="subtitle1" color="textSecondary">
-                        {props.artist}
+                        {artist}
                     </Typography>
-                    {duration}
-                    {count}
+                    {durationComponent}
+                    {countComponent}
                 </CardContent>
             </div>
             <CardMedia
                 className={classes.cover}
-                image={props.image}
+                image={image}
             />
-        </Card>);
+        </Card>
+    );
 }
+
+SongCard.defaultProps = {
+    duration: undefined,
+    count: undefined,
+};
+
+export default SongCard;

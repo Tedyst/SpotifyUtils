@@ -1,5 +1,7 @@
 import React from 'react';
-import { makeStyles, withStyles, Avatar, Badge } from '@material-ui/core';
+import {
+    makeStyles, withStyles, Avatar, Badge,
+} from '@material-ui/core';
 import { deepOrange, deepPurple } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
@@ -11,11 +13,11 @@ const useStyles = makeStyles((theme) => ({
         width: theme.spacing(10),
         height: theme.spacing(10),
         color: theme.palette.getContrastText(deepOrange[500]),
-        backgroundColor: deepOrange[500]
+        backgroundColor: deepOrange[500],
     },
     root: {
-        margin: "auto",
-    }
+        margin: 'auto',
+    },
 }));
 
 const SmallAvatar = withStyles((theme) => ({
@@ -27,10 +29,9 @@ const SmallAvatar = withStyles((theme) => ({
 }))(Avatar);
 
 function Acronym(str: string) {
-    var matches = str.match(/\b(\w)/g);
-    if (matches === null)
-        return str.charAt(0);
-    var acronym = matches.join('');
+    const matches = str.match(/\b(\w)/g);
+    if (matches === null) return str.charAt(0);
+    const acronym = matches.join('');
     return acronym;
 }
 
@@ -45,21 +46,24 @@ export default function Avatars(props: {
     }
 }) {
     const classes = useStyles();
-
-    return (<Badge
-        overlap="circle"
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-        }}
-        className={classes.root}
-        badgeContent={<SmallAvatar src={props.initiator.image} className={classes.purple}>
-            {Acronym(props.initiator.name)}
-        </SmallAvatar>}
-    >
-        <Avatar src={props.target.image} className={classes.large} sizes={"120"}>
-            {Acronym(props.target.name)}
-        </Avatar>
-    </Badge>
-    )
+    const { target, initiator } = props;
+    return (
+        <Badge
+            overlap="circle"
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+            }}
+            className={classes.root}
+            badgeContent={(
+                <SmallAvatar src={initiator.image} className={classes.purple}>
+                    {Acronym(initiator.name)}
+                </SmallAvatar>
+            )}
+        >
+            <Avatar src={target.image} className={classes.large} sizes="120">
+                {Acronym(target.name)}
+            </Avatar>
+        </Badge>
+    );
 }

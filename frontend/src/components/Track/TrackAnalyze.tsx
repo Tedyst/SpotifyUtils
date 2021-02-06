@@ -126,13 +126,13 @@ export default function TrackAnalyze() {
                         track_key={trackInfo.Information.TrackInformation.Key}
                         mode={trackInfo.Information.TrackInformation.Mode}
                         tempo={trackInfo.Information.TrackInformation.Tempo}
-                        time_signature={trackInfo.Information.TrackInformation.TimeSignature}
+                        timeSignature={trackInfo.Information.TrackInformation.TimeSignature}
                     />
                 </Grid>
                 <Grid item lg={6} xs={12}>
                     <AlbumInfo
                         popularity={trackInfo.Information.AlbumInformation.Popularity}
-                        release_date={trackInfo.Information.AlbumInformation.ReleaseDate}
+                        releaseDate={trackInfo.Information.AlbumInformation.ReleaseDate}
                         tracks={trackInfo.Information.AlbumInformation.TracksAmount}
                         markets={trackInfo.Information.AlbumInformation.Markets}
                     />

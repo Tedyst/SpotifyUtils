@@ -31,7 +31,7 @@ export default function ServiceWorkerWrapper() {
             message="A new version is available!"
             autoHideDuration={6000}
             onClick={reloadPage}
-            action={
+            action={(
                 <Button
                     color="inherit"
                     size="small"
@@ -39,7 +39,7 @@ export default function ServiceWorkerWrapper() {
                 >
                     Reload
                 </Button>
-            }
+            )}
         />
     );
 }

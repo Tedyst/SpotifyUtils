@@ -20,5 +20,21 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "react/jsx-filename-extension": "off",
+        "indent": "off",
+        "react/jsx-indent": [
+            "error",
+            4
+        ],
+        "react/jsx-indent-props": [
+            "error",
+            4
+        ],
+        "import/extensions": "off",
+        "import/no-unresolved": "off",
+        "no-use-before-define": "off",
+        "@typescript-eslint/no-use-before-define": [
+            "error"
+        ]
     }
 }

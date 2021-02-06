@@ -1,9 +1,11 @@
 import React from 'react';
-import { Card, CardContent, Typography, makeStyles } from '@material-ui/core';
+import {
+    Card, CardContent, Typography, makeStyles,
+} from '@material-ui/core';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     lyrics: {
-        whiteSpace: "pre-wrap",
+        whiteSpace: 'pre-wrap',
     },
 }));
 
@@ -11,19 +13,19 @@ export default function Lyrics(props: {
     lyrics: string
 }) {
     const classes = useStyles();
-
+    const { lyrics } = props;
     return (
         <div>
             <Typography>
                 Lyrics
-        </Typography>
+            </Typography>
             <Card>
                 <CardContent>
                     <Typography className={classes.lyrics}>
-                        {props.lyrics}
+                        {lyrics}
                     </Typography>
                 </CardContent>
             </Card>
         </div>
-    )
+    );
 }

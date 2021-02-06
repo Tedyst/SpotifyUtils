@@ -89,7 +89,7 @@ export interface Track {
     image: string;
     id: string;
     duration: number;
-    preview_url: string;
+    previewURL: string;
 }
 
 
