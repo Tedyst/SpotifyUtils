@@ -76,8 +76,9 @@ export interface TrackInformation {
 
 export default function TrackAnalyze() {
     let { trackid } = useParams<ParamTypes>();
-    const { data, status } = useQuery(['track', trackid], () =>
-        axios.get<TrackInterface>('/api/track/' + trackid, {
+    let sanitizedTrack = trackid.replace(/[^a-zA-Z]+/g, '');
+    const { data, status } = useQuery(['track', sanitizedTrack], () =>
+        axios.get<TrackInterface>('/api/track/' + sanitizedTrack, {
             withCredentials: true
         }))
     if (status === "loading") {

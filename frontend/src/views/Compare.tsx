@@ -127,8 +127,12 @@ function Username(props: {
 }) {
     const classes = useStyles();
     const { code } = useParams<ParamTypes>();
-    const { data, status } = useQuery(['compare', code], () =>
-        axios.get<UsernameInterface>('/api/compare/' + code, {
+    let sanitizedCode = code.replace(/[^a-zA-Z]+/g, '');
+    if (sanitizedCode.length != 6) {
+        return <Redirect to="/compare" />;
+    }
+    const { data, status } = useQuery(['compare', sanitizedCode], () =>
+        axios.get<UsernameInterface>('/api/compare/' + sanitizedCode, {
             withCredentials: true
         }))
     let top = data?.data;
