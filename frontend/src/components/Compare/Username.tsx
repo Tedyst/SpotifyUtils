@@ -108,13 +108,13 @@ export default function Username(props: {
     const classes = useStyles();
     const { code } = useParams<ParamTypes>();
     const sanitizedCode = code.replace(/[^a-zA-Z]+/g, '');
-    if (sanitizedCode.length != 6) {
-        return <Redirect to="/compare" />;
-    }
     const { data, status } = useQuery(['compare', sanitizedCode], () =>
         axios.get<UsernameInterface>('/api/compare/' + sanitizedCode, {
             withCredentials: true
         }))
+    if (sanitizedCode.length !== 6) {
+        return <Redirect to="/compare" />;
+    }
     const top = data?.data;
     if (status === "error" || data?.data.success === false) {
         return <Redirect to="/compare" />;
@@ -200,11 +200,11 @@ export default function Username(props: {
                 <Grid>
                     <br />
                     <Typography align="center" color="textPrimary" variant="h4">
-                        You and 
+                        You and
 {' '}
-{top.target.name} are 
+                        {top.target.name} are
 {' '}
-<b>{top.result.percent}%</b> compatible!
+                        <b>{top.result.percent}%</b> compatible!
                 </Typography>
                     <Typography align="center" color="textSecondary" variant="subtitle1">
                         Here are the top common artists, tracks, and genres that you both share
