@@ -1,32 +1,8 @@
 import React from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import axios from 'axios';
 import LoginPage from '../components/Login/LoginPage';
-
-function LoginWithCode(props: { code: string, CSRFToken: string }) {
-  const queryClient = useQueryClient();
-  const { isLoading, error, data } = useQuery('auth', () => axios.post<AuthInterface>('/api/auth', {
-    host: `${window.location.protocol}//${window.location.host}`,
-    code: props.code,
-  }, {
-    withCredentials: true,
-    headers: {
-      'X-CSRF-Token': props.CSRFToken,
-    },
-  }));
-  if (isLoading) {
-    return <LoginPage loggingIn />;
-  }
-  if (error) {
-    return <LoginPage loggingIn={false} />;
-  }
-  if (data?.data.success) {
-    queryClient.invalidateQueries('status');
-    queryClient.invalidateQueries('top');
-    return <LoginPage loggingIn />;
-  }
-  return <LoginPage loggingIn />;
-}
+import LoginWithCode from '../components/Login/LoginWithCode';
 
 export default function Login() {
   const { search } = window.location;
@@ -44,10 +20,6 @@ export default function Login() {
   }
 
   return <LoginWithCode code={code} CSRFToken={data.headers['x-csrf-token']} />;
-}
-
-interface AuthInterface {
-  success: boolean;
 }
 
 interface AuthURLInterface {

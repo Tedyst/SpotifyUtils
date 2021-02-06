@@ -8,21 +8,19 @@ import {
     ListItem,
     ListItemText,
     ListSubheader,
-    Button
+    Button,
 } from '@material-ui/core';
 import {
-    Link
+    Link,
+    Redirect,
 } from 'react-router-dom';
-import Avatar from '../Avatar';
-import {
-    Redirect
-} from "react-router-dom";
+
 import axios from 'axios';
 import {
-    useQuery
+    useQuery,
 } from 'react-query';
+import Avatar from '../Avatar';
 import Loading from '../Loading';
-
 
 export interface UsernameInterface {
     initiator: Initiator;
@@ -74,7 +72,7 @@ export interface Friend {
 }
 
 function copyToClipboard() {
-    let copyText = document.getElementById("link-to-be-copied") as HTMLInputElement;
+    const copyText = document.getElementById('link-to-be-copied') as HTMLInputElement;
 
     if (copyText === null) {
         return;
@@ -82,11 +80,11 @@ function copyToClipboard() {
     copyText.select();
     copyText.setSelectionRange(0, 99999);
 
-    document.execCommand("copy");
+    document.execCommand('copy');
 }
 
 function getLink(code: string) {
-    return window.location.protocol + "//" + window.location.host + "/compare/" + code;
+    return `${window.location.protocol}//${window.location.host}/compare/${code}`;
 }
 
 const useStylesNoUsername = makeStyles((theme) => ({
@@ -98,7 +96,7 @@ const useStylesNoUsername = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
     },
     spacer: {
-        height: 100
+        height: 100,
     },
     submit: {
         margin: theme.spacing(3, 0, 2),
@@ -109,7 +107,7 @@ const useStylesNoUsername = makeStyles((theme) => ({
     },
     grid: {
         width: '100%',
-        marginTop: '10px'
+        marginTop: '10px',
     },
     selected: {
         color: theme.palette.info.light,
@@ -121,63 +119,66 @@ export default function NoUsername(props: {
     setWord: React.Dispatch<React.SetStateAction<string>>
 }) {
     const classes = useStylesNoUsername();
-    const [RedirectURL, setRedirectURL] = React.useState("");
-    const { data, status } = useQuery('compare', () =>
-        axios.get<NoUsernameCompareInterface>('/api/compare', {
-            withCredentials: true
-        }))
-    if (RedirectURL !== "") {
-        let url = "/compare/" + String(RedirectURL);
-        if (String(RedirectURL).includes("/compare/")) {
-            url = "/compare/" + String(RedirectURL).split("/compare/")[1];
+    const [RedirectURL, setRedirectURL] = React.useState('');
+    const { data, status } = useQuery('compare', () => axios.get<NoUsernameCompareInterface>('/api/compare', {
+        withCredentials: true,
+    }));
+    const { Word } = props;
+    if (RedirectURL !== '') {
+        let url = `/compare/${String(RedirectURL)}`;
+        if (String(RedirectURL).includes('/compare/')) {
+            url = `/compare/${String(RedirectURL).split('/compare/')[1]}`;
         }
-        return <Redirect to={url} />
+        return <Redirect to={url} />;
     }
 
-    if (status === "loading") {
-        return <Loading />
+    if (status === 'loading') {
+        return <Loading />;
     }
-    if (status === "error") {
+    if (status === 'error') {
         return null;
     }
     if (data === undefined) {
         return <Loading />;
     }
     const compare = data?.data;
-    const friends = [];
-
-    for (let val in compare.friends) {
+    const friends: any[] = [];
+    Object.values(compare.friends).forEach((value) => {
         friends.push(
             <ListItem
-                key={"friend-" + compare.friends[val].username} component={Link} to={"/compare/" + compare.friends[val].code} classes={{
+                key={`friend-${value.username}`}
+                component={Link}
+                to={`/compare/${value.code}`}
+                classes={{
                     root: classes.selected,
-                }}>
-                <Avatar image={compare.friends[val].image} name={compare.friends[val].name} />
+                }}
+            >
+                <Avatar image={value.image} name={value.name} />
                 <ListItemText
-                    primary={compare.friends[val].name}
-                    secondary={compare.friends[val].code}
+                    primary={value.name}
+                    secondary={value.code}
                 />
-            </ListItem>
+            </ListItem>,
         );
-    }
+    });
 
     const changeWord = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         props.setWord(event.target.value);
-    }
+    };
 
     const mySubmitHandler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
-        if (props.Word !== "") {
+        if (props.Word !== '') {
             setRedirectURL(props.Word);
         }
-    }
+    };
 
     return (
         <div>
-            <Container disableGutters={true} fixed={true} maxWidth="md">
+            <Container disableGutters fixed maxWidth="md">
                 <Typography align="center" color="textPrimary" variant="h4">
                     Your code is
-{' '}
+                    {' '}
                     <b>{compare.code}</b>
                 </Typography>
                 <Typography align="center" color="textSecondary" variant="h5">
@@ -206,7 +207,7 @@ export default function NoUsername(props: {
                 >
                     <TextField
                         className={classes.grid}
-                        defaultValue={props.Word}
+                        defaultValue={Word}
                         id="standard-basic"
                         label="Enter an user code to compare to it"
                         onChange={changeWord}
@@ -220,17 +221,17 @@ export default function NoUsername(props: {
                         variant="contained"
                     >
                         Search
-            </Button>
+                    </Button>
                 </form>
             </Container>
             <Container className={classes.spacer}>
                 <br />
             </Container>
-            <Container disableGutters={true} fixed={true} maxWidth="xs">
-                <List className={classes.root} disablePadding={true} subheader={<li />}>
+            <Container disableGutters fixed maxWidth="xs">
+                <List className={classes.root} disablePadding subheader={<li />}>
                     <ListSubheader color="default">
                         Your friends
-</ListSubheader>
+                    </ListSubheader>
                     <ul>
                         {friends}
                     </ul>
