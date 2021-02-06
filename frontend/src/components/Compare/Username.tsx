@@ -133,7 +133,7 @@ export default function Username(props: {
     }
     let bestSongForArtist = undefined;
     if (top["result"]["artists"].length > 0) {
-        for (let val in top["result"]["tracks"]) {
+        for (const val in top["result"]["tracks"]) {
             if (top["result"]["tracks"][val].artist === top["result"]["artists"][0].name && bestSongForArtist === undefined) {
                 bestSongForArtist = top["result"]["tracks"][val].name;
                 break;
@@ -190,7 +190,7 @@ export default function Username(props: {
     }
     return (
         <div>
-            <Container disableGutters={true} fixed={true} maxWidth="md">
+            <Container disableGutters fixed maxWidth="md">
                 <Grid alignItems="center" container>
                     <Avatars
                         initiator={top["initiator"]}
@@ -202,17 +202,22 @@ export default function Username(props: {
                     <Typography align="center" color="textPrimary" variant="h4">
                         You and
 {' '}
-                        {top.target.name} are
+                        {top.target.name}
 {' '}
-                        <b>{top.result.percent}%</b> compatible!
-                </Typography>
+are
+{' '}
+                        <b>
+{top.result.percent}%</b>
+{' '}
+compatible!
+</Typography>
                     <Typography align="center" color="textSecondary" variant="subtitle1">
                         Here are the top common artists, tracks, and genres that you both share
                 </Typography>
                 </Grid>
                 <Grid className={classes.spacer} />
             </Container>
-            <Container disableGutters={true} fixed={true} maxWidth="xs">
+            <Container disableGutters fixed maxWidth="xs">
                 <Grid>
                     {commonTopArtistTrackText}
                     <br />

@@ -66,8 +66,8 @@ export default function Chart2(props: {
                     height={120}
                 >
                     <BarSeries
-                        valueField="lineValue"
                         argumentField="argument"
+                        valueField="lineValue"
                     />
                     <ArgumentAxis />
                 </Chart>

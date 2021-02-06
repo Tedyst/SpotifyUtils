@@ -74,31 +74,33 @@ export default function SettingsComp(props: { originalSettings: Settings, CSRFTo
 
     return (
         <div>
-            <Typography color="textPrimary" gutterBottom variant="h5" align="center">
+            <Typography align="center" color="textPrimary" gutterBottom variant="h5">
                 Here you can adjust your user settings
             </Typography>
-            <Typography variant="subtitle1" color="textSecondary" align="center">
+            <Typography align="center" color="textSecondary" variant="subtitle1">
                 If you want to see what the app is doing in the background, you can check the
                 {' '}
-                <a href="https://github.com/Tedyst/SpotifyUtils" className={classes.a}>GitHub page</a>
+                <a className={classes.a} href="https://github.com/Tedyst/SpotifyUtils">
+GitHub page
+</a>
             </Typography>
             <Container maxWidth="xs">
                 <Card className={classes.root}>
                     <CardContent>
-                        <form onSubmit={onSubmit} className={classes.form}>
+                        <form className={classes.form} onSubmit={onSubmit}>
                             <FormControlLabel
                                 control={(
                                     <Checkbox
                                         checked={settings.RecentTracks}
-                                        onChange={handleChangeRecentTracks}
-                                        name="checkedB"
                                         color="primary"
+                                        name="checkedB"
+                                        onChange={handleChangeRecentTracks}
                                     />
                                 )}
                                 label="Enable Recent Tracks Tracking"
                             />
                             <br />
-                            <Button type="submit" variant="contained" color="primary" className={classes.submit}>
+                            <Button className={classes.submit} color="primary" type="submit" variant="contained">
                                 Submit
                             </Button>
                         </form>

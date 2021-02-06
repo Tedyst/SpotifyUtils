@@ -20,14 +20,14 @@ function Graph(props: {
     const argumentComponent = argument === true ? <ArgumentAxis /> : null;
     return (
         <Chart
-            height={250}
             data={data}
+            height={250}
         >
 
             {argumentComponent}
             <ValueAxis />
 
-            <SplineSeries valueField="value" argumentField="argument" />
+            <SplineSeries argumentField="argument" valueField="value" />
             <EventTracker />
             <Tooltip />
             {zoomComponent}

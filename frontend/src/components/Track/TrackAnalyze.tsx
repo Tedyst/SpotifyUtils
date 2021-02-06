@@ -119,14 +119,14 @@ export default function TrackAnalyze() {
             <Grid container spacing={3}>
                 <Grid item lg={6} xs={12}>
                     <TrackInfo
-                        popularity={trackInfo.Information.TrackInformation.Popularity}
+                        explicit={trackInfo.Information.TrackInformation.Explicit}
                         length={trackInfo.Information.TrackInformation.Length}
                         markets={trackInfo.Information.TrackInformation.Markets}
-                        explicit={trackInfo.Information.TrackInformation.Explicit}
-                        track_key={trackInfo.Information.TrackInformation.Key}
                         mode={trackInfo.Information.TrackInformation.Mode}
+                        popularity={trackInfo.Information.TrackInformation.Popularity}
                         tempo={trackInfo.Information.TrackInformation.Tempo}
                         timeSignature={trackInfo.Information.TrackInformation.TimeSignature}
+                        track_key={trackInfo.Information.TrackInformation.Key}
                     />
                 </Grid>
                 <Grid item lg={6} xs={12}>

@@ -146,12 +146,12 @@ export default function NoUsername(props: {
     Object.values(compare.friends).forEach((value) => {
         friends.push(
             <ListItem
-                key={`friend-${value.username}`}
-                component={Link}
-                to={`/compare/${value.code}`}
                 classes={{
                     root: classes.selected,
                 }}
+                component={Link}
+                key={`friend-${value.username}`}
+                to={`/compare/${value.code}`}
             >
                 <Avatar image={value.image} name={value.name} />
                 <ListItemText
@@ -179,7 +179,9 @@ export default function NoUsername(props: {
                 <Typography align="center" color="textPrimary" variant="h4">
                     Your code is
                     {' '}
-                    <b>{compare.code}</b>
+                    <b>
+{compare.code}
+</b>
                 </Typography>
                 <Typography align="center" color="textSecondary" variant="h5">
                     Send it to your friends and compare your music taste to theirs!

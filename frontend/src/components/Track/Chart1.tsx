@@ -34,7 +34,7 @@ export default function Chart1(props: {
                         tickSize={10}
                     />
 
-                    <LineSeries valueField="lineValue" argumentField="argument" />
+                    <LineSeries argumentField="argument" valueField="lineValue" />
                 </Chart>
             </Paper>
         </div>

@@ -38,7 +38,7 @@ export default function SearchBox(props: {
     const { playlists } = props;
 
     const noplaylistfound = (
-        <MenuItem value="none" disabled>
+        <MenuItem disabled value="none">
             No playlist found!
         </MenuItem>
     );
@@ -48,9 +48,9 @@ export default function SearchBox(props: {
         Object.keys(playlists).forEach((key) => {
             list.push(
                 <MenuItem
-                    value={playlists[key].id}
-                    key={`${playlists[key].id}-${key}`}
                     className={classes.fullWidth}
+                    key={`${playlists[key].id}-${key}`}
+                    value={playlists[key].id}
                 >
                     {playlists[key].name}
                 </MenuItem>,

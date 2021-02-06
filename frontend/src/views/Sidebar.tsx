@@ -110,13 +110,13 @@ function ResponsiveDrawer(props: {
             <List>
                 <ListItem
                     button
-                    key="Top"
-                    component={Link}
-                    to="/"
-                    selected={location.pathname === '/'}
                     classes={{
                         selected: classes.selected,
                     }}
+                    component={Link}
+                    key="Top"
+                    selected={location.pathname === '/'}
+                    to="/"
                 >
                     <ListItemIcon>
                         <AllInclusive />
@@ -125,13 +125,13 @@ function ResponsiveDrawer(props: {
                 </ListItem>
                 <ListItem
                     button
-                    key="Playlist"
-                    component={Link}
-                    to="/playlist"
-                    selected={location.pathname === '/playlist'}
                     classes={{
                         selected: classes.selected,
                     }}
+                    component={Link}
+                    key="Playlist"
+                    selected={location.pathname === '/playlist'}
+                    to="/playlist"
                 >
                     <ListItemIcon>
                         <ListIcon />
@@ -140,13 +140,13 @@ function ResponsiveDrawer(props: {
                 </ListItem>
                 <ListItem
                     button
-                    key="TrackSearch"
-                    component={Link}
-                    to="/tracksearch"
-                    selected={location.pathname === '/tracksearch'}
                     classes={{
                         selected: classes.selected,
                     }}
+                    component={Link}
+                    key="TrackSearch"
+                    selected={location.pathname === '/tracksearch'}
+                    to="/tracksearch"
                 >
                     <ListItemIcon>
                         <Search />
@@ -155,13 +155,13 @@ function ResponsiveDrawer(props: {
                 </ListItem>
                 <ListItem
                     button
-                    key="Compare"
-                    component={Link}
-                    to="/compare"
-                    selected={location.pathname.startsWith('/compare')}
                     classes={{
                         selected: classes.selected,
                     }}
+                    component={Link}
+                    key="Compare"
+                    selected={location.pathname.startsWith('/compare')}
+                    to="/compare"
                 >
                     <ListItemIcon>
                         <SupervisorAccount />
@@ -170,13 +170,13 @@ function ResponsiveDrawer(props: {
                 </ListItem>
                 <ListItem
                     button
-                    key="Recent-Tracks"
-                    component={Link}
-                    to="/recent"
-                    selected={location.pathname.startsWith('/recent')}
                     classes={{
                         selected: classes.selected,
                     }}
+                    component={Link}
+                    key="Recent-Tracks"
+                    selected={location.pathname.startsWith('/recent')}
+                    to="/recent"
                 >
                     <ListItemIcon>
                         <QueueMusic />
@@ -185,13 +185,13 @@ function ResponsiveDrawer(props: {
                 </ListItem>
                 <ListItem
                     button
-                    key="old-top"
-                    component={Link}
-                    to="/listeningstatistics"
-                    selected={location.pathname.startsWith('/listeningstatistics')}
                     classes={{
                         selected: classes.selected,
                     }}
+                    component={Link}
+                    key="old-top"
+                    selected={location.pathname.startsWith('/listeningstatistics')}
+                    to="/listeningstatistics"
                 >
                     <ListItemIcon>
                         <History />
@@ -200,13 +200,13 @@ function ResponsiveDrawer(props: {
                 </ListItem>
                 <ListItem
                     button
-                    key="settings"
-                    component={Link}
-                    to="/settings"
-                    selected={location.pathname.startsWith('/settings')}
                     classes={{
                         selected: classes.selected,
                     }}
+                    component={Link}
+                    key="settings"
+                    selected={location.pathname.startsWith('/settings')}
+                    to="/settings"
                 >
                     <ListItemIcon>
                         <Settings />
@@ -215,13 +215,13 @@ function ResponsiveDrawer(props: {
                 </ListItem>
                 <ListItem
                     button
-                    key="logout"
-                    component={Link}
-                    to="/logout"
-                    selected={location.pathname.startsWith('/logout')}
                     classes={{
                         selected: classes.selected,
                     }}
+                    component={Link}
+                    key="logout"
+                    selected={location.pathname.startsWith('/logout')}
+                    to="/logout"
                 >
                     <ListItemIcon>
                         <ExitToApp />

@@ -13,5 +13,5 @@ export default function SettingsWrapper() {
     if (status === 'loading' || status === 'error' || data === undefined || data.data.Success === false) {
         return <Loading />;
     }
-    return <Settings originalSettings={data.data.Settings} CSRFToken={data.headers['x-csrf-token']} />;
+    return <Settings CSRFToken={data.headers['x-csrf-token']} originalSettings={data.data.Settings} />;
 }

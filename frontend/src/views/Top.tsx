@@ -115,10 +115,10 @@ export default function Top() {
         topArtist = (
             <Grid item key={top.result.artists[0].id}>
                 <ArtistCard
+                    bestSong={bestSongForArtist}
+                    image={top.result.artists[0].image}
                     key={top.result.artists[0].id}
                     name={top.result.artists[0].name}
-                    image={top.result.artists[0].image}
-                    bestSong={bestSongForArtist}
                 />
             </Grid>
         );
@@ -128,13 +128,13 @@ export default function Top() {
         topTrack = (
             <Grid item key={top.result.tracks[0].id}>
                 <SongCard
-                    key={top.result.tracks[0].id}
-                    name={top.result.tracks[0].name}
                     artist={top.result.tracks[0].artist}
-                    image={top.result.tracks[0].image}
                     duration={
                         msToText(top.result.tracks[0].duration)
                     }
+                    image={top.result.tracks[0].image}
+                    key={top.result.tracks[0].id}
+                    name={top.result.tracks[0].name}
                 />
             </Grid>
         );
@@ -142,7 +142,7 @@ export default function Top() {
 
     return (
         <div>
-            <Container maxWidth="xs" disableGutters fixed>
+            <Container disableGutters fixed maxWidth="xs">
                 <Typography component="h4" variant="h4" align="center">
                     Your top artist and track
                 </Typography>

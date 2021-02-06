@@ -29,7 +29,7 @@ export default function Avatars(props: {
     const classes = useStyles();
     const { image, name } = props;
     return (
-        <Avatar src={image} className={classes.large} sizes="120">
+        <Avatar className={classes.large} sizes="120" src={image}>
             {Acronym(name)}
         </Avatar>
     );

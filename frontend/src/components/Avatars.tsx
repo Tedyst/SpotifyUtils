@@ -49,19 +49,19 @@ export default function Avatars(props: {
     const { target, initiator } = props;
     return (
         <Badge
-            overlap="circle"
             anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'right',
             }}
-            className={classes.root}
             badgeContent={(
                 <SmallAvatar src={initiator.image} className={classes.purple}>
                     {Acronym(initiator.name)}
                 </SmallAvatar>
             )}
+            className={classes.root}
+            overlap="circle"
         >
-            <Avatar src={target.image} className={classes.large} sizes="120">
+            <Avatar className={classes.large} sizes="120" src={target.image}>
                 {Acronym(target.name)}
             </Avatar>
         </Badge>

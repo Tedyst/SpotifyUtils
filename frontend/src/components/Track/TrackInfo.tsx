@@ -92,7 +92,9 @@ export default function TrackInfo(props: {
                         <TableCell component="th" scope="row">
                             Time signature
                 </TableCell>
-                        <TableCell align="right">{props.timeSignature}</TableCell>
+                        <TableCell align="right">
+{props.timeSignature}
+</TableCell>
                     </TableRow>
                 </TableBody>
             </Table>

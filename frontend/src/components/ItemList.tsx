@@ -33,7 +33,9 @@ export default function ListItems(props: {
     if (it.length === 0 || !items) {
         return (
             <List className={classes.root} subheader={<li />}>
-                <ListSubheader className={classes.textColor} color="default">{name}</ListSubheader>
+                <ListSubheader className={classes.textColor} color="default">
+{name}
+</ListSubheader>
                 <ul className={classes.ul}>
                     <ListItem key={`list-notfound-${name}`}>
                         <ListItemText
@@ -84,7 +86,9 @@ export default function ListItems(props: {
 
     return (
         <List className={classes.root} subheader={<li />}>
-            <ListSubheader className={classes.textColor}>{name}</ListSubheader>
+            <ListSubheader className={classes.textColor}>
+{name}
+</ListSubheader>
             <ul className={classes.ul}>
                 {items}
             </ul>

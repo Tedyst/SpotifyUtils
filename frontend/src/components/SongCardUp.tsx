@@ -88,10 +88,10 @@ function SongCardUp(props: {
     const cardAction = (
         <CardActions>
             <Button
-                size="small"
-                component={Link}
-                to={`/track/${uri}`}
                 className={classes.button}
+                component={Link}
+                size="small"
+                to={`/track/${uri}`}
             >
                 Informations
             </Button>
@@ -101,8 +101,10 @@ function SongCardUp(props: {
     let countComponent = null;
     if (count) {
         countComponent = (
-            <Typography variant="subtitle2" color="textSecondary" className={classes.count}>
-                <b>{count}</b>
+            <Typography className={classes.count} color="textSecondary" variant="subtitle2">
+                <b>
+{count}
+</b>
                 {' '}
                 times
             </Typography>

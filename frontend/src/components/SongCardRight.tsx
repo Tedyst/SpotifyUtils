@@ -49,7 +49,9 @@ function SongCard(props: {
             <Typography variant="body2" color="textPrimary">
                 When you only have
                 {' '}
-                <b>{props.duration}</b>
+                <b>
+{props.duration}
+</b>
                 , you know what you want
             </Typography>
         );
@@ -61,7 +63,9 @@ function SongCard(props: {
             <Typography variant="body2" color="textPrimary">
                 You listened to this song
                 {' '}
-                <b>{props.count}</b>
+                <b>
+{props.count}
+</b>
                 {' '}
                 times
             </Typography>

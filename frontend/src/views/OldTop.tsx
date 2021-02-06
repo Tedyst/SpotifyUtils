@@ -47,8 +47,7 @@ function secToText(seconds: number): string {
     minutes %= 60;
     let text = '';
     if (hours !== 0) text += `${hours} Hours, `;
-    if (sec !== 0) text += `${minutes} Minutes and ${sec} Seconds`;
-    else text += `${minutes} Minutes`;
+    text += sec !== 0 ? `${minutes} Minutes and ${sec} Seconds` : `${minutes} Minutes`;
     return text;
 }
 
@@ -102,17 +101,17 @@ export default function OldTop() {
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <Grid container justify="space-around">
                 <KeyboardDatePicker
-                    disableToolbar
-                    variant="inline"
-                    format="dd/MM/yyyy"
-                    margin="normal"
-                    id="oldtop-date-picker-inline"
-                    label="Select the Date from which to search"
-                    value={selectedDate}
-                    onChange={handleDateChange}
                     KeyboardButtonProps={{
                         'aria-label': 'change date',
                     }}
+                    disableToolbar
+                    format="dd/MM/yyyy"
+                    id="oldtop-date-picker-inline"
+                    label="Select the Date from which to search"
+                    margin="normal"
+                    onChange={handleDateChange}
+                    value={selectedDate}
+                    variant="inline"
                 />
             </Grid>
         </MuiPickersUtilsProvider>
@@ -158,10 +157,10 @@ export default function OldTop() {
     if (oldTop.Result.TopTracks.length > 0) {
         topsong = (
             <SongCardRight
-                name={oldTop.Result.TopTracks[0].Name}
                 artist={oldTop.Result.TopTracks[0].Artist}
-                image={oldTop.Result.TopTracks[0].Image}
                 count={oldTop.Result.TopTracks[0].Count}
+                image={oldTop.Result.TopTracks[0].Image}
+                name={oldTop.Result.TopTracks[0].Name}
             />
         );
     }
