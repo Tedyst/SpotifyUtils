@@ -54,7 +54,7 @@ export default function Avatars(props: {
                 horizontal: 'right',
             }}
             badgeContent={(
-                <SmallAvatar src={initiator.image} className={classes.purple}>
+                <SmallAvatar className={classes.purple} src={initiator.image}>
                     {Acronym(initiator.name)}
                 </SmallAvatar>
             )}

@@ -1,55 +1,54 @@
 import React from 'react';
 import {
-    useParams
-} from "react-router-dom";
+    useParams,
+    Redirect,
+} from 'react-router-dom';
 import {
     makeStyles,
     Container,
     Grid,
     Typography,
 } from '@material-ui/core';
+import axios from 'axios';
+import {
+    useQuery,
+} from 'react-query';
 import ArtistCard from '../ArtistCard';
 import SongCard from '../SongCardRight';
 import ListItems from '../ItemList';
 import Avatars from '../Avatars';
-import {
-    Redirect
-} from "react-router-dom";
-import axios from 'axios';
-import {
-    useQuery
-} from 'react-query';
+
 import Loading from '../Loading';
 import NoUsername from './NoUsername';
 
 const useStyles = makeStyles(() => ({
     root: {
-        flexGrow: 1
+        flexGrow: 1,
     },
     fullWidth: {
-        width: '100%'
+        width: '100%',
     },
     spacer: {
-        height: 100
-    }
+        height: 100,
+    },
 }));
 
 function msToText(ms: number) {
     let seconds = Math.floor(ms / 1000);
     let minutes = Math.floor(seconds / 60);
-    seconds = seconds % 60;
+    seconds %= 60;
     const hours = Math.floor(minutes / 60);
-    minutes = minutes % 60;
+    minutes %= 60;
     if (hours !== 0) {
-        return hours + " Hours";
+        return `${hours} Hours`;
     }
     if (minutes !== 0) {
         if (seconds !== 0) {
-            return minutes + " Minutes and " + seconds + " Seconds";
+            return `${minutes} Minutes and ${seconds} Seconds`;
         }
-        return minutes + " Minutes";
+        return `${minutes} Minutes`;
     }
-    return seconds + " Seconds";
+    return `${seconds} Seconds`;
 }
 
 interface ParamTypes {
@@ -92,14 +91,12 @@ export interface Track {
     previewURL: string;
 }
 
-
 export interface Friend {
     username: string;
     name: string;
     image: string;
     code: string;
 }
-
 
 export default function Username(props: {
     Word: string,
@@ -108,112 +105,123 @@ export default function Username(props: {
     const classes = useStyles();
     const { code } = useParams<ParamTypes>();
     const sanitizedCode = code.replace(/[^a-zA-Z]+/g, '');
-    const { data, status } = useQuery(['compare', sanitizedCode], () =>
-        axios.get<UsernameInterface>('/api/compare/' + sanitizedCode, {
-            withCredentials: true
-        }))
+    const { data, status } = useQuery(['compare', sanitizedCode], () => axios.get<UsernameInterface>(`/api/compare/${sanitizedCode}`, {
+        withCredentials: true,
+    }));
     if (sanitizedCode.length !== 6) {
         return <Redirect to="/compare" />;
     }
     const top = data?.data;
-    if (status === "error" || data?.data.success === false) {
+    if (status === 'error' || data?.data.success === false) {
         return <Redirect to="/compare" />;
     }
-    if (top === undefined || status === "loading") {
+    if (top === undefined || status === 'loading') {
         return <Loading />;
     }
 
-    if (top["success"] === false) {
+    if (top.success === false) {
         return (
             <NoUsername
                 Word={props.Word}
                 setWord={props.setWord}
             />
-        )
+        );
     }
-    let bestSongForArtist = undefined;
-    if (top["result"]["artists"].length > 0) {
-        for (const val in top["result"]["tracks"]) {
-            if (top["result"]["tracks"][val].artist === top["result"]["artists"][0].name && bestSongForArtist === undefined) {
-                bestSongForArtist = top["result"]["tracks"][val].name;
-                break;
+    let bestSongForArtist: string | undefined;
+    if (top.result.artists.length > 0) {
+        Object.values(top.result.tracks).forEach((value) => {
+            if (bestSongForArtist === undefined) {
+                if (value.artist === top.result.artists[0].name) {
+                    bestSongForArtist = value.name;
+                }
             }
-        }
+        });
     }
 
     let topArtist = null;
-    if (top["result"]["artists"].length > 0) {
-        topArtist = (<Grid item key={top["result"]["artists"][0].id}>
-            <ArtistCard
-                bestSong={bestSongForArtist}
-                image={top["result"]["artists"][0].image}
-                key={top["result"]["artists"][0].id}
-                name={top["result"]["artists"][0].name}
-            />
-        </Grid>);
+    if (top.result.artists.length > 0) {
+        topArtist = (
+            <Grid item key={top.result.artists[0].id}>
+                <ArtistCard
+                    bestSong={bestSongForArtist}
+                    image={top.result.artists[0].image}
+                    key={top.result.artists[0].id}
+                    name={top.result.artists[0].name}
+                />
+            </Grid>
+        );
     }
     let topTrack = null;
-    if (top["result"]["tracks"].length > 0) {
-        topTrack = (<Grid item key={top["result"]["tracks"][0].id}>
-            <SongCard
-                artist={top["result"]["tracks"][0].artist}
-                duration={
-                    msToText(top["result"]["tracks"][0].duration)
-                }
-                image={top["result"]["tracks"][0].image}
-                key={top["result"]["tracks"][0].id}
-                name={top["result"]["tracks"][0].name}
-            />
-        </Grid>)
+    if (top.result.tracks.length > 0) {
+        topTrack = (
+            <Grid item key={top.result.tracks[0].id}>
+                <SongCard
+                    artist={top.result.tracks[0].artist}
+                    duration={
+                        msToText(top.result.tracks[0].duration)
+                    }
+                    image={top.result.tracks[0].image}
+                    key={top.result.tracks[0].id}
+                    name={top.result.tracks[0].name}
+                />
+            </Grid>
+        );
     }
 
     let commonTopArtistTrackText = null;
     if (topArtist === null && topTrack === null) {
-        commonTopArtistTrackText = (<Typography align="center" component="h5" variant="h5">
-            Could not find any top tracks or artists that you both like
-        </Typography>)
-    }
-    else if (topArtist === null) {
-        commonTopArtistTrackText = (<Typography align="center" component="h5" variant="h5">
-            You both like this track
-        </Typography>)
-    }
-    else if (topTrack === null) {
-        commonTopArtistTrackText = (<Typography align="center" component="h5" variant="h5">
-            You both like this artist
-        </Typography>)
-    }
-    else {
-        commonTopArtistTrackText = (<Typography align="center" component="h5" variant="h5">
-            You both like this artist and track
-        </Typography>)
+        commonTopArtistTrackText = (
+            <Typography align="center" component="h5" variant="h5">
+                Could not find any top tracks or artists that you both like
+            </Typography>
+        );
+    } else if (topArtist === null) {
+        commonTopArtistTrackText = (
+            <Typography align="center" component="h5" variant="h5">
+                You both like this track
+            </Typography>
+        );
+    } else if (topTrack === null) {
+        commonTopArtistTrackText = (
+            <Typography align="center" component="h5" variant="h5">
+                You both like this artist
+            </Typography>
+        );
+    } else {
+        commonTopArtistTrackText = (
+            <Typography align="center" component="h5" variant="h5">
+                You both like this artist and track
+            </Typography>
+        );
     }
     return (
         <div>
             <Container disableGutters fixed maxWidth="md">
                 <Grid alignItems="center" container>
                     <Avatars
-                        initiator={top["initiator"]}
-                        target={top["target"]}
+                        initiator={top.initiator}
+                        target={top.target}
                     />
                 </Grid>
                 <Grid>
                     <br />
                     <Typography align="center" color="textPrimary" variant="h4">
                         You and
-{' '}
+                        {' '}
                         {top.target.name}
-{' '}
-are
-{' '}
+                        {' '}
+                        are
+                        {' '}
                         <b>
-{top.result.percent}%</b>
-{' '}
-compatible!
-</Typography>
+                            {top.result.percent}
+                            %
+                        </b>
+                        {' '}
+                        compatible!
+                    </Typography>
                     <Typography align="center" color="textSecondary" variant="subtitle1">
                         Here are the top common artists, tracks, and genres that you both share
-                </Typography>
+                    </Typography>
                 </Grid>
                 <Grid className={classes.spacer} />
             </Container>
@@ -235,24 +243,24 @@ compatible!
                 <Grid alignItems="stretch" className={classes.root} container direction="row" spacing={2}>
                     <Grid className={classes.fullWidth} item key="lista-tracks" md={4}>
                         <ListItems
-                            items={top["result"]["tracks"]}
-                            name={"Common Top Tracks"}
+                            items={top.result.tracks}
+                            name="Common Top Tracks"
                         />
                     </Grid>
                     <Grid className={classes.fullWidth} item key="lista-artists" md={4}>
                         <ListItems
-                            items={top["result"]["artists"]}
-                            name={"Common Top Artists"}
+                            items={top.result.artists}
+                            name="Common Top Artists"
                         />
                     </Grid>
                     <Grid className={classes.fullWidth} item key="lista-genres" md={4}>
                         <ListItems
-                            items={top["result"]["genres"]}
-                            name={"Common Top Genres"}
+                            items={top.result.genres}
+                            name="Common Top Genres"
                         />
                     </Grid>
                 </Grid>
             </Container>
         </div>
-    )
+    );
 }

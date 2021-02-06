@@ -7,10 +7,6 @@ import {
 } from 'react-router-dom';
 import TrackAnalyze from '../components/Track/TrackAnalyze';
 
-function NoTrack() {
-    return <Redirect to="/" />;
-}
-
 export default function Track() {
     const match = useRouteMatch();
     return (
@@ -19,7 +15,7 @@ export default function Track() {
                 <TrackAnalyze />
             </Route>
             <Route path="/">
-                <NoTrack />
+                <Redirect to="/" />
             </Route>
         </Switch>
     );
