@@ -15,51 +15,63 @@ export default function Chart2(props: {
     loudness: number,
     speechiness: number,
 }) {
-    let data = [
+    const {
+        acousticness,
+        danceability,
+        energy,
+        instrumentalness,
+        liveness,
+        loudness,
+        speechiness,
+    } = props;
+    const data = [
         {
-            lineValue: props.acousticness,
-            argument: "Acousticness"
+            lineValue: acousticness,
+            argument: 'Acousticness',
         },
         {
-            lineValue: props.danceability,
-            argument: "Danceability"
+            lineValue: danceability,
+            argument: 'Danceability',
         },
         {
-            lineValue: props.energy,
-            argument: "Energy"
+            lineValue: energy,
+            argument: 'Energy',
         },
         {
-            lineValue: props.instrumentalness,
-            argument: "Instrumentalness"
+            lineValue: instrumentalness,
+            argument: 'Instrumentalness',
         },
         {
-            lineValue: props.liveness,
-            argument: "Liveness"
+            lineValue: liveness,
+            argument: 'Liveness',
         },
         {
-            lineValue: props.loudness,
-            argument: "Loudness"
+            lineValue: loudness,
+            argument: 'Loudness',
         },
         {
-            lineValue: props.speechiness,
-            argument: "Speechiness"
+            lineValue: speechiness,
+            argument: 'Speechiness',
         },
     ];
 
-    return (<div>
-        <Typography>
-            Track Features
-    </Typography>
-        <Paper>
-            <Chart
-                data={data}
-                height={120}
-            >
-                <BarSeries valueField="lineValue" argumentField="argument"
-                />
-                <ArgumentAxis />
-            </Chart>
-        </Paper>
-    </div>
-    )
+    return (
+        <div>
+            <Typography>
+                Track Features
+            </Typography>
+            <Paper>
+                <Chart
+                    data={data}
+                    height={120}
+                >
+                    <BarSeries
+                        argumentField="argument"
+                        valueField="lineValue"
+                    />
+                    <ArgumentAxis />
+                </Chart>
+            </Paper>
+        </div>
+    );
 }

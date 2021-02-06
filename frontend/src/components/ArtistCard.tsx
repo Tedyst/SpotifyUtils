@@ -1,11 +1,13 @@
 import React from 'react';
-import { makeStyles, Card, CardContent, CardMedia, Typography } from '@material-ui/core';
+import {
+    makeStyles, Card, CardContent, CardMedia, Typography,
+} from '@material-ui/core';
 
 const useStyles = makeStyles({
     root: {
         display: 'flex',
         minHeight: 150,
-        maxWidth: '100%'
+        maxWidth: '100%',
     },
     details: {
         display: 'flex',
@@ -13,7 +15,7 @@ const useStyles = makeStyles({
         marginRight: 'auto',
     },
     content: {
-        flex: '1 0 auto'
+        flex: '1 0 auto',
     },
     cover: {
         minWidth: 150,
@@ -24,35 +26,47 @@ const useStyles = makeStyles({
     },
 });
 
-export default function ArtistCard(props: {
+function ArtistCard(props: {
     bestSong?: string,
     image: string,
     name: string
 }) {
     const classes = useStyles();
 
-    let bestSong = null;
-    if (props.bestSong)
-        bestSong = (
+    const { bestSong, image, name } = props;
+    let song = null;
+    if (bestSong) {
+        song = (
             <Typography variant="body2" color="textPrimary">
                 You really love the song
-                <b> {props.bestSong}</b>
+                <b>
+                    {' '}
+                    {props.bestSong}
+                </b>
             </Typography>
         );
+    }
 
     return (
         <Card className={classes.root}>
             <CardMedia
                 className={classes.cover}
-                image={props.image}
+                image={image}
             />
             <div className={classes.details}>
                 <CardContent className={classes.content}>
                     <Typography component="h6" variant="h6">
-                        {props.name}
+                        {name}
                     </Typography>
-                    {bestSong}
+                    {song}
                 </CardContent>
             </div>
-        </Card>);
+        </Card>
+    );
 }
+
+ArtistCard.defaultProps = {
+    bestSong: undefined,
+};
+
+export default ArtistCard;

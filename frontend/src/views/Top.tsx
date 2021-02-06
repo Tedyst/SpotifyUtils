@@ -1,36 +1,36 @@
 import React from 'react';
-import { makeStyles, Container, Grid, Typography } from '@material-ui/core';
+import {
+    makeStyles, Container, Grid, Typography,
+} from '@material-ui/core';
+import { useQuery } from 'react-query';
+import axios from 'axios';
+import Alert from '@material-ui/lab/Alert';
 import ArtistCard from '../components/ArtistCard';
 import SongCard from '../components/SongCardRight';
 import List from '../components/ItemList';
 import Loading from '../components/Loading';
-import { useQuery } from 'react-query';
-import axios from 'axios';
-import Alert from '@material-ui/lab/Alert';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     root: {
-        flexGrow: 1
+        flexGrow: 1,
     },
     fullWidth: {
-        width: '100%'
-    }
+        width: '100%',
+    },
 }));
 
 function msToText(ms: number): string {
     let seconds = Math.floor(ms / 1000);
     let minutes = Math.floor(seconds / 60);
-    seconds = seconds % 60;
-    let hours = Math.floor(minutes / 60);
-    minutes = minutes % 60;
-    if (hours !== 0)
-        return hours + " Hours";
+    seconds %= 60;
+    const hours = Math.floor(minutes / 60);
+    minutes %= 60;
+    if (hours !== 0) return `${hours} Hours`;
     if (minutes !== 0) {
-        if (seconds !== 0)
-            return minutes + " Minutes and " + seconds + " Seconds";
-        return minutes + " Minutes";
+        if (seconds !== 0) return `${minutes} Minutes and ${seconds} Seconds`;
+        return `${minutes} Minutes`;
     }
-    return seconds + " Seconds";
+    return `${seconds} Seconds`;
 }
 
 export interface TopInterface {
@@ -57,84 +57,92 @@ export interface Track {
     image: string;
     id: string;
     duration: number;
-    preview_url: string;
+    previewURL: string;
 }
-
 
 export default function Top() {
     const classes = useStyles();
 
-    const { data, status, error } = useQuery('top', () =>
-        axios.get<TopInterface>('/api/top', {
-            withCredentials: true
-        }))
+    const { data, status, error } = useQuery('top', () => axios.get<TopInterface>('/api/top', {
+        withCredentials: true,
+    }));
 
     let errorComponent = null;
-    if (status === "error" || data?.data.success === false) {
-        if (typeof error === "object" && error != null) {
-            if (error.toString() !== "") {
-                errorComponent =
+    if (status === 'error' || data?.data.success === false) {
+        if (typeof error === 'object' && error != null) {
+            if (error.toString() !== '') {
+                errorComponent = (
                     <Container maxWidth="xs">
                         <Alert severity="error">{error.toString()}</Alert>
                     </Container>
+                );
             }
         } else {
-            errorComponent =
+            errorComponent = (
                 <Container maxWidth="xs">
                     <Alert severity="error">Could not extract data from server</Alert>
                 </Container>
+            );
         }
-        return <div>
-            {errorComponent}
-            <Loading />
-        </div>
+        return (
+            <div>
+                {errorComponent}
+                <Loading />
+            </div>
+        );
     }
-    if (data === undefined || status === "loading")
-        return <Loading />
+    if (data === undefined || status === 'loading') return <Loading />;
     const top = data?.data;
 
     if (top === undefined) {
-        return <Loading />
+        return <Loading />;
     }
     if (top.success === false) {
-        return <Loading />
+        return <Loading />;
     }
 
-    let bestSongForArtist = undefined;
-    for (var val in top.result.tracks) {
-        if (top.result.tracks[val].artist === top.result.artists[0].name && bestSongForArtist === undefined) {
-            bestSongForArtist = top.result.tracks[val].name;
-            break;
+    let bestSongForArtist: string | undefined;
+    Object.values(top.result.tracks).forEach((value) => {
+        if (bestSongForArtist === undefined) {
+            if (value.artist === top.result.artists[0].name) {
+                bestSongForArtist = value.name;
+            }
         }
-    }
+    });
 
     let topArtist = null;
-    if (top.result.artists.length > 0)
-        topArtist = (<Grid item key={top.result.artists[0].id}>
-            <ArtistCard
-                key={top.result.artists[0].id}
-                name={top.result.artists[0].name}
-                image={top.result.artists[0].image}
-                bestSong={bestSongForArtist}
-            />
-        </Grid>);
+    if (top.result.artists.length > 0) {
+        topArtist = (
+            <Grid item key={top.result.artists[0].id}>
+                <ArtistCard
+                    bestSong={bestSongForArtist}
+                    image={top.result.artists[0].image}
+                    key={top.result.artists[0].id}
+                    name={top.result.artists[0].name}
+                />
+            </Grid>
+        );
+    }
     let topTrack = null;
-    if (top.result.tracks.length > 0)
-        topTrack = (<Grid item key={top.result.tracks[0].id}>
-            <SongCard
-                key={top.result.tracks[0].id}
-                name={top.result.tracks[0].name}
-                artist={top.result.tracks[0].artist}
-                image={top.result.tracks[0].image}
-                duration={
-                    msToText(top.result.tracks[0].duration)
-                }
-            />
-        </Grid>)
+    if (top.result.tracks.length > 0) {
+        topTrack = (
+            <Grid item key={top.result.tracks[0].id}>
+                <SongCard
+                    artist={top.result.tracks[0].artist}
+                    duration={
+                        msToText(top.result.tracks[0].duration)
+                    }
+                    image={top.result.tracks[0].image}
+                    key={top.result.tracks[0].id}
+                    name={top.result.tracks[0].name}
+                />
+            </Grid>
+        );
+    }
 
     return (
         <div>
-            <Container maxWidth="xs" disableGutters={true} fixed={true}>
+            <Container disableGutters fixed maxWidth="xs">
                 <Typography component="h4" variant="h4" align="center">
                     Your top artist and track
                 </Typography>
@@ -154,23 +162,23 @@ export default function Top() {
                     <Grid item key="lista-tracks" md={4} className={classes.fullWidth}>
                         <List
                             items={top.result.tracks}
-                            name={"Your Top Tracks"}
+                            name="Your Top Tracks"
                         />
                     </Grid>
                     <Grid item key="lista-artists" md={4} className={classes.fullWidth}>
                         <List
                             items={top.result.artists}
-                            name={"Your Top Artists"}
+                            name="Your Top Artists"
                         />
                     </Grid>
                     <Grid item key="lista-genres" md={4} className={classes.fullWidth}>
                         <List
                             items={top.result.genres}
-                            name={"Your Top Genres"}
+                            name="Your Top Genres"
                         />
                     </Grid>
                 </Grid>
             </Container>
         </div>
-    )
+    );
 }

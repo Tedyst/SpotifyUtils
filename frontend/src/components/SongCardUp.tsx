@@ -1,5 +1,7 @@
 import React from 'react';
-import { makeStyles, Card, CardContent, CardMedia, Typography, Fade, CardActions, Button } from '@material-ui/core';
+import {
+    makeStyles, Card, CardContent, CardMedia, Typography, Fade, CardActions, Button,
+} from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
@@ -8,12 +10,12 @@ const useStyles = makeStyles((theme) => ({
         flexWrap: 'unset',
         flexDirection: 'column',
         alignItems: 'stretch',
-        height: '100%'
+        height: '100%',
     },
     details: {
         display: 'flex',
         flexDirection: 'column',
-        height: '100%'
+        height: '100%',
     },
     content: {
         flex: '1 0 auto',
@@ -21,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     cover: {
         position: 'relative',
         paddingTop: '100%',
-        width: '100%'
+        width: '100%',
     },
     controls: {
         alignItems: 'center',
@@ -32,13 +34,13 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        outline: 'none'
+        outline: 'none',
     },
     modalPaper: {
         backgroundColor: theme.palette.background.paper,
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
-        outline: 'none'
+        outline: 'none',
     },
     modalRoot: {
         minWidth: 300,
@@ -47,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
         bottom: '10%',
         overflow: 'scroll',
         height: '80%',
-        display: 'block'
+        display: 'block',
     },
     modalTitle: {
         fontSize: 14,
@@ -56,18 +58,18 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: 12,
     },
     lyrics: {
-        whiteSpace: "pre-wrap",
+        whiteSpace: 'pre-wrap',
     },
     button: {
         marginTop: 'auto',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     count: {
         marginTop: 'auto',
-    }
+    },
 }));
 
-export default function SongCard(props: {
+function SongCardUp(props: {
     uri: string,
     image: string,
     name: string,
@@ -75,38 +77,56 @@ export default function SongCard(props: {
     count?: number,
 }) {
     const classes = useStyles();
+    const {
+        uri,
+        image,
+        name,
+        artist,
+        count,
+    } = props;
 
-    let cardAction = (<CardActions>
-        <Button
-            size="small"
-            component={Link}
-            to={"/track/" + props.uri}
-            className={classes.button}
-        >Informations</Button>
-    </CardActions>);
+    const cardAction = (
+        <CardActions>
+            <Button
+                className={classes.button}
+                component={Link}
+                size="small"
+                to={`/track/${uri}`}
+            >
+                Informations
+            </Button>
+        </CardActions>
+    );
 
-    let count = null;
-    if (props.count)
-        count = (<Typography variant="subtitle2" color="textSecondary" className={classes.count}>
-            <b>{props.count}</b> times
-        </Typography>)
+    let countComponent = null;
+    if (count) {
+        countComponent = (
+            <Typography className={classes.count} color="textSecondary" variant="subtitle2">
+                <b>
+                    {count}
+                </b>
+                {' '}
+                times
+            </Typography>
+        );
+    }
     return (
-        <Fade in={true}>
+        <Fade in>
             <Card className={classes.root}>
                 <CardMedia
                     className={classes.cover}
-                    image={props.image}
-                    title={props.name}
+                    image={image}
+                    title={name}
                 />
                 <div className={classes.details}>
                     <CardContent className={classes.content}>
                         <Typography component="h6" variant="h6">
-                            {props.name}
+                            {name}
                         </Typography>
                         <Typography variant="subtitle1" color="textSecondary">
-                            {props.artist}
+                            {artist}
                         </Typography>
-                        {count}
+                        {countComponent}
                     </CardContent>
                     {cardAction}
                 </div>
@@ -115,8 +135,8 @@ export default function SongCard(props: {
     );
 }
 
-SongCard.defaultProps = {
-    image: "https://i.scdn.co/image/ab67616d0000b273f817f90531b8b396b370ab0d",
-    name: "Show & Tell",
-    artist: "Said The Sky"
-}
+SongCardUp.defaultProps = {
+    count: undefined,
+};
+
+export default SongCardUp;

@@ -8,18 +8,17 @@ const useStyles = makeStyles((theme) => ({
         height: theme.spacing(5),
         color: theme.palette.getContrastText(deepOrange[500]),
         backgroundColor: deepOrange[500],
-        marginRight: theme.spacing(2)
+        marginRight: theme.spacing(2),
     },
     root: {
-        margin: "auto",
-    }
+        margin: 'auto',
+    },
 }));
 
 function Acronym(str: string) {
-    var matches = str.match(/\b(\w)/g);
-    if (matches === null)
-        return str.charAt(0);
-    var acronym = matches.join('');
+    const matches = str.match(/\b(\w)/g);
+    if (matches === null) return str.charAt(0);
+    const acronym = matches.join('');
     return acronym;
 }
 
@@ -28,10 +27,10 @@ export default function Avatars(props: {
     name: string
 }) {
     const classes = useStyles();
-
+    const { image, name } = props;
     return (
-        <Avatar src={props.image} className={classes.large} sizes={"120"}>
-            {Acronym(props.name)}
+        <Avatar className={classes.large} sizes="120" src={image}>
+            {Acronym(name)}
         </Avatar>
-    )
+    );
 }

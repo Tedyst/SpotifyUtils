@@ -10,32 +10,33 @@ import {
 export default function Chart1(props: {
     data: any,
 }) {
-    if (props.data === undefined)
-        return null;
-    let data = [];
-    for (let i in props.data) {
-        data.push({ lineValue: props.data[i], argument: i });
-    }
+    const { data } = props;
+    if (data === undefined) return null;
+    const points = [];
+    Object.keys(data).forEach((key) => {
+        points.push({ lineValue: data[key], argument: key });
+    });
 
-    return (<div>
-        <Typography>
-            Loudness
-    </Typography>
-        <Paper>
-            <Chart
-                data={data}
-                height={150}
-            >
-                <ArgumentAxis
-                    showLabels={false}
-                />
-                <ValueAxis
-                    tickSize={10}
-                />
+    return (
+        <div>
+            <Typography>
+                Loudness
+            </Typography>
+            <Paper>
+                <Chart
+                    data={data}
+                    height={150}
+                >
+                    <ArgumentAxis
+                        showLabels={false}
+                    />
+                    <ValueAxis
+                        tickSize={10}
+                    />
 
-                <LineSeries valueField="lineValue" argumentField="argument" />
-            </Chart>
-        </Paper>
-    </div>
-    )
+                    <LineSeries argumentField="argument" valueField="lineValue" />
+                </Chart>
+            </Paper>
+        </div>
+    );
 }

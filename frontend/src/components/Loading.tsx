@@ -1,5 +1,7 @@
 import React from 'react';
-import { CssBaseline, makeStyles, Container, CircularProgress } from '@material-ui/core';
+import {
+    CssBaseline, makeStyles, Container, CircularProgress,
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -7,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-    }
+    },
 }));
 
 export default function Loading() {
@@ -19,5 +21,5 @@ export default function Loading() {
                 <CircularProgress color="secondary" />
             </div>
         </Container>
-    )
+    );
 }
