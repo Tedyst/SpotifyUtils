@@ -61,43 +61,57 @@ export default function TrackInfo(props: {
                             <TableCell component="th" scope="row">
                                 Popularity
                             </TableCell>
-                            <TableCell align="right">{popularity}</TableCell>
+                            <TableCell align="right">
+                                {popularity}
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
                                 Length
                             </TableCell>
-                            <TableCell align="right">{msToText(length)}</TableCell>
+                            <TableCell align="right">
+                                {msToText(length)}
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
                                 Spotify markets
                             </TableCell>
-                            <TableCell align="right">{markets}</TableCell>
+                            <TableCell align="right">
+                                {markets}
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
                                 Explicit
                             </TableCell>
-                            <TableCell align="right">{explicit ? 'Yes' : 'No'}</TableCell>
+                            <TableCell align="right">
+                                {explicit ? 'Yes' : 'No'}
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
                                 Key
                             </TableCell>
-                            <TableCell align="right">{keyToText(trackKey)}</TableCell>
+                            <TableCell align="right">
+                                {keyToText(trackKey)}
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
                                 Mode
                             </TableCell>
-                            <TableCell align="right">{mode === 0 ? 'Minor' : 'Major'}</TableCell>
+                            <TableCell align="right">
+                                {mode === 0 ? 'Minor' : 'Major'}
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
                                 Tempo
                             </TableCell>
-                            <TableCell align="right">{tempo}</TableCell>
+                            <TableCell align="right">
+                                {tempo}
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
