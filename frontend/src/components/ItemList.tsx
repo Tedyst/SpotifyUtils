@@ -30,12 +30,12 @@ export default function ListItems(props: {
     const classes = useStyles();
     const { items, name } = props;
     const it: any[] = [];
-    if (it.length === 0 || !items) {
+    if (items.length === 0 || !items) {
         return (
             <List className={classes.root} subheader={<li />}>
                 <ListSubheader className={classes.textColor} color="default">
-{name}
-</ListSubheader>
+                    {name}
+                </ListSubheader>
                 <ul className={classes.ul}>
                     <ListItem key={`list-notfound-${name}`}>
                         <ListItemText
@@ -49,7 +49,7 @@ export default function ListItems(props: {
     }
     Object.values(items).forEach((item) => {
         if (item.artist) {
-            items.push(
+            it.push(
                 <ListItem key={`track-${item.id}`}>
                     <ListItemText
                         primary={item.name}
@@ -58,7 +58,7 @@ export default function ListItems(props: {
                 </ListItem>,
             );
         } else if (item.id) {
-            items.push(
+            it.push(
                 <ListItem key={`artist-${item.id}`}>
                     <ListItemText
                         primary={item.name}
@@ -66,7 +66,7 @@ export default function ListItems(props: {
                 </ListItem>,
             );
         } else if (item.name) {
-            items.push(
+            it.push(
                 <ListItem key={`genre-${item.name}`}>
                     <ListItemText
                         primary={item.name}
@@ -74,7 +74,7 @@ export default function ListItems(props: {
                 </ListItem>,
             );
         } else {
-            items.push(
+            it.push(
                 <ListItem key={`genre-${item}`}>
                     <ListItemText
                         primary={item}
@@ -87,10 +87,10 @@ export default function ListItems(props: {
     return (
         <List className={classes.root} subheader={<li />}>
             <ListSubheader className={classes.textColor}>
-{name}
-</ListSubheader>
+                {name}
+            </ListSubheader>
             <ul className={classes.ul}>
-                {items}
+                {it}
             </ul>
         </List>
     );

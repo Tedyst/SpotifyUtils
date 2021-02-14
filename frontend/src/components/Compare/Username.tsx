@@ -104,7 +104,7 @@ export default function Username(props: {
 }) {
     const classes = useStyles();
     const { code } = useParams<ParamTypes>();
-    const sanitizedCode = code.replace(/[^a-zA-Z]+/g, '').substring(0, 6);
+    const sanitizedCode = code.replace(/[^a-zA-Z0-9]+/g, '').substring(0, 6);
     const { data, status } = useQuery(['compare', sanitizedCode], () => axios.get<UsernameInterface>(`/api/compare/${sanitizedCode}`, {
         withCredentials: true,
     }));
