@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
     CssBaseline,
     Divider,
@@ -75,9 +74,7 @@ const useStyles = makeStyles((theme) => ({
 function ResponsiveDrawer(props: {
     setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>,
     mobileOpen: boolean,
-    window: any,
 }) {
-    const { window } = props;
     const classes = useStyles();
     const theme = useTheme();
     const location = useLocation();
@@ -232,7 +229,7 @@ function ResponsiveDrawer(props: {
         </div>
     );
 
-    const container = window !== undefined ? () => window().document.body : undefined;
+    const container = window !== undefined ? () => window.document.body : undefined;
 
     const avatar = (
         <Avatar
@@ -299,9 +296,5 @@ function ResponsiveDrawer(props: {
         </div>
     );
 }
-
-ResponsiveDrawer.propTypes = {
-    window: PropTypes.func,
-};
 
 export default ResponsiveDrawer;

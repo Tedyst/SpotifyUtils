@@ -47,9 +47,11 @@ export default function LoginPage(props: { loggingIn: boolean }) {
         buttonText = 'Cannot contact server';
         if (typeof error === 'object' && error != null) {
             if (error.toString() !== '') {
-                errorComponent = <Alert severity="error">
-{error.toString()}
-</Alert>;
+                errorComponent = (
+                    <Alert severity="error">
+                        {error.toString()}
+                    </Alert>
+                );
             }
         }
     }
@@ -62,8 +64,8 @@ export default function LoginPage(props: { loggingIn: boolean }) {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography variant="h5">
-Sign in
-</Typography>
+                    Sign in
+                </Typography>
                 <form className={classes.form} noValidate>
                     <Typography align="center" color="textPrimary" variant="body2">
                         To use the app you need to sign in using Spotify.
