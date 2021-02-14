@@ -1,10 +1,11 @@
 import React from 'react';
 import {
     useParams,
-,
     Redirect,
-} from "react-router-dom";
+} from 'react-router-dom';
 import { Grid, Container } from '@material-ui/core';
+import axios from 'axios';
+import { useQuery } from 'react-query';
 import TrackInfo from './TrackInfo';
 import AlbumInfo from './AlbumInfo';
 import Chart2 from './Chart2';
@@ -12,8 +13,6 @@ import Lyrics from './Lyrics';
 import SongCard from '../../components/SongCardRight';
 
 import Loading from '../Loading';
-import axios from 'axios';
-import { useQuery } from 'react-query';
 
 interface ParamTypes {
     trackid: string
@@ -75,7 +74,7 @@ export interface TrackInformation {
 
 export default function TrackAnalyze() {
     const { trackid } = useParams<ParamTypes>();
-    const sanitizedTrack = trackid.replace(/[^a-zA-Z]+/g, '').substring(0, 6);
+    const sanitizedTrack = trackid.replace(/[^a-zA-Z0-9]+/g, '').substring(0, 25);
     const { data, status } = useQuery(['track', sanitizedTrack], () => axios.get<TrackInterface>(`/api/track/${sanitizedTrack}`, {
         withCredentials: true,
     }));
@@ -96,13 +95,15 @@ export default function TrackAnalyze() {
     if (trackInfo === null || trackInfo === undefined) {
         return <Loading />;
     }
-    const lyrics = trackInfo.Lyrics ? (<Grid item xs={12}>
-        <Container maxWidth="sm">
-            <Lyrics
-                lyrics={trackInfo.Lyrics}
-            />
-        </Container>
-    </Grid>) : null;
+    const lyrics = trackInfo.Lyrics ? (
+        <Grid item xs={12}>
+            <Container maxWidth="sm">
+                <Lyrics
+                    lyrics={trackInfo.Lyrics}
+                />
+            </Container>
+        </Grid>
+    ) : null;
 
     return (
         <div>

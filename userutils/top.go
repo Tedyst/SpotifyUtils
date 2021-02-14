@@ -42,7 +42,7 @@ func (u *User) RefreshTop() error {
 	longOptions := &spotify.Options{
 		Timerange: &longString,
 	}
-	shortString := string("long")
+	shortString := string("short")
 	shortOptions := &spotify.Options{
 		Timerange: &shortString,
 	}

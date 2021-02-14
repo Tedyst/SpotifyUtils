@@ -51,7 +51,7 @@
   },
   "proxy": "http://127.0.0.1:5000/",
   "devDependencies": {
-    "@types/react": "^16.9.35",
+    "@types/react": "^16.14.4",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.6",
     "@typescript-eslint/eslint-plugin": "^4.14.2",
