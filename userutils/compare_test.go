@@ -1,6 +1,8 @@
 package userutils
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestCompare(t *testing.T) {
 	user1 := GetUser("vq0u2761le51p2idib6f89y78")

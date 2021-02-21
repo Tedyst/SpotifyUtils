@@ -14,18 +14,18 @@ type CompareStruct struct {
 	Score         float32     `json:"percent"`
 }
 
-func (u1 *User) Compare(u2 *User) CompareStruct {
-	u1.RefreshTop()
-	u2.RefreshTop()
-	c1 := u1.compare(u2)
-	c2 := u2.compare(u1)
+func (u *User) Compare(target *User) CompareStruct {
+	u.RefreshTop()
+	target.RefreshTop()
+	c1 := compare(u, target)
+	c2 := compare(target, u)
 	if c1.Score > c2.Score {
 		return c1
 	}
 	return c2
 }
 
-func (u1 *User) compare(u2 *User) CompareStruct {
+func compare(u1 *User, u2 *User) CompareStruct {
 	t1 := u1.Top
 	t2 := u2.Top
 	result := CompareStruct{

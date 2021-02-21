@@ -22,7 +22,7 @@ func initDB(db *gorm.DB) {
 			var usercount int64
 			config.DB.Model(&userutils.User{}).Count(&usercount)
 
-			users := []userutils.User{}
+			var users []userutils.User
 			config.DB.Model(&userutils.User{}).Where("settings_recent_tracks = ?", 1).Find(&users)
 
 			if usercount == 0 {
