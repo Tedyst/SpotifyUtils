@@ -2,8 +2,8 @@ import React from 'react';
 import {
     Button, Container, Card, Typography, makeStyles, CardContent, Checkbox, FormControlLabel,
 } from '@material-ui/core';
-import axios from 'axios';
-import { useMutation, useQueryClient } from 'react-query';
+import { UseMutationResult, AxiosResponse } from 'axios';
+import { Settings } from '../../views/Settings';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -33,19 +33,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export interface SettingsInterface {
-    Success: boolean;
-    Settings: Settings;
-}
-
-export interface Settings {
-    RecentTracks: boolean;
-}
-
-export default function SettingsComp(props: { originalSettings: Settings, CSRFToken: string }) {
+export default function SettingsComp(props: {
+    originalSettings: Settings,
+    mutation?: UseMutationResult<AxiosResponse<Settings>, unknown, Settings, unknown> | undefined
+}) {
     const classes = useStyles();
-    const queryClient = useQueryClient();
-    const { originalSettings } = props;
+    const { originalSettings, mutation } = props;
     const [settings, setSettings] = React.useState(originalSettings);
 
     const handleChangeRecentTracks = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,21 +48,9 @@ export default function SettingsComp(props: { originalSettings: Settings, CSRFTo
         });
     };
 
-    const mutation = useMutation((set: Settings) => axios.post<Settings>('/api/settings', JSON.stringify(set), {
-        withCredentials: true,
-        headers: {
-            'X-CSRF-Token': props.CSRFToken,
-        },
-    }),
-        {
-            onSuccess: () => {
-                queryClient.invalidateQueries('settings');
-            },
-        });
-
     const onSubmit = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
-        mutation.mutate(settings);
+        mutation?.mutate(settings);
     };
 
     return (
@@ -81,8 +62,8 @@ export default function SettingsComp(props: { originalSettings: Settings, CSRFTo
                 If you want to see what the app is doing in the background, you can check the
                 {' '}
                 <a className={classes.a} href="https://github.com/Tedyst/SpotifyUtils">
-GitHub page
-</a>
+                    GitHub page
+                </a>
             </Typography>
             <Container maxWidth="xs">
                 <Card className={classes.root}>
@@ -110,3 +91,7 @@ GitHub page
         </div>
     );
 }
+
+SettingsComp.defaultProps = {
+    mutation: undefined,
+};
