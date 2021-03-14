@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 
 function ArtistCard(props: {
     bestSong?: string,
-    image: string,
+    image?: string,
     name: string
 }) {
     const classes = useStyles();
@@ -47,12 +47,15 @@ function ArtistCard(props: {
         );
     }
 
+    const cardmedia = image ? (
+        <CardMedia
+            className={classes.cover}
+            image={image}
+        />
+    ) : undefined;
     return (
         <Card className={classes.root}>
-            <CardMedia
-                className={classes.cover}
-                image={image}
-            />
+            {cardmedia}
             <div className={classes.details}>
                 <CardContent className={classes.content}>
                     <Typography component="h6" variant="h6">
@@ -67,6 +70,7 @@ function ArtistCard(props: {
 
 ArtistCard.defaultProps = {
     bestSong: undefined,
+    image: undefined,
 };
 
 export default ArtistCard;

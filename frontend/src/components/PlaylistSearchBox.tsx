@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SearchBox(props: {
     playlists: any,
-    setResults: React.Dispatch<React.SetStateAction<never[]>>
+    setResults: React.Dispatch<React.SetStateAction<never[]>> | undefined
 }) {
     const classes = useStyles();
     const { playlists } = props;
@@ -96,7 +96,9 @@ export default function SearchBox(props: {
         setButtonText('Searching...');
         fetch(`/api/playlist/${selectedPlaylist}`, { cache: 'no-store', credentials: 'same-origin' }).then((res) => res.json()).then((data) => {
             setUpdating(!data.finished);
-            props.setResults(data.Results);
+            if (props.setResults !== undefined) {
+                props.setResults(data.Results);
+            }
             setUpdating(false);
         });
     };
@@ -106,7 +108,9 @@ export default function SearchBox(props: {
         if (selectedPlaylist === 'none') return;
         setButtonText('Searching...');
         setUpdating(true);
-        props.setResults([]);
+        if (props.setResults !== undefined) {
+            props.setResults([]);
+        }
         update();
     };
 

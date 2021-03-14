@@ -9,9 +9,10 @@ export default function ResultBox(props: {
         Artist: string,
         Image: string,
         Count?: number,
-    }[]
+    }[],
+    usingLink?: boolean,
 }) {
-    const { results } = props;
+    const { results, usingLink } = props;
     if (results === undefined) return null;
     let items = [];
     items = results.map((item) => (
@@ -23,6 +24,7 @@ export default function ResultBox(props: {
                 artist={item.Artist}
                 image={item.Image}
                 count={item.Count}
+                usingLink={usingLink}
             />
         </Grid>
     ));
@@ -34,3 +36,7 @@ export default function ResultBox(props: {
         </Container>
     );
 }
+
+ResultBox.defaultProps = {
+    usingLink: true,
+};
