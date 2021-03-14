@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
-    Button, Container, Card, Typography, makeStyles, CardContent, Checkbox, FormControlLabel,
+    Container, Typography, makeStyles,
 } from '@material-ui/core';
 import SettingsComp from '../components/Settings/SettingsComp';
 import Loading from '../components/Loading';
@@ -16,8 +16,15 @@ export interface Settings {
     RecentTracks: boolean;
 }
 
+const useStyles = makeStyles(() => ({
+    a: {
+        color: 'inherit',
+    },
+}));
+
 export default function SettingsLogic() {
     const queryClient = useQueryClient();
+    const classes = useStyles();
     const { data, status } = useQuery('settings', () => axios.get<SettingsInterface>('/api/settings', {
         withCredentials: true,
     }));
@@ -38,21 +45,24 @@ export default function SettingsLogic() {
             },
         });
 
-
-    return <div>
-        <Typography align="center" color="textPrimary" gutterBottom variant="h5">
-            Here you can adjust your user settings
+    return (
+        <div>
+            <Typography align="center" color="textPrimary" gutterBottom variant="h5">
+                Here you can adjust your user settings
             </Typography>
-        <Typography align="center" color="textSecondary" variant="subtitle1">
-            If you want to see what the app is doing in the background, you can check the
+            <Typography align="center" color="textSecondary" variant="subtitle1">
+                If you want to see what the app is doing in the background, you can check the
                 {' '}
-            <a className={classes.a} href="https://github.com/Tedyst/SpotifyUtils">
-                GitHub page
+                <a className={classes.a} href="https://github.com/Tedyst/SpotifyUtils">
+                    GitHub page
                 </a>
-        </Typography>
-        <Container maxWidth="xs">
-            <SettingsComp mutation={mutation} originalSettings={data.data.Settings} onSubmit={onSubmit} />
-        </Container>
-    </div>
+            </Typography>
+            <Container maxWidth="xs">
+                <SettingsComp
+                    mutation={mutation}
+                    originalSettings={data.data.Settings}
+                />
+            </Container>
+        </div>
     );
 }

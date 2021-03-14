@@ -2,7 +2,6 @@ import React from 'react';
 import {
     Button, Card, makeStyles, CardContent, Checkbox, FormControlLabel,
 } from '@material-ui/core';
-import { UseMutationResult, AxiosResponse } from 'axios';
 import { Settings } from '../../views/Settings';
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SettingsComp(props: {
     originalSettings: Settings,
-    mutation?: UseMutationResult<AxiosResponse<Settings>, unknown, Settings, unknown> | undefined
+    mutation?: any | undefined
 }) {
     const classes = useStyles();
     const { originalSettings, mutation } = props;
