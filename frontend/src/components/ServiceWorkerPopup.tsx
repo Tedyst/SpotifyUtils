@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Snackbar, Button } from '@material-ui/core';
-import * as serviceWorker from '../serviceWorker';
+import * as serviceWorkerRegistration from '../serviceWorkerRegistration';
 
 export default function ServiceWorkerWrapper() {
     const [showReload, setShowReload] = React.useState(false);
@@ -12,7 +12,7 @@ export default function ServiceWorkerWrapper() {
     };
 
     useEffect(() => {
-        serviceWorker.register({ onUpdate: onSWUpdate });
+        serviceWorkerRegistration.register({ onUpdate: onSWUpdate });
     }, []);
 
     const reloadPage = () => {
