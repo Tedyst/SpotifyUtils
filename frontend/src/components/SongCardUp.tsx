@@ -75,6 +75,7 @@ function SongCardUp(props: {
     name: string,
     artist: string,
     count?: number,
+    usingLink?: boolean,
 }) {
     const classes = useStyles();
     const {
@@ -83,9 +84,10 @@ function SongCardUp(props: {
         name,
         artist,
         count,
+        usingLink,
     } = props;
 
-    const cardAction = (
+    const cardAction = usingLink ? (
         <CardActions>
             <Button
                 className={classes.button}
@@ -96,7 +98,7 @@ function SongCardUp(props: {
                 Informations
             </Button>
         </CardActions>
-    );
+    ) : undefined;
 
     let countComponent = null;
     if (count) {
@@ -137,6 +139,7 @@ function SongCardUp(props: {
 
 SongCardUp.defaultProps = {
     count: undefined,
+    usingLink: true,
 };
 
 export default SongCardUp;

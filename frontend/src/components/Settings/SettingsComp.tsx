@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Button, Container, Card, Typography, makeStyles, CardContent, Checkbox, FormControlLabel,
+    Button, Card, makeStyles, CardContent, Checkbox, FormControlLabel,
 } from '@material-ui/core';
 import { UseMutationResult, AxiosResponse } from 'axios';
 import { Settings } from '../../views/Settings';
@@ -54,41 +54,27 @@ export default function SettingsComp(props: {
     };
 
     return (
-        <div>
-            <Typography align="center" color="textPrimary" gutterBottom variant="h5">
-                Here you can adjust your user settings
-            </Typography>
-            <Typography align="center" color="textSecondary" variant="subtitle1">
-                If you want to see what the app is doing in the background, you can check the
-                {' '}
-                <a className={classes.a} href="https://github.com/Tedyst/SpotifyUtils">
-                    GitHub page
-                </a>
-            </Typography>
-            <Container maxWidth="xs">
-                <Card className={classes.root}>
-                    <CardContent>
-                        <form className={classes.form} onSubmit={onSubmit}>
-                            <FormControlLabel
-                                control={(
-                                    <Checkbox
-                                        checked={settings.RecentTracks}
-                                        color="primary"
-                                        name="checkedB"
-                                        onChange={handleChangeRecentTracks}
-                                    />
-                                )}
-                                label="Enable Recent Tracks Tracking"
+        <Card className={classes.root}>
+            <CardContent>
+                <form className={classes.form} onSubmit={onSubmit}>
+                    <FormControlLabel
+                        control={(
+                            <Checkbox
+                                checked={settings.RecentTracks}
+                                color="primary"
+                                name="checkedB"
+                                onChange={handleChangeRecentTracks}
                             />
-                            <br />
-                            <Button className={classes.submit} color="primary" type="submit" variant="contained">
-                                Submit
-                            </Button>
-                        </form>
-                    </CardContent>
-                </Card>
-            </Container>
-        </div>
+                        )}
+                        label="Enable Recent Tracks Tracking"
+                    />
+                    <br />
+                    <Button className={classes.submit} color="primary" type="submit" variant="contained">
+                        Submit
+                    </Button>
+                </form>
+            </CardContent>
+        </Card>
     );
 }
 
