@@ -144,7 +144,7 @@ export default function Top() {
         <div>
             <Container disableGutters fixed maxWidth="xs">
                 <Typography component="h4" variant="h4" align="center">
-                    Your top artist and track
+                    Your top artists and tracks
                 </Typography>
                 <Typography variant="subtitle1" color="textSecondary" align="center">
                     Get ready to feel cool. Or much less cool than you thought
