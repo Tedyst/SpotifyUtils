@@ -131,7 +131,6 @@ export default function NoUsername(props: {
         }
         return <Redirect to={url} />;
     }
-
     if (status === 'loading') {
         return <Loading />;
     }
@@ -180,8 +179,8 @@ export default function NoUsername(props: {
                     Your code is
                     {' '}
                     <b>
-{compare.code}
-</b>
+                        {compare.code}
+                    </b>
                 </Typography>
                 <Typography align="center" color="textSecondary" variant="h5">
                     Send it to your friends and compare your music taste to theirs!

@@ -29,32 +29,32 @@ export default function AlbumInfo(props: {
                                 Popularity
                             </TableCell>
                             <TableCell align="right">
-{popularity}
-</TableCell>
+                                {popularity}
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
                                 Release Date
                             </TableCell>
                             <TableCell align="right">
-{releaseDate}
-</TableCell>
+                                {releaseDate}
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
                                 Amount of Tracks
                             </TableCell>
                             <TableCell align="right">
-{tracks}
-</TableCell>
+                                {tracks}
+                            </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
                                 Spotify Markets
                             </TableCell>
                             <TableCell align="right">
-{markets}
-</TableCell>
+                                {markets}
+                            </TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
