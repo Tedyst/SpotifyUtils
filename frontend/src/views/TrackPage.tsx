@@ -5,14 +5,14 @@ import {
     useRouteMatch,
     Redirect,
 } from 'react-router-dom';
-import TrackAnalyze from '../components/Track/TrackAnalyze';
+import TrackAnalyzePage from './TrackAnalyzePage';
 
 export default function Track() {
     const match = useRouteMatch();
     return (
         <Switch>
             <Route path={`${match.path}/:trackid`}>
-                <TrackAnalyze />
+                <TrackAnalyzePage />
             </Route>
             <Route path="/">
                 <Redirect to="/" />
