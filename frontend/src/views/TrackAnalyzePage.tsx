@@ -42,6 +42,5 @@ export default function TrackAnalyzeController() {
     }
     if (data === undefined || status === 'loading' || data?.data === undefined) return <Loading />;
 
-
     return <TrackAnalyze trackInfo={data.data.Result} />;
 }
