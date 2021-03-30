@@ -10,13 +10,9 @@ import {
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import axios from 'axios';
-import { useQuery } from 'react-query';
-import Alert from '@material-ui/lab/Alert';
-import SongCardRight from '../components/SongCardRight';
-import ResultBox from '../components/ResultBox';
-import Loading from '../components/Loading';
-import Graph from '../components/Graph';
+import SongCardRight from '../SongCardRight';
+import ResultBox from '../ResultBox';
+import Graph from '../Graph';
 
 const useStyles = makeStyles({
     root: {
@@ -51,7 +47,7 @@ function secToText(seconds: number): string {
     return text;
 }
 
-export interface OldTopInterface {
+export interface ListeningStatsInterface {
     Result: Result;
     Success: boolean;
 }
@@ -72,16 +68,16 @@ export interface TopTrack {
     URI: string;
 }
 
-export default function OldTop() {
-    const today = new Date();
-    const [selectedDate, setSelectedDate] = React.useState(new Date(today.getFullYear(), today.getMonth() - 1, today.getDate(), 0, 0, 0));
+export default function ListeningStatsComp(props: {
+    data: ListeningStatsInterface,
+    setSelectedDate?: React.Dispatch<React.SetStateAction<Date>> | undefined,
+    selectedDate: Date,
+}) {
     const classes = useStyles();
-    const { data, status, error } = useQuery(['oldtop', selectedDate], () => axios.get<OldTopInterface>(`/api/top/old/${selectedDate.getTime() / 1000}`, {
-        withCredentials: true,
-    }));
+    const { data, setSelectedDate, selectedDate } = props;
 
     const handleDateChange = (date: MaterialUiPickersDate) => {
-        if (date !== null) setSelectedDate(date);
+        if (date !== null && setSelectedDate !== undefined) setSelectedDate(date);
     };
 
     const titleText = (
@@ -106,7 +102,7 @@ export default function OldTop() {
                     }}
                     disableToolbar
                     format="dd/MM/yyyy"
-                    id="oldtop-date-picker-inline"
+                    id="listeningstats-date-picker-inline"
                     label="Select the Date from which to search"
                     margin="normal"
                     onChange={handleDateChange}
@@ -118,71 +114,36 @@ export default function OldTop() {
     );
 
     let topsong = null;
-    let errorComponent = null;
-    if (status === 'error' || data?.data.Success === false) {
-        if (typeof error === 'object' && error != null) {
-            if (error.toString() !== '') {
-                errorComponent = (
-                    <Container maxWidth="xs">
-                        <Alert severity="error">{error.toString()}</Alert>
-                    </Container>
-                );
-            }
-        } else {
-            errorComponent = (
-                <Container maxWidth="xs">
-                    <Alert severity="error">Could not extract data from server</Alert>
-                </Container>
-            );
-        }
-        return (
-            <div>
-                {titleText}
-                {datepicker}
-                {errorComponent}
-            </div>
-        );
-    }
-    if (status === 'loading' || data === undefined) {
-        return (
-            <div>
-                {titleText}
-                {datepicker}
-                <Loading />
-            </div>
-        );
-    }
-    const oldTop = data?.data;
 
-    if (oldTop.Result.TopTracks.length > 0) {
+    if (data.Result.TopTracks.length > 0) {
         topsong = (
             <SongCardRight
-                artist={oldTop.Result.TopTracks[0].Artist}
-                count={oldTop.Result.TopTracks[0].Count}
-                image={oldTop.Result.TopTracks[0].Image}
-                name={oldTop.Result.TopTracks[0].Name}
+                artist={data.Result.TopTracks[0].Artist}
+                count={data.Result.TopTracks[0].Count}
+                image={data.Result.TopTracks[0].Image}
+                name={data.Result.TopTracks[0].Name}
             />
         );
     }
 
     const hoursdata: { value: number; argument: string; }[] = [];
-    Object.keys(oldTop.Result.Hours).forEach((key) => {
+    Object.keys(data.Result.Hours).forEach((key) => {
         hoursdata.push({
-            value: oldTop.Result.Hours[key],
+            value: data.Result.Hours[key],
             argument: key,
         });
     });
 
     const daysdata: { value: number; argument: string; }[] = [];
-    Object.keys(oldTop.Result.Hours).forEach((key) => {
+    Object.keys(data.Result.Hours).forEach((key) => {
         daysdata.push({
-            value: oldTop.Result.Days[key],
+            value: data.Result.Days[key],
             argument: getDate(parseInt(key, 10)),
         });
     });
 
-    const totallistenedtime = secToText(oldTop.Result.TotalListened);
-    const totallistenedtracks = oldTop.Result.Count;
+    const totallistenedtime = secToText(data.Result.TotalListened);
+    const totallistenedtracks = data.Result.Count;
     return (
         <div>
             {titleText}
@@ -256,8 +217,12 @@ export default function OldTop() {
                 Here are your most listened tracks from this period
             </Typography>
             <Container>
-                <ResultBox results={oldTop.Result.TopTracks} />
+                <ResultBox results={data.Result.TopTracks} />
             </Container>
         </div>
     );
 }
+
+ListeningStatsComp.defaultProps = {
+    setSelectedDate: undefined,
+};

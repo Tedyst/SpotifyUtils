@@ -19,7 +19,7 @@ import Top from './views/TopPage';
 import Compare from './views/ComparePage';
 import Sidebar from './views/Sidebar';
 import TrackSearch from './views/TrackSearch';
-import OldTop from './views/OldTop';
+import ListeningStats from './views/ListeningStatsPage';
 import ServiceWorkerPopup from './components/ServiceWorkerPopup';
 import RedirectToSaved from './components/RedirectToSaved';
 
@@ -119,7 +119,7 @@ function App() {
                                 <TrackSearch />
                             </Route>
                             <Route path="/listeningstatistics">
-                                <OldTop />
+                                <ListeningStats />
                             </Route>
                             <Route path="/compare">
                                 <Compare />
