@@ -13,7 +13,7 @@ import Login from './views/Login';
 import PlaylistView from './views/PlaylistView';
 import Track from './views/Track';
 import Logout from './views/Logout';
-import Recent from './views/Recent';
+import Recent from './views/RecentPage';
 import Settings from './views/SettingsPage';
 import Top from './views/TopPage';
 import Compare from './views/Compare';
