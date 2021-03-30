@@ -14,7 +14,7 @@ import PlaylistView from './views/PlaylistView';
 import Track from './views/Track';
 import Logout from './views/Logout';
 import Recent from './views/Recent';
-import Settings from './views/Settings';
+import Settings from './views/SettingsController';
 import Top from './views/Top';
 import Compare from './views/Compare';
 import Sidebar from './views/Sidebar';

@@ -1,11 +1,8 @@
 import React from 'react';
-import axios from 'axios';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
     Container, Typography, makeStyles,
 } from '@material-ui/core';
-import SettingsComp from '../components/Settings/SettingsComp';
-import Loading from '../components/Loading';
+import SettingsComp from './SettingsComp';
 
 export interface SettingsInterface {
     Success: boolean;
@@ -22,28 +19,12 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export default function SettingsLogic() {
-    const queryClient = useQueryClient();
+export default function SettingsPage(props: {
+    mutation?: any | undefined,
+    data: SettingsInterface,
+}) {
     const classes = useStyles();
-    const { data, status } = useQuery('settings', () => axios.get<SettingsInterface>('/api/settings', {
-        withCredentials: true,
-    }));
-    const CSRFToken = data?.headers['x-csrf-token'];
-    if (status === 'loading' || status === 'error' || data === undefined || data.data.Success === false) {
-        return <Loading />;
-    }
-
-    const mutation = useMutation((set: Settings) => axios.post<Settings>('/api/settings', JSON.stringify(set), {
-        withCredentials: true,
-        headers: {
-            'X-CSRF-Token': CSRFToken,
-        },
-    }),
-        {
-            onSuccess: () => {
-                queryClient.invalidateQueries('settings');
-            },
-        });
+    const { mutation, data } = props;
 
     return (
         <div>
@@ -60,9 +41,13 @@ export default function SettingsLogic() {
             <Container maxWidth="xs">
                 <SettingsComp
                     mutation={mutation}
-                    originalSettings={data.data.Settings}
+                    originalSettings={data.Settings}
                 />
             </Container>
         </div>
     );
 }
+
+SettingsPage.defaultProps = {
+    mutation: undefined,
+};

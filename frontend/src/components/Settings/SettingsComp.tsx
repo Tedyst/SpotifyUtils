@@ -2,7 +2,7 @@ import React from 'react';
 import {
     Button, Card, makeStyles, CardContent, Checkbox, FormControlLabel,
 } from '@material-ui/core';
-import { Settings } from '../../views/Settings';
+import { Settings } from './SettingsPage';
 
 const useStyles = makeStyles((theme) => ({
     root: {
