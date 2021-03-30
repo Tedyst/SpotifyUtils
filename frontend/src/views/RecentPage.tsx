@@ -1,44 +1,46 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
 import axios from 'axios';
 import { useQuery } from 'react-query';
+import { Container } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 import Loading from '../components/Loading';
-import ResultBox from '../components/ResultBox';
-
-export interface RecentInterface {
-    Results: Result[];
-    Success: boolean;
-    Error: string;
-}
-
-export interface Result {
-    Name: string;
-    Artist: string;
-    URI: string;
-    Image: string;
-}
+import RecentComp, { RecentInterface } from '../components/Recent/RecentComp';
 
 const refetchIntervalSeconds = 60;
 
-export default function Recent() {
-    const { data, status } = useQuery('recent', () => axios.get<RecentInterface>('/api/recent', {
+export default function RecentPage() {
+    const { data, status, error } = useQuery('recent', () => axios.get<RecentInterface>('/api/recent', {
         withCredentials: true,
     }), {
         refetchInterval: refetchIntervalSeconds * 1000,
         refetchOnWindowFocus: true,
     });
 
-    if (status === 'loading') return <Loading />;
-    if (status === 'error') return <Loading />;
-    if (data === undefined) return <Loading />;
-    if (data.data.Results === undefined) return <Loading />;
-    return (
-        <div>
-            <Typography component="h4" variant="h4" align="center">
-                Your recent tracks
-            </Typography>
-            <br />
-            <ResultBox results={data.data.Results} />
-        </div>
-    );
+    let errorComponent = null;
+    if (status === 'error' || data?.data.Success === false) {
+        if (typeof error === 'object' && error != null) {
+            if (error.toString() !== '') {
+                errorComponent = (
+                    <Container maxWidth="xs">
+                        <Alert severity="error">{error.toString()}</Alert>
+                    </Container>
+                );
+            }
+        } else {
+            errorComponent = (
+                <Container maxWidth="xs">
+                    <Alert severity="error">Could not extract data from server</Alert>
+                </Container>
+            );
+        }
+        return (
+            <div>
+                {errorComponent}
+                <Loading />
+            </div>
+        );
+    }
+    if (data === undefined || status === 'loading' || data?.data === undefined) return <Loading />;
+
+    return <RecentComp results={data.data.Results} />;
 }
