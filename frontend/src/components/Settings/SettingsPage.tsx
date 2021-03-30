@@ -20,11 +20,11 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function SettingsPage(props: {
-    mutation?: any | undefined,
+    CSRFToken?: string,
     data: SettingsInterface,
 }) {
     const classes = useStyles();
-    const { mutation, data } = props;
+    const { CSRFToken, data } = props;
 
     return (
         <div>
@@ -40,7 +40,7 @@ export default function SettingsPage(props: {
             </Typography>
             <Container maxWidth="xs">
                 <SettingsComp
-                    mutation={mutation}
+                    CSRFToken={CSRFToken}
                     originalSettings={data.Settings}
                 />
             </Container>
@@ -49,5 +49,5 @@ export default function SettingsPage(props: {
 }
 
 SettingsPage.defaultProps = {
-    mutation: undefined,
+    CSRFToken: undefined,
 };
