@@ -136,6 +136,9 @@ function App() {
                             <Route path="/logout">
                                 <Logout />
                             </Route>
+                            <Route path="/auth">
+                                <Redirect to="/" />
+                            </Route>
                             <Route path="/">
                                 <Top />
                             </Route>
