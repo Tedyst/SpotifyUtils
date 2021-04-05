@@ -86,6 +86,10 @@ function ResponsiveDrawer(props: {
         props.setMobileOpen(!props.mobileOpen);
     };
 
+    const closeDrawer = () => {
+        props.setMobileOpen(false);
+    };
+
     const drawer = (
         <div>
             <div className={`${classes.toolbar} ${classes.toolbarName}`}>
@@ -101,7 +105,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
-                    onClick={handleDrawerToggle}
+                    onClick={closeDrawer}
                     key="Top"
                     selected={location.pathname === '/'}
                     to="/"
@@ -117,7 +121,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
-                    onClick={handleDrawerToggle}
+                    onClick={closeDrawer}
                     key="Playlist"
                     selected={location.pathname === '/playlist'}
                     to="/playlist"
@@ -133,7 +137,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
-                    onClick={handleDrawerToggle}
+                    onClick={closeDrawer}
                     key="TrackSearch"
                     selected={location.pathname === '/tracksearch'}
                     to="/tracksearch"
@@ -149,7 +153,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
-                    onClick={handleDrawerToggle}
+                    onClick={closeDrawer}
                     key="Compare"
                     selected={location.pathname.startsWith('/compare')}
                     to="/compare"
@@ -165,7 +169,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
-                    onClick={handleDrawerToggle}
+                    onClick={closeDrawer}
                     key="Recent-Tracks"
                     selected={location.pathname.startsWith('/recent')}
                     to="/recent"
@@ -181,7 +185,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
-                    onClick={handleDrawerToggle}
+                    onClick={closeDrawer}
                     key="old-top"
                     selected={location.pathname.startsWith('/listeningstatistics')}
                     to="/listeningstatistics"
@@ -197,7 +201,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
-                    onClick={handleDrawerToggle}
+                    onClick={closeDrawer}
                     key="settings"
                     selected={location.pathname.startsWith('/settings')}
                     to="/settings"
@@ -213,7 +217,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
-                    onClick={handleDrawerToggle}
+                    onClick={closeDrawer}
                     key="logout"
                     selected={location.pathname.startsWith('/logout')}
                     to="/logout"
