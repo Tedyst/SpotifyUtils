@@ -21,9 +21,6 @@ import {
 } from '@material-ui/icons';
 import ListIcon from '@material-ui/icons/List';
 import { Link, useLocation } from 'react-router-dom';
-import { useQuery } from 'react-query';
-import axios from 'axios';
-import { StatusInterface } from '../App';
 
 const drawerWidth = 240;
 
@@ -74,26 +71,23 @@ const useStyles = makeStyles((theme) => ({
 function ResponsiveDrawer(props: {
     setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>,
     mobileOpen: boolean,
+    logged: boolean,
+    username?: string,
+    image?: string,
 }) {
     const classes = useStyles();
     const theme = useTheme();
     const location = useLocation();
-    const [lastLocation, setLastLocation] = React.useState(location);
-
-    const { data } = useQuery('status', () => axios.get<StatusInterface>('/api/status', {
-        withCredentials: true,
-    }));
-    const username = data?.data.username === undefined ? 'Not logged in' : data.data.username;
-    const image = data?.data.image === undefined ? '' : data.data.image;
-    const logged = data?.data.success === undefined ? false : data?.data.success;
+    const { logged, username, image } = props;
 
     if (!logged) return null;
-    if (location !== lastLocation) {
-        setLastLocation(location);
-        props.setMobileOpen(false);
-    }
+
     const handleDrawerToggle = () => {
         props.setMobileOpen(!props.mobileOpen);
+    };
+
+    const closeDrawer = () => {
+        props.setMobileOpen(false);
     };
 
     const drawer = (
@@ -111,6 +105,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
+                    onClick={closeDrawer}
                     key="Top"
                     selected={location.pathname === '/'}
                     to="/"
@@ -126,6 +121,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
+                    onClick={closeDrawer}
                     key="Playlist"
                     selected={location.pathname === '/playlist'}
                     to="/playlist"
@@ -141,6 +137,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
+                    onClick={closeDrawer}
                     key="TrackSearch"
                     selected={location.pathname === '/tracksearch'}
                     to="/tracksearch"
@@ -156,6 +153,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
+                    onClick={closeDrawer}
                     key="Compare"
                     selected={location.pathname.startsWith('/compare')}
                     to="/compare"
@@ -171,6 +169,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
+                    onClick={closeDrawer}
                     key="Recent-Tracks"
                     selected={location.pathname.startsWith('/recent')}
                     to="/recent"
@@ -186,6 +185,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
+                    onClick={closeDrawer}
                     key="old-top"
                     selected={location.pathname.startsWith('/listeningstatistics')}
                     to="/listeningstatistics"
@@ -201,6 +201,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
+                    onClick={closeDrawer}
                     key="settings"
                     selected={location.pathname.startsWith('/settings')}
                     to="/settings"
@@ -216,6 +217,7 @@ function ResponsiveDrawer(props: {
                         selected: classes.selected,
                     }}
                     component={Link}
+                    onClick={closeDrawer}
                     key="logout"
                     selected={location.pathname.startsWith('/logout')}
                     to="/logout"
@@ -296,5 +298,10 @@ function ResponsiveDrawer(props: {
         </div>
     );
 }
+
+ResponsiveDrawer.defaultProps = {
+    username: 'Not logged in',
+    image: '',
+};
 
 export default ResponsiveDrawer;
