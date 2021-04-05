@@ -29,25 +29,41 @@ function msToText(ms: number): string {
     return `${seconds} Seconds`;
 }
 
+function unixToTime(lastUpdated: number): string {
+    const d = new Date(lastUpdated * 1000);
+    const year = d.getFullYear();
+    let month = `${d.getMonth() + 1}`;
+    let day = `${d.getDate()}`;
+
+    if (month.length < 2) {
+        month = `0${month}`;
+    }
+    if (day.length < 2) {
+        day = `0${day}`;
+    }
+
+    return [year, month, day].join('-');
+}
+
 export interface TopInterface {
     result: Result;
     success: boolean;
 }
 
-export interface Result {
+interface Result {
     genres: string[];
     updated: number;
     artists: Artist[];
     tracks: Track[];
 }
 
-export interface Artist {
+interface Artist {
     name: string;
     image: string;
     id: string;
 }
 
-export interface Track {
+interface Track {
     artist: string;
     name: string;
     image: string;
@@ -102,6 +118,7 @@ export default function TopComp(props: {
         );
     }
 
+    const lastUpdated = `This page updated at ${unixToTime(top.result.updated)}`;
     return (
         <div>
             <Container disableGutters fixed maxWidth="xs">
@@ -140,6 +157,11 @@ export default function TopComp(props: {
                         />
                     </Grid>
                 </Grid>
+            </Container>
+            <Container disableGutters fixed maxWidth="xs">
+                <Typography component="h6" align="center">
+                    {lastUpdated}
+                </Typography>
             </Container>
         </div>
     );
