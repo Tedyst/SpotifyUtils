@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
@@ -9,19 +9,21 @@ import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core';
 import { useSwipeable } from 'react-swipeable';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import Login from './views/Auth/Login';
-import PlaylistView from './views/PlaylistView';
-import Track from './views/TrackPage';
-import Logout from './views/Auth/Logout';
-import Recent from './views/RecentPage';
-import Settings from './views/SettingsPage';
-import Top from './views/TopPage';
-import Compare from './views/ComparePage';
 import Sidebar from './views/Sidebar';
-import TrackSearch from './views/TrackSearch';
-import ListeningStats from './views/ListeningStatsPage';
 import ServiceWorkerPopup from './components/ServiceWorkerPopup';
 import RedirectToSaved from './components/RedirectToSaved';
+import Loading from './components/Loading';
+
+const Login = lazy(() => import('./views/Auth/Login'));
+const PlaylistView = lazy(() => import('./views/PlaylistView'));
+const Track = lazy(() => import('./views/TrackPage'));
+const Logout = lazy(() => import('./views/Auth/Logout'));
+const Recent = lazy(() => import('./views/RecentPage'));
+const Settings = lazy(() => import('./views/SettingsPage'));
+const Top = lazy(() => import('./views/TopPage'));
+const Compare = lazy(() => import('./views/ComparePage'));
+const TrackSearch = lazy(() => import('./views/TrackSearch'));
+const ListeningStats = lazy(() => import('./views/ListeningStatsPage'));
 
 const drawerWidth = 240;
 
@@ -81,12 +83,17 @@ function App() {
                         <Sidebar
                             mobileOpen={mobileOpen}
                             setMobileOpen={setMobileOpen}
+                            logged={false}
+                            username="Not logged in"
+                            image=""
                         />
                         <main className={classes.content}>
                             <div className={classes.toolbar} />
                             <Switch>
                                 <Route path="/auth">
-                                    <Login />
+                                    <Suspense fallback={<Loading />}>
+                                        <Login />
+                                    </Suspense>
                                 </Route>
                                 <Route path="/">
                                     <Redirect to="/auth" />
@@ -108,39 +115,60 @@ function App() {
                     <Sidebar
                         mobileOpen={mobileOpen}
                         setMobileOpen={setMobileOpen}
+                        logged={!!data?.data.success}
+                        username={data?.data.username}
+                        image={data?.data.image}
                     />
                     <main className={classes.content}>
                         <div className={classes.toolbar} />
                         <Switch>
                             <Route path="/playlist">
-                                <PlaylistView />
+                                <Suspense fallback={<Loading />}>
+                                    <PlaylistView />
+                                </Suspense>
                             </Route>
                             <Route path="/tracksearch">
-                                <TrackSearch />
+                                <Suspense fallback={<Loading />}>
+                                    <TrackSearch />
+                                </Suspense>
                             </Route>
                             <Route path="/listeningstatistics">
-                                <ListeningStats />
+                                <Suspense fallback={<Loading />}>
+                                    <ListeningStats />
+                                </Suspense>
                             </Route>
                             <Route path="/compare">
-                                <Compare />
+                                <Suspense fallback={<Loading />}>
+                                    <Compare />
+                                </Suspense>
                             </Route>
                             <Route path="/track">
-                                <Track />
+                                <Suspense fallback={<Loading />}>
+                                    <Track />
+                                </Suspense>
                             </Route>
                             <Route path="/recent">
-                                <Recent />
+                                <Suspense fallback={<Loading />}>
+                                    <Recent />
+                                </Suspense>
                             </Route>
                             <Route path="/settings">
-                                <Settings />
+                                <Suspense fallback={<Loading />}>
+                                    <Settings />
+                                </Suspense>
                             </Route>
                             <Route path="/logout">
-                                <Logout />
+                                <Suspense fallback={<Loading />}>
+                                    <Logout />
+                                </Suspense>
                             </Route>
                             <Route path="/auth">
                                 <Redirect to="/" />
                             </Route>
                             <Route path="/">
-                                <Top />
+                                <Suspense fallback={<Loading />}>
+                                    <Top />
+                                </Suspense>
                             </Route>
                         </Switch>
                         <RedirectToSaved />
