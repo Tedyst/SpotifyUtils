@@ -135,7 +135,7 @@ export default function ListeningStatsComp(props: {
     });
 
     const daysdata: { value: number; argument: string; }[] = [];
-    Object.keys(data.Result.Hours).forEach((key) => {
+    Object.keys(data.Result.Days).forEach((key) => {
         daysdata.push({
             value: data.Result.Days[key],
             argument: getDate(parseInt(key, 10)),
