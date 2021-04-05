@@ -2,13 +2,9 @@ import React from 'react';
 import {
     makeStyles, Container, Grid, Typography,
 } from '@material-ui/core';
-import { useQuery } from 'react-query';
-import axios from 'axios';
-import Alert from '@material-ui/lab/Alert';
-import ArtistCard from '../components/ArtistCard';
-import SongCard from '../components/SongCardRight';
-import List from '../components/ItemList';
-import Loading from '../components/Loading';
+import ArtistCard from '../ArtistCard';
+import SongCard from '../SongCardRight';
+import List from '../ItemList';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -60,46 +56,12 @@ export interface Track {
     previewURL: string;
 }
 
-export default function Top() {
+export default function TopComp(props: {
+    top: TopInterface,
+}) {
     const classes = useStyles();
 
-    const { data, status, error } = useQuery('top', () => axios.get<TopInterface>('/api/top', {
-        withCredentials: true,
-    }));
-
-    let errorComponent = null;
-    if (status === 'error' || data?.data.success === false) {
-        if (typeof error === 'object' && error != null) {
-            if (error.toString() !== '') {
-                errorComponent = (
-                    <Container maxWidth="xs">
-                        <Alert severity="error">{error.toString()}</Alert>
-                    </Container>
-                );
-            }
-        } else {
-            errorComponent = (
-                <Container maxWidth="xs">
-                    <Alert severity="error">Could not extract data from server</Alert>
-                </Container>
-            );
-        }
-        return (
-            <div>
-                {errorComponent}
-                <Loading />
-            </div>
-        );
-    }
-    if (data === undefined || status === 'loading') return <Loading />;
-    const top = data?.data;
-
-    if (top === undefined) {
-        return <Loading />;
-    }
-    if (top.success === false) {
-        return <Loading />;
-    }
+    const { top } = props;
 
     let bestSongForArtist: string | undefined;
     Object.values(top.result.tracks).forEach((value) => {

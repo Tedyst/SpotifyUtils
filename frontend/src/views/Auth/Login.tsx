@@ -1,8 +1,8 @@
 import React from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import LoginPage from '../components/Login/LoginPage';
-import LoginWithCode from '../components/Login/LoginWithCode';
+import LoginPage from '../../components/Login/LoginPage';
+import LoginWithCode from '../../components/Login/LoginWithCode';
 
 export default function Login() {
   const { search } = window.location;

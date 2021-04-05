@@ -3,19 +3,19 @@ import {
     Switch,
     Route,
     useRouteMatch,
-    Redirect,
 } from 'react-router-dom';
-import TrackAnalyze from '../components/Track/TrackAnalyze';
+import Username from './Compare/UsernameController';
+import NoUsername from './Compare/NoUsernameController';
 
-export default function Track() {
+export default function Compare() {
     const match = useRouteMatch();
     return (
         <Switch>
-            <Route path={`${match.path}/:trackid`}>
-                <TrackAnalyze />
+            <Route path={`${match.path}/:code`}>
+                <Username />
             </Route>
             <Route path="/">
-                <Redirect to="/" />
+                <NoUsername />
             </Route>
         </Switch>
     );

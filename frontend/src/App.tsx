@@ -9,17 +9,17 @@ import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core';
 import { useSwipeable } from 'react-swipeable';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import Login from './views/Login';
+import Login from './views/Auth/Login';
 import PlaylistView from './views/PlaylistView';
-import Track from './views/Track';
-import Logout from './views/Logout';
-import Recent from './views/Recent';
-import Settings from './views/Settings';
-import Top from './views/Top';
-import Compare from './views/Compare';
+import Track from './views/TrackPage';
+import Logout from './views/Auth/Logout';
+import Recent from './views/RecentPage';
+import Settings from './views/SettingsPage';
+import Top from './views/TopPage';
+import Compare from './views/ComparePage';
 import Sidebar from './views/Sidebar';
 import TrackSearch from './views/TrackSearch';
-import OldTop from './views/OldTop';
+import ListeningStats from './views/ListeningStatsPage';
 import ServiceWorkerPopup from './components/ServiceWorkerPopup';
 import RedirectToSaved from './components/RedirectToSaved';
 
@@ -119,7 +119,7 @@ function App() {
                                 <TrackSearch />
                             </Route>
                             <Route path="/listeningstatistics">
-                                <OldTop />
+                                <ListeningStats />
                             </Route>
                             <Route path="/compare">
                                 <Compare />
@@ -135,6 +135,9 @@ function App() {
                             </Route>
                             <Route path="/logout">
                                 <Logout />
+                            </Route>
+                            <Route path="/auth">
+                                <Redirect to="/" />
                             </Route>
                             <Route path="/">
                                 <Top />

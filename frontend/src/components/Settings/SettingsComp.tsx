@@ -2,7 +2,9 @@ import React from 'react';
 import {
     Button, Card, makeStyles, CardContent, Checkbox, FormControlLabel,
 } from '@material-ui/core';
-import { Settings } from '../../views/Settings';
+import { useMutation, useQueryClient } from 'react-query';
+import axios from 'axios';
+import { Settings } from './SettingsPage';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -34,10 +36,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SettingsComp(props: {
     originalSettings: Settings,
-    mutation?: any | undefined
+    CSRFToken?: string,
 }) {
     const classes = useStyles();
-    const { originalSettings, mutation } = props;
+    const { originalSettings, CSRFToken } = props;
     const [settings, setSettings] = React.useState(originalSettings);
 
     const handleChangeRecentTracks = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +48,22 @@ export default function SettingsComp(props: {
             RecentTracks: Boolean((event.target as HTMLInputElement).checked),
         });
     };
+
+    let mutation: any;
+    if (CSRFToken === undefined) {
+        const queryClient = useQueryClient();
+        mutation = useMutation((set: Settings) => axios.post<Settings>('/api/settings', JSON.stringify(set), {
+            withCredentials: true,
+            headers: {
+                'X-CSRF-Token': CSRFToken,
+            },
+        }),
+            {
+                onSuccess: () => {
+                    queryClient.invalidateQueries('settings');
+                },
+            });
+    }
 
     const onSubmit = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
@@ -78,5 +96,5 @@ export default function SettingsComp(props: {
 }
 
 SettingsComp.defaultProps = {
-    mutation: undefined,
+    CSRFToken: undefined,
 };

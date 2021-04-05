@@ -18,6 +18,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		Artist string
 		URI    string
 		Image  string
+		Count  int32
 	}
 	type Resp struct {
 		Results []RespSong
@@ -38,8 +39,20 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	response.Success = true
 	recentTracks := user.GetRecentTracks()
 	var ids []spotify.ID
+	count := make(map[string]int32)
 	for _, s := range recentTracks {
-		ids = append(ids, s.Track.ID)
+		ok := true
+		for _, s1 := range ids {
+			if s1 == s.Track.ID {
+				ok = false
+				count[s.Track.ID.String()]++
+				break
+			}
+		}
+		if ok {
+			ids = append(ids, s.Track.ID)
+			count[s.Track.ID.String()] = 1
+		}
 	}
 	tracksinfo, err := user.Client().GetTracks(ids...)
 	if err != nil {
@@ -49,21 +62,22 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		fmt.Fprint(res, string(respJSON))
 		return
 	}
-	for i, s := range recentTracks {
+	for _, s := range tracksinfo {
 		image := ""
-		if len(tracksinfo[i].Album.Images) > 0 {
-			image = tracksinfo[i].Album.Images[0].URL
+		if len(s.Album.Images) > 0 {
+			image = s.Album.Images[0].URL
 		}
 		var artistsStr string
-		for _, s := range s.Track.Artists {
+		for _, s := range s.Artists {
 			artistsStr += s.Name + ", "
 		}
 		artistsStr = artistsStr[:len(artistsStr)-2]
 		respsong := RespSong{
-			Name:   s.Track.Name,
+			Name:   s.Name,
 			Artist: artistsStr,
-			URI:    string(s.Track.ID),
+			URI:    string(s.ID),
 			Image:  image,
+			Count:  count[s.ID.String()],
 		}
 
 		response.Results = append(response.Results, respsong)

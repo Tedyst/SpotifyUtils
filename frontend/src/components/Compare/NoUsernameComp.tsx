@@ -14,62 +14,8 @@ import {
     Link,
     Redirect,
 } from 'react-router-dom';
-
-import axios from 'axios';
-import {
-    useQuery,
-} from 'react-query';
 import Avatar from '../Avatar';
-import Loading from '../Loading';
-
-export interface UsernameInterface {
-    initiator: Initiator;
-    target: Initiator;
-    result: Result;
-    success: boolean;
-}
-
-export interface Initiator {
-    username: string;
-    name: string;
-    image: string;
-    code: string;
-}
-
-export interface Result {
-    artists: Artist[];
-    tracks: Track[];
-    genres: string[];
-    percent: number;
-}
-
-export interface Artist {
-    name: string;
-    image: string;
-    id: string;
-}
-
-export interface Track {
-    artist: string;
-    name: string;
-    image: string;
-    id: string;
-    duration: number;
-    previewURL: string;
-}
-
-export interface NoUsernameCompareInterface {
-    friends: Friend[];
-    success: boolean;
-    code: string;
-}
-
-export interface Friend {
-    username: string;
-    name: string;
-    image: string;
-    code: string;
-}
+import { NoUsernameCompareInterface } from './CompareInterfaces';
 
 function copyToClipboard() {
     const copyText = document.getElementById('link-to-be-copied') as HTMLInputElement;
@@ -87,7 +33,7 @@ function getLink(code: string) {
     return `${window.location.protocol}//${window.location.host}/compare/${code}`;
 }
 
-const useStylesNoUsername = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
         position: 'relative',
@@ -115,33 +61,20 @@ const useStylesNoUsername = makeStyles((theme) => ({
 }));
 
 export default function NoUsername(props: {
-    Word: string,
-    setWord: React.Dispatch<React.SetStateAction<string>>
+    compare: NoUsernameCompareInterface,
+    enableRedirect?: boolean,
 }) {
-    const classes = useStylesNoUsername();
-    const [RedirectURL, setRedirectURL] = React.useState('');
-    const { data, status } = useQuery('compare', () => axios.get<NoUsernameCompareInterface>('/api/compare', {
-        withCredentials: true,
-    }));
-    const { Word } = props;
-    if (RedirectURL !== '') {
+    const classes = useStyles();
+    const [Word, setWord] = React.useState<string>();
+    const [RedirectURL, setRedirectURL] = React.useState<string>();
+    const { compare, enableRedirect } = props;
+    if (RedirectURL !== undefined && enableRedirect) {
         let url = `/compare/${String(RedirectURL)}`;
         if (String(RedirectURL).includes('/compare/')) {
             url = `/compare/${String(RedirectURL).split('/compare/')[1]}`;
         }
         return <Redirect to={url} />;
     }
-
-    if (status === 'loading') {
-        return <Loading />;
-    }
-    if (status === 'error') {
-        return null;
-    }
-    if (data === undefined) {
-        return <Loading />;
-    }
-    const compare = data?.data;
     const friends: any[] = [];
     Object.values(compare.friends).forEach((value) => {
         friends.push(
@@ -162,14 +95,14 @@ export default function NoUsername(props: {
         );
     });
 
-    const changeWord = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-        props.setWord(event.target.value);
+    const changeWord = (event: { target: { value: string | undefined; }; }) => {
+        setWord(event.target.value);
     };
 
     const mySubmitHandler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
-        if (props.Word !== '') {
-            setRedirectURL(props.Word);
+        if (Word !== undefined) {
+            setRedirectURL(Word);
         }
     };
 
@@ -180,8 +113,8 @@ export default function NoUsername(props: {
                     Your code is
                     {' '}
                     <b>
-{compare.code}
-</b>
+                        {compare.code}
+                    </b>
                 </Typography>
                 <Typography align="center" color="textSecondary" variant="h5">
                     Send it to your friends and compare your music taste to theirs!
@@ -242,3 +175,7 @@ export default function NoUsername(props: {
         </div>
     );
 }
+
+NoUsername.defaultProps = {
+    enableRedirect: true,
+};

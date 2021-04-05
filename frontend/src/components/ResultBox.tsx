@@ -2,14 +2,15 @@ import React from 'react';
 import { Grid, Container } from '@material-ui/core';
 import SongCardUp from './SongCardUp';
 
+export interface Result {
+    Name: string;
+    Artist: string;
+    URI: string;
+    Image: string;
+    Count?: number;
+}
 export default function ResultBox(props: {
-    results: {
-        URI: string,
-        Name: string,
-        Artist: string,
-        Image: string,
-        Count?: number,
-    }[],
+    results: Result[],
     usingLink?: boolean,
 }) {
     const { results, usingLink } = props;

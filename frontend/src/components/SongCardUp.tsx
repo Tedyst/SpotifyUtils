@@ -102,15 +102,27 @@ function SongCardUp(props: {
 
     let countComponent = null;
     if (count) {
-        countComponent = (
-            <Typography className={classes.count} color="textSecondary" variant="subtitle2">
-                <b>
-                    {count}
-                </b>
-                {' '}
-                times
-            </Typography>
-        );
+        if (count === 1) {
+            countComponent = (
+                <Typography className={classes.count} color="textSecondary" variant="subtitle2">
+                    <b>
+                        {count}
+                    </b>
+                    {' '}
+                    time
+                </Typography>
+            );
+        } else {
+            countComponent = (
+                <Typography className={classes.count} color="textSecondary" variant="subtitle2">
+                    <b>
+                        {count}
+                    </b>
+                    {' '}
+                    times
+                </Typography>
+            );
+        }
     }
     return (
         <Fade in>
