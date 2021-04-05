@@ -54,14 +54,14 @@ export default function Avatars(props: {
                 horizontal: 'right',
             }}
             badgeContent={(
-                <SmallAvatar className={classes.purple} src={initiator.image}>
+                <SmallAvatar className={classes.purple} src={initiator.image} alt={initiator.name}>
                     {Acronym(initiator.name)}
                 </SmallAvatar>
             )}
             className={classes.root}
             overlap="circle"
         >
-            <Avatar className={classes.large} sizes="120" src={target.image}>
+            <Avatar className={classes.large} sizes="120" src={target.image} alt={target.name}>
                 {Acronym(target.name)}
             </Avatar>
         </Badge>
