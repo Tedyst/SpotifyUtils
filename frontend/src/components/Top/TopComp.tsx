@@ -159,7 +159,7 @@ export default function TopComp(props: {
                 </Grid>
             </Container>
             <Container disableGutters fixed maxWidth="xs">
-                <Typography component="h6" align="center">
+                <Typography component="h6" color="textSecondary" align="center">
                     {lastUpdated}
                 </Typography>
             </Container>
