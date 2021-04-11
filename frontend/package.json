@@ -37,6 +37,7 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "history": "^4.10.1",
     "material-ui": "^0.20.2",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
@@ -64,7 +65,7 @@
     "workbox-streams": "^4.3.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "NODE_ENV=development react-scripts start",
     "docker": "npm run build && npm run docker-package",
     "build": "react-scripts build",
     "docker-package": "docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t tedyst/spotifyutils --push -f Dockerfile .",

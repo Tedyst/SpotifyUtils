@@ -1,6 +1,5 @@
 import React, { lazy, Suspense } from 'react';
 import {
-    BrowserRouter as Router,
     Switch,
     Route,
     Redirect,
@@ -9,6 +8,7 @@ import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core';
 import { useSwipeable } from 'react-swipeable';
 import axios from 'axios';
 import { useQuery } from 'react-query';
+import { setUser as SentrySetUser } from '@sentry/react';
 import Sidebar from './views/Sidebar';
 import ServiceWorkerPopup from './components/ServiceWorkerPopup';
 import RedirectToSaved from './components/RedirectToSaved';
@@ -46,6 +46,7 @@ export interface StatusInterface {
     username: string;
     image: string;
     playlists: Playlist[];
+    id: string;
 }
 
 export interface Playlist {
@@ -79,102 +80,102 @@ function App() {
             // eslint-disable-next-line react/jsx-props-no-spreading
             <div className={classes.root} {...handlers}>
                 <ThemeProvider theme={darkTheme}>
-                    <Router>
-                        <Sidebar
-                            mobileOpen={mobileOpen}
-                            setMobileOpen={setMobileOpen}
-                            logged={false}
-                            username="Not logged in"
-                            image=""
-                        />
-                        <main className={classes.content}>
-                            <div className={classes.toolbar} />
-                            <Switch>
-                                <Route path="/auth">
-                                    <Suspense fallback={<Loading />}>
-                                        <Login />
-                                    </Suspense>
-                                </Route>
-                                <Route path="/">
-                                    <Redirect to="/auth" />
-                                </Route>
-                            </Switch>
-                            <ServiceWorkerPopup />
-                        </main>
-                    </Router>
+                    <Sidebar
+                        mobileOpen={mobileOpen}
+                        setMobileOpen={setMobileOpen}
+                        logged={false}
+                        username="Not logged in"
+                        image=""
+                    />
+                    <main className={classes.content}>
+                        <div className={classes.toolbar} />
+                        <Switch>
+                            <Route path="/auth">
+                                <Suspense fallback={<Loading />}>
+                                    <Login />
+                                </Suspense>
+                            </Route>
+                            <Route path="/">
+                                <Redirect to="/auth" />
+                            </Route>
+                        </Switch>
+                        <ServiceWorkerPopup />
+                    </main>
                 </ThemeProvider>
             </div>
         );
     }
 
+    SentrySetUser({
+        id: data?.data.id,
+    });
+
     return (
         // eslint-disable-next-line react/jsx-props-no-spreading
         <div className={classes.root} {...handlers}>
             <ThemeProvider theme={darkTheme}>
-                <Router>
-                    <Sidebar
-                        mobileOpen={mobileOpen}
-                        setMobileOpen={setMobileOpen}
-                        logged={!!data?.data.success}
-                        username={data?.data.username}
-                        image={data?.data.image}
-                    />
-                    <main className={classes.content}>
-                        <div className={classes.toolbar} />
-                        <Switch>
-                            <Route path="/playlist">
-                                <Suspense fallback={<Loading />}>
-                                    <PlaylistView />
-                                </Suspense>
-                            </Route>
-                            <Route path="/tracksearch">
-                                <Suspense fallback={<Loading />}>
-                                    <TrackSearch />
-                                </Suspense>
-                            </Route>
-                            <Route path="/listeningstatistics">
-                                <Suspense fallback={<Loading />}>
-                                    <ListeningStats />
-                                </Suspense>
-                            </Route>
-                            <Route path="/compare">
-                                <Suspense fallback={<Loading />}>
-                                    <Compare />
-                                </Suspense>
-                            </Route>
-                            <Route path="/track">
-                                <Suspense fallback={<Loading />}>
-                                    <Track />
-                                </Suspense>
-                            </Route>
-                            <Route path="/recent">
-                                <Suspense fallback={<Loading />}>
-                                    <Recent />
-                                </Suspense>
-                            </Route>
-                            <Route path="/settings">
-                                <Suspense fallback={<Loading />}>
-                                    <Settings />
-                                </Suspense>
-                            </Route>
-                            <Route path="/logout">
-                                <Suspense fallback={<Loading />}>
-                                    <Logout />
-                                </Suspense>
-                            </Route>
-                            <Route path="/auth">
-                                <Redirect to="/" />
-                            </Route>
-                            <Route path="/">
-                                <Suspense fallback={<Loading />}>
-                                    <Top />
-                                </Suspense>
-                            </Route>
-                        </Switch>
-                        <RedirectToSaved />
-                        <ServiceWorkerPopup />
-                    </main>
-                </Router>
+                <Sidebar
+                    mobileOpen={mobileOpen}
+                    setMobileOpen={setMobileOpen}
+                    logged={!!data?.data.success}
+                    username={data?.data.username}
+                    image={data?.data.image}
+                />
+                <main className={classes.content}>
+                    <div className={classes.toolbar} />
+                    <Switch>
+                        <Route path="/playlist">
+                            <Suspense fallback={<Loading />}>
+                                <PlaylistView />
+                            </Suspense>
+                        </Route>
+                        <Route path="/tracksearch">
+                            <Suspense fallback={<Loading />}>
+                                <TrackSearch />
+                            </Suspense>
+                        </Route>
+                        <Route path="/listeningstatistics">
+                            <Suspense fallback={<Loading />}>
+                                <ListeningStats />
+                            </Suspense>
+                        </Route>
+                        <Route path="/compare">
+                            <Suspense fallback={<Loading />}>
+                                <Compare />
+                            </Suspense>
+                        </Route>
+                        <Route path="/track">
+                            <Suspense fallback={<Loading />}>
+                                <Track />
+                            </Suspense>
+                        </Route>
+                        <Route path="/recent">
+                            <Suspense fallback={<Loading />}>
+                                <Recent />
+                            </Suspense>
+                        </Route>
+                        <Route path="/settings">
+                            <Suspense fallback={<Loading />}>
+                                <Settings />
+                            </Suspense>
+                        </Route>
+                        <Route path="/logout">
+                            <Suspense fallback={<Loading />}>
+                                <Logout />
+                            </Suspense>
+                        </Route>
+                        <Route path="/auth">
+                            <Redirect to="/" />
+                        </Route>
+                        <Route path="/">
+                            <Suspense fallback={<Loading />}>
+                                <Top />
+                            </Suspense>
+                        </Route>
+                    </Switch>
+                    <RedirectToSaved />
+                    <ServiceWorkerPopup />
+                </main>
             </ThemeProvider>
         </div>
     );
