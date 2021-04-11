@@ -2,13 +2,9 @@ import React from 'react';
 import {
     makeStyles, Container, Grid, Typography,
 } from '@material-ui/core';
-import { useQuery } from 'react-query';
-import axios from 'axios';
-import Alert from '@material-ui/lab/Alert';
-import ArtistCard from '../components/ArtistCard';
-import SongCard from '../components/SongCardRight';
-import List from '../components/ItemList';
-import Loading from '../components/Loading';
+import ArtistCard from '../ArtistCard';
+import SongCard from '../SongCardRight';
+import List from '../ItemList';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -33,25 +29,41 @@ function msToText(ms: number): string {
     return `${seconds} Seconds`;
 }
 
+function unixToTime(lastUpdated: number): string {
+    const d = new Date(lastUpdated * 1000);
+    const year = d.getFullYear();
+    let month = `${d.getMonth() + 1}`;
+    let day = `${d.getDate()}`;
+
+    if (month.length < 2) {
+        month = `0${month}`;
+    }
+    if (day.length < 2) {
+        day = `0${day}`;
+    }
+
+    return [year, month, day].join('-');
+}
+
 export interface TopInterface {
     result: Result;
     success: boolean;
 }
 
-export interface Result {
+interface Result {
     genres: string[];
     updated: number;
     artists: Artist[];
     tracks: Track[];
 }
 
-export interface Artist {
+interface Artist {
     name: string;
     image: string;
     id: string;
 }
 
-export interface Track {
+interface Track {
     artist: string;
     name: string;
     image: string;
@@ -60,46 +72,12 @@ export interface Track {
     previewURL: string;
 }
 
-export default function Top() {
+export default function TopComp(props: {
+    top: TopInterface,
+}) {
     const classes = useStyles();
 
-    const { data, status, error } = useQuery('top', () => axios.get<TopInterface>('/api/top', {
-        withCredentials: true,
-    }));
-
-    let errorComponent = null;
-    if (status === 'error' || data?.data.success === false) {
-        if (typeof error === 'object' && error != null) {
-            if (error.toString() !== '') {
-                errorComponent = (
-                    <Container maxWidth="xs">
-                        <Alert severity="error">{error.toString()}</Alert>
-                    </Container>
-                );
-            }
-        } else {
-            errorComponent = (
-                <Container maxWidth="xs">
-                    <Alert severity="error">Could not extract data from server</Alert>
-                </Container>
-            );
-        }
-        return (
-            <div>
-                {errorComponent}
-                <Loading />
-            </div>
-        );
-    }
-    if (data === undefined || status === 'loading') return <Loading />;
-    const top = data?.data;
-
-    if (top === undefined) {
-        return <Loading />;
-    }
-    if (top.success === false) {
-        return <Loading />;
-    }
+    const { top } = props;
 
     let bestSongForArtist: string | undefined;
     Object.values(top.result.tracks).forEach((value) => {
@@ -140,6 +118,7 @@ export default function Top() {
         );
     }
 
+    const lastUpdated = `This page updated at ${unixToTime(top.result.updated)}`;
     return (
         <div>
             <Container disableGutters fixed maxWidth="xs">
@@ -178,6 +157,11 @@ export default function Top() {
                         />
                     </Grid>
                 </Grid>
+            </Container>
+            <Container disableGutters fixed maxWidth="xs">
+                <Typography component="h6" color="textSecondary" align="center">
+                    {lastUpdated}
+                </Typography>
             </Container>
         </div>
     );

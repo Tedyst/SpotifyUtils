@@ -1,25 +1,15 @@
 import React from 'react';
 import {
-    useParams,
-    Redirect,
-} from 'react-router-dom';
-import {
     makeStyles,
     Container,
     Grid,
     Typography,
 } from '@material-ui/core';
-import axios from 'axios';
-import {
-    useQuery,
-} from 'react-query';
+import { UsernameInterface } from './CompareInterfaces';
 import ArtistCard from '../ArtistCard';
 import SongCard from '../SongCardRight';
-import ListItems from '../ItemList';
 import Avatars from '../Avatars';
-
-import Loading from '../Loading';
-import NoUsername from './NoUsername';
+import ListItems from '../ItemList';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -51,141 +41,73 @@ function msToText(ms: number) {
     return `${seconds} Seconds`;
 }
 
-interface ParamTypes {
-    code: string
-}
-
-export interface UsernameInterface {
-    initiator: Initiator;
-    target: Initiator;
-    result: Result;
-    success: boolean;
-}
-
-export interface Initiator {
-    username: string;
-    name: string;
-    image: string;
-    code: string;
-}
-
-export interface Result {
-    artists: Artist[];
-    tracks: Track[];
-    genres: string[];
-    percent: number;
-}
-
-export interface Artist {
-    name: string;
-    image: string;
-    id: string;
-}
-
-export interface Track {
-    artist: string;
-    name: string;
-    image: string;
-    id: string;
-    duration: number;
-    previewURL: string;
-}
-
-export interface Friend {
-    username: string;
-    name: string;
-    image: string;
-    code: string;
-}
-
-export default function Username(props: {
-    Word: string,
-    setWord: React.Dispatch<React.SetStateAction<string>>
+export default function UsernameComp(props: {
+    data: UsernameInterface,
 }) {
+    const { data } = props;
     const classes = useStyles();
-    const { code } = useParams<ParamTypes>();
-    const sanitizedCode = code.replace(/[^a-zA-Z0-9]+/g, '').substring(0, 6);
-    const { data, status } = useQuery(['compare', sanitizedCode], () => axios.get<UsernameInterface>(`/api/compare/${sanitizedCode}`, {
-        withCredentials: true,
-    }));
-    const top = data?.data;
-    if (status === 'error' || data?.data.success === false) {
-        return <Redirect to="/compare" />;
-    }
-    if (top === undefined || status === 'loading') {
-        return <Loading />;
-    }
-
-    if (top.success === false) {
-        return (
-            <NoUsername
-                Word={props.Word}
-                setWord={props.setWord}
-            />
-        );
-    }
     let bestSongForArtist: string | undefined;
-    if (top.result.artists.length > 0) {
-        Object.values(top.result.tracks).forEach((value) => {
+    if (data.result.artists.length > 0) {
+        Object.values(data.result.tracks).forEach((value) => {
             if (bestSongForArtist === undefined) {
-                if (value.artist === top.result.artists[0].name) {
+                if (value.artist === data.result.artists[0].name) {
                     bestSongForArtist = value.name;
                 }
             }
         });
     }
 
-    let topArtist = null;
-    if (top.result.artists.length > 0) {
-        topArtist = (
-            <Grid item key={top.result.artists[0].id}>
+    let dataArtist = null;
+    if (data.result.artists.length > 0) {
+        dataArtist = (
+            <Grid item key={data.result.artists[0].id}>
                 <ArtistCard
                     bestSong={bestSongForArtist}
-                    image={top.result.artists[0].image}
-                    key={top.result.artists[0].id}
-                    name={top.result.artists[0].name}
+                    image={data.result.artists[0].image}
+                    key={data.result.artists[0].id}
+                    name={data.result.artists[0].name}
                 />
             </Grid>
         );
     }
-    let topTrack = null;
-    if (top.result.tracks.length > 0) {
-        topTrack = (
-            <Grid item key={top.result.tracks[0].id}>
+    let dataTrack = null;
+    if (data.result.tracks.length > 0) {
+        dataTrack = (
+            <Grid item key={data.result.tracks[0].id}>
                 <SongCard
-                    artist={top.result.tracks[0].artist}
+                    artist={data.result.tracks[0].artist}
                     duration={
-                        msToText(top.result.tracks[0].duration)
+                        msToText(data.result.tracks[0].duration)
                     }
-                    image={top.result.tracks[0].image}
-                    key={top.result.tracks[0].id}
-                    name={top.result.tracks[0].name}
+                    image={data.result.tracks[0].image}
+                    key={data.result.tracks[0].id}
+                    name={data.result.tracks[0].name}
                 />
             </Grid>
         );
     }
 
-    let commonTopArtistTrackText = null;
-    if (topArtist === null && topTrack === null) {
-        commonTopArtistTrackText = (
+    let commondataArtistTrackText = null;
+    if (dataArtist === null && dataTrack === null) {
+        commondataArtistTrackText = (
             <Typography align="center" component="h5" variant="h5">
-                Could not find any top tracks or artists that you both like
+                Could not find any data tracks or artists that you both like
             </Typography>
         );
-    } else if (topArtist === null) {
-        commonTopArtistTrackText = (
+    } else if (dataArtist === null) {
+        commondataArtistTrackText = (
             <Typography align="center" component="h5" variant="h5">
                 You both like this track
             </Typography>
         );
-    } else if (topTrack === null) {
-        commonTopArtistTrackText = (
+    } else if (dataTrack === null) {
+        commondataArtistTrackText = (
             <Typography align="center" component="h5" variant="h5">
                 You both like this artist
             </Typography>
         );
     } else {
-        commonTopArtistTrackText = (
+        commondataArtistTrackText = (
             <Typography align="center" component="h5" variant="h5">
                 You both like this artist and track
             </Typography>
@@ -196,8 +118,8 @@ export default function Username(props: {
             <Container disableGutters fixed maxWidth="md">
                 <Grid alignItems="center" container>
                     <Avatars
-                        initiator={top.initiator}
-                        target={top.target}
+                        initiator={data.initiator}
+                        target={data.target}
                     />
                 </Grid>
                 <Grid>
@@ -205,33 +127,33 @@ export default function Username(props: {
                     <Typography align="center" color="textPrimary" variant="h4">
                         You and
                         {' '}
-                        {top.target.name}
+                        {data.target.name}
                         {' '}
                         are
                         {' '}
                         <b>
-                            {top.result.percent}
+                            {data.result.percent}
                             %
                         </b>
                         {' '}
                         compatible!
                     </Typography>
                     <Typography align="center" color="textSecondary" variant="subtitle1">
-                        Here are the top common artists, tracks, and genres that you both share
+                        Here are the data common artists, tracks, and genres that you both share
                     </Typography>
                 </Grid>
                 <Grid className={classes.spacer} />
             </Container>
             <Container disableGutters fixed maxWidth="xs">
                 <Grid>
-                    {commonTopArtistTrackText}
+                    {commondataArtistTrackText}
                     <br />
                 </Grid>
                 <Grid alignItems="stretch" className={classes.root} container direction="column" spacing={2}>
-                    {topArtist}
+                    {dataArtist}
                 </Grid>
                 <Grid alignItems="stretch" className={classes.root} container direction="column" spacing={2}>
-                    {topTrack}
+                    {dataTrack}
                 </Grid>
             </Container>
             <br />
@@ -240,20 +162,20 @@ export default function Username(props: {
                 <Grid alignItems="stretch" className={classes.root} container direction="row" spacing={2}>
                     <Grid className={classes.fullWidth} item key="lista-tracks" md={4}>
                         <ListItems
-                            items={top.result.tracks}
-                            name="Common Top Tracks"
+                            items={data.result.tracks}
+                            name="Common data Tracks"
                         />
                     </Grid>
                     <Grid className={classes.fullWidth} item key="lista-artists" md={4}>
                         <ListItems
-                            items={top.result.artists}
-                            name="Common Top Artists"
+                            items={data.result.artists}
+                            name="Common data Artists"
                         />
                     </Grid>
                     <Grid className={classes.fullWidth} item key="lista-genres" md={4}>
                         <ListItems
-                            items={top.result.genres}
-                            name="Common Top Genres"
+                            items={data.result.genres}
+                            name="Common data Genres"
                         />
                     </Grid>
                 </Grid>
