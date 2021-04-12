@@ -16,6 +16,7 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 		Username  string               `json:"username,omitempty"`
 		Image     string               `json:"image,omitempty"`
 		Playlists []userutils.Playlist `json:"playlists,omitempty"`
+		UserID    string               `json:"id"`
 	}
 	res.Header().Set("Content-Type", "application/json")
 	session, _ := config.SessionStore.Get(req, "username")
@@ -52,6 +53,7 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 		response.Username = user.DisplayName
 	}
 
+	response.UserID = user.UserID
 	response.Image = user.Image
 
 	response.Playlists = user.Playlists
