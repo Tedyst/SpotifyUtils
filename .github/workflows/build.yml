@@ -7,6 +7,11 @@ on:
 jobs:
   buildx:
     runs-on: ubuntu-latest
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      SENTRY_DEPLOY_ENVIRONMENT: ${{ secrets.SENTRY_DEPLOY_ENVIRONMENT }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -27,11 +32,20 @@ jobs:
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-      - run: |
+      - name: Build frontend
+        run: |
           cd frontend/
           npm install
           npm run build
           cd ../
+      - name: Create Sentry Release
+        run: |
+          curl -sL https://sentry.io/get-cli/ | bash
+          export SENTRY_RELEASE=$(sentry-cli releases propose-version)
+          sentry-cli releases new -p $SENTRY_PROJECT $SENTRY_RELEASE
+          sentry-cli releases set-commits --auto $SENTRY_RELEASE
+          sentry-cli releases finalize $SENTRY_RELEASE
+          sentry-cli releases deploys $SENTRY_RELEASE new -e $SENTRY_DEPLOY_ENVIRONMENT
       - name: Build Docker Package - tagged
         run: docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t ghcr.io/tedyst/spotifyutils:${{ steps.get_version.outputs.VERSION }} .
       - name: Build Docker Package - latest
