@@ -29,7 +29,7 @@ export default function SettingsPage(props: {
     return (
         <div>
             <Typography align="center" color="textPrimary" gutterBottom variant="h5">
-                Here you can adjust your user settings
+                Here you can adjust your personal settings
             </Typography>
             <Typography align="center" color="textSecondary" variant="subtitle1">
                 If you want to see what the app is doing in the background, you can check the
@@ -37,6 +37,10 @@ export default function SettingsPage(props: {
                 <a className={classes.a} href="https://github.com/Tedyst/SpotifyUtils">
                     GitHub page
                 </a>
+            </Typography>
+            <Typography align="center" color="textSecondary" variant="subtitle2">
+                Disabling the Recent Tracks option will delete all the data
+                that is related to this feature and associated with this account!
             </Typography>
             <Container maxWidth="xs">
                 <SettingsComp
