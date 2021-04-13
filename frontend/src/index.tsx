@@ -15,7 +15,7 @@ const history = createBrowserHistory();
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 Sentry.init({
-    dsn: 'https://a38da28ff45041828f3ee7f714af0527@o557174.ingest.sentry.io/5689078',
+    dsn: 'https://a38da28ff45041828f3ee7f714af0527@sentry-relay.stoicatedy.ovh/5689078',
     integrations: [new Integrations.BrowserTracing({
         routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
     })],
