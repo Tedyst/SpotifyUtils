@@ -50,7 +50,7 @@ export default function SettingsComp(props: {
     };
 
     let mutation: any;
-    if (CSRFToken === undefined) {
+    if (typeof (CSRFToken) === 'string') {
         const queryClient = useQueryClient();
         mutation = useMutation((set: Settings) => axios.post<Settings>('/api/settings', JSON.stringify(set), {
             withCredentials: true,
@@ -61,6 +61,7 @@ export default function SettingsComp(props: {
             {
                 onSuccess: () => {
                     queryClient.invalidateQueries('settings');
+                    queryClient.invalidateQueries('status');
                 },
             });
     }
@@ -87,7 +88,7 @@ export default function SettingsComp(props: {
                     />
                     <br />
                     <Button className={classes.submit} color="primary" type="submit" variant="contained">
-                        Submit
+                        Save Settings
                     </Button>
                 </form>
             </CardContent>
