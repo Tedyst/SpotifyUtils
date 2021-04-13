@@ -1,4 +1,13 @@
-FROM golang:rc-alpine
+FROM --platform=${BUILDPLATFORM} node:latest as frontend
+WORKDIR /app/frontend
+
+COPY frontend/package.json frontend/package-lock.json /app/frontend/
+RUN ["npm", "install"]
+COPY frontend .
+RUN ["npm", "run", "build"]
+
+
+FROM golang:rc-alpine as backend
 WORKDIR /app
 
 COPY go.mod go.sum ./
@@ -13,7 +22,7 @@ EXPOSE 5000
 EXPOSE 5001
 
 RUN ["mkdir", "/frontend"]
-COPY --from=0 /app/build /app/build
-ADD frontend/build /app/frontend/build
+COPY --from=backend /app/build /app/build
+COPY --from=frontend /app/frontend/build /app/frontend/build
 
 ENTRYPOINT [ "/app/build" ]

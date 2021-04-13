@@ -26,18 +26,9 @@ jobs:
           registry: ghcr.io
           username: tedyst
           password: ${{ secrets.CR_PAT }}
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "15.5"
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-      - name: Build frontend
-        run: |
-          cd frontend/
-          npm install
-          npm run build
-          cd ../
       - name: Create Sentry Release
         run: |
           curl -sL https://sentry.io/get-cli/ | bash
