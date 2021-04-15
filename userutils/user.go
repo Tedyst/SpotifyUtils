@@ -30,7 +30,7 @@ type User struct {
 }
 
 type UserSettings struct {
-	RecentTracks bool `gorm:"default:true"`
+	RecentTracks bool `gorm:"default:false"`
 }
 
 type clientCacheStruct struct {

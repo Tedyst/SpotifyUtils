@@ -11,12 +11,13 @@ import (
 
 func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	type statusAPIResponse struct {
-		Success   bool                 `json:"success"`
-		Error     string               `json:"error,omitempty"`
-		Username  string               `json:"username,omitempty"`
-		Image     string               `json:"image,omitempty"`
-		Playlists []userutils.Playlist `json:"playlists,omitempty"`
-		UserID    string               `json:"id"`
+		Success   bool                   `json:"success"`
+		Error     string                 `json:"error,omitempty"`
+		Username  string                 `json:"username,omitempty"`
+		Image     string                 `json:"image,omitempty"`
+		Playlists []userutils.Playlist   `json:"playlists,omitempty"`
+		UserID    string                 `json:"id"`
+		Settings  userutils.UserSettings `json:"settings"`
 	}
 	res.Header().Set("Content-Type", "application/json")
 	session, _ := config.SessionStore.Get(req, "username")
@@ -57,6 +58,7 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	response.Image = user.Image
 
 	response.Playlists = user.Playlists
+	response.Settings = user.Settings
 
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprint(res, string(respJSON))
