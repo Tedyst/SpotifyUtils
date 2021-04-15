@@ -1,4 +1,4 @@
-name: Build Docker app
+name: Release app
 
 on:
   release:
