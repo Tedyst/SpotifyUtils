@@ -13,6 +13,7 @@ import Sidebar from './views/Sidebar';
 import ServiceWorkerPopup from './components/ServiceWorkerPopup';
 import RedirectToSaved from './components/RedirectToSaved';
 import Loading from './components/Loading';
+import { Settings as SettingsInterface } from './components/Settings/SettingsPage';
 
 const Login = lazy(() => import('./views/Auth/Login'));
 const PlaylistView = lazy(() => import('./views/PlaylistView'));
@@ -47,6 +48,7 @@ export interface StatusInterface {
     image: string;
     playlists: Playlist[];
     id: string;
+    settings: SettingsInterface;
 }
 
 export interface Playlist {
@@ -86,6 +88,7 @@ function App() {
                         logged={false}
                         username="Not logged in"
                         image=""
+                        settings={data?.data.settings}
                     />
                     <main className={classes.content}>
                         <div className={classes.toolbar} />
@@ -120,6 +123,7 @@ function App() {
                     logged={!!data?.data.success}
                     username={data?.data.username}
                     image={data?.data.image}
+                    settings={data?.data.settings}
                 />
                 <main className={classes.content}>
                     <div className={classes.toolbar} />

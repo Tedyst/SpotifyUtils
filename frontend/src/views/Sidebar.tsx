@@ -21,6 +21,7 @@ import {
 } from '@material-ui/icons';
 import ListIcon from '@material-ui/icons/List';
 import { Link, useLocation } from 'react-router-dom';
+import { Settings as SettingsInterface } from '../components/Settings/SettingsPage';
 
 const drawerWidth = 240;
 
@@ -74,11 +75,17 @@ function ResponsiveDrawer(props: {
     logged: boolean,
     username?: string,
     image?: string,
+    settings?: SettingsInterface,
 }) {
     const classes = useStyles();
     const theme = useTheme();
     const location = useLocation();
-    const { logged, username, image } = props;
+    const {
+        logged,
+        username,
+        image,
+        settings,
+    } = props;
 
     if (!logged) return null;
 
@@ -89,6 +96,43 @@ function ResponsiveDrawer(props: {
     const closeDrawer = () => {
         props.setMobileOpen(false);
     };
+
+    const recentTracks = settings?.RecentTracks ? (
+        <ListItem
+            button
+            classes={{
+                selected: classes.selected,
+            }}
+            component={Link}
+            onClick={closeDrawer}
+            key="old-top"
+            selected={location.pathname.startsWith('/listeningstatistics')}
+            to="/listeningstatistics"
+        >
+            <ListItemIcon>
+                <History />
+            </ListItemIcon>
+            <ListItemText primary="Listening Statistics" />
+        </ListItem>
+    ) : (
+        <ListItem
+            button
+            classes={{
+                selected: classes.selected,
+            }}
+            component={Link}
+            onClick={closeDrawer}
+            key="old-top"
+            selected={location.pathname.startsWith('/listeningstatistics')}
+            to="/listeningstatistics"
+            disabled
+        >
+            <ListItemIcon>
+                <History />
+            </ListItemIcon>
+            <ListItemText primary="Listening Statistics" />
+        </ListItem>
+    );
 
     const drawer = (
         <div>
@@ -179,22 +223,7 @@ function ResponsiveDrawer(props: {
                     </ListItemIcon>
                     <ListItemText primary="Recent Tracks" />
                 </ListItem>
-                <ListItem
-                    button
-                    classes={{
-                        selected: classes.selected,
-                    }}
-                    component={Link}
-                    onClick={closeDrawer}
-                    key="old-top"
-                    selected={location.pathname.startsWith('/listeningstatistics')}
-                    to="/listeningstatistics"
-                >
-                    <ListItemIcon>
-                        <History />
-                    </ListItemIcon>
-                    <ListItemText primary="Listening Statistics" />
-                </ListItem>
+                {recentTracks}
                 <ListItem
                     button
                     classes={{
@@ -302,6 +331,9 @@ function ResponsiveDrawer(props: {
 ResponsiveDrawer.defaultProps = {
     username: 'Not logged in',
     image: '',
+    settings: {
+        RecentTracks: true,
+    },
 };
 
 export default ResponsiveDrawer;
