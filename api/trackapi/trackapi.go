@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/tedyst/spotifyutils/tracks"
+	"github.com/zmb3/spotify"
 
 	"github.com/gorilla/mux"
 	"github.com/tedyst/spotifyutils/config"
@@ -41,6 +42,26 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	if len(trackURI) == 36 {
 		// If it contains spotify:track:
 		trackURI = trackURI[14:]
+	}
+
+	// If the track dosen't exist
+	if !tracks.TrackExists(trackURI) {
+		if !(*config.MockExternalCalls) {
+			_, err := user.Client().GetTrack(spotify.ID(trackURI))
+			if err != nil {
+				response.Success = false
+				response.Error = fmt.Sprint(err)
+				respJSON, _ := json.Marshal(response)
+				fmt.Fprint(res, string(respJSON))
+				return
+			}
+		} else {
+			response.Success = false
+			response.Error = "MockExternalCalls enabled, could not contact Spotify"
+			respJSON, _ := json.Marshal(response)
+			fmt.Fprint(res, string(respJSON))
+			return
+		}
 	}
 
 	tr := tracks.GetTrackFromID(trackURI)

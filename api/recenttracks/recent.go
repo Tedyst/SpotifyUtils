@@ -33,6 +33,15 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		fmt.Fprint(res, string(respJSON))
 		return
 	}
+
+	if *config.MockExternalCalls {
+		response.Success = false
+		response.Error = "MockExternalCalls enabled, could not contact Spotify"
+		respJSON, _ := json.Marshal(response)
+		fmt.Fprint(res, string(respJSON))
+		return
+	}
+
 	val := session.Values["username"]
 	user := userutils.GetUser(val.(string))
 

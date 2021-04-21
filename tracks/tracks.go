@@ -31,6 +31,12 @@ func GetTrackFromID(ID string) *Track {
 	return &tr
 }
 
+func TrackExists(ID string) bool {
+	var count int64
+	config.DB.Model(&Track{}).Where("track_id = ?", ID).Count(&count)
+	return count != 0
+}
+
 func BatchUpdate(tracks []*Track, cl spotify.Client) {
 	if *config.MockExternalCalls {
 		return
