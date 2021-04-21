@@ -10,12 +10,16 @@ import Alert from '@material-ui/lab/Alert';
 import Loading from '../components/Loading';
 import TrackAnalyze, { TrackParamTypes, TrackInterface } from '../components/Track/TrackAnalyze';
 
+const refetchIntervalSeconds = 10;
+
 export default function TrackAnalyzeController() {
     const { trackid } = useParams<TrackParamTypes>();
     const sanitizedTrack = trackid.replace(/[^a-zA-Z0-9]+/g, '').substring(0, 25);
     const { data, status, error } = useQuery(['track', sanitizedTrack], () => axios.get<TrackInterface>(`/api/track/${sanitizedTrack}`, {
         withCredentials: true,
-    }));
+    }), {
+        refetchInterval: refetchIntervalSeconds * 1000,
+    });
     let errorComponent = null;
     if (status === 'error' || data?.data.Success === false) {
         if (typeof error === 'object' && error != null) {

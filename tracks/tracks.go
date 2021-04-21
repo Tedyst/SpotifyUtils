@@ -103,7 +103,7 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 		go func(client *spotify.Client, tr []*Track, artists []*Artist) {
 			BatchUpdateArtists(artists, cl)
 			for _, s := range tr {
-				s.Update(cl)
+				s.Update(cl, true)
 				time.Sleep(5 * time.Second)
 			}
 		}(&cl, newTracks, artistUpdate)
@@ -129,7 +129,7 @@ func (t *Track) Save() error {
 	return nil
 }
 
-func (t *Track) Update(cl spotify.Client) error {
+func (t *Track) Update(cl spotify.Client, syncUpdateLyrics bool) error {
 	var err1 error
 	var err2 error
 	if !t.Information.Updated {
@@ -140,11 +140,19 @@ func (t *Track) Update(cl spotify.Client) error {
 		}
 	}
 	if time.Since(t.LastUpdated) >= 24*time.Hour {
-		err2 = t.updateLyrics()
-		t.LastUpdated = time.Now()
-		err := t.Save()
-		if err != nil {
-			return err
+		if syncUpdateLyrics {
+			err2 = t.updateLyrics()
+			t.LastUpdated = time.Now()
+			err := t.Save()
+			if err != nil {
+				return err
+			}
+		} else {
+			go func() {
+				t.updateLyrics()
+				t.LastUpdated = time.Now()
+				t.Save()
+			}()
 		}
 	}
 	t.LastUpdated = time.Now()
