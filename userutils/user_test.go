@@ -19,8 +19,7 @@ func TestMain(m *testing.M) {
 
 func setupTests() {
 	var err error
-	// config.DB, err = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
-	config.DB, err = gorm.Open(sqlite.Open("file:locked.sqlite?cache=shared"), &gorm.Config{})
+	config.DB, err = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
 	if err != nil {
 		return
 	}
@@ -33,8 +32,15 @@ func setupTests() {
 		TableName: "sessions",
 	}
 	config.SessionStore = gormstore.NewOptions(config.DB, sessionOptions, config.Secret)
-	users := getTestData()
+	users := getTestUserData()
 	for _, s := range users {
 		s.Save()
+	}
+}
+
+func TestGetUser(t *testing.T) {
+	user := GetUser("user1")
+	if user.ID != 1 {
+		t.Fail()
 	}
 }

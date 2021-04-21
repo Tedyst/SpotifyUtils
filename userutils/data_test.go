@@ -1,13 +1,12 @@
 package userutils
 
 import (
-	"testing"
 	"time"
 
 	"gorm.io/gorm"
 )
 
-func getTestData() []User {
+func getTestUserData() []User {
 	return []User{
 		{
 			Model: gorm.Model{
@@ -54,12 +53,50 @@ func getTestData() []User {
 			},
 			LastUpdated: time.Now(),
 		},
-	}
-}
-
-func TestGetUser(t *testing.T) {
-	user := GetUser("user1")
-	if user.ID != 1 {
-		t.Fail()
+		{
+			Model: gorm.Model{
+				ID:        2,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			},
+			UserID: "user2",
+			Playlists: PlaylistsStruct{
+				{
+					ID:   "playlist2",
+					Name: "Playlist 2",
+				},
+				{
+					ID:   "playlist3",
+					Name: "Playlist 3",
+				},
+			},
+			CompareCode: "BBBBBB",
+			Friends: FriendsStruct{
+				"user1",
+			},
+			Top: TopStruct{
+				Genres: GenresStruct{
+					"genre1",
+					"genre2",
+					"genre4",
+				},
+				Updated: time.Now().UTC().Unix(),
+				Artists: ArtistsStruct{
+					TopArtist{
+						Name: "Artist2",
+						ID:   "artist2",
+					},
+				},
+				Tracks: TracksStruct{
+					TopTrack{
+						Artist:   "artist1",
+						Name:     "track1",
+						ID:       "track1",
+						Duration: 1000,
+					},
+				},
+			},
+			LastUpdated: time.Now(),
+		},
 	}
 }
