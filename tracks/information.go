@@ -2,6 +2,7 @@ package tracks
 
 import (
 	log "github.com/sirupsen/logrus"
+	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/zmb3/spotify"
 )
@@ -65,6 +66,9 @@ func (t *Track) NeedUpdate() bool {
 }
 
 func (t *Track) updateInformation(cl spotify.Client) error {
+	if *config.MockExternalCalls {
+		return nil
+	}
 	if !t.NeedUpdate() {
 		return nil
 	}

@@ -73,8 +73,11 @@ func (u *User) Save() error {
 }
 
 func (u *User) RefreshToken() error {
+	if *config.MockExternalCalls {
+		return nil
+	}
 	if u.Token.RefreshToken == "" {
-		return errors.New("Cannot refresh token, user deleted access to application")
+		return errors.New("cannot refresh token, user deleted access to application")
 	}
 	if !u.Token.Valid() || time.Until(u.Token.Expiry) < 3*time.Minute {
 		// Try to refresh the token

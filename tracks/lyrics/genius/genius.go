@@ -22,6 +22,9 @@ var blacklistedSentences = []string{
 }
 
 func Lyrics(trackName string, trackArtist string) (string, error) {
+	if *config.MockExternalCalls {
+		return "", errors.New("getting song info from Genius is disabled")
+	}
 	name := fmt.Sprintf("%s %s", trackArtist, trackName)
 	res, err := config.GeniusClient.Search(name)
 	if err != nil {
@@ -32,7 +35,7 @@ func Lyrics(trackName string, trackArtist string) (string, error) {
 	}
 	if len(res.Response.Hits) == 0 {
 		log.Debugf("Did not find anything matching %s", name)
-		return "", errors.New("Did not find any song on Genius")
+		return "", errors.New("could not find any song on Genius")
 	}
 	for _, s := range res.Response.Hits {
 		if validResponse(trackName, trackArtist, s) {
@@ -58,7 +61,7 @@ func Lyrics(trackName string, trackArtist string) (string, error) {
 			break
 		}
 	}
-	return "", errors.New("Did not find Genius Lyrics")
+	return "", errors.New("could not find Genius Lyrics")
 }
 
 func validResponse(name string, artist string, song *genius.Hit) bool {

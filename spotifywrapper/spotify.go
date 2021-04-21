@@ -25,6 +25,9 @@ func GetSpotifyURL(host string) string {
 }
 
 func GetSpotifyAuthorization(host string, code string) (*oauth2.Token, error) {
+	if *config.MockExternalCalls {
+		return &oauth2.Token{}, nil
+	}
 	newHost := fmt.Sprintf("%s/auth", host)
 	auth := spotify.NewAuthenticator(newHost, config.SpotifyScope)
 	auth.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
