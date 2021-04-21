@@ -5,7 +5,7 @@ import {
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import Alert from '@material-ui/lab/Alert';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -49,7 +49,7 @@ export default function LoginPage(props: { loggingIn: boolean }) {
             if (error.toString() !== '') {
                 errorComponent = (
                     <Alert severity="error">
-                        {error.toString()}
+                        <AlertTitle>{error.toString()}</AlertTitle>
                     </Alert>
                 );
             }

@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { Container } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import SettingsPage from '../components/Settings/SettingsPage';
 import Loading from '../components/Loading';
 import { StatusInterface } from '../App';
@@ -20,8 +20,7 @@ export default function SettingsController() {
                 errorComponent = (
                     <Container maxWidth="xs">
                         <Alert severity="error">
-                            {error.toString()}
-                            {'\n'}
+                            <AlertTitle>{error.toString()}</AlertTitle>
                             {errorMessage}
                         </Alert>
                     </Container>
@@ -31,8 +30,7 @@ export default function SettingsController() {
             errorComponent = (
                 <Container maxWidth="xs">
                     <Alert severity="error">
-                        Could not extract data from server
-                        {'\n'}
+                        <AlertTitle>Could not extract data from server</AlertTitle>
                         {errorMessage}
                     </Alert>
                 </Container>

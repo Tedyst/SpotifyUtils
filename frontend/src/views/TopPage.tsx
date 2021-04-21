@@ -4,7 +4,7 @@ import {
 } from '@material-ui/core';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import Alert from '@material-ui/lab/Alert';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import TopComp, { TopInterface } from '../components/Top/TopComp';
 import Loading from '../components/Loading';
 
@@ -21,8 +21,7 @@ export default function Top() {
                 errorComponent = (
                     <Container maxWidth="xs">
                         <Alert severity="error">
-                            {error.toString()}
-                            {'\n'}
+                            <AlertTitle>{error.toString()}</AlertTitle>
                             {errorMessage}
                         </Alert>
                     </Container>
@@ -32,8 +31,7 @@ export default function Top() {
             errorComponent = (
                 <Container maxWidth="xs">
                     <Alert severity="error">
-                        Could not extract data from server
-                        {'\n'}
+                        <AlertTitle>Could not extract data from server</AlertTitle>
                         {errorMessage}
                     </Alert>
                 </Container>

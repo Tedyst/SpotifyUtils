@@ -2,7 +2,7 @@ import React from 'react';
 import { CssBaseline, Container } from '@material-ui/core';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import Alert from '@material-ui/lab/Alert';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import SearchBox from '../components/PlaylistSearchBox';
 import ResultBox from '../components/ResultBox';
 import { StatusInterface } from '../App';
@@ -22,8 +22,7 @@ export default function PlaylistSearch() {
                 errorComponent = (
                     <Container maxWidth="xs">
                         <Alert severity="error">
-                            {error.toString()}
-                            {'\n'}
+                            <AlertTitle>{error.toString()}</AlertTitle>
                             {errorMessage}
                         </Alert>
                     </Container>
@@ -33,8 +32,7 @@ export default function PlaylistSearch() {
             errorComponent = (
                 <Container maxWidth="xs">
                     <Alert severity="error">
-                        Could not extract data from server
-                        {'\n'}
+                        <AlertTitle>Could not extract data from server</AlertTitle>
                         {errorMessage}
                     </Alert>
                 </Container>
