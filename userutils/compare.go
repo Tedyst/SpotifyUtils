@@ -99,7 +99,6 @@ func (u *User) verifyifCompareCodeExists() {
 	}
 	u.CompareCode = generateNewCompareCode()
 	u.Save()
-	return
 }
 
 func generateNewCompareCode() string {

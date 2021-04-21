@@ -33,9 +33,12 @@ type TopStruct struct {
 
 // RefreshTop updates the user's top
 func (u *User) RefreshTop() error {
+	if *config.MockExternalCalls {
+		return nil
+	}
 	u.RefreshToken()
 	t := time.Since(time.Unix(u.Top.Updated, 0))
-	if t < 10*time.Minute && !(*config.MockExternalCalls) {
+	if t < 10*time.Minute {
 		return nil
 	}
 	result := &TopStruct{}

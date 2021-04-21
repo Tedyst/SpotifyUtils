@@ -33,13 +33,6 @@ type UserSettings struct {
 	RecentTracks bool `gorm:"default:false"`
 }
 
-type clientCacheStruct struct {
-	UserID string
-	Client *spotify.Client
-}
-
-var clientCache []*clientCacheStruct
-
 const userRefreshTimeout = 10 * time.Minute
 
 func (u *User) Client() *spotify.Client {
@@ -101,7 +94,7 @@ func (u *User) RefreshToken() error {
 
 func (u *User) RefreshUser() error {
 	if !u.Token.Valid() {
-		return errors.New("Token expired")
+		return errors.New("token expired")
 	}
 	if time.Since(u.LastUpdated) < userRefreshTimeout {
 		return nil
