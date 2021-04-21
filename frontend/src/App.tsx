@@ -73,6 +73,7 @@ function App() {
         withCredentials: true,
     }));
     const logged = data?.data.success;
+    axios.defaults.headers.post['X-CSRF-Token'] = data?.headers['x-csrf-token'];
 
     if (!logged) {
         if (window.location.pathname !== '/' && window.location.pathname !== '/auth' && window.location.pathname !== '/logout') {
@@ -90,20 +91,20 @@ function App() {
                         image=""
                         settings={data?.data.settings}
                     />
-                    <main className={classes.content}>
-                        <div className={classes.toolbar} />
-                        <Switch>
-                            <Route path="/auth">
-                                <Suspense fallback={<Loading />}>
+                    <Suspense fallback={<Loading />}>
+                        <main className={classes.content}>
+                            <div className={classes.toolbar} />
+                            <Switch>
+                                <Route path="/auth">
                                     <Login />
-                                </Suspense>
-                            </Route>
-                            <Route path="/">
-                                <Redirect to="/auth" />
-                            </Route>
-                        </Switch>
-                        <ServiceWorkerPopup />
-                    </main>
+                                </Route>
+                                <Route path="/">
+                                    <Redirect to="/auth" />
+                                </Route>
+                            </Switch>
+                            <ServiceWorkerPopup />
+                        </main>
+                    </Suspense>
                 </ThemeProvider>
             </div>
         );
@@ -125,61 +126,46 @@ function App() {
                     image={data?.data.image}
                     settings={data?.data.settings}
                 />
-                <main className={classes.content}>
-                    <div className={classes.toolbar} />
-                    <Switch>
-                        <Route path="/playlist">
-                            <Suspense fallback={<Loading />}>
+                <Suspense fallback={<Loading />}>
+                    <main className={classes.content}>
+                        <div className={classes.toolbar} />
+                        <Switch>
+                            <Route path="/playlist">
+
                                 <PlaylistView />
-                            </Suspense>
-                        </Route>
-                        <Route path="/tracksearch">
-                            <Suspense fallback={<Loading />}>
+                            </Route>
+                            <Route path="/tracksearch">
                                 <TrackSearch />
-                            </Suspense>
-                        </Route>
-                        <Route path="/listeningstatistics">
-                            <Suspense fallback={<Loading />}>
+                            </Route>
+                            <Route path="/listeningstatistics">
                                 <ListeningStats />
-                            </Suspense>
-                        </Route>
-                        <Route path="/compare">
-                            <Suspense fallback={<Loading />}>
+                            </Route>
+                            <Route path="/compare">
                                 <Compare />
-                            </Suspense>
-                        </Route>
-                        <Route path="/track">
-                            <Suspense fallback={<Loading />}>
+                            </Route>
+                            <Route path="/track">
                                 <Track />
-                            </Suspense>
-                        </Route>
-                        <Route path="/recent">
-                            <Suspense fallback={<Loading />}>
+                            </Route>
+                            <Route path="/recent">
                                 <Recent />
-                            </Suspense>
-                        </Route>
-                        <Route path="/settings">
-                            <Suspense fallback={<Loading />}>
+                            </Route>
+                            <Route path="/settings">
                                 <Settings />
-                            </Suspense>
-                        </Route>
-                        <Route path="/logout">
-                            <Suspense fallback={<Loading />}>
+                            </Route>
+                            <Route path="/logout">
                                 <Logout />
-                            </Suspense>
-                        </Route>
-                        <Route path="/auth">
-                            <Redirect to="/" />
-                        </Route>
-                        <Route path="/">
-                            <Suspense fallback={<Loading />}>
+                            </Route>
+                            <Route path="/auth">
+                                <Redirect to="/" />
+                            </Route>
+                            <Route path="/">
                                 <Top />
-                            </Suspense>
-                        </Route>
-                    </Switch>
-                    <RedirectToSaved />
-                    <ServiceWorkerPopup />
-                </main>
+                            </Route>
+                        </Switch>
+                        <RedirectToSaved />
+                        <ServiceWorkerPopup />
+                    </main>
+                </Suspense>
             </ThemeProvider>
         </div>
     );

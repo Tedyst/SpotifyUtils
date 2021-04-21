@@ -4,11 +4,6 @@ import {
 } from '@material-ui/core';
 import SettingsComp from './SettingsComp';
 
-export interface SettingsInterface {
-    Success: boolean;
-    Settings: Settings;
-}
-
 export interface Settings {
     RecentTracks: boolean;
 }
@@ -20,11 +15,10 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function SettingsPage(props: {
-    CSRFToken?: string,
-    data: SettingsInterface,
+    settings: Settings,
 }) {
     const classes = useStyles();
-    const { CSRFToken, data } = props;
+    const { settings } = props;
 
     return (
         <div>
@@ -44,14 +38,10 @@ export default function SettingsPage(props: {
             </Typography>
             <Container maxWidth="xs">
                 <SettingsComp
-                    CSRFToken={CSRFToken}
-                    originalSettings={data.Settings}
+                    originalSettings={settings}
+                    useReactQuery
                 />
             </Container>
         </div>
     );
 }
-
-SettingsPage.defaultProps = {
-    CSRFToken: undefined,
-};
