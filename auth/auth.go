@@ -57,6 +57,14 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if *config.MockExternalCalls {
+		response.Error = "cannot login because MockExternalCalls is enabled"
+		response.Success = false
+		respJSON, _ := json.Marshal(response)
+		fmt.Fprint(res, string(respJSON))
+		return
+	}
+
 	client := config.SpotifyAPI.NewClient(token)
 	spotifyUser, err := client.CurrentUser()
 	if err != nil {

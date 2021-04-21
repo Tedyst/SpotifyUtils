@@ -57,6 +57,9 @@ func (a *Artist) Update(cl spotify.Client) {
 }
 
 func BatchUpdateArtists(artists []*Artist, cl spotify.Client) {
+	if *config.MockExternalCalls {
+		return
+	}
 	newArtists := []*Artist{}
 	for _, s := range artists {
 		if s.Name == "" {

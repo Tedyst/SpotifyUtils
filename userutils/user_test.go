@@ -1,126 +1,45 @@
-package userutils
+package userutils_test
 
 import (
-	"flag"
-	"os"
 	"testing"
-	"time"
 
-	"github.com/Tedyst/gormstore"
-	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
-	"github.com/tedyst/spotifyutils/config"
-	"github.com/tedyst/spotifyutils/tracks"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+	"github.com/tedyst/spotifyutils/userutils"
 )
 
-func TestMain(m *testing.M) {
-	setupTests()
-	code := m.Run()
-	os.Exit(code)
-}
-
-func lookupEnvOrString(key string, defaultVal string) string {
-	if val, ok := os.LookupEnv(key); ok {
-		return val
-	}
-	return defaultVal
-}
-
-func setupTests() {
-	err := godotenv.Load("../.env")
-	if err != nil {
-		logrus.Info("Could not load .env file")
-	}
-	flag.Parse()
-	clientid := lookupEnvOrString("SPOTIFY_CLIENT_ID", "")
-	clientsecret := lookupEnvOrString("SPOTIFY_CLIENT_SECRET", "")
-	config.SpotifyClientID = &clientid
-	config.SpotifyClientSecret = &clientsecret
-	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
-	config.DB, err = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
-	if err != nil {
-		logrus.Panic()
-	}
-	config.DB.AutoMigrate(&tracks.Track{})
-	config.DB.AutoMigrate(&User{})
-	config.DB.AutoMigrate(&RecentTracks{})
-
-	sessionOptions := gormstore.Options{
-		TableName: "sessions",
-	}
-	config.SessionStore = gormstore.NewOptions(config.DB, sessionOptions, config.Secret)
-	testuser := GetUser("vq0u2761le51p2idib6f89y78")
-	testuser.Token.RefreshToken = lookupEnvOrString("USER_REFRESH_TOKEN", "")
-	testuser.UserID = "vq0u2761le51p2idib6f89y78"
-	testuser.CompareCode = "AAAAAA"
-	testuser.RefreshToken()
-	testuser.RefreshUser()
-	testuser.Save()
+var valuesGetUser = []struct {
+	UserID string
+	ID     uint
+}{
+	{"user1", 1},
+	{"user2", 2},
 }
 
 func TestGetUser(t *testing.T) {
-	user := GetUser("vq0u2761le51p2idib6f89y78")
-	if user.CompareCode == "" {
-		t.Fail()
+	for _, tt := range valuesGetUser {
+		t.Run(tt.UserID, func(t *testing.T) {
+			s := userutils.GetUser(tt.UserID)
+			if s.ID != tt.ID {
+				t.Errorf("got %d, want %d", s.ID, tt.ID)
+			}
+		})
 	}
-	if user.UserID != "vq0u2761le51p2idib6f89y78" {
-		t.Fail()
-	}
+}
+
+var valuesGetUserFromCompareCode = []struct {
+	ID          uint
+	CompareCode string
+}{
+	{1, "AAAAAA"},
+	{2, "BBBBBB"},
 }
 
 func TestGetUserFromCompareCode(t *testing.T) {
-	user := GetUserFromCompareCode("AAAAAA")
-	if user.UserID != "vq0u2761le51p2idib6f89y78" {
-		t.Fail()
-	}
-}
-
-func TestClient(t *testing.T) {
-	user := GetUser("vq0u2761le51p2idib6f89y78")
-	client := user.Client()
-	current, err := client.CurrentUser()
-	if err != nil {
-		t.FailNow()
-	}
-	if current.ID != user.UserID {
-		t.Fail()
-	}
-}
-
-func TestSave(t *testing.T) {
-	user := GetUser("vq0u2761le51p2idib6f89y78")
-	user.CompareCode = "BBBBBB"
-	user.Save()
-	user2 := GetUser("vq0u2761le51p2idib6f89y78")
-	if user2.CompareCode != "BBBBBB" {
-		t.Fail()
-	}
-	user2.CompareCode = "AAAAAA"
-	user2.Save()
-}
-
-func TestRefresh(t *testing.T) {
-	user := GetUser("vq0u2761le51p2idib6f89y78")
-	user.DisplayName = ""
-	user.Image = ""
-	user.LastUpdated = time.Unix(0, 0)
-	user.Save()
-	user.RefreshUser()
-	if user.DisplayName != "Tedy" {
-		t.Fail()
-	}
-	if user.Image == "" {
-		t.Fail()
-	}
-}
-
-func TestFriends(t *testing.T) {
-	user := GetUser("vq0u2761le51p2idib6f89y78")
-	user.AddFriend(user)
-	friends := user.GetFriends()
-	if len(friends) != 1 {
-		t.Fail()
+	for _, tt := range valuesGetUserFromCompareCode {
+		t.Run(tt.CompareCode, func(t *testing.T) {
+			s := userutils.GetUserFromCompareCode(tt.CompareCode)
+			if s.ID != tt.ID {
+				t.Errorf("got %d, want %d", s.ID, tt.ID)
+			}
+		})
 	}
 }

@@ -23,6 +23,9 @@ type RecentTracks struct {
 
 // UpdateRecentTracks updates the recent tracks
 func (u *User) UpdateRecentTracks() {
+	if *config.MockExternalCalls {
+		return
+	}
 	if !u.Settings.RecentTracks {
 		return
 	}
@@ -143,6 +146,9 @@ func (u *User) StopRecentTracksUpdater() {
 }
 
 func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
+	if *config.MockExternalCalls {
+		return []spotify.RecentlyPlayedItem{}
+	}
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
 	items, err := u.Client().PlayerRecentlyPlayedOpt(options)
 	if err != nil {

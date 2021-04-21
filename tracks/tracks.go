@@ -32,6 +32,9 @@ func GetTrackFromID(ID string) *Track {
 }
 
 func BatchUpdate(tracks []*Track, cl spotify.Client) {
+	if *config.MockExternalCalls {
+		return
+	}
 	newTracks := []*Track{}
 	for _, s := range tracks {
 		if s.Name == "" || !s.Information.Updated {
