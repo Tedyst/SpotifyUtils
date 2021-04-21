@@ -36,10 +36,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SettingsComp(props: {
     originalSettings: Settings,
-    CSRFToken?: string,
+    useReactQuery?: boolean,
 }) {
     const classes = useStyles();
-    const { originalSettings, CSRFToken } = props;
+    const { originalSettings, useReactQuery } = props;
     const [settings, setSettings] = React.useState(originalSettings);
 
     const handleChangeRecentTracks = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,13 +50,10 @@ export default function SettingsComp(props: {
     };
 
     let mutation: any;
-    if (typeof (CSRFToken) === 'string') {
+    if (useReactQuery) {
         const queryClient = useQueryClient();
         mutation = useMutation((set: Settings) => axios.post<Settings>('/api/settings', JSON.stringify(set), {
             withCredentials: true,
-            headers: {
-                'X-CSRF-Token': CSRFToken,
-            },
         }),
             {
                 onSuccess: () => {
@@ -97,5 +94,5 @@ export default function SettingsComp(props: {
 }
 
 SettingsComp.defaultProps = {
-    CSRFToken: undefined,
+    useReactQuery: true,
 };

@@ -9,7 +9,7 @@ Primary.args = {
     originalSettings: {
         RecentTracks: true,
     },
-    CSRFToken: 'asd',
+    useReactQuery: false,
 };
 
 export default {

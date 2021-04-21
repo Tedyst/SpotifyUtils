@@ -10,7 +10,6 @@ export default function SettingsController() {
     const { data, status, error } = useQuery('settings', () => axios.get<SettingsInterface>('/api/settings', {
         withCredentials: true,
     }));
-    const CSRFToken = data?.headers['x-csrf-token'];
 
     let errorComponent = null;
     if (status === 'error' || data?.data.Success === false) {
@@ -48,7 +47,6 @@ export default function SettingsController() {
 
     return (
         <SettingsPage
-            CSRFToken={CSRFToken}
             data={data.data}
         />
     );

@@ -20,11 +20,10 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function SettingsPage(props: {
-    CSRFToken?: string,
     data: SettingsInterface,
 }) {
     const classes = useStyles();
-    const { CSRFToken, data } = props;
+    const { data } = props;
 
     return (
         <div>
@@ -44,14 +43,10 @@ export default function SettingsPage(props: {
             </Typography>
             <Container maxWidth="xs">
                 <SettingsComp
-                    CSRFToken={CSRFToken}
                     originalSettings={data.Settings}
+                    useReactQuery
                 />
             </Container>
         </div>
     );
 }
-
-SettingsPage.defaultProps = {
-    CSRFToken: undefined,
-};
