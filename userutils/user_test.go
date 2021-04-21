@@ -1,4 +1,4 @@
-package userutils
+package userutils_test
 
 import (
 	"os"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/Tedyst/gormstore"
 	"github.com/tedyst/spotifyutils/config"
-	"github.com/tedyst/spotifyutils/tracks"
+	"github.com/tedyst/spotifyutils/userutils"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -24,9 +24,7 @@ func setupTests() {
 		return
 	}
 	*config.MockExternalCalls = true
-	config.DB.AutoMigrate(&tracks.Track{})
-	config.DB.AutoMigrate(&User{})
-	config.DB.AutoMigrate(&RecentTracks{})
+	config.DB.AutoMigrate(&userutils.User{})
 
 	sessionOptions := gormstore.Options{
 		TableName: "sessions",
@@ -34,13 +32,46 @@ func setupTests() {
 	config.SessionStore = gormstore.NewOptions(config.DB, sessionOptions, config.Secret)
 	users := getTestUserData()
 	for _, s := range users {
-		s.Save()
+		var inDB userutils.User
+		config.DB.Where("id = ?", s.ID).FirstOrCreate(&inDB, s)
+		inDB.Save()
 	}
 }
 
+var valuesGetUser = []struct {
+	UserID string
+	ID     uint
+}{
+	{"user1", 1},
+	{"user2", 2},
+}
+
 func TestGetUser(t *testing.T) {
-	user := GetUser("user1")
-	if user.ID != 1 {
-		t.Fail()
+	for _, tt := range valuesGetUser {
+		t.Run(tt.UserID, func(t *testing.T) {
+			s := userutils.GetUser(tt.UserID)
+			if s.ID != tt.ID {
+				t.Errorf("got %d, want %d", s.ID, tt.ID)
+			}
+		})
+	}
+}
+
+var valuesGetUserFromCompareCode = []struct {
+	ID          uint
+	CompareCode string
+}{
+	{1, "AAAAAA"},
+	{2, "BBBBBB"},
+}
+
+func TestGetUserFromCompareCode(t *testing.T) {
+	for _, tt := range valuesGetUserFromCompareCode {
+		t.Run(tt.CompareCode, func(t *testing.T) {
+			s := userutils.GetUserFromCompareCode(tt.CompareCode)
+			if s.ID != tt.ID {
+				t.Errorf("got %d, want %d", s.ID, tt.ID)
+			}
+		})
 	}
 }

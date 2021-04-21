@@ -1,13 +1,14 @@
-package userutils
+package userutils_test
 
 import (
 	"time"
 
+	"github.com/tedyst/spotifyutils/userutils"
 	"gorm.io/gorm"
 )
 
-func getTestUserData() []User {
-	return []User{
+func getTestUserData() []userutils.User {
+	return []userutils.User{
 		{
 			Model: gorm.Model{
 				ID:        1,
@@ -15,7 +16,7 @@ func getTestUserData() []User {
 				UpdatedAt: time.Now(),
 			},
 			UserID: "user1",
-			Playlists: PlaylistsStruct{
+			Playlists: userutils.PlaylistsStruct{
 				{
 					ID:   "playlist1",
 					Name: "Playlist 1",
@@ -26,24 +27,24 @@ func getTestUserData() []User {
 				},
 			},
 			CompareCode: "AAAAAA",
-			Friends: FriendsStruct{
+			Friends: userutils.FriendsStruct{
 				"user2",
 			},
-			Top: TopStruct{
-				Genres: GenresStruct{
+			Top: userutils.TopStruct{
+				Genres: userutils.GenresStruct{
 					"genre1",
 					"genre2",
 					"genre3",
 				},
 				Updated: time.Now().UTC().Unix(),
-				Artists: ArtistsStruct{
-					TopArtist{
+				Artists: userutils.ArtistsStruct{
+					userutils.TopArtist{
 						Name: "Artist1",
 						ID:   "artist1",
 					},
 				},
-				Tracks: TracksStruct{
-					TopTrack{
+				Tracks: userutils.TracksStruct{
+					userutils.TopTrack{
 						Artist:   "artist1",
 						Name:     "track1",
 						ID:       "track1",
@@ -60,7 +61,7 @@ func getTestUserData() []User {
 				UpdatedAt: time.Now(),
 			},
 			UserID: "user2",
-			Playlists: PlaylistsStruct{
+			Playlists: userutils.PlaylistsStruct{
 				{
 					ID:   "playlist2",
 					Name: "Playlist 2",
@@ -71,24 +72,24 @@ func getTestUserData() []User {
 				},
 			},
 			CompareCode: "BBBBBB",
-			Friends: FriendsStruct{
+			Friends: userutils.FriendsStruct{
 				"user1",
 			},
-			Top: TopStruct{
-				Genres: GenresStruct{
+			Top: userutils.TopStruct{
+				Genres: userutils.GenresStruct{
 					"genre1",
 					"genre2",
 					"genre4",
 				},
 				Updated: time.Now().UTC().Unix(),
-				Artists: ArtistsStruct{
-					TopArtist{
+				Artists: userutils.ArtistsStruct{
+					userutils.TopArtist{
 						Name: "Artist2",
 						ID:   "artist2",
 					},
 				},
-				Tracks: TracksStruct{
-					TopTrack{
+				Tracks: userutils.TracksStruct{
+					userutils.TopTrack{
 						Artist:   "artist1",
 						Name:     "track1",
 						ID:       "track1",
