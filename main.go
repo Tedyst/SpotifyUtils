@@ -150,7 +150,9 @@ func createDB() {
 
 func main() {
 	flag.Parse()
-	config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
+	if !(*config.MockExternalCalls) {
+		config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
+	}
 
 	if *config.Debug {
 		log.SetLevel(log.DebugLevel)
