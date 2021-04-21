@@ -1,9 +1,14 @@
 package userutils_test
 
 import (
+	"os"
+	"testing"
 	"time"
 
+	"github.com/Tedyst/gormstore"
+	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/userutils"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -99,5 +104,32 @@ func getTestUserData() []userutils.User {
 			},
 			LastUpdated: time.Now(),
 		},
+	}
+}
+
+func TestMain(m *testing.M) {
+	setupTests()
+	code := m.Run()
+	os.Exit(code)
+}
+
+func setupTests() {
+	var err error
+	config.DB, err = gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
+	if err != nil {
+		return
+	}
+	*config.MockExternalCalls = true
+	config.DB.AutoMigrate(&userutils.User{})
+
+	sessionOptions := gormstore.Options{
+		TableName: "sessions",
+	}
+	config.SessionStore = gormstore.NewOptions(config.DB, sessionOptions, config.Secret)
+	users := getTestUserData()
+	for _, s := range users {
+		var inDB userutils.User
+		config.DB.Where("id = ?", s.ID).FirstOrCreate(&inDB, s)
+		inDB.Save()
 	}
 }
