@@ -14,7 +14,7 @@ export default function ResultBox(props: {
     usingLink?: boolean,
 }) {
     const { results, usingLink } = props;
-    if (results === undefined) return null;
+    if (results === undefined || results === null) return null;
     let items = [];
     items = results.map((item) => (
         <Grid item xs={6} md={3} sm={4} lg={2} key={`${item.URI}-result`}>
