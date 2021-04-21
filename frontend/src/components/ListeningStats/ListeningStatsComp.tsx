@@ -50,6 +50,7 @@ function secToText(seconds: number): string {
 export interface ListeningStatsInterface {
     Result: Result;
     Success: boolean;
+    Error?: string;
 }
 
 export interface Result {

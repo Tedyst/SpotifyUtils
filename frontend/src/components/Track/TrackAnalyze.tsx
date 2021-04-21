@@ -13,6 +13,7 @@ export interface TrackParamTypes {
 export interface TrackInterface {
     Result: Result;
     Success: boolean;
+    Error: string;
 }
 
 export interface Result {

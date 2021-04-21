@@ -49,6 +49,7 @@ export interface StatusInterface {
     playlists: Playlist[];
     id: string;
     settings: SettingsInterface;
+    error?: string;
 }
 
 export interface Playlist {

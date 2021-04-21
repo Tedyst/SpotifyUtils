@@ -48,6 +48,7 @@ function unixToTime(lastUpdated: number): string {
 export interface TopInterface {
     result: Result;
     success: boolean;
+    error: string;
 }
 
 interface Result {

@@ -16,18 +16,27 @@ export default function ListeningStatsPage() {
 
     let errorComponent = null;
     if (status === 'error' || data?.data.Success === false) {
+        const errorMessage = data?.data.Error ? data.data.Error : null;
         if (typeof error === 'object' && error != null) {
             if (error.toString() !== '') {
                 errorComponent = (
                     <Container maxWidth="xs">
-                        <Alert severity="error">{error.toString()}</Alert>
+                        <Alert severity="error">
+                            {error.toString()}
+                            {'\n'}
+                            {errorMessage}
+                        </Alert>
                     </Container>
                 );
             }
         } else {
             errorComponent = (
                 <Container maxWidth="xs">
-                    <Alert severity="error">Could not extract data from server</Alert>
+                    <Alert severity="error">
+                        Could not extract data from server
+                        {'\n'}
+                        {errorMessage}
+                    </Alert>
                 </Container>
             );
         }

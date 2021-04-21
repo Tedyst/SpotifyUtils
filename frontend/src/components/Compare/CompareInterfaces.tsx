@@ -3,12 +3,14 @@ export interface UsernameInterface {
     target: Initiator;
     result: Result;
     success: boolean;
+    error?: string;
 }
 
 export interface NoUsernameCompareInterface {
     friends: Friend[];
     success: boolean;
     code: string;
+    error?: string;
 }
 
 export interface Initiator {
