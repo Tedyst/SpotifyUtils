@@ -30,6 +30,15 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		Analyze playlist.AnalyzeStruct
 	}
 	response := &Resp{}
+
+	if *config.MockExternalCalls {
+		response.Success = false
+		response.Error = "MockExternalCalls enabled, could not contact Spotify"
+		respJSON, _ := json.Marshal(response)
+		fmt.Fprint(res, string(respJSON))
+		return
+	}
+
 	if _, ok := session.Values["username"]; !ok {
 		response.Success = false
 		response.Error = "Not logged in"
