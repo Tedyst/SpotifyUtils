@@ -73,6 +73,7 @@ function App() {
         withCredentials: true,
     }));
     const logged = data?.data.success;
+    axios.defaults.headers.post['X-CSRF-Token'] = data?.headers['x-csrf-token'];
 
     if (!logged) {
         if (window.location.pathname !== '/' && window.location.pathname !== '/auth' && window.location.pathname !== '/logout') {
