@@ -4,11 +4,6 @@ import {
 } from '@material-ui/core';
 import SettingsComp from './SettingsComp';
 
-export interface SettingsInterface {
-    Success: boolean;
-    Settings: Settings;
-}
-
 export interface Settings {
     RecentTracks: boolean;
 }
@@ -20,10 +15,10 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function SettingsPage(props: {
-    data: SettingsInterface,
+    settings: Settings,
 }) {
     const classes = useStyles();
-    const { data } = props;
+    const { settings } = props;
 
     return (
         <div>
@@ -43,7 +38,7 @@ export default function SettingsPage(props: {
             </Typography>
             <Container maxWidth="xs">
                 <SettingsComp
-                    originalSettings={data.Settings}
+                    originalSettings={settings}
                     useReactQuery
                 />
             </Container>

@@ -57,7 +57,6 @@ export default function SettingsComp(props: {
         }),
             {
                 onSuccess: () => {
-                    queryClient.invalidateQueries('settings');
                     queryClient.invalidateQueries('status');
                 },
             });
