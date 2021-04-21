@@ -152,6 +152,8 @@ func main() {
 	flag.Parse()
 	if !(*config.MockExternalCalls) {
 		config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
+	} else {
+		log.Warn("MockExternalCalls is enabled! No external service will be used!")
 	}
 
 	if *config.Debug {
