@@ -92,7 +92,6 @@ jobs:
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           GENIUS_TOKEN: ${{ secrets.GENIUS_TOKEN }}
-          USER_REFRESH_TOKEN: ${{ secrets.USER_REFRESH_TOKEN }}
 
   eslint:
     runs-on: ubuntu-latest
