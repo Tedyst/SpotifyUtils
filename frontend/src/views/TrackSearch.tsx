@@ -43,7 +43,15 @@ export default function SearchBox() {
     const mySubmitHandler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
         if (URI !== '') {
-            const newURL = `/track/${URI}`;
+            let realURI = URI;
+            if (URI.startsWith('https://open.spotify.com/')) {
+                const split = URI.split('/');
+                if (split.length === 5) {
+                    // eslint-disable-next-line prefer-destructuring
+                    realURI = split[4].split('?')[0];
+                }
+            }
+            const newURL = `/track/${realURI}`;
             setRefresh(newURL);
         }
     };
