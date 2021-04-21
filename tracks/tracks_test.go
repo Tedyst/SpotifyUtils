@@ -12,3 +12,12 @@ func TestGetTrack(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestArtistString(t *testing.T) {
+	tr := tracks.GetTrackFromID("track1")
+	expected := "artist1, artist2"
+	s := tr.ArtistString()
+	if s != expected {
+		t.Errorf("expected %s, got %s", expected, s)
+	}
+}

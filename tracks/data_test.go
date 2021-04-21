@@ -52,6 +52,34 @@ func getTestTrackData() []tracks.Track {
 					Popularity: 1,
 				},
 			},
+			Information: tracks.SpotifyInformation{
+				TrackInformation: tracks.TrackInformationStruct{
+					Popularity:    1,
+					Length:        1000,
+					Markets:       23,
+					Explicit:      false,
+					Key:           1,
+					Mode:          1,
+					Tempo:         1,
+					TimeSignature: 1,
+				},
+				AlbumInformation: tracks.AlbumInformationStruct{
+					Popularity:   1,
+					ReleaseDate:  "2021",
+					TracksAmount: 1,
+					Markets:      23,
+					ID:           "album1",
+				},
+				TrackFeatures: tracks.TrackFeaturesStruct{
+					Acousticness:     1,
+					Energy:           1,
+					Instrumentalness: 1,
+					Liveness:         1,
+					Loudness:         1,
+					Speechiness:      1,
+				},
+				Updated: true,
+			},
 		},
 	}
 }
