@@ -17,13 +17,6 @@
             }
         },
         {
-            "name": "Python: Current File",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
-        },
-        {
             "name": "Launch golang",
             "type": "go",
             "request": "launch",
@@ -32,6 +25,18 @@
             "envFile": "${workspaceFolder}/.env",
             "args": [
                 "-Debug=true"
+            ]
+        },
+        {
+            "name": "Launch golang with MockExternalCalls enabled",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "args": [
+                "-Debug=true",
+                "-MockExternalCalls=true"
             ]
         }
     ]
