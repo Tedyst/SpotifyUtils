@@ -23,7 +23,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	type Resp struct {
 		Results []RespSong
 		Success bool
-		Error   string
+		Error   string `json:",omitempty"`
 	}
 	response := &Resp{}
 	if _, ok := session.Values["username"]; !ok {

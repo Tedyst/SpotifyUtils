@@ -26,7 +26,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	type Resp struct {
 		Results []RespSong
 		Success bool
-		Error   string
+		Error   string `json:",omitempty"`
 		Analyze playlist.AnalyzeStruct
 	}
 	response := &Resp{}
