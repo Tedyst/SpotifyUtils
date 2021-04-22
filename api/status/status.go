@@ -31,7 +31,7 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	}
 	val := session.Values["username"]
 	user := userutils.GetUser(val.(string))
-	if !user.Token.Valid() {
+	if !user.Token.Valid() && !(*config.MockExternalCalls) {
 		// Try to refresh the token
 		t, err := user.Client().Token()
 		if err != nil {
