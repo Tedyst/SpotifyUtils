@@ -119,13 +119,31 @@ func routerMiddleware(next *mux.Router) http.Handler {
 			w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 		}
 
-		log.WithFields(log.Fields{
-			"method":   r.Method,
-			"request":  route,
-			"code":     statusCode,
-			"duration": duration.Seconds(),
-			"ip":       ipAddress,
-		}).Debug()
+		var username string
+		session, _ := config.SessionStore.Get(r, "username")
+		if username_sess, ok := session.Values["username"]; ok {
+			username = username_sess.(string)
+		}
+
+		if username != "" {
+			log.WithFields(log.Fields{
+				"method":   r.Method,
+				"request":  route,
+				"code":     statusCode,
+				"duration": duration.Seconds(),
+				"ip":       ipAddress,
+				"username": username,
+			}).Debug()
+		} else {
+			log.WithFields(log.Fields{
+				"method":   r.Method,
+				"request":  route,
+				"code":     statusCode,
+				"duration": duration.Seconds(),
+				"ip":       ipAddress,
+			}).Debug()
+		}
+
 	}))
 }
 
