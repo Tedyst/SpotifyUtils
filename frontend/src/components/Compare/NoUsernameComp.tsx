@@ -76,24 +76,26 @@ export default function NoUsername(props: {
         return <Redirect to={url} />;
     }
     const friends: any[] = [];
-    Object.values(compare.friends).forEach((value) => {
-        friends.push(
-            <ListItem
-                classes={{
-                    root: classes.selected,
-                }}
-                component={Link}
-                key={`friend-${value.username}`}
-                to={`/compare/${value.code}`}
-            >
-                <Avatar image={value.image} name={value.name} />
-                <ListItemText
-                    primary={value.name}
-                    secondary={value.code}
-                />
-            </ListItem>,
-        );
-    });
+    if (compare.friends !== null) {
+        Object.values(compare.friends).forEach((value) => {
+            friends.push(
+                <ListItem
+                    classes={{
+                        root: classes.selected,
+                    }}
+                    component={Link}
+                    key={`friend-${value.username}`}
+                    to={`/compare/${value.code}`}
+                >
+                    <Avatar image={value.image} name={value.name} />
+                    <ListItemText
+                        primary={value.name}
+                        secondary={value.code}
+                    />
+                </ListItem>,
+            );
+        });
+    }
 
     const changeWord = (event: { target: { value: string | undefined; }; }) => {
         setWord(event.target.value);

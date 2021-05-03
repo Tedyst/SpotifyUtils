@@ -24,13 +24,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ListItems(props: {
-    items: any[],
+    items: any[] | null,
     name: string
 }) {
     const classes = useStyles();
     const { items, name } = props;
     const it: any[] = [];
-    if (items.length === 0 || !items) {
+    if (items === null || items.length === 0 || !items) {
         return (
             <List className={classes.root} subheader={<li />}>
                 <ListSubheader className={classes.textColor} color="default">

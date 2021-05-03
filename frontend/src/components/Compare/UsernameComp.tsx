@@ -47,18 +47,20 @@ export default function UsernameComp(props: {
     const { data } = props;
     const classes = useStyles();
     let bestSongForArtist: string | undefined;
-    if (data.result.artists.length > 0) {
-        Object.values(data.result.tracks).forEach((value) => {
-            if (bestSongForArtist === undefined) {
-                if (value.artist === data.result.artists[0].name) {
-                    bestSongForArtist = value.name;
+    if (data.result.artists !== null && data.result.tracks !== null) {
+        if (data.result.artists.length > 0) {
+            Object.values(data.result.tracks).forEach((value) => {
+                if (bestSongForArtist === undefined && data.result.artists !== null) {
+                    if (value.artist === data.result.artists[0].name) {
+                        bestSongForArtist = value.name;
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     let dataArtist = null;
-    if (data.result.artists.length > 0) {
+    if (data.result.artists !== null && data.result.artists.length > 0) {
         dataArtist = (
             <Grid item key={data.result.artists[0].id}>
                 <ArtistCard
@@ -71,7 +73,7 @@ export default function UsernameComp(props: {
         );
     }
     let dataTrack = null;
-    if (data.result.tracks.length > 0) {
+    if (data.result.tracks !== null && data.result.tracks.length > 0) {
         dataTrack = (
             <Grid item key={data.result.tracks[0].id}>
                 <SongCard

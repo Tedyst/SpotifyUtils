@@ -7,7 +7,7 @@ export interface UsernameInterface {
 }
 
 export interface NoUsernameCompareInterface {
-    friends: Friend[];
+    friends: Friend[] | null;
     success: boolean;
     code: string;
     error?: string;
@@ -21,9 +21,9 @@ export interface Initiator {
 }
 
 export interface Result {
-    artists: Artist[];
-    tracks: Track[];
-    genres: string[];
+    artists: Artist[] | null;
+    tracks: Track[] | null;
+    genres: string[] | null;
     percent: number;
 }
 

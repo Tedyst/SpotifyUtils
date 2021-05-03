@@ -52,10 +52,10 @@ export interface TopInterface {
 }
 
 interface Result {
-    genres: string[];
+    genres: string[] | null;
     updated: number;
-    artists: Artist[];
-    tracks: Track[];
+    artists: Artist[] | null;
+    tracks: Track[] | null;
 }
 
 interface Artist {
@@ -81,42 +81,48 @@ export default function TopComp(props: {
     const { top } = props;
 
     let bestSongForArtist: string | undefined;
-    Object.values(top.result.tracks).forEach((value) => {
-        if (bestSongForArtist === undefined) {
-            if (value.artist === top.result.artists[0].name) {
-                bestSongForArtist = value.name;
+    if (top.result.tracks !== null) {
+        Object.values(top.result.tracks).forEach((value) => {
+            if (bestSongForArtist === undefined && top.result.artists !== null) {
+                if (value.artist === top.result.artists[0].name) {
+                    bestSongForArtist = value.name;
+                }
             }
-        }
-    });
+        });
+    }
 
     let topArtist = null;
-    if (top.result.artists.length > 0) {
-        topArtist = (
-            <Grid item key={top.result.artists[0].id}>
-                <ArtistCard
-                    bestSong={bestSongForArtist}
-                    image={top.result.artists[0].image}
-                    key={top.result.artists[0].id}
-                    name={top.result.artists[0].name}
-                />
-            </Grid>
-        );
+    if (top.result.artists !== null) {
+        if (top.result.artists.length > 0) {
+            topArtist = (
+                <Grid item key={top.result.artists[0].id}>
+                    <ArtistCard
+                        bestSong={bestSongForArtist}
+                        image={top.result.artists[0].image}
+                        key={top.result.artists[0].id}
+                        name={top.result.artists[0].name}
+                    />
+                </Grid>
+            );
+        }
     }
     let topTrack = null;
-    if (top.result.tracks.length > 0) {
-        topTrack = (
-            <Grid item key={top.result.tracks[0].id}>
-                <SongCard
-                    artist={top.result.tracks[0].artist}
-                    duration={
-                        msToText(top.result.tracks[0].duration)
-                    }
-                    image={top.result.tracks[0].image}
-                    key={top.result.tracks[0].id}
-                    name={top.result.tracks[0].name}
-                />
-            </Grid>
-        );
+    if (top.result.tracks !== null) {
+        if (top.result.tracks.length > 0) {
+            topTrack = (
+                <Grid item key={top.result.tracks[0].id}>
+                    <SongCard
+                        artist={top.result.tracks[0].artist}
+                        duration={
+                            msToText(top.result.tracks[0].duration)
+                        }
+                        image={top.result.tracks[0].image}
+                        key={top.result.tracks[0].id}
+                        name={top.result.tracks[0].name}
+                    />
+                </Grid>
+            );
+        }
     }
 
     const lastUpdated = `This page updated at ${unixToTime(top.result.updated)}`;
