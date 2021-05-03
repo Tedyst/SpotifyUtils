@@ -3,3 +3,8 @@ name: "My CodeQL config"
 queries:
   - uses: security-and-quality
   - uses: security-extended
+
+paths:
+  - src
+  - frontend/src
+  - "."
