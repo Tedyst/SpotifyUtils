@@ -92,6 +92,7 @@ func HandlerNoUsername(res http.ResponseWriter, req *http.Request) {
 	}
 
 	response := &Resp{}
+	response.Friends = []RespUser{}
 	if _, ok := session.Values["username"]; !ok {
 		response.Success = false
 		response.Error = "Not Logged in"
