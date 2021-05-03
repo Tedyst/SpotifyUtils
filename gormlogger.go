@@ -13,7 +13,8 @@ import (
 // GormLogger struct
 type GormLogger struct{}
 
-const slowThreshold = 1000 * time.Millisecond
+// This is set to 5 seconds because I have a Raspberry Pi as the host
+const slowThreshold = 5000 * time.Millisecond
 
 func (*GormLogger) Info(ctx context.Context, msg string, data ...interface{}) {
 	log.WithFields(log.Fields{"module": "gorm", "msg": msg}).Info(
