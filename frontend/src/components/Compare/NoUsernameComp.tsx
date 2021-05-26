@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
         overflow: 'auto',
         maxHeight: 400,
         backgroundColor: theme.palette.background.paper,
+        'color-scheme': 'dark',
     },
     spacer: {
         height: 100,
