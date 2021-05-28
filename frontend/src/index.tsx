@@ -29,8 +29,8 @@ Sentry.init({
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            cacheTime: 1000 * 60 * 60 * 24, // 24 hours
-            staleTime: 1000 * 60 * 60 * 24, // 24 hours
+            cacheTime: 1000 * 60 * 60 * 24 * 7, // a week
+            staleTime: 1000 * 60 * 60 * 1, // 1 hour
         },
     },
 });
