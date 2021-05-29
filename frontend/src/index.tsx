@@ -10,7 +10,7 @@ import { createBrowserHistory } from 'history';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-const history: any = createBrowserHistory();
+const history = createBrowserHistory();
 
 const isDevelopment = false;
 // process.env.NODE_ENV === 'development';
