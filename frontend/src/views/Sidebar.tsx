@@ -97,43 +97,6 @@ function ResponsiveDrawer(props: {
         props.setMobileOpen(false);
     };
 
-    const recentTracks = settings?.RecentTracks ? (
-        <ListItem
-            button
-            classes={{
-                selected: classes.selected,
-            }}
-            component={Link}
-            onClick={closeDrawer}
-            key="old-top"
-            selected={location.pathname?.startsWith('/listeningstatistics')}
-            to="/listeningstatistics"
-        >
-            <ListItemIcon>
-                <History />
-            </ListItemIcon>
-            <ListItemText primary="Listening Statistics" />
-        </ListItem>
-    ) : (
-        <ListItem
-            button
-            classes={{
-                selected: classes.selected,
-            }}
-            component={Link}
-            onClick={closeDrawer}
-            key="old-top"
-            selected={location.pathname?.startsWith('/listeningstatistics')}
-            to="/listeningstatistics"
-            disabled
-        >
-            <ListItemIcon>
-                <History />
-            </ListItemIcon>
-            <ListItemText primary="Listening Statistics" />
-        </ListItem>
-    );
-
     const drawer = (
         <div>
             <div className={`${classes.toolbar} ${classes.toolbarName}`}>
@@ -223,7 +186,23 @@ function ResponsiveDrawer(props: {
                     </ListItemIcon>
                     <ListItemText primary="Recent Tracks" />
                 </ListItem>
-                {recentTracks}
+                <ListItem
+                    button
+                    classes={{
+                        selected: classes.selected,
+                    }}
+                    component={Link}
+                    onClick={closeDrawer}
+                    key="old-top"
+                    selected={location.pathname?.startsWith('/listeningstatistics')}
+                    to="/listeningstatistics"
+                    disabled={!settings?.RecentTracks}
+                >
+                    <ListItemIcon>
+                        <History />
+                    </ListItemIcon>
+                    <ListItemText primary="Listening Statistics" />
+                </ListItem>
                 <ListItem
                     button
                     classes={{
