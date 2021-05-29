@@ -106,3 +106,18 @@ jobs:
           npm i
       - name: Run ESLint
         run: npx eslint . --ext .js,.jsx,.ts,.tsx
+
+  testfrontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package.lock') }}
+      - name: Install modules
+        run: |
+          cd frontend 
+          npm i
+      - name: Run Tests
+        run: npm run test
