@@ -22,6 +22,7 @@
     "react-query": "^3.16.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
+    "babel-loader": "8.1.0",
     "react-swipeable": "^6.1.2",
     "typescript": "^4.3.2",
     "web-vitals": "^1.1.2",
