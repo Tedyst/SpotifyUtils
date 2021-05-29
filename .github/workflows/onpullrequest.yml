@@ -72,4 +72,4 @@ jobs:
           cd frontend 
           npm i
       - name: Run Tests
-        run: npm run test
+        run: npm test -- --watchAll=false
