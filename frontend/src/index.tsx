@@ -10,9 +10,10 @@ import { createBrowserHistory } from 'history';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-const history = createBrowserHistory();
+const history: any = createBrowserHistory();
 
-const isDevelopment = process.env.NODE_ENV === 'development';
+const isDevelopment = false;
+// process.env.NODE_ENV === 'development';
 
 Sentry.init({
     dsn: isDevelopment ? '' : 'https://a38da28ff45041828f3ee7f714af0527@sentry-relay.stoicatedy.ovh/5689078',

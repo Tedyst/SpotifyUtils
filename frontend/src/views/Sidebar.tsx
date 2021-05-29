@@ -106,7 +106,7 @@ function ResponsiveDrawer(props: {
             component={Link}
             onClick={closeDrawer}
             key="old-top"
-            selected={location.pathname.startsWith('/listeningstatistics')}
+            selected={location.pathname?.startsWith('/listeningstatistics')}
             to="/listeningstatistics"
         >
             <ListItemIcon>
@@ -123,7 +123,7 @@ function ResponsiveDrawer(props: {
             component={Link}
             onClick={closeDrawer}
             key="old-top"
-            selected={location.pathname.startsWith('/listeningstatistics')}
+            selected={location.pathname?.startsWith('/listeningstatistics')}
             to="/listeningstatistics"
             disabled
         >
@@ -199,7 +199,7 @@ function ResponsiveDrawer(props: {
                     component={Link}
                     onClick={closeDrawer}
                     key="Compare"
-                    selected={location.pathname.startsWith('/compare')}
+                    selected={location.pathname?.startsWith('/compare')}
                     to="/compare"
                 >
                     <ListItemIcon>
@@ -215,7 +215,7 @@ function ResponsiveDrawer(props: {
                     component={Link}
                     onClick={closeDrawer}
                     key="Recent-Tracks"
-                    selected={location.pathname.startsWith('/recent')}
+                    selected={location.pathname?.startsWith('/recent')}
                     to="/recent"
                 >
                     <ListItemIcon>
@@ -232,7 +232,7 @@ function ResponsiveDrawer(props: {
                     component={Link}
                     onClick={closeDrawer}
                     key="settings"
-                    selected={location.pathname.startsWith('/settings')}
+                    selected={location.pathname?.startsWith('/settings')}
                     to="/settings"
                 >
                     <ListItemIcon>
@@ -248,7 +248,7 @@ function ResponsiveDrawer(props: {
                     component={Link}
                     onClick={closeDrawer}
                     key="logout"
-                    selected={location.pathname.startsWith('/logout')}
+                    selected={location.pathname?.startsWith('/logout')}
                     to="/logout"
                 >
                     <ListItemIcon>
