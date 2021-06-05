@@ -54,6 +54,8 @@ export default function LoginPage(props: { loggingIn: boolean }) {
                 );
             }
         }
+    } else if (status === 'loading') {
+        buttonText = 'Contacting server...';
     }
     return (
         <Container maxWidth="xs">

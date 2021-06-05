@@ -72,6 +72,12 @@ function SongCard(props: {
         );
     }
 
+    const media = image !== '' ? (
+        <CardMedia
+            className={classes.cover}
+            image={image}
+        />
+    ) : null;
     return (
         <Card className={classes.root}>
             <div className={classes.details}>
@@ -86,10 +92,7 @@ function SongCard(props: {
                     {countComponent}
                 </CardContent>
             </div>
-            <CardMedia
-                className={classes.cover}
-                image={image}
-            />
+            {media}
         </Card>
     );
 }

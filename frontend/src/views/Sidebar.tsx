@@ -97,43 +97,6 @@ function ResponsiveDrawer(props: {
         props.setMobileOpen(false);
     };
 
-    const recentTracks = settings?.RecentTracks ? (
-        <ListItem
-            button
-            classes={{
-                selected: classes.selected,
-            }}
-            component={Link}
-            onClick={closeDrawer}
-            key="old-top"
-            selected={location.pathname.startsWith('/listeningstatistics')}
-            to="/listeningstatistics"
-        >
-            <ListItemIcon>
-                <History />
-            </ListItemIcon>
-            <ListItemText primary="Listening Statistics" />
-        </ListItem>
-    ) : (
-        <ListItem
-            button
-            classes={{
-                selected: classes.selected,
-            }}
-            component={Link}
-            onClick={closeDrawer}
-            key="old-top"
-            selected={location.pathname.startsWith('/listeningstatistics')}
-            to="/listeningstatistics"
-            disabled
-        >
-            <ListItemIcon>
-                <History />
-            </ListItemIcon>
-            <ListItemText primary="Listening Statistics" />
-        </ListItem>
-    );
-
     const drawer = (
         <div>
             <div className={`${classes.toolbar} ${classes.toolbarName}`}>
@@ -199,7 +162,7 @@ function ResponsiveDrawer(props: {
                     component={Link}
                     onClick={closeDrawer}
                     key="Compare"
-                    selected={location.pathname.startsWith('/compare')}
+                    selected={location.pathname?.startsWith('/compare')}
                     to="/compare"
                 >
                     <ListItemIcon>
@@ -215,7 +178,7 @@ function ResponsiveDrawer(props: {
                     component={Link}
                     onClick={closeDrawer}
                     key="Recent-Tracks"
-                    selected={location.pathname.startsWith('/recent')}
+                    selected={location.pathname?.startsWith('/recent')}
                     to="/recent"
                 >
                     <ListItemIcon>
@@ -223,7 +186,23 @@ function ResponsiveDrawer(props: {
                     </ListItemIcon>
                     <ListItemText primary="Recent Tracks" />
                 </ListItem>
-                {recentTracks}
+                <ListItem
+                    button
+                    classes={{
+                        selected: classes.selected,
+                    }}
+                    component={Link}
+                    onClick={closeDrawer}
+                    key="old-top"
+                    selected={location.pathname?.startsWith('/listeningstatistics')}
+                    to="/listeningstatistics"
+                    disabled={!settings?.RecentTracks}
+                >
+                    <ListItemIcon>
+                        <History />
+                    </ListItemIcon>
+                    <ListItemText primary="Listening Statistics" />
+                </ListItem>
                 <ListItem
                     button
                     classes={{
@@ -232,7 +211,7 @@ function ResponsiveDrawer(props: {
                     component={Link}
                     onClick={closeDrawer}
                     key="settings"
-                    selected={location.pathname.startsWith('/settings')}
+                    selected={location.pathname?.startsWith('/settings')}
                     to="/settings"
                 >
                     <ListItemIcon>
@@ -248,7 +227,7 @@ function ResponsiveDrawer(props: {
                     component={Link}
                     onClick={closeDrawer}
                     key="logout"
-                    selected={location.pathname.startsWith('/logout')}
+                    selected={location.pathname?.startsWith('/logout')}
                     to="/logout"
                 >
                     <ListItemIcon>
