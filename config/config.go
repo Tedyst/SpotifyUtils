@@ -24,7 +24,7 @@ var (
 	Address     = flag.String("Address", "0.0.0.0:5000", "The Default Address")
 	Secret      = []byte(lookupEnvOrString("SECRET_KEY", "key"))
 
-	Database = flag.String("Database", lookupEnvOrString("DATABASE", "root:parola@tcp(127.0.0.1:3306)/spotifyutils"), "The MySQL Database Address")
+	Database = flag.String("Database", lookupEnvOrString("DATABASE", "sqlite://data.db"), "The MySQL Database Address")
 
 	SpotifyAPI = spotify.NewAuthenticator(*RedirectURL, SpotifyScope)
 
