@@ -15,7 +15,7 @@ RUN go mod download
 COPY . .
 RUN go build -o /app/build
 
-FROM alpine:latest
+FROM debian:buster-slim
 
 WORKDIR /app
 EXPOSE 5000
@@ -24,5 +24,7 @@ EXPOSE 5001
 RUN ["mkdir", "/frontend"]
 COPY --from=backend /app/build /app/build
 COPY --from=frontend /app/frontend/build /app/frontend/build
+
+RUN apt update && apt install -y ca-certificates
 
 ENTRYPOINT [ "/app/build" ]
