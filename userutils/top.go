@@ -36,7 +36,10 @@ func (u *User) RefreshTop() error {
 	if *config.MockExternalCalls {
 		return nil
 	}
-	u.RefreshToken()
+	err := u.RefreshToken()
+	if err != nil {
+		return err
+	}
 	t := time.Since(time.Unix(u.Top.Updated, 0))
 	if t < 10*time.Minute {
 		return nil
@@ -69,20 +72,24 @@ func (u *User) RefreshTop() error {
 	result.Genres = sortGenres(longTopArtists)
 
 	for _, s := range shortTopArtists.Artists {
-		result.Artists = append(result.Artists, TopArtist{
-			ID:    string(s.ID),
-			Name:  s.Name,
-			Image: s.Images[0].URL,
-		})
+		track := TopArtist{
+			ID:   string(s.ID),
+			Name: s.Name,
+		}
+		if len(s.Images) > 0 {
+			track.Image = s.Images[0].URL
+		}
+		result.Artists = append(result.Artists, track)
 	}
 	for _, s := range shortTopTracks.Tracks {
 		toptrack := TopTrack{
-			Artist:     string(s.Artists[0].Name),
 			Duration:   s.Duration,
 			ID:         string(s.ID),
 			Name:       s.Name,
 			PreviewURL: s.PreviewURL,
 		}
+
+		toptrack.Artist = artistString(&s)
 		if len(s.Album.Images) > 0 {
 			toptrack.Image = s.Album.Images[0].URL
 		}
@@ -96,6 +103,27 @@ func (u *User) RefreshTop() error {
 	u.Top.Updated = result.Updated
 	u.Save()
 	return nil
+}
+
+func artistString(t *spotify.FullTrack) string {
+	if len(t.Artists) == 0 {
+		log.WithFields(log.Fields{
+			"type":  "top",
+			"track": t.ID,
+		}).Error("No Artists")
+		return ""
+	}
+	var str string
+	for _, s := range t.Artists {
+		str += s.Name + ", "
+	}
+	if str == "" {
+		log.WithFields(log.Fields{
+			"type":  "top",
+			"track": t.ID,
+		}).Error("Artists is set but string is nil")
+	}
+	return str[:len(str)-2]
 }
 
 func sortGenres(TopArtists *spotify.FullArtistPage) []string {
