@@ -4,6 +4,7 @@ WORKDIR /app/frontend
 COPY frontend/package.json frontend/package-lock.json /app/frontend/
 RUN ["npm", "install"]
 COPY frontend .
+ENV DISABLE_ESLINT_PLUGIN=true
 RUN ["npm", "run", "build"]
 
 
