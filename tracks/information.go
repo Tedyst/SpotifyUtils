@@ -129,17 +129,19 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 	if t.Information.TrackInformation.Tempo == 0 {
 		analysis, err := cl.GetAudioAnalysis(spotify.ID(t.TrackID))
 		if err != nil {
+			// Sometimes spotify likes to return `{"error": {"status": 502,"message": "Request was not transferred"}}`
+			// This does not return because if this happens, the track cannot be viewed
 			log.WithFields(log.Fields{
 				"type":  "spotify-api",
 				"api":   "analysis",
 				"track": t.TrackID,
 			}).Error(err)
-			return err
+		} else {
+			t.Information.TrackInformation.Mode = int(analysis.Track.Mode)
+			t.Information.TrackInformation.Tempo = analysis.Track.Tempo
+			t.Information.TrackInformation.Key = int(analysis.Track.Key)
+			t.Information.TrackInformation.TimeSignature = analysis.Track.TimeSignature
 		}
-		t.Information.TrackInformation.Mode = int(analysis.Track.Mode)
-		t.Information.TrackInformation.Tempo = analysis.Track.Tempo
-		t.Information.TrackInformation.Key = int(analysis.Track.Key)
-		t.Information.TrackInformation.TimeSignature = analysis.Track.TimeSignature
 	}
 
 	if t.Information.AlbumInformation.Markets == 0 && t.Information.AlbumInformation.ID != "" {

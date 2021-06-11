@@ -33,11 +33,19 @@ func (u *User) UpdateRecentTracks() {
 	if err != nil {
 		return
 	}
-	log.Debugf("Updating recent tracks for %s", u.UserID)
+	log.WithFields(log.Fields{
+		"type":        "recenttracks",
+		"user":        u.UserID,
+		"tokenExpiry": u.Token.Expiry.Unix(),
+	}).Debugf("Updating recent tracks")
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
 	items, err := u.Client().PlayerRecentlyPlayedOpt(options)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"type":        "recenttracks",
+			"user":        u.UserID,
+			"tokenExpiry": u.Token.Expiry.Unix(),
+		}).Error(err)
 		return
 	}
 	list := []*tracks.Track{}
@@ -152,7 +160,11 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
 	items, err := u.Client().PlayerRecentlyPlayedOpt(options)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"type":        "recenttracks",
+			"user":        u.UserID,
+			"tokenExpiry": u.Token.Expiry.Unix(),
+		}).Error(err)
 		return []spotify.RecentlyPlayedItem{}
 	}
 	if u.Settings.RecentTracks {
