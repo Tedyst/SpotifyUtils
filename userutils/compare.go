@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
 )
 
@@ -90,6 +91,13 @@ func compare(u1 *User, u2 *User) CompareStruct {
 		result.Score = 100
 	}
 
+	log.WithFields(log.Fields{
+		"type":   "compare",
+		"user":   u1,
+		"target": u2,
+		"result": result.Score,
+	}).Debugf("Compare")
+
 	return result
 }
 
@@ -98,6 +106,11 @@ func (u *User) verifyifCompareCodeExists() {
 		return
 	}
 	u.CompareCode = generateNewCompareCode()
+	log.WithFields(log.Fields{
+		"type": "compare",
+		"user": u,
+		"code": u.CompareCode,
+	}).Debugf("Generated new compare code")
 	u.Save()
 }
 
@@ -142,4 +155,9 @@ func (u *User) addFriend(target *User) {
 	}
 	u.Friends = append(u.Friends, target.UserID)
 	u.Save()
+	log.WithFields(log.Fields{
+		"type":   "friends",
+		"user":   u,
+		"target": target,
+	}).Debugf("Added friend")
 }

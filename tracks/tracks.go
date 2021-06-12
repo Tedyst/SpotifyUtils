@@ -2,7 +2,6 @@ package tracks
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -122,13 +121,22 @@ func (t *Track) Save() error {
 	}
 	inDB := GetTrackFromID(t.TrackID)
 	if inDB.ID != t.ID {
-		msg := fmt.Sprintf("Duplicate entry detected: %d and %d", inDB.ID, t.ID)
-		log.Error(msg)
+		msg := "duplicate entry detected"
+		log.WithFields(log.Fields{
+			"type":       "tracks",
+			"database":   inDB,
+			"track":      t,
+			"databaseid": inDB.ID,
+			"trackid":    t.ID,
+		}).Error(msg)
 		return errors.New(msg)
 	}
 	if t.TrackID == "" {
-		msg := fmt.Sprintf("Tried to save empty track_id, ID = %d", t.ID)
-		log.Error(msg)
+		msg := "tried to save empty track_id"
+		log.WithFields(log.Fields{
+			"type":  "tracks",
+			"track": t,
+		}).Error(msg)
 		return errors.New(msg)
 	}
 	config.DB.Save(t)
@@ -176,7 +184,7 @@ func (t *Track) ArtistString() string {
 	if len(t.Artists) == 0 {
 		log.WithFields(log.Fields{
 			"type":  "tracks",
-			"track": t.TrackID,
+			"track": t,
 		}).Error("No Artists")
 		return ""
 	}
@@ -187,8 +195,12 @@ func (t *Track) ArtistString() string {
 	if str == "" {
 		log.WithFields(log.Fields{
 			"type":  "tracks",
-			"track": t.TrackID,
+			"track": t,
 		}).Error("Artists is set but string is nil")
 	}
 	return str[:len(str)-2]
+}
+
+func (t *Track) String() string {
+	return t.TrackID
 }

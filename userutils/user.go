@@ -75,8 +75,9 @@ func (u *User) RefreshToken() error {
 	}
 	if u.Token.RefreshToken == "" {
 		log.WithFields(log.Fields{
-			"type": "refresh-token",
-			"user": u,
+			"type":        "refresh-token",
+			"user":        u,
+			"tokenExpiry": u.Token.Expiry.Unix(),
 		}).Debug("Cannot refresh token, user deleted access to application")
 		return errors.New("cannot refresh token, user deleted access to application")
 	}
@@ -89,13 +90,15 @@ func (u *User) RefreshToken() error {
 		t, err := client.Token()
 		if err != nil {
 			log.WithFields(log.Fields{
-				"type": "refresh-token",
-				"user": u,
+				"type":        "refresh-token",
+				"user":        u,
+				"tokenExpiry": u.Token.Expiry.Unix(),
 			}).Error(err)
 			if strings.Contains(fmt.Sprint(err), "Refresh token revoked") {
 				log.WithFields(log.Fields{
-					"type": "refresh-token",
-					"user": u,
+					"type":        "refresh-token",
+					"user":        u,
+					"tokenExpiry": u.Token.Expiry.Unix(),
 				}).Debug("Refresh token revoked")
 				u.StopRecentTracksUpdater()
 				u.Settings.RecentTracks = false
@@ -112,10 +115,11 @@ func (u *User) RefreshToken() error {
 func (u *User) RefreshUser() error {
 	if !u.Token.Valid() {
 		log.WithFields(log.Fields{
-			"type": "refresh-token",
-			"user": u,
-		}).Debug("Token expired")
-		return errors.New("token expired")
+			"type":        "refresh-token",
+			"user":        u,
+			"tokenExpiry": u.Token.Expiry.Unix(),
+		}).Debug("Token invalid")
+		return errors.New("token invalid")
 	}
 	if time.Since(u.LastUpdated) < userRefreshTimeout {
 		return nil

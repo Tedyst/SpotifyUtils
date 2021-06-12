@@ -109,7 +109,7 @@ func artistString(t *spotify.FullTrack) string {
 	if len(t.Artists) == 0 {
 		log.WithFields(log.Fields{
 			"type":  "top",
-			"track": t.ID,
+			"track": t,
 		}).Error("No Artists")
 		return ""
 	}
@@ -120,7 +120,7 @@ func artistString(t *spotify.FullTrack) string {
 	if str == "" {
 		log.WithFields(log.Fields{
 			"type":  "top",
-			"track": t.ID,
+			"track": t,
 		}).Error("Artists is set but string is nil")
 	}
 	return str[:len(str)-2]

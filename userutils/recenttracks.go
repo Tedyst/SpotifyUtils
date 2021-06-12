@@ -35,7 +35,7 @@ func (u *User) UpdateRecentTracks() {
 	}
 	log.WithFields(log.Fields{
 		"type":        "recenttracks",
-		"user":        u.UserID,
+		"user":        u,
 		"tokenExpiry": u.Token.Expiry.Unix(),
 	}).Debugf("Updating recent tracks")
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
@@ -43,7 +43,7 @@ func (u *User) UpdateRecentTracks() {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"type":        "recenttracks",
-			"user":        u.UserID,
+			"user":        u,
 			"tokenExpiry": u.Token.Expiry.Unix(),
 		}).Error(err)
 		return
@@ -103,6 +103,10 @@ func (u User) StartRecentTracksUpdater() {
 		}
 		return
 	}
+	log.WithFields(log.Fields{
+		"type": "recenttracks",
+		"user": u,
+	}).Debugf("Started recent tracks timer")
 	// Update once
 	go u.UpdateRecentTracks()
 
@@ -115,6 +119,10 @@ func (u User) StartRecentTracksUpdater() {
 			case <-ticker.C:
 				u.UpdateRecentTracks()
 			case <-quit:
+				log.WithFields(log.Fields{
+					"type": "recenttracks",
+					"user": u,
+				}).Debugf("Stopped recent tracks timer")
 				ticker.Stop()
 				return
 			}

@@ -73,15 +73,18 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 		return nil
 	}
 	metrics.TrackInformationSearched.Add(1)
-	log.Debugf("Getting spotify information for track %s", t.TrackID)
+	log.WithFields(log.Fields{
+		"type":  "information",
+		"track": t,
+	}).Debugf("Getting spotify information")
 
 	if t.Information.AlbumInformation.ID == "" || len(t.Artists) == 0 {
 		track, err := cl.GetTrack(spotify.ID(t.TrackID))
 		if err != nil {
 			log.WithFields(log.Fields{
-				"type":  "spotify-api",
+				"type":  "information",
 				"api":   "track",
-				"track": t.TrackID,
+				"track": t,
 			}).Error(err)
 			return err
 		}
@@ -110,9 +113,9 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 		features, err := cl.GetAudioFeatures(spotify.ID(t.TrackID))
 		if err != nil {
 			log.WithFields(log.Fields{
-				"type":  "spotify-api",
+				"type":  "information",
 				"api":   "features",
-				"track": t.TrackID,
+				"track": t,
 			}).Error(err)
 			return err
 		}
@@ -132,9 +135,9 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 			// Sometimes spotify likes to return `{"error": {"status": 502,"message": "Request was not transferred"}}`
 			// This does not return because if this happens, the track cannot be viewed
 			log.WithFields(log.Fields{
-				"type":  "spotify-api",
+				"type":  "information",
 				"api":   "analysis",
-				"track": t.TrackID,
+				"track": t,
 			}).Error(err)
 		} else {
 			t.Information.TrackInformation.Mode = int(analysis.Track.Mode)
@@ -148,9 +151,9 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 		album, err := cl.GetAlbum(spotify.ID(t.Information.AlbumInformation.ID))
 		if err != nil {
 			log.WithFields(log.Fields{
-				"type":  "spotify-api",
+				"type":  "information",
 				"api":   "album",
-				"track": t.TrackID,
+				"track": t,
 			}).Error(err)
 			return err
 		}
