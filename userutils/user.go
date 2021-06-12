@@ -65,21 +65,38 @@ func (u *User) Save() error {
 	return nil
 }
 
+func (u *User) String() string {
+	return u.UserID
+}
+
 func (u *User) RefreshToken() error {
 	if *config.MockExternalCalls {
 		return nil
 	}
 	if u.Token.RefreshToken == "" {
+		log.WithFields(log.Fields{
+			"type": "refresh-token",
+			"user": u,
+		}).Debug("Cannot refresh token, user deleted access to application")
 		return errors.New("cannot refresh token, user deleted access to application")
 	}
 	if !u.Token.Valid() || time.Until(u.Token.Expiry) < 3*time.Minute {
 		// Try to refresh the token
-		log.Debugf("Trying to refresh token for user %s", u.UserID)
+		log.WithFields(log.Fields{
+			"user": u,
+		}).Debugf("Trying to refresh token")
 		client := config.SpotifyAPI.NewClient(u.Token)
 		t, err := client.Token()
 		if err != nil {
-			log.Errorf("Could not refresh token for user %s, error: %s", u.UserID, err)
+			log.WithFields(log.Fields{
+				"type": "refresh-token",
+				"user": u,
+			}).Error(err)
 			if strings.Contains(fmt.Sprint(err), "Refresh token revoked") {
+				log.WithFields(log.Fields{
+					"type": "refresh-token",
+					"user": u,
+				}).Debug("Refresh token revoked")
 				u.StopRecentTracksUpdater()
 				u.Settings.RecentTracks = false
 				u.Token.RefreshToken = ""
@@ -94,6 +111,10 @@ func (u *User) RefreshToken() error {
 
 func (u *User) RefreshUser() error {
 	if !u.Token.Valid() {
+		log.WithFields(log.Fields{
+			"type": "refresh-token",
+			"user": u,
+		}).Debug("Token expired")
 		return errors.New("token expired")
 	}
 	if time.Since(u.LastUpdated) < userRefreshTimeout {
