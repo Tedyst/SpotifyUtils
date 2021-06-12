@@ -28,10 +28,7 @@ const useStyles = makeStyles({
     },
 });
 
-function msToText(ms: number | undefined): string {
-    if (ms === undefined) {
-        return '';
-    }
+function msToText(ms: number): string {
     let seconds = Math.floor(ms / 1000);
     let minutes = Math.floor(seconds / 60);
     seconds %= 60;
@@ -51,7 +48,7 @@ function msToText(ms: number | undefined): string {
 }
 
 function SongCard(props: {
-    duration?: number,
+    duration?: number | undefined,
     name: string,
     artist: string,
     image: string,
