@@ -9,7 +9,12 @@ function msToText(ms: number) {
     seconds %= 60;
     const hours = Math.floor(minutes / 60);
     minutes %= 60;
-    if (hours !== 0) return `${hours} Hours`;
+    if (hours === 1) {
+        return `${hours} Hour ${minutes} Minutes and ${seconds} Seconds`;
+    }
+    if (hours !== 0) {
+        return `${hours} Hours ${minutes} Minutes and ${seconds} Seconds`;
+    }
     if (minutes !== 0) {
         if (seconds !== 0) return `${minutes} Minutes and ${seconds} Seconds`;
         return `${minutes} Minutes`;

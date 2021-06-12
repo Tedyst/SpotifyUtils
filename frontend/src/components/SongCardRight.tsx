@@ -28,8 +28,30 @@ const useStyles = makeStyles({
     },
 });
 
+function msToText(ms: number | undefined): string {
+    if (ms === undefined) {
+        return '';
+    }
+    let seconds = Math.floor(ms / 1000);
+    let minutes = Math.floor(seconds / 60);
+    seconds %= 60;
+    const hours = Math.floor(minutes / 60);
+    minutes %= 60;
+    if (hours === 1) {
+        return `${hours} Hour ${minutes} Minutes and ${seconds} Seconds`;
+    }
+    if (hours !== 0) {
+        return `${hours} Hours ${minutes} Minutes and ${seconds} Seconds`;
+    }
+    if (minutes !== 0) {
+        if (seconds !== 0) return `${minutes} Minutes and ${seconds} Seconds`;
+        return `${minutes} Minutes`;
+    }
+    return `${seconds} Seconds`;
+}
+
 function SongCard(props: {
-    duration?: string,
+    duration?: number,
     name: string,
     artist: string,
     image: string,
@@ -50,7 +72,7 @@ function SongCard(props: {
                 When you only have
                 {' '}
                 <b>
-                    {props.duration}
+                    {msToText(duration)}
                 </b>
                 , you know what you want
             </Typography>
@@ -64,7 +86,7 @@ function SongCard(props: {
                 You listened to this song
                 {' '}
                 <b>
-                    {props.count}
+                    {count}
                 </b>
                 {' '}
                 times

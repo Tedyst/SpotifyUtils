@@ -15,20 +15,6 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-function msToText(ms: number): string {
-    let seconds = Math.floor(ms / 1000);
-    let minutes = Math.floor(seconds / 60);
-    seconds %= 60;
-    const hours = Math.floor(minutes / 60);
-    minutes %= 60;
-    if (hours !== 0) return `${hours} Hours`;
-    if (minutes !== 0) {
-        if (seconds !== 0) return `${minutes} Minutes and ${seconds} Seconds`;
-        return `${minutes} Minutes`;
-    }
-    return `${seconds} Seconds`;
-}
-
 function unixToTime(lastUpdated: number): string {
     const d = new Date(lastUpdated * 1000);
     const year = d.getFullYear();
@@ -113,9 +99,7 @@ export default function TopComp(props: {
                 <Grid item key={top.result.tracks[0].id}>
                     <SongCard
                         artist={top.result.tracks[0].artist}
-                        duration={
-                            msToText(top.result.tracks[0].duration)
-                        }
+                        duration={top.result.tracks[0].duration}
                         image={top.result.tracks[0].image}
                         key={top.result.tracks[0].id}
                         name={top.result.tracks[0].name}

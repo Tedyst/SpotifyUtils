@@ -23,24 +23,6 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-function msToText(ms: number) {
-    let seconds = Math.floor(ms / 1000);
-    let minutes = Math.floor(seconds / 60);
-    seconds %= 60;
-    const hours = Math.floor(minutes / 60);
-    minutes %= 60;
-    if (hours !== 0) {
-        return `${hours} Hours`;
-    }
-    if (minutes !== 0) {
-        if (seconds !== 0) {
-            return `${minutes} Minutes and ${seconds} Seconds`;
-        }
-        return `${minutes} Minutes`;
-    }
-    return `${seconds} Seconds`;
-}
-
 export default function UsernameComp(props: {
     data: UsernameInterface,
 }) {
@@ -78,9 +60,7 @@ export default function UsernameComp(props: {
             <Grid item key={data.result.tracks[0].id}>
                 <SongCard
                     artist={data.result.tracks[0].artist}
-                    duration={
-                        msToText(data.result.tracks[0].duration)
-                    }
+                    duration={data.result.tracks[0].duration}
                     image={data.result.tracks[0].image}
                     key={data.result.tracks[0].id}
                     name={data.result.tracks[0].name}
