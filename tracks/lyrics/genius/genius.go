@@ -16,6 +16,7 @@ import (
 )
 
 const retryTimeout = 10 * time.Second
+const retryCount = 5
 
 var blacklistedSentences = []string{
 	"Spotify-new-music",
@@ -29,38 +30,62 @@ func Lyrics(trackName string, trackArtist string) (string, error) {
 	res, err := config.GeniusClient.Search(name)
 	if err != nil {
 		log.WithFields(log.Fields{
-			"type": "genius",
+			"type":   "genius",
+			"name":   trackName,
+			"artist": trackArtist,
 		}).Error(err)
 		return "", err
 	}
 	if len(res.Response.Hits) == 0 {
-		log.Debugf("Did not find anything matching %s", name)
-		return "", errors.New("could not find any song on Genius")
+		log.WithFields(log.Fields{
+			"type":   "genius",
+			"name":   trackName,
+			"artist": trackArtist,
+		}).Debug("Could not find song on Genius")
+		return "", errors.New("could not find song on Genius")
 	}
 	for _, s := range res.Response.Hits {
 		if validResponse(trackName, trackArtist, s) {
 			var lyrics string
-			for i := 1; i < 5; i++ {
+			for i := 1; i <= retryCount; i++ {
 				lyrics, err = getLyricsFromURL(s.Result.URL)
 				if err != nil {
 					log.WithFields(log.Fields{
-						"type": "genius",
+						"type":   "genius",
+						"url":    s.Result.URL,
+						"name":   trackName,
+						"artist": trackArtist,
 					}).Error(err)
 					break
 				}
 				if lyrics != "" {
 					return lyrics, nil
 				} else {
-					log.Debugf("Trying again for %s", s.Result.URL)
+					log.WithFields(log.Fields{
+						"type":   "genius",
+						"url":    s.Result.URL,
+						"name":   trackName,
+						"artist": trackArtist,
+					}).Debug("Trying again")
 					time.Sleep(retryTimeout)
 				}
 			}
 			if lyrics == "" {
-				log.Debugf("Could not extract lyrics from %s", s.Result.URL)
+				log.WithFields(log.Fields{
+					"type":   "genius",
+					"url":    s.Result.URL,
+					"name":   trackName,
+					"artist": trackArtist,
+				}).Debug("Could not extract lyrics")
 			}
 			break
 		}
 	}
+	log.WithFields(log.Fields{
+		"type":   "genius",
+		"name":   trackName,
+		"artist": trackArtist,
+	}).Debug("Could not find Lyrics")
 	return "", errors.New("could not find Genius Lyrics")
 }
 

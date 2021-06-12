@@ -65,7 +65,7 @@ func (u *User) Save() error {
 	return nil
 }
 
-func (u *User) String() string {
+func (u User) String() string {
 	return u.UserID
 }
 

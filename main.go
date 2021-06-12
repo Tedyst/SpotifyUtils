@@ -38,12 +38,6 @@ import (
 	"github.com/tedyst/spotifyutils/config"
 )
 
-func checkErr(err error) {
-	if err != nil {
-		log.Fatalln(err)
-	}
-}
-
 type statusRecorder struct {
 	http.ResponseWriter
 	statusCode int
@@ -126,19 +120,25 @@ func routerMiddleware(next *mux.Router) http.Handler {
 			username = username_sess.(string)
 		}
 
+		var routeStr = route
+		if routeStr == "/" {
+			routeStr = r.RequestURI
+		}
 		if username != "" {
 			log.WithFields(log.Fields{
+				"type":     "request",
 				"method":   r.Method,
-				"request":  route,
+				"request":  routeStr,
 				"code":     statusCode,
 				"duration": duration.Seconds(),
 				"ip":       ipAddress,
-				"username": username,
+				"user":     username,
 			}).Debug()
 		} else {
 			log.WithFields(log.Fields{
+				"type":     "request",
 				"method":   r.Method,
-				"request":  route,
+				"request":  routeStr,
 				"code":     statusCode,
 				"duration": duration.Seconds(),
 				"ip":       ipAddress,
@@ -179,6 +179,7 @@ func main() {
 		log.SetLevel(log.DebugLevel)
 		csrf.Secure(false)
 	}
+	log.SetReportCaller(true)
 
 	var datab *gorm.DB
 	if strings.HasPrefix(*config.Database, "mysql://") {
@@ -188,27 +189,32 @@ func main() {
 		datab, err = gorm.Open(mysql.Open(fmt.Sprintf("%s?charset=utf8mb4&parseTime=True&loc=Local", *config.Database)), &gorm.Config{
 			Logger: &GormLogger{},
 		})
-		checkErr(err)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	} else if strings.HasPrefix(*config.Database, "sqlite://") {
 		*config.Database = strings.TrimPrefix(*config.Database, "sqlite://")
 		var err error
 		datab, err = gorm.Open(sqlite.Open(fmt.Sprintf("%s?charset=utf8mb4&parseTime=True&loc=Local", *config.Database)), &gorm.Config{
 			Logger: &GormLogger{},
 		})
-		checkErr(err)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	} else {
 		log.Panic("Invalid Database URL")
 	}
 
 	db, err := datab.DB()
-	checkErr(err)
+	if err != nil {
+		log.Fatalln(err)
+	}
 	db.Exec("PRAGMA journal_mode=WAL;")
 	db.Exec("SET NAMES utf8mb4;")
 	db.SetConnMaxLifetime(time.Minute * 4)
 
 	config.DB = datab
 
-	log.SetReportCaller(true)
 	initDB(config.DB)
 
 	sessionOptions := gormstore.Options{
@@ -250,5 +256,7 @@ func main() {
 	log.Infof("Starting server on address http://%s", *config.Address)
 	m.Use(gziphandler.GzipHandler)
 	err = http.ListenAndServe(*config.Address, routerMiddleware(m))
-	checkErr(err)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }

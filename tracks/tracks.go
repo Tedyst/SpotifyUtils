@@ -150,31 +150,53 @@ func (t *Track) Update(cl spotify.Client, syncUpdateLyrics bool) error {
 		err1 = t.updateInformation(cl)
 		err := t.Save()
 		if err != nil {
+			log.WithFields(log.Fields{
+				"type":  "tracks",
+				"track": t,
+			}).Error(err)
 			return err
 		}
 	}
-	if time.Since(t.LastUpdated) >= 24*time.Hour {
+	if time.Since(t.LastUpdated) >= searchTimeout {
 		if syncUpdateLyrics {
 			err2 = t.updateLyrics()
 			t.LastUpdated = time.Now()
 			err := t.Save()
 			if err != nil {
+				log.WithFields(log.Fields{
+					"type":  "tracks",
+					"track": t,
+				}).Error(err)
 				return err
 			}
 		} else {
 			go func() {
 				t.updateLyrics()
 				t.LastUpdated = time.Now()
-				t.Save()
+				err := t.Save()
+				if err != nil {
+					log.WithFields(log.Fields{
+						"type":  "tracks",
+						"track": t,
+					}).Error(err)
+				}
 			}()
 		}
 	}
 	t.LastUpdated = time.Now()
 
 	if err1 != nil {
+		log.WithFields(log.Fields{
+			"type":  "tracks",
+			"track": t,
+		}).Error(err1)
 		return err1
 	}
 	if err2 != nil {
+		log.WithFields(log.Fields{
+			"type":  "tracks",
+			"track": t,
+		}).Error(err2)
 		return err2
 	}
 	return nil
@@ -201,6 +223,6 @@ func (t *Track) ArtistString() string {
 	return str[:len(str)-2]
 }
 
-func (t *Track) String() string {
+func (t Track) String() string {
 	return t.TrackID
 }
