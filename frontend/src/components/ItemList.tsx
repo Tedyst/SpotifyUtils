@@ -31,7 +31,7 @@ export default function ListItems(props: {
     const classes = useStyles();
     const { items, name } = props;
     const it: any[] = [];
-    if (!items || items.length === 0 || !items) {
+    if (!items || items.length === 0) {
         return (
             <List className={classes.root} subheader={<li />}>
                 <ListSubheader className={classes.textColor} color="default">
