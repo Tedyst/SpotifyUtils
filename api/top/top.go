@@ -10,9 +10,9 @@ import (
 )
 
 type responseNormal struct {
-	Result  userutils.TopStruct `json:"result"`
-	Success bool                `json:"success"`
-	Error   string              `json:"error,omitempty"`
+	Result  userutils.TopStruct
+	Success bool
+	Error   string
 }
 
 func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {

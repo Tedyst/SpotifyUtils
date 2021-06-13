@@ -19,6 +19,7 @@ require (
 	github.com/zmb3/spotify v0.0.0-20200814173021-9bec46940cc0
 	golang.org/x/net v0.0.0-20210610132358-84b48f89b13b
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
+	golang.org/x/time v0.0.0-20210611083556-38a9dc6acbc6
 	gorm.io/driver/mysql v1.0.1
 	gorm.io/driver/sqlite v1.1.4
 	gorm.io/gorm v1.20.7

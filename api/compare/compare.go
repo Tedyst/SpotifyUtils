@@ -11,17 +11,17 @@ import (
 )
 
 type responseUser struct {
-	ID    string `json:"username"`
-	Name  string `json:"name"`
-	Image string `json:"image"`
-	Code  string `json:"code"`
+	ID    string
+	Name  string
+	Image string
+	Code  string
 }
 type response struct {
-	Initiator responseUser            `json:"initiator"`
-	Target    responseUser            `json:"target"`
-	Result    userutils.CompareStruct `json:"result"`
-	Success   bool                    `json:"success"`
-	Error     string                  `json:"error,omitempty"`
+	Initiator responseUser
+	Target    responseUser
+	Result    userutils.CompareStruct
+	Success   bool
+	Error     string
 }
 
 func HandlerUsername(res http.ResponseWriter, req *http.Request, user *userutils.User) {

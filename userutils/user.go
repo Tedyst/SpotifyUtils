@@ -10,19 +10,20 @@ import (
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/zmb3/spotify"
 	"golang.org/x/oauth2"
-
-	"gorm.io/gorm"
 )
 
 // User is the main user struct
 type User struct {
-	gorm.Model
-	UserID      string `gorm:"unique"`
+	ID          uint      `gorm:"primarykey" json:"-"`
+	CreatedAt   time.Time `json:"-"`
+	UpdatedAt   time.Time `json:"-"`
+	DeletedAt   time.Time `gorm:"index" json:"-"`
+	UserID      string    `gorm:"unique"`
 	DisplayName string
-	Token       *oauth2.Token `gorm:"embedded;embeddedPrefix:token_"`
+	Token       *oauth2.Token `gorm:"embedded;embeddedPrefix:token_" json:"-"`
 	Image       string
 	Playlists   PlaylistsStruct
-	LastUpdated time.Time
+	LastUpdated time.Time    `json:"-"`
 	Settings    UserSettings `gorm:"embedded;embeddedPrefix:settings_"`
 	Top         TopStruct    `gorm:"embedded;embeddedPrefix:top_"`
 	CompareCode string       `gorm:"unique"`

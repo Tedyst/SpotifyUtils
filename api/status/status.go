@@ -11,13 +11,13 @@ import (
 )
 
 type response struct {
-	Success   bool                   `json:"success"`
-	Error     string                 `json:"error,omitempty"`
-	Username  string                 `json:"username,omitempty"`
-	Image     string                 `json:"image,omitempty"`
-	Playlists []userutils.Playlist   `json:"playlists,omitempty"`
-	UserID    string                 `json:"id"`
-	Settings  userutils.UserSettings `json:"settings"`
+	Success   bool
+	Error     string
+	Username  string
+	Image     string
+	Playlists []userutils.Playlist
+	UserID    string
+	Settings  userutils.UserSettings
 }
 
 func StatusHandler(res http.ResponseWriter, req *http.Request) {

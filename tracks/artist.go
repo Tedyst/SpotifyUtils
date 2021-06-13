@@ -5,16 +5,19 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/zmb3/spotify"
-	"gorm.io/gorm"
 )
 
 type Artist struct {
-	gorm.Model
-	ArtistID   string `gorm:"type:VARCHAR(30) NOT NULL UNIQUE"`
+	ID         uint      `gorm:"primarykey" json:"-"`
+	CreatedAt  time.Time `json:"-"`
+	UpdatedAt  time.Time `json:"-"`
+	DeletedAt  time.Time `gorm:"index" json:"-"`
+	ArtistID   string    `gorm:"type:VARCHAR(30) NOT NULL UNIQUE"`
 	Name       string
 	Genres     GenresStruct
 	Popularity int16

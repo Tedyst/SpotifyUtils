@@ -13,12 +13,12 @@ import (
 
 func Auth(res http.ResponseWriter, req *http.Request) {
 	type authAPIResponse struct {
-		Success bool   `json:"success"`
-		Error   string `json:"error,omitempty"`
+		Success bool
+		Error   string
 	}
 	type authAPIRequest struct {
-		Host string `json:"host"`
-		Code string `json:"code"`
+		Host string
+		Code string
 	}
 	res.Header().Set("Content-Type", "application/json")
 	response := &authAPIResponse{}
@@ -107,9 +107,9 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 
 func AuthURL(res http.ResponseWriter, req *http.Request) {
 	type authURLAPIResponse struct {
-		Success bool   `json:"success"`
-		Error   string `json:"error,omitempty"`
-		URL     string `json:",omitempty"`
+		Success bool
+		Error   string
+		URL     string
 	}
 	res.Header().Set("Content-Type", "application/json")
 	response := &authURLAPIResponse{

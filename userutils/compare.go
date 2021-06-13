@@ -9,10 +9,10 @@ import (
 )
 
 type CompareStruct struct {
-	CommonArtists []TopArtist `json:"artists"`
-	CommonTracks  []TopTrack  `json:"tracks"`
-	CommonGenres  []string    `json:"genres"`
-	Score         float32     `json:"percent"`
+	CommonArtists []TopArtist
+	CommonTracks  []TopTrack
+	CommonGenres  []string
+	Score         float32
 }
 
 func (u *User) Compare(target *User) CompareStruct {

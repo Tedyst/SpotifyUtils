@@ -9,16 +9,16 @@ import (
 )
 
 type responseUserNoUsername struct {
-	ID    string `json:"username"`
-	Name  string `json:"name"`
-	Image string `json:"image"`
-	Code  string `json:"code"`
+	ID    string
+	Name  string
+	Image string
+	Code  string
 }
 type responseNoUsername struct {
-	Friends []responseUserNoUsername `json:"friends"`
-	Success bool                     `json:"success"`
-	Error   string                   `json:"error,omitempty"`
-	Code    string                   `json:"code"`
+	Friends []responseUserNoUsername
+	Success bool
+	Error   string
+	Code    string
 }
 
 func HandlerNoUsername(res http.ResponseWriter, req *http.Request, user *userutils.User) {

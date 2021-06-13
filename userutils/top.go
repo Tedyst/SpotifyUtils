@@ -10,25 +10,25 @@ import (
 )
 
 type TopArtist struct {
-	Name  string `json:"name"`
-	Image string `json:"image"`
-	ID    string `json:"id"`
+	Name  string
+	Image string
+	ID    string
 }
 
 type TopTrack struct {
-	Artist     string `json:"artist"`
-	Name       string `json:"name"`
-	Image      string `json:"image"`
-	ID         string `json:"id"`
-	Duration   int    `json:"duration"`
-	PreviewURL string `json:"previewURL"`
+	Artist     string
+	Name       string
+	Image      string
+	ID         string
+	Duration   int
+	PreviewURL string
 }
 
 type TopStruct struct {
-	Genres  GenresStruct  `json:"genres"`
-	Updated int64         `json:"updated"`
-	Artists ArtistsStruct `json:"artists"`
-	Tracks  TracksStruct  `json:"tracks"`
+	Genres  GenresStruct
+	Updated int64 `json:"-"`
+	Artists ArtistsStruct
+	Tracks  TracksStruct
 }
 
 // RefreshTop updates the user's top
