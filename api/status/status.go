@@ -5,28 +5,27 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
+type response struct {
+	Success   bool                   `json:"success"`
+	Error     string                 `json:"error,omitempty"`
+	Username  string                 `json:"username,omitempty"`
+	Image     string                 `json:"image,omitempty"`
+	Playlists []userutils.Playlist   `json:"playlists,omitempty"`
+	UserID    string                 `json:"id"`
+	Settings  userutils.UserSettings `json:"settings"`
+}
+
 func StatusHandler(res http.ResponseWriter, req *http.Request) {
-	type statusAPIResponse struct {
-		Success   bool                   `json:"success"`
-		Error     string                 `json:"error,omitempty"`
-		Username  string                 `json:"username,omitempty"`
-		Image     string                 `json:"image,omitempty"`
-		Playlists []userutils.Playlist   `json:"playlists,omitempty"`
-		UserID    string                 `json:"id"`
-		Settings  userutils.UserSettings `json:"settings"`
-	}
 	res.Header().Set("Content-Type", "application/json")
 	session, _ := config.SessionStore.Get(req, "username")
-	response := &statusAPIResponse{}
+	response := &response{}
 	if _, ok := session.Values["username"]; !ok {
-		response.Success = false
-		response.Error = "Not Logged in"
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorString(res, req, "Not Logged In")
 		return
 	}
 	val := session.Values["username"]
@@ -35,10 +34,7 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 		// Try to refresh the token
 		t, err := user.Client().Token()
 		if err != nil {
-			response.Success = false
-			response.Error = "Token not valid!"
-			respJSON, _ := json.Marshal(response)
-			fmt.Fprint(res, string(respJSON))
+			utils.ErrorString(res, req, "Token not valid")
 			return
 		}
 		user.Token = t

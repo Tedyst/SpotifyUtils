@@ -6,20 +6,22 @@ import (
 	"net/http"
 
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/userutils"
 )
 
-func LoggedIn(f func(res http.ResponseWriter, req *http.Request, username string)) http.Handler {
+func LoggedIn(f func(res http.ResponseWriter, req *http.Request, user *userutils.User)) http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		res.Header().Set("Content-Type", "application/json")
 		session, _ := config.SessionStore.Get(req, "username")
-		if _, ok := session.Values["username"]; ok {
+		val, ok := session.Values["username"]
+		if !ok {
 			ErrorString(res, req, "Not Logged In")
 			return
 		}
-		val := session.Values["username"]
 		switch v := val.(type) {
 		case string:
-			f(res, req, v)
+			user := userutils.GetUser(v)
+			f(res, req, user)
 		default:
 			ErrorString(res, req, "Invalid username")
 		}

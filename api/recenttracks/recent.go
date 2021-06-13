@@ -5,45 +5,32 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/userutils"
 	"github.com/zmb3/spotify"
 )
 
-func Handler(res http.ResponseWriter, req *http.Request) {
-	res.Header().Set("Content-Type", "application/json")
-	session, _ := config.SessionStore.Get(req, "username")
-	type RespSong struct {
-		Name   string
-		Artist string
-		URI    string
-		Image  string
-		Count  int32
-	}
-	type Resp struct {
-		Results []RespSong
-		Success bool
-		Error   string `json:",omitempty"`
-	}
-	response := &Resp{}
-	if _, ok := session.Values["username"]; !ok {
-		response.Success = false
-		response.Error = "Not logged in"
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
-		return
-	}
+type responseSong struct {
+	Name   string
+	Artist string
+	URI    string
+	Image  string
+	Count  int32
+}
 
+type response struct {
+	Results []responseSong
+	Success bool
+	Error   string `json:",omitempty"`
+}
+
+func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+	response := &response{}
 	if *config.MockExternalCalls {
-		response.Success = false
-		response.Error = "MockExternalCalls enabled, could not contact Spotify"
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorString(res, req, "MockExternalCalls enabled, could not contact Spotify")
 		return
 	}
-
-	val := session.Values["username"]
-	user := userutils.GetUser(val.(string))
 
 	response.Success = true
 	recentTracks := user.GetRecentTracks()
@@ -81,7 +68,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 			artistsStr += s.Name + ", "
 		}
 		artistsStr = artistsStr[:len(artistsStr)-2]
-		respsong := RespSong{
+		respsong := responseSong{
 			Name:   s.Name,
 			Artist: artistsStr,
 			URI:    string(s.ID),
@@ -94,10 +81,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 
 	respJSON, err := json.Marshal(response)
 	if err != nil {
-		response.Success = false
-		response.Error = fmt.Sprint(err)
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorErr(res, req, err)
 		return
 	}
 	fmt.Fprint(res, string(respJSON))

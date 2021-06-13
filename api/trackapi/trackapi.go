@@ -25,8 +25,7 @@ type response struct {
 	}
 }
 
-func TrackAPI(res http.ResponseWriter, req *http.Request, username string) {
-	user := userutils.GetUser(username)
+func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	response := &response{}
 	vars := mux.Vars(req)
 	trackURI := vars["track"]
