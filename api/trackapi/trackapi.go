@@ -5,39 +5,30 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/tracks"
+	"github.com/tedyst/spotifyutils/userutils"
 	"github.com/zmb3/spotify"
 
 	"github.com/gorilla/mux"
 	"github.com/tedyst/spotifyutils/config"
-	"github.com/tedyst/spotifyutils/userutils"
 )
 
-func Handler(res http.ResponseWriter, req *http.Request) {
-	res.Header().Set("Content-Type", "application/json")
-	session, _ := config.SessionStore.Get(req, "username")
-	vars := mux.Vars(req)
-	type Resp struct {
-		Result struct {
-			Artist      string
-			Name        string
-			Information tracks.SpotifyInformation
-			Lyrics      string
-		}
-		Success bool
-		Error   string `json:",omitempty"`
+type response struct {
+	Success bool
+	Error   string `json:",omitempty"`
+	Result  struct {
+		Artist      string
+		Name        string
+		Information tracks.SpotifyInformation
+		Lyrics      string
 	}
-	response := &Resp{}
-	if _, ok := session.Values["username"]; !ok {
-		response.Success = false
-		response.Error = "Not logged in"
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
-		return
-	}
-	val := session.Values["username"]
-	user := userutils.GetUser(val.(string))
+}
 
+func TrackAPI(res http.ResponseWriter, req *http.Request, username string) {
+	user := userutils.GetUser(username)
+	response := &response{}
+	vars := mux.Vars(req)
 	trackURI := vars["track"]
 	if len(trackURI) == 36 {
 		// If it contains spotify:track:
@@ -49,17 +40,11 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 		if !(*config.MockExternalCalls) {
 			_, err := user.Client().GetTrack(spotify.ID(trackURI))
 			if err != nil {
-				response.Success = false
-				response.Error = fmt.Sprint(err)
-				respJSON, _ := json.Marshal(response)
-				fmt.Fprint(res, string(respJSON))
+				utils.ErrorErr(res, req, err)
 				return
 			}
 		} else {
-			response.Success = false
-			response.Error = "MockExternalCalls enabled, could not contact Spotify"
-			respJSON, _ := json.Marshal(response)
-			fmt.Fprint(res, string(respJSON))
+			utils.ErrorString(res, req, "MockExternalCalls enabled, could not contact Spotify")
 			return
 		}
 	}
@@ -67,10 +52,7 @@ func Handler(res http.ResponseWriter, req *http.Request) {
 	tr := tracks.GetTrackFromID(trackURI)
 	err := tr.Update(*user.Client(), false)
 	if err != nil {
-		response.Success = false
-		response.Error = fmt.Sprint(err)
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorErr(res, req, err)
 		return
 	}
 	response.Result.Artist = tr.ArtistString()

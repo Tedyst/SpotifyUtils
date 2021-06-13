@@ -11,6 +11,7 @@ import (
 
 	"github.com/NYTimes/gziphandler"
 	"github.com/tedyst/spotifyutils/api/playlistview"
+	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/weaveworks/promrus"
 
 	log "github.com/sirupsen/logrus"
@@ -233,7 +234,7 @@ func main() {
 	api.HandleFunc("/top/old/{unixdate}", top.TopHandlerSince)
 	api.HandleFunc("/compare", compare.HandlerNoUsername)
 	api.HandleFunc("/recent", recenttracks.Handler)
-	api.HandleFunc("/track/{track}", trackapi.Handler)
+	api.Handle("/track/{track}", utils.LoggedIn(trackapi.TrackAPI))
 	api.HandleFunc("/compare/{code}", compare.HandlerUsername)
 	api.HandleFunc("/logout", auth.Logout)
 	api.HandleFunc("/settings", settings.Handler)
