@@ -25,7 +25,7 @@ describe('query component', () => {
                         code: '1234',
                     },
                 ],
-                success: true,
+                Success: true,
                 code: '12345',
             });
         const result = renderWithClient(<ComparePage />);
@@ -42,7 +42,7 @@ describe('query component', () => {
             .get('/api/compare')
             .reply(200, {
                 friends: null,
-                success: true,
+                Success: true,
                 code: '12345',
             });
         const result = renderWithClient(<ComparePage />);
@@ -58,7 +58,7 @@ describe('query component', () => {
             .get('/api/compare')
             .reply(200, {
                 friends: [],
-                success: true,
+                Success: true,
                 code: '12345',
             });
         const result = renderWithClient(<ComparePage />);

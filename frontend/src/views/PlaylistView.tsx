@@ -12,11 +12,11 @@ export default function PlaylistSearch() {
     const { data, status, error } = useQuery('status', () => axios.get<StatusInterface>('/api/status', {
         withCredentials: true,
     }));
-    const playlists = data?.data.playlists === undefined ? [] : data.data.playlists;
+    const playlists = data?.data.Playlists === undefined ? [] : data.data.Playlists;
     const [Results, setResults] = React.useState([]);
     let errorComponent = null;
-    if (status === 'error' || data?.data.success === false) {
-        const errorMessage = data?.data.error ? data.data.error : null;
+    if (status === 'error' || data?.data.Success === false) {
+        const errorMessage = data?.data.Error ? data.data.Error : null;
         if (typeof error === 'object' && error != null) {
             if (error.toString() !== '') {
                 errorComponent = (

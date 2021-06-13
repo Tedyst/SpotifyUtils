@@ -14,8 +14,8 @@ export default function Top() {
     }));
 
     let errorComponent = null;
-    if (status === 'error' || data?.data.success === false) {
-        const errorMessage = data?.data.error ? data.data.error : null;
+    if (status === 'error' || data?.data.Success === false) {
+        const errorMessage = data?.data.Error ? data.data.Error : null;
         if (typeof error === 'object' && error != null) {
             if (error.toString() !== '') {
                 errorComponent = (
@@ -50,7 +50,7 @@ export default function Top() {
     if (top === undefined) {
         return <Loading />;
     }
-    if (top.success === false) {
+    if (top.Success === false) {
         return <Loading />;
     }
 

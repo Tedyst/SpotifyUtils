@@ -36,17 +36,17 @@ function Acronym(str: string) {
 }
 
 export default function Avatars(props: {
-    target: {
-        image: string,
-        name: string,
+    Target: {
+        Image: string,
+        Name: string,
     },
-    initiator: {
-        image: string,
-        name: string,
+    Initiator: {
+        Image: string,
+        Name: string,
     }
 }) {
     const classes = useStyles();
-    const { target, initiator } = props;
+    const { Target, Initiator } = props;
     return (
         <Badge
             anchorOrigin={{
@@ -54,15 +54,15 @@ export default function Avatars(props: {
                 horizontal: 'right',
             }}
             badgeContent={(
-                <SmallAvatar className={classes.purple} src={initiator.image} alt={initiator.name}>
-                    {Acronym(initiator.name)}
+                <SmallAvatar className={classes.purple} src={Initiator.Image} alt={Initiator.Name}>
+                    {Acronym(Initiator.Name)}
                 </SmallAvatar>
             )}
             className={classes.root}
             overlap="circle"
         >
-            <Avatar className={classes.large} sizes="120" src={target.image} alt={target.name}>
-                {Acronym(target.name)}
+            <Avatar className={classes.large} sizes="120" src={Target.Image} alt={Target.Name}>
+                {Acronym(Target.Name)}
             </Avatar>
         </Badge>
     );

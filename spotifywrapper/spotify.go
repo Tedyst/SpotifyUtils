@@ -10,7 +10,7 @@ import (
 )
 
 type spotifyAuthorization struct {
-	success bool
+	Success bool
 }
 
 func GetSpotifyURL(host string) string {

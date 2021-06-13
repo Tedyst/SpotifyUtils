@@ -26,7 +26,7 @@ type TopTrack struct {
 
 type TopStruct struct {
 	Genres  GenresStruct
-	Updated int64 `json:"-"`
+	Updated int64
 	Artists ArtistsStruct
 	Tracks  TracksStruct
 }

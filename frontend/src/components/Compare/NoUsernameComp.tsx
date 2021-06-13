@@ -77,21 +77,21 @@ export default function NoUsername(props: {
         return <Redirect to={url} />;
     }
     const friends: any[] = [];
-    if (compare.friends !== null) {
-        Object.values(compare.friends).forEach((value) => {
+    if (compare.Friends !== null) {
+        Object.values(compare.Friends).forEach((value) => {
             friends.push(
                 <ListItem
                     classes={{
                         root: classes.selected,
                     }}
                     component={Link}
-                    key={`friend-${value.username}`}
-                    to={`/compare/${value.code}`}
+                    key={`friend-${value.Username}`}
+                    to={`/compare/${value.Code}`}
                 >
-                    <Avatar image={value.image} name={value.name} />
+                    <Avatar image={value.Image} name={value.Name} />
                     <ListItemText
-                        primary={value.name}
-                        secondary={value.code}
+                        primary={value.Name}
+                        secondary={value.Code}
                     />
                 </ListItem>,
             );
@@ -116,7 +116,7 @@ export default function NoUsername(props: {
                     Your code is
                     {' '}
                     <b>
-                        {compare.code}
+                        {compare.Code}
                     </b>
                 </Typography>
                 <Typography align="center" color="textSecondary" variant="h5">
@@ -132,7 +132,7 @@ export default function NoUsername(props: {
                     id="link-to-be-copied"
                     label="Click to copy"
                     onClick={() => { copyToClipboard(); }}
-                    value={getLink(compare.code)}
+                    value={getLink(compare.Code)}
                     variant="outlined"
                 />
 

@@ -32,31 +32,31 @@ function unixToTime(lastUpdated: number): string {
 }
 
 export interface TopInterface {
-    result: Result;
-    success: boolean;
-    error: string;
+    Result: Result;
+    Success: boolean;
+    Error: string;
 }
 
 interface Result {
-    genres: string[] | null;
-    updated: number;
-    artists: Artist[] | null;
-    tracks: Track[] | null;
+    Genres: string[] | null;
+    Updated: number;
+    Artists: Artist[] | null;
+    Tracks: Track[] | null;
 }
 
 interface Artist {
-    name: string;
-    image: string;
-    id: string;
+    Name: string;
+    Image: string;
+    ID: string;
 }
 
 interface Track {
-    artist: string;
-    name: string;
-    image: string;
-    id: string;
-    duration: number;
-    previewURL: string;
+    Artist: string;
+    Name: string;
+    Image: string;
+    ID: string;
+    Duration: number;
+    PreviewURL: string;
 }
 
 export default function TopComp(props: {
@@ -67,49 +67,49 @@ export default function TopComp(props: {
     const { top } = props;
 
     let bestSongForArtist: string | undefined;
-    if (top.result.tracks !== null) {
-        Object.values(top.result.tracks).forEach((value) => {
-            if (bestSongForArtist === undefined && top.result.artists !== null) {
-                if (value.artist === top.result.artists[0].name) {
-                    bestSongForArtist = value.name;
+    if (top.Result.Tracks !== null) {
+        Object.values(top.Result.Tracks).forEach((value) => {
+            if (bestSongForArtist === undefined && top.Result.Artists !== null) {
+                if (value.Artist === top.Result.Artists[0].Name) {
+                    bestSongForArtist = value.Name;
                 }
             }
         });
     }
 
     let topArtist = null;
-    if (top.result.artists !== null) {
-        if (top.result.artists.length > 0) {
+    if (top.Result.Artists !== null) {
+        if (top.Result.Artists.length > 0) {
             topArtist = (
-                <Grid item key={top.result.artists[0].id}>
+                <Grid item key={top.Result.Artists[0].ID}>
                     <ArtistCard
                         bestSong={bestSongForArtist}
-                        image={top.result.artists[0].image}
-                        key={top.result.artists[0].id}
-                        name={top.result.artists[0].name}
+                        image={top.Result.Artists[0].Image}
+                        key={top.Result.Artists[0].ID}
+                        name={top.Result.Artists[0].Name}
                     />
                 </Grid>
             );
         }
     }
     let topTrack = null;
-    if (top.result.tracks !== null) {
-        if (top.result.tracks.length > 0) {
+    if (top.Result.Tracks !== null) {
+        if (top.Result.Tracks.length > 0) {
             topTrack = (
-                <Grid item key={top.result.tracks[0].id}>
+                <Grid item key={top.Result.Tracks[0].ID}>
                     <SongCard
-                        artist={top.result.tracks[0].artist}
-                        duration={top.result.tracks[0].duration}
-                        image={top.result.tracks[0].image}
-                        key={top.result.tracks[0].id}
-                        name={top.result.tracks[0].name}
+                        artist={top.Result.Tracks[0].Artist}
+                        duration={top.Result.Tracks[0].Duration}
+                        image={top.Result.Tracks[0].Image}
+                        key={top.Result.Tracks[0].ID}
+                        name={top.Result.Tracks[0].Name}
                     />
                 </Grid>
             );
         }
     }
 
-    const lastUpdated = `This page updated at ${unixToTime(top.result.updated)}`;
+    const lastUpdated = `This page updated at ${unixToTime(top.Result.Updated)}`;
     return (
         <div>
             <Container disableGutters fixed maxWidth="xs">
@@ -131,19 +131,19 @@ export default function TopComp(props: {
                 <Grid container spacing={2} className={classes.root} direction="row" alignItems="stretch">
                     <Grid item key="lista-tracks" md={4} className={classes.fullWidth}>
                         <List
-                            items={top.result.tracks}
+                            items={top.Result.Tracks}
                             name="Your Top Tracks"
                         />
                     </Grid>
                     <Grid item key="lista-artists" md={4} className={classes.fullWidth}>
                         <List
-                            items={top.result.artists}
+                            items={top.Result.Artists}
                             name="Your Top Artists"
                         />
                     </Grid>
                     <Grid item key="lista-genres" md={4} className={classes.fullWidth}>
                         <List
-                            items={top.result.genres}
+                            items={top.Result.Genres}
                             name="Your Top Genres"
                         />
                     </Grid>

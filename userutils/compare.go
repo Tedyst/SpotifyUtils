@@ -9,10 +9,10 @@ import (
 )
 
 type CompareStruct struct {
-	CommonArtists []TopArtist
-	CommonTracks  []TopTrack
-	CommonGenres  []string
-	Score         float32
+	Artists []TopArtist
+	Tracks  []TopTrack
+	Genres  []string
+	Score   float32
 }
 
 func (u *User) Compare(target *User) CompareStruct {
@@ -30,10 +30,10 @@ func compare(u1 *User, u2 *User) CompareStruct {
 	t1 := u1.Top
 	t2 := u2.Top
 	result := CompareStruct{
-		CommonArtists: []TopArtist{},
-		CommonTracks:  []TopTrack{},
-		CommonGenres:  []string{},
-		Score:         0,
+		Artists: []TopArtist{},
+		Tracks:  []TopTrack{},
+		Genres:  []string{},
+		Score:   0,
 	}
 
 	artistTotal := 1
@@ -47,7 +47,7 @@ func compare(u1 *User, u2 *User) CompareStruct {
 		for i2, s2 := range t2.Artists {
 			if s1.ID == s2.ID {
 				artistScore += artistMax - i2
-				result.CommonArtists = append(result.CommonArtists, s1)
+				result.Artists = append(result.Artists, s1)
 			}
 		}
 	}
@@ -60,7 +60,7 @@ func compare(u1 *User, u2 *User) CompareStruct {
 		for i2, s2 := range t2.Tracks {
 			if s1.ID == s2.ID {
 				tracksScore += tracksMax - i2
-				result.CommonTracks = append(result.CommonTracks, s1)
+				result.Tracks = append(result.Tracks, s1)
 			}
 		}
 	}
@@ -73,7 +73,7 @@ func compare(u1 *User, u2 *User) CompareStruct {
 		for i2, s2 := range t2.Genres {
 			if s1 == s2 {
 				genresScore += genresMax - i2
-				result.CommonGenres = append(result.CommonGenres, s1)
+				result.Genres = append(result.Genres, s1)
 			}
 		}
 	}

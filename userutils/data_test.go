@@ -15,12 +15,10 @@ import (
 func getTestUserData() []userutils.User {
 	return []userutils.User{
 		{
-			Model: gorm.Model{
-				ID:        1,
-				CreatedAt: time.Now(),
-				UpdatedAt: time.Now(),
-			},
-			UserID: "user1",
+			ID:        1,
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			UserID:    "user1",
 			Playlists: userutils.PlaylistsStruct{
 				{
 					ID:   "playlist1",
@@ -60,12 +58,10 @@ func getTestUserData() []userutils.User {
 			LastUpdated: time.Now(),
 		},
 		{
-			Model: gorm.Model{
-				ID:        2,
-				CreatedAt: time.Now(),
-				UpdatedAt: time.Now(),
-			},
-			UserID: "user2",
+			ID:        2,
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			UserID:    "user2",
 			Playlists: userutils.PlaylistsStruct{
 				{
 					ID:   "playlist2",

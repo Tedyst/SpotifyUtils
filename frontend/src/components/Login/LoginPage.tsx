@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface AuthURLInterface {
-    success: boolean;
+    Success: boolean;
     URL: string;
 }
 

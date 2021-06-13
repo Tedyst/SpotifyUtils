@@ -43,18 +43,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 export interface StatusInterface {
-    success: boolean;
-    username: string;
-    image: string;
-    playlists: Playlist[];
-    id: string;
-    settings: SettingsInterface;
-    error?: string;
+    Success: boolean;
+    Username: string;
+    Image: string;
+    Playlists: Playlist[];
+    ID: string;
+    Settings: SettingsInterface;
+    Error?: string;
 }
 
 export interface Playlist {
-    id: string;
-    name: string;
+    ID: string;
+    Name: string;
 }
 
 function App() {
@@ -73,7 +73,7 @@ function App() {
     const { data } = useQuery('status', () => axios.get<StatusInterface>('/api/status', {
         withCredentials: true,
     }));
-    const logged = data?.data.success;
+    const logged = data?.data.Success;
     axios.defaults.headers.post['X-CSRF-Token'] = data?.headers['x-csrf-token'];
 
     if (!logged) {
@@ -90,7 +90,7 @@ function App() {
                         logged={false}
                         username="Not logged in"
                         image=""
-                        settings={data?.data.settings}
+                        settings={data?.data.Settings}
                     />
                     <Suspense fallback={<Loading />}>
                         <main className={classes.content}>
@@ -112,7 +112,7 @@ function App() {
     }
 
     SentrySetUser({
-        id: data?.data.id,
+        id: data?.data.ID,
     });
 
     return (
@@ -122,10 +122,10 @@ function App() {
                 <Sidebar
                     mobileOpen={mobileOpen}
                     setMobileOpen={setMobileOpen}
-                    logged={!!data?.data.success}
-                    username={data?.data.username}
-                    image={data?.data.image}
-                    settings={data?.data.settings}
+                    logged={!!data?.data.Success}
+                    username={data?.data.Username}
+                    image={data?.data.Image}
+                    settings={data?.data.Settings}
                 />
                 <Suspense fallback={<Loading />}>
                     <main className={classes.content}>

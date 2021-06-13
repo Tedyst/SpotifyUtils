@@ -31,7 +31,7 @@ export default function ListItems(props: {
     const classes = useStyles();
     const { items, name } = props;
     const it: any[] = [];
-    if (items === null || items.length === 0 || !items) {
+    if (!items || items.length === 0 || !items) {
         return (
             <List className={classes.root} subheader={<li />}>
                 <ListSubheader className={classes.textColor} color="default">
@@ -49,28 +49,28 @@ export default function ListItems(props: {
         );
     }
     Object.values(items).forEach((item) => {
-        if (item.artist) {
+        if (item.Artist) {
             it.push(
-                <ListItem key={`track-${item.id}`}>
+                <ListItem key={`track-${item.ID}`}>
                     <ListItemText
-                        primary={item.name}
-                        secondary={item.artist}
+                        primary={item.Name}
+                        secondary={item.Artist}
                     />
                 </ListItem>,
             );
-        } else if (item.id) {
+        } else if (item.ID) {
             it.push(
-                <ListItem key={`artist-${item.id}`}>
+                <ListItem key={`artist-${item.ID}`}>
                     <ListItemText
-                        primary={item.name}
+                        primary={item.Name}
                     />
                 </ListItem>,
             );
-        } else if (item.name) {
+        } else if (item.Name) {
             it.push(
-                <ListItem key={`genre-${item.name}`}>
+                <ListItem key={`genre-${item.Name}`}>
                     <ListItemText
-                        primary={item.name}
+                        primary={item.Name}
                     />
                 </ListItem>,
             );

@@ -13,8 +13,8 @@ var valuesCompare = []struct {
 	Result  userutils.CompareStruct
 }{
 	{"user1", "user2", userutils.CompareStruct{
-		CommonArtists: []userutils.TopArtist{},
-		CommonTracks: []userutils.TopTrack{
+		Artists: []userutils.TopArtist{},
+		Tracks: []userutils.TopTrack{
 			{
 				Artist:   "artist1",
 				Name:     "track1",
@@ -22,7 +22,7 @@ var valuesCompare = []struct {
 				Duration: 1000,
 			},
 		},
-		CommonGenres: []string{
+		Genres: []string{
 			"genre1",
 			"genre2",
 		},
@@ -39,20 +39,20 @@ func TestCompare(t *testing.T) {
 			if r1.Score != tt.Result.Score {
 				t.Errorf("got %f, want %f", r1.Score, tt.Result.Score)
 			}
-			if len(r1.CommonArtists) != len(tt.Result.CommonArtists) {
-				t.Errorf("got %d artists, want %d", len(r1.CommonArtists), len(tt.Result.CommonArtists))
+			if len(r1.Artists) != len(tt.Result.Artists) {
+				t.Errorf("got %d artists, want %d", len(r1.Artists), len(tt.Result.Artists))
 			}
-			if len(r1.CommonTracks) != len(tt.Result.CommonTracks) {
-				t.Errorf("got %d tracks, want %d", len(r1.CommonTracks), len(tt.Result.CommonTracks))
+			if len(r1.Tracks) != len(tt.Result.Tracks) {
+				t.Errorf("got %d tracks, want %d", len(r1.Tracks), len(tt.Result.Tracks))
 			}
-			if r1.CommonTracks[0].ID != tt.Result.CommonTracks[0].ID {
-				t.Errorf("got %s, want %s", r1.CommonTracks[0].ID, tt.Result.CommonTracks[0].ID)
+			if r1.Tracks[0].ID != tt.Result.Tracks[0].ID {
+				t.Errorf("got %s, want %s", r1.Tracks[0].ID, tt.Result.Tracks[0].ID)
 			}
-			if len(r1.CommonGenres) != len(tt.Result.CommonGenres) {
-				t.Errorf("got %d genres, want %d", len(r1.CommonGenres), len(tt.Result.CommonGenres))
+			if len(r1.Genres) != len(tt.Result.Genres) {
+				t.Errorf("got %d genres, want %d", len(r1.Genres), len(tt.Result.Genres))
 			}
-			for i := range tt.Result.CommonGenres {
-				if tt.Result.CommonGenres[i] != r1.CommonGenres[i] {
+			for i := range tt.Result.Genres {
+				if tt.Result.Genres[i] != r1.Genres[i] {
 					t.Fail()
 				}
 			}

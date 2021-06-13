@@ -11,7 +11,7 @@ describe('query component', () => {
         const expectation = nock('http://localhost')
             .get('/api/status')
             .reply(200, {
-                success: true,
+                Success: true,
                 username: 'zxc',
                 image: '',
                 playlists: [],
@@ -19,7 +19,7 @@ describe('query component', () => {
                 settings: { RecentTracks: true },
             })
             .get(/api\/auth-url.*$/)
-            .reply(200, { success: true, URL: 'https://accounts.spotify.com' })
+            .reply(200, { Success: true, URL: 'https://accounts.spotify.com' })
             .get('/api/top')
             .reply(200, {
                 result: {
@@ -58,7 +58,7 @@ describe('query component', () => {
         const expectation = nock('http://localhost')
             .get('/api/status')
             .reply(200, {
-                success: true,
+                Success: true,
                 username: 'zxc',
                 image: '',
                 playlists: [],
@@ -66,7 +66,7 @@ describe('query component', () => {
                 settings: { RecentTracks: true },
             })
             .get(/api\/auth-url.*$/)
-            .reply(200, { success: true, URL: 'https://accounts.spotify.com' })
+            .reply(200, { Success: true, URL: 'https://accounts.spotify.com' })
             .get('/api/top')
             .reply(200, {
                 result: {

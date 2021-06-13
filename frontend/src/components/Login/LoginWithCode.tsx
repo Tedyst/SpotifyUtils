@@ -12,7 +12,7 @@ export default function LoginWithCode(props: { code: string }) {
         withCredentials: true,
     }));
     useEffect(() => {
-        if (data?.data.success) {
+        if (data?.data.Success) {
             queryClient.invalidateQueries('status');
             queryClient.invalidateQueries('top');
         }
@@ -28,5 +28,5 @@ export default function LoginWithCode(props: { code: string }) {
 }
 
 interface AuthInterface {
-    success: boolean;
+    Success: boolean;
 }
