@@ -8,7 +8,7 @@ on:
 jobs:
   buildx:
     runs-on: ubuntu-latest
-    needs: [codeql, testapi, eslint, testfrontend]
+    needs: [testapi, eslint, testfrontend]
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
@@ -46,26 +46,6 @@ jobs:
           sentry-cli releases deploys $SENTRY_RELEASE new -e $SENTRY_DEPLOY_ENVIRONMENT
       - name: Build Docker Package - master
         run: docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t ghcr.io/tedyst/spotifyutils:master .
-
-  codeql:
-    name: Analyze
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ["go", "javascript"]
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
-        with:
-          languages: ${{ matrix.language }}
-          config-file: ./.github/codeql/codeql-config.yml
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v1
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
 
   testapi:
     runs-on: ubuntu-latest
