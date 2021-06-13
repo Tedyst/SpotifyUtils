@@ -22,7 +22,6 @@ type responseSong struct {
 type response struct {
 	Results []responseSong
 	Success bool
-	Error   string `json:",omitempty"`
 }
 
 func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
@@ -52,10 +51,7 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	}
 	tracksinfo, err := user.Client().GetTracks(ids...)
 	if err != nil {
-		response.Success = false
-		response.Error = fmt.Sprint(err)
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorErr(res, req, err)
 		return
 	}
 	for _, s := range tracksinfo {

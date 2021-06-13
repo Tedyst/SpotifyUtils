@@ -17,7 +17,6 @@ type responseUserNoUsername struct {
 type responseNoUsername struct {
 	Friends []responseUserNoUsername
 	Success bool
-	Error   string
 	Code    string
 }
 

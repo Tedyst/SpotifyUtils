@@ -21,7 +21,6 @@ type response struct {
 	Target    responseUser
 	Result    userutils.CompareStruct
 	Success   bool
-	Error     string
 }
 
 func HandlerUsername(res http.ResponseWriter, req *http.Request, user *userutils.User) {

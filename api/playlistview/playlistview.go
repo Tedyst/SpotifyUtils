@@ -23,7 +23,6 @@ type responseSong struct {
 type response struct {
 	Results []responseSong
 	Success bool
-	Error   string `json:",omitempty"`
 	Analyze playlist.AnalyzeStruct
 }
 

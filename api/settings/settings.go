@@ -12,7 +12,6 @@ import (
 
 type response struct {
 	Success  bool
-	Error    string `json:",omitempty"`
 	Settings userutils.UserSettings
 }
 

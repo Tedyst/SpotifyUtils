@@ -28,12 +28,13 @@ func LoggedIn(f func(res http.ResponseWriter, req *http.Request, user *userutils
 	})
 }
 
+type responseError struct {
+	Success bool
+	Error   string
+}
+
 func ErrorString(res http.ResponseWriter, req *http.Request, err string) {
-	type Response struct {
-		Success bool
-		Error   string `json:",omitempty"`
-	}
-	response := &Response{}
+	response := &responseError{}
 	response.Success = false
 	response.Error = err
 	respJSON, _ := json.Marshal(response)
@@ -41,11 +42,7 @@ func ErrorString(res http.ResponseWriter, req *http.Request, err string) {
 }
 
 func ErrorErr(res http.ResponseWriter, req *http.Request, err error) {
-	type Response struct {
-		Success bool
-		Error   string `json:",omitempty"`
-	}
-	response := &Response{}
+	response := &responseError{}
 	response.Success = false
 	response.Error = fmt.Sprint(err)
 	respJSON, _ := json.Marshal(response)

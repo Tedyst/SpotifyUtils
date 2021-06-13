@@ -15,7 +15,6 @@ import (
 type responseSince struct {
 	Result  userutils.RecentTracksStatisticsStruct
 	Success bool
-	Error   string `json:",omitempty"`
 }
 
 func HandlerSince(res http.ResponseWriter, req *http.Request, user *userutils.User) {

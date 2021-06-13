@@ -12,7 +12,6 @@ import (
 type responseNormal struct {
 	Result  userutils.TopStruct
 	Success bool
-	Error   string
 }
 
 func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {

@@ -30,11 +30,6 @@ func getVisitor(username string) *rate.Limiter {
 	return limiter
 }
 
-type limiterError struct {
-	Success bool
-	Error   string
-}
-
 func limitAPIRequests(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Get the IP address for the current user.

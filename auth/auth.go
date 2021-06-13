@@ -6,27 +6,30 @@ import (
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/spotifywrapper"
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
+type authAPIResponse struct {
+	Success bool
+}
+type authAPIRequest struct {
+	Host string
+	Code string
+}
+
+type authURLAPIResponse struct {
+	Success bool
+	URL     string
+}
+
 func Auth(res http.ResponseWriter, req *http.Request) {
-	type authAPIResponse struct {
-		Success bool
-		Error   string
-	}
-	type authAPIRequest struct {
-		Host string
-		Code string
-	}
 	res.Header().Set("Content-Type", "application/json")
 	response := &authAPIResponse{}
 	if req.Method != "POST" {
-		response.Error = "Invalid Method"
-		response.Success = false
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorString(res, req, "Invalid Method")
 		return
 	}
 
@@ -36,43 +39,35 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
 	err := decoder.Decode(request)
 	if err != nil || request.Host == "" || request.Code == "" {
-		response.Error = "Invalid Request"
-		response.Success = false
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorString(res, req, "Invalid Request")
 		return
 	}
 
 	token, err := spotifywrapper.GetSpotifyAuthorization(request.Host, request.Code)
 	if err != nil {
 		log.WithFields(log.Fields{
-			"error": err,
-			"code":  request.Code,
-			"host":  request.Host,
-		}).Error("Cannot get authorization from code")
-		response.Error = fmt.Sprint(err)
-		response.Success = false
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+			"type": "auth",
+			"code": request.Code,
+			"host": request.Host,
+		}).Error(err)
+		utils.ErrorErr(res, req, err)
 		return
 	}
 
 	if *config.MockExternalCalls {
-		response.Error = "cannot login because MockExternalCalls is enabled"
-		response.Success = false
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorString(res, req, "Cannot login because MockExternalCalls is enabled")
 		return
 	}
 
 	client := config.SpotifyAPI.NewClient(token)
 	spotifyUser, err := client.CurrentUser()
 	if err != nil {
-		log.Error(err)
-		response.Error = fmt.Sprint(err)
-		response.Success = false
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		log.WithFields(log.Fields{
+			"type": "auth",
+			"code": request.Code,
+			"host": request.Host,
+		}).Error(err)
+		utils.ErrorErr(res, req, err)
 		return
 	}
 	u := userutils.GetUser(spotifyUser.ID)
@@ -92,11 +87,12 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 
 	err = session.Save(req, res)
 	if err != nil {
-		log.Error(err)
-		response.Error = fmt.Sprint(err)
-		response.Success = false
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		log.WithFields(log.Fields{
+			"type": "auth",
+			"code": request.Code,
+			"host": request.Host,
+		}).Error(err)
+		utils.ErrorErr(res, req, err)
 		return
 	}
 
@@ -106,44 +102,36 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 }
 
 func AuthURL(res http.ResponseWriter, req *http.Request) {
-	type authURLAPIResponse struct {
-		Success bool
-		Error   string
-		URL     string
-	}
 	res.Header().Set("Content-Type", "application/json")
 	response := &authURLAPIResponse{
 		Success: false,
-		Error:   "Invalid Request",
 	}
 	host := req.URL.Query().Get("host")
 	if host == "" {
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorString(res, req, "Invalid Request")
 		return
 	}
 
-	response.URL = spotifywrapper.GetSpotifyURL(host)
 	response.Success = true
-	response.Error = ""
+	response.URL = spotifywrapper.GetSpotifyURL(host)
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprint(res, string(respJSON))
 }
 
-func Logout(w http.ResponseWriter, r *http.Request) {
-	session, err := config.SessionStore.Get(r, "username")
+func Logout(res http.ResponseWriter, req *http.Request) {
+	session, err := config.SessionStore.Get(req, "username")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.ErrorErr(res, req, err)
 		return
 	}
 
 	session.Values["username"] = ""
 	session.Options.MaxAge = -1
 
-	err = session.Save(r, w)
+	err = session.Save(req, res)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.ErrorErr(res, req, err)
 		return
 	}
-	http.Redirect(w, r, "/", http.StatusFound)
+	http.Redirect(res, req, "/", http.StatusFound)
 }

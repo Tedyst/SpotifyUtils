@@ -12,7 +12,6 @@ import (
 
 type response struct {
 	Success   bool
-	Error     string
 	Username  string
 	Image     string
 	Playlists []userutils.Playlist

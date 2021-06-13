@@ -16,7 +16,6 @@ import (
 
 type response struct {
 	Success bool
-	Error   string `json:",omitempty"`
 	Result  struct {
 		Artist      string
 		Name        string
