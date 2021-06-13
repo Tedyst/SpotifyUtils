@@ -12,11 +12,11 @@ describe('query component', () => {
             .get('/api/status')
             .reply(200, {
                 Success: false,
-                username: 'zxc',
-                image: '',
-                playlists: [],
-                id: 'asd',
-                settings: { RecentTracks: true },
+                Username: 'zxc',
+                Image: '',
+                Playlists: [],
+                ID: 'asd',
+                Settings: { RecentTracks: true },
             })
             .get(/api\/auth-url.*$/)
             .reply(200, { Success: true, URL: 'https://accounts.spotify.com' });
@@ -33,34 +33,34 @@ describe('query component', () => {
             .get('/api/status')
             .reply(200, {
                 Success: true,
-                username: 'zxc',
-                image: '',
-                playlists: [],
-                id: 'asd',
-                settings: { RecentTracks: true },
+                Username: 'zxc',
+                Image: '',
+                Playlists: [],
+                ID: 'asd',
+                Settings: { RecentTracks: true },
             })
             .get(/api\/auth-url.*$/)
             .reply(200, { Success: true, URL: 'https://accounts.spotify.com' })
             .get('/api/top')
             .reply(200, {
-                result: {
-                    genres: ['pop', 'genre2'],
-                    updated: 1622275414,
-                    artists: [
+                Result: {
+                    Genres: ['pop', 'genre2'],
+                    Updated: 1622275414,
+                    Artists: [
                         {
-                            name: 'artist1',
-                            image: 'https://i.scdn.co/image/ab67616d0000b2739a95e89d24214b94de36ccf7',
-                            id: 'idartist1',
+                            Name: 'artist1',
+                            Image: 'https://i.scdn.co/image/ab67616d0000b2739a95e89d24214b94de36ccf7',
+                            ID: 'idartist1',
                         },
                     ],
-                    tracks: [
+                    Tracks: [
                         {
-                            artist: 'artist1',
-                            name: 'nametrack1 aasd',
-                            image: 'https://i.scdn.co/image/ab67616d0000b2739a95e89d24214b94de36ccf7',
-                            id: 'idtrack1',
-                            duration: 164537,
-                            previewURL: 'no',
+                            Artist: 'artist1',
+                            Name: 'nametrack1 aasd',
+                            Image: 'https://i.scdn.co/image/ab67616d0000b2739a95e89d24214b94de36ccf7',
+                            ID: 'idtrack1',
+                            Duration: 164537,
+                            PreviewURL: 'no',
                         },
                     ],
                 },

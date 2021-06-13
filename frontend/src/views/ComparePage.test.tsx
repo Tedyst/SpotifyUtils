@@ -11,22 +11,22 @@ describe('query component', () => {
         const expectation = nock('http://localhost')
             .get('/api/compare')
             .reply(200, {
-                friends: [
+                Friends: [
                     {
-                        username: 'user1',
-                        name: 'User 1',
-                        image: '',
-                        code: '123',
+                        Username: 'user1',
+                        Name: 'User 1',
+                        Image: '',
+                        Code: '123',
                     },
                     {
-                        username: 'user2',
-                        name: 'User 2',
-                        image: 'https://i.scdn.co/image/ab6775700000ee85d22aba98a495d6c14bc56f30',
-                        code: '1234',
+                        Username: 'user2',
+                        Name: 'User 2',
+                        Image: 'https://i.scdn.co/image/ab6775700000ee85d22aba98a495d6c14bc56f30',
+                        Code: '1234',
                     },
                 ],
                 Success: true,
-                code: '12345',
+                Code: '12345',
             });
         const result = renderWithClient(<ComparePage />);
 
@@ -41,9 +41,9 @@ describe('query component', () => {
         const expectation = nock('http://localhost')
             .get('/api/compare')
             .reply(200, {
-                friends: null,
+                Friends: null,
                 Success: true,
-                code: '12345',
+                Code: '12345',
             });
         const result = renderWithClient(<ComparePage />);
 
@@ -57,9 +57,9 @@ describe('query component', () => {
         const expectation = nock('http://localhost')
             .get('/api/compare')
             .reply(200, {
-                friends: [],
+                Friends: [],
                 Success: true,
-                code: '12345',
+                Code: '12345',
             });
         const result = renderWithClient(<ComparePage />);
 
