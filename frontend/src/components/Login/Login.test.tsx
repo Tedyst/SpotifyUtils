@@ -63,6 +63,7 @@ describe('query component', () => {
                             PreviewURL: 'no',
                         },
                     ],
+                    Success: true,
                 },
             });
         const result = renderWithClient(<App />);

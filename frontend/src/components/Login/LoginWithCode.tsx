@@ -13,8 +13,7 @@ export default function LoginWithCode(props: { code: string }) {
     }));
     useEffect(() => {
         if (data?.data.Success) {
-            queryClient.invalidateQueries('status');
-            queryClient.invalidateQueries('top');
+            queryClient.invalidateQueries();
         }
     }, [data]);
     if (isLoading) {

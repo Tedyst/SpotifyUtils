@@ -3,23 +3,12 @@ import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { waitFor } from '@testing-library/react';
 import nock from 'nock';
-import App from '../../App';
-import { renderWithClient } from '../../tests/utils';
+import TopPage from './TopPage';
+import { renderWithClient } from '../tests/utils';
 
 describe('query component', () => {
     test('top', async () => {
         const expectation = nock('http://localhost')
-            .get('/api/status')
-            .reply(200, {
-                Success: true,
-                Username: 'zxc',
-                Image: '',
-                Playlists: [],
-                ID: 'asd',
-                Settings: { RecentTracks: true },
-            })
-            .get(/api\/auth-url.*$/)
-            .reply(200, { Success: true, URL: 'https://accounts.spotify.com' })
             .get('/api/top')
             .reply(200, {
                 Result: {
@@ -43,9 +32,10 @@ describe('query component', () => {
                         },
                     ],
                 },
+                Success: true,
 
             });
-        const result = renderWithClient(<App />);
+        const result = renderWithClient(<TopPage />);
 
         await waitFor(() => result.getByText(/Your top/));
 
@@ -56,17 +46,6 @@ describe('query component', () => {
 
     test('top without images', async () => {
         const expectation = nock('http://localhost')
-            .get('/api/status')
-            .reply(200, {
-                Success: true,
-                Username: 'zxc',
-                Image: '',
-                Playlists: [],
-                ID: 'asd',
-                Settings: { RecentTracks: true },
-            })
-            .get(/api\/auth-url.*$/)
-            .reply(200, { Success: true, URL: 'https://accounts.spotify.com' })
             .get('/api/top')
             .reply(200, {
                 Result: {
@@ -90,14 +69,76 @@ describe('query component', () => {
                         },
                     ],
                 },
+                Success: true,
 
             });
-        const result = renderWithClient(<App />);
+        const result = renderWithClient(<TopPage />);
 
         await waitFor(() => result.getByText(/Your top/));
 
         expect(result.getByText(/You really/)).toHaveTextContent('You really love the song nametrack1 aasd');
         expect(result.getByText(/When you only/)).toHaveTextContent('When you only have 2 Minutes and 44 Seconds, you know what you want');
+        expectation.done();
+    });
+
+    test('top with no data', async () => {
+        const expectation = nock('http://localhost')
+            .get('/api/top')
+            .reply(200, {
+                Result: {
+                    Genres: [],
+                    Updated: 1622275414,
+                    Artists: [],
+                    Tracks: [],
+                },
+                Success: true,
+
+            });
+        const result = renderWithClient(<TopPage />);
+
+        await waitFor(() => result.getByText(/Your top/));
+
+        expect(result.getByText(/Your top/)).toHaveTextContent('Your top');
+        expectation.done();
+    });
+
+    test('top with bad data', async () => {
+        const expectation = nock('http://localhost')
+            .get('/api/top')
+            .reply(200, {
+                Result: {
+                    Genres: null,
+                    Updated: 1622275414,
+                    Artists: null,
+                    Tracks: null,
+                },
+                Success: true,
+            });
+        const result = renderWithClient(<TopPage />);
+
+        await waitFor(() => result.getByText(/Error when extracting/));
+
+        expect(result.getByText(/Result/)).toHaveTextContent('Result is invalid');
+        expectation.done();
+    });
+
+    test('top with no success', async () => {
+        const expectation = nock('http://localhost')
+            .get('/api/top')
+            .reply(200, {
+                Result: {
+                    Genres: null,
+                    Updated: 1622275414,
+                    Artists: null,
+                    Tracks: null,
+                },
+                Success: false,
+            });
+        const result = renderWithClient(<TopPage />);
+
+        await waitFor(() => result.getByText(/Error when extracting/));
+
+        expect(result.getByText(/Server did/)).toHaveTextContent('Server did not reply with data');
         expectation.done();
     });
 });

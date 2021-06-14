@@ -35,12 +35,14 @@ const queryClient = new QueryClient({
     },
 });
 
-const localStoragePersistor = createLocalStoragePersistor();
+if (!isDevelopment) {
+    const localStoragePersistor = createLocalStoragePersistor();
 
-persistQueryClient({
-    queryClient,
-    persistor: localStoragePersistor,
-});
+    persistQueryClient({
+        queryClient,
+        persistor: localStoragePersistor,
+    });
+}
 
 ReactDOM.render(
     <QueryClientProvider client={queryClient}>

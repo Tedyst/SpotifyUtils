@@ -15,6 +15,7 @@ func LoggedIn(f func(res http.ResponseWriter, req *http.Request, user *userutils
 		session, _ := config.SessionStore.Get(req, "username")
 		val, ok := session.Values["username"]
 		if !ok {
+			res.WriteHeader(401)
 			ErrorString(res, req, "Not Logged In")
 			return
 		}
@@ -24,6 +25,7 @@ func LoggedIn(f func(res http.ResponseWriter, req *http.Request, user *userutils
 			f(res, req, user)
 		default:
 			ErrorString(res, req, "Invalid username")
+			res.WriteHeader(http.StatusUnauthorized)
 		}
 	})
 }
@@ -34,6 +36,7 @@ type responseError struct {
 }
 
 func ErrorString(res http.ResponseWriter, req *http.Request, err string) {
+	res.WriteHeader(http.StatusBadRequest)
 	response := &responseError{}
 	response.Success = false
 	response.Error = err
@@ -42,6 +45,7 @@ func ErrorString(res http.ResponseWriter, req *http.Request, err string) {
 }
 
 func ErrorErr(res http.ResponseWriter, req *http.Request, err error) {
+	res.WriteHeader(http.StatusBadRequest)
 	response := &responseError{}
 	response.Success = false
 	response.Error = fmt.Sprint(err)

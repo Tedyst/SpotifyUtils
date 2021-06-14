@@ -14,8 +14,18 @@ export default function Top() {
     }));
 
     let errorComponent = null;
-    if (status === 'error' || data?.data.Success === false) {
-        const errorMessage = data?.data.Error ? data.data.Error : null;
+    if (status === 'error') {
+        // This is needed to get the response data for a 401 request
+        const myCustomErrorLet: any = {};
+        myCustomErrorLet.data = error;
+
+        let errorMessage: string = '';
+        if (myCustomErrorLet?.data?.response?.data?.Error) {
+            errorMessage = myCustomErrorLet.data.response.data.Error;
+        } else if (data?.data?.Error) {
+            errorMessage = data.data.Error;
+        }
+
         if (typeof error === 'object' && error != null) {
             if (error.toString() !== '') {
                 errorComponent = (
@@ -47,11 +57,26 @@ export default function Top() {
     if (data === undefined || status === 'loading') return <Loading />;
     const top = data?.data;
 
-    if (top === undefined) {
-        return <Loading />;
+    if (!top.Success) {
+        return (
+            <Container maxWidth="xs">
+                <Alert severity="error">
+                    <AlertTitle>Error when extracting data from server</AlertTitle>
+                    Server did not reply with data
+                </Alert>
+            </Container>
+        );
     }
-    if (top.Success === false) {
-        return <Loading />;
+
+    if (!top || !top.Result || !top.Result.Tracks || !top.Result.Artists || !top.Result.Genres) {
+        return (
+            <Container maxWidth="xs">
+                <Alert severity="error">
+                    <AlertTitle>Error when extracting data from server</AlertTitle>
+                    Result is invalid
+                </Alert>
+            </Container>
+        );
     }
 
     return <TopComp top={top} />;
