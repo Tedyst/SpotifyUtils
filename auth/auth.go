@@ -133,5 +133,4 @@ func Logout(res http.ResponseWriter, req *http.Request) {
 		utils.ErrorErr(res, req, err)
 		return
 	}
-	http.Redirect(res, req, "/", http.StatusFound)
 }
