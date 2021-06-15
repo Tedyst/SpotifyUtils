@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    CssBaseline,
     Divider,
     Drawer,
     Hidden,
@@ -269,7 +268,6 @@ function ResponsiveDrawer(props: {
 
     return (
         <div className={classes.root}>
-            <CssBaseline />
             {header}
             <nav className={classes.drawer} aria-label="mailbox folders">
                 <Hidden smUp implementation="css">
