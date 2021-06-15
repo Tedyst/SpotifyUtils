@@ -10,7 +10,6 @@ import { useQuery } from 'react-query';
 import { setUser as SentrySetUser } from '@sentry/react';
 import Sidebar from './views/Sidebar';
 import ServiceWorkerPopup from './components/ServiceWorkerPopup';
-import RedirectToSaved from './components/RedirectToSaved';
 import Loading from './components/Loading';
 import { Settings as SettingsInterface } from './components/Settings/SettingsPage';
 
@@ -78,6 +77,11 @@ function App() {
         SentrySetUser({
             id: data?.data?.ID,
         });
+        const lastURL = window.localStorage.getItem('lastURL');
+        if (lastURL !== '' && lastURL) {
+            window.localStorage.removeItem('lastURL');
+            return <Redirect to={`${lastURL}`} />;
+        }
     }
 
     const appContent = logged ? (
@@ -112,15 +116,11 @@ function App() {
             <Route path="/">
                 <Top />
             </Route>
-            <RedirectToSaved />
         </Switch>
     ) : (
         <Switch>
-            <Route path="/auth">
-                <Login />
-            </Route>
             <Route path="/">
-                <Redirect to="/auth" />
+                <Login />
             </Route>
         </Switch>
     );
