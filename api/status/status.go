@@ -21,6 +21,7 @@ type response struct {
 
 func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
+	res.WriteHeader(http.StatusOK)
 	session, _ := config.SessionStore.Get(req, "username")
 	response := &response{}
 	if _, ok := session.Values["username"]; !ok {

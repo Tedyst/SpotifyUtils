@@ -5,7 +5,6 @@ import {
     Redirect,
 } from 'react-router-dom';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core';
-import { useSwipeable } from 'react-swipeable';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { setUser as SentrySetUser } from '@sentry/react';
@@ -27,6 +26,11 @@ const TrackSearch = lazy(() => import('./views/TrackSearch'));
 const ListeningStats = lazy(() => import('./views/ListeningStatsPage'));
 
 const drawerWidth = 240;
+const darkTheme = createMuiTheme({
+    palette: {
+        type: 'dark',
+    },
+});
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -58,70 +62,73 @@ export interface Playlist {
 }
 
 function App() {
-    const darkTheme = createMuiTheme({
-        palette: {
-            type: 'dark',
-        },
-    });
     const classes = useStyles();
-    const [mobileOpen, setMobileOpen] = React.useState(false);
-    const handlers = useSwipeable({
-        trackMouse: false,
-        onSwipedRight: () => setMobileOpen(true),
-    });
 
     const { data } = useQuery('status', () => axios.get<StatusInterface>('/api/status', {
         withCredentials: true,
     }));
-    const logged = data?.data.Success;
+    const logged = data?.data?.Success;
     axios.defaults.headers.post['X-CSRF-Token'] = data?.headers['x-csrf-token'];
 
     if (!logged) {
         if (window.location.pathname !== '/' && window.location.pathname !== '/auth' && window.location.pathname !== '/logout') {
             window.localStorage.setItem('lastURL', window.location.pathname);
         }
-        return (
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            <div className={classes.root} {...handlers}>
-                <ThemeProvider theme={darkTheme}>
-                    <Sidebar
-                        mobileOpen={mobileOpen}
-                        setMobileOpen={setMobileOpen}
-                        logged={false}
-                        username="Not logged in"
-                        image=""
-                        settings={data?.data.Settings}
-                    />
-                    <Suspense fallback={<Loading />}>
-                        <main className={classes.content}>
-                            <div className={classes.toolbar} />
-                            <Switch>
-                                <Route path="/auth">
-                                    <Login />
-                                </Route>
-                                <Route path="/">
-                                    <Redirect to="/auth" />
-                                </Route>
-                            </Switch>
-                            <ServiceWorkerPopup />
-                        </main>
-                    </Suspense>
-                </ThemeProvider>
-            </div>
-        );
+    } else {
+        SentrySetUser({
+            id: data?.data?.ID,
+        });
     }
 
-    SentrySetUser({
-        id: data?.data.ID,
-    });
+    const appContent = logged ? (
+        <Switch>
+            <Route path="/playlist">
+                <PlaylistView />
+            </Route>
+            <Route path="/tracksearch">
+                <TrackSearch />
+            </Route>
+            <Route path="/listeningstatistics">
+                <ListeningStats />
+            </Route>
+            <Route path="/compare">
+                <Compare />
+            </Route>
+            <Route path="/track">
+                <Track />
+            </Route>
+            <Route path="/recent">
+                <Recent />
+            </Route>
+            <Route path="/settings">
+                <Settings />
+            </Route>
+            <Route path="/logout">
+                <Logout />
+            </Route>
+            <Route path="/auth">
+                <Redirect to="/" />
+            </Route>
+            <Route path="/">
+                <Top />
+            </Route>
+            <RedirectToSaved />
+        </Switch>
+    ) : (
+        <Switch>
+            <Route path="/auth">
+                <Login />
+            </Route>
+            <Route path="/">
+                <Redirect to="/auth" />
+            </Route>
+        </Switch>
+    );
 
     return (
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        <div className={classes.root} {...handlers}>
+        <div className={classes.root}>
             <ThemeProvider theme={darkTheme}>
                 <Sidebar
-                    mobileOpen={mobileOpen}
-                    setMobileOpen={setMobileOpen}
                     logged={!!data?.data.Success}
                     username={data?.data.Username}
                     image={data?.data.Image}
@@ -130,40 +137,7 @@ function App() {
                 <Suspense fallback={<Loading />}>
                     <main className={classes.content}>
                         <div className={classes.toolbar} />
-                        <Switch>
-                            <Route path="/playlist">
-
-                                <PlaylistView />
-                            </Route>
-                            <Route path="/tracksearch">
-                                <TrackSearch />
-                            </Route>
-                            <Route path="/listeningstatistics">
-                                <ListeningStats />
-                            </Route>
-                            <Route path="/compare">
-                                <Compare />
-                            </Route>
-                            <Route path="/track">
-                                <Track />
-                            </Route>
-                            <Route path="/recent">
-                                <Recent />
-                            </Route>
-                            <Route path="/settings">
-                                <Settings />
-                            </Route>
-                            <Route path="/logout">
-                                <Logout />
-                            </Route>
-                            <Route path="/auth">
-                                <Redirect to="/" />
-                            </Route>
-                            <Route path="/">
-                                <Top />
-                            </Route>
-                        </Switch>
-                        <RedirectToSaved />
+                        {appContent}
                         <ServiceWorkerPopup />
                     </main>
                 </Suspense>

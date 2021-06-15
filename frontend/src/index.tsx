@@ -45,13 +45,15 @@ if (!isDevelopment) {
 }
 
 ReactDOM.render(
-    <QueryClientProvider client={queryClient}>
+    <React.StrictMode>
         <Sentry.ErrorBoundary fallback="An error has occurred" showDialog>
-            <Router history={history}>
-                <App />
-            </Router>
+            <QueryClientProvider client={queryClient}>
+                <Router history={history}>
+                    <App />
+                </Router>
+            </QueryClientProvider>
         </Sentry.ErrorBoundary>
-    </QueryClientProvider>,
+    </React.StrictMode>,
     document.getElementById('root'),
 );
 

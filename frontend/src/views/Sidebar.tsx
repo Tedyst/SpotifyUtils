@@ -70,13 +70,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ResponsiveDrawer(props: {
-    setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    mobileOpen: boolean,
     logged: boolean,
     username?: string,
     image?: string,
     settings?: SettingsInterface,
 }) {
+    const [mobileOpen, setMobileOpen] = React.useState(false);
     const classes = useStyles();
     const theme = useTheme();
     const location = useLocation();
@@ -90,11 +89,11 @@ function ResponsiveDrawer(props: {
     if (!logged) return null;
 
     const handleDrawerToggle = () => {
-        props.setMobileOpen(!props.mobileOpen);
+        setMobileOpen(!mobileOpen);
     };
 
     const closeDrawer = () => {
-        props.setMobileOpen(false);
+        setMobileOpen(false);
     };
 
     const drawer = (
@@ -268,7 +267,6 @@ function ResponsiveDrawer(props: {
         </AppBar>
     );
 
-    const { mobileOpen } = props;
     return (
         <div className={classes.root}>
             <CssBaseline />
