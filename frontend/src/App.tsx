@@ -68,6 +68,7 @@ function App() {
     }));
     const logged = data?.data?.Success;
     axios.defaults.headers.post['X-CSRF-Token'] = data?.headers['x-csrf-token'];
+    let redir = <div />;
 
     if (!logged) {
         if (window.location.pathname !== '/' && window.location.pathname !== '/auth' && window.location.pathname !== '/logout') {
@@ -79,8 +80,10 @@ function App() {
         });
         const lastURL = window.localStorage.getItem('lastURL');
         if (lastURL !== '' && lastURL) {
-            window.localStorage.removeItem('lastURL');
-            return <Redirect to={`${lastURL}`} />;
+            setTimeout(() => {
+                window.localStorage.removeItem('lastURL');
+            }, 1000);
+            redir = <Redirect to={`${lastURL}`} />;
         }
     }
 
@@ -116,6 +119,7 @@ function App() {
             <Route path="/">
                 <Top />
             </Route>
+            {redir}
         </Switch>
     ) : (
         <Switch>

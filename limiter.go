@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/tedyst/spotifyutils/api/utils"
+	"github.com/tedyst/spotifyutils/config"
 	"golang.org/x/time/rate"
 )
 
@@ -46,7 +47,7 @@ func limitAPIRequests(next http.Handler) http.Handler {
 		// Call the getVisitor function to retreive the rate limiter for
 		// the current user.
 		limiter := getVisitor(ipAddress)
-		if !limiter.Allow() {
+		if !limiter.Allow() && !*config.MockExternalCalls {
 			utils.ErrorString(w, r, "Too many requests")
 			w.WriteHeader(http.StatusTooManyRequests)
 			return

@@ -54,28 +54,28 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	var u *userutils.User
 	if *config.MockExternalCalls {
-		utils.ErrorString(res, req, "Cannot login because MockExternalCalls is enabled")
-		return
-	}
-
-	client := config.SpotifyAPI.NewClient(token)
-	spotifyUser, err := client.CurrentUser()
-	if err != nil {
-		log.WithFields(log.Fields{
-			"type": "auth",
-			"code": request.Code,
-			"host": request.Host,
-		}).Error(err)
-		utils.ErrorErr(res, req, err)
-		return
-	}
-	u := userutils.GetUser(spotifyUser.ID)
-	u.Token = token
-	u.DisplayName = spotifyUser.DisplayName
-	u.UserID = spotifyUser.ID
-	if len(spotifyUser.Images) > 0 {
-		u.Image = spotifyUser.Images[0].URL
+		u = userutils.GetUser("vq0u2761le51p2idib6f89y78")
+	} else {
+		client := config.SpotifyAPI.NewClient(token)
+		spotifyUser, err := client.CurrentUser()
+		if err != nil {
+			log.WithFields(log.Fields{
+				"type": "auth",
+				"code": request.Code,
+				"host": request.Host,
+			}).Error(err)
+			utils.ErrorErr(res, req, err)
+			return
+		}
+		u = userutils.GetUser(spotifyUser.ID)
+		u.Token = token
+		u.DisplayName = spotifyUser.DisplayName
+		u.UserID = spotifyUser.ID
+		if len(spotifyUser.Images) > 0 {
+			u.Image = spotifyUser.Images[0].URL
+		}
 	}
 
 	u.RefreshUser()
@@ -104,7 +104,7 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 func AuthURL(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	response := &authURLAPIResponse{
-		Success: false,
+		Success: true,
 	}
 	host := req.URL.Query().Get("host")
 	if host == "" {
@@ -112,8 +112,12 @@ func AuthURL(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	response.Success = true
-	response.URL = spotifywrapper.GetSpotifyURL(host)
+	if *config.MockExternalCalls {
+		response.URL = fmt.Sprintf("%s/auth?code=asd", host)
+	} else {
+		response.URL = spotifywrapper.GetSpotifyURL(host)
+	}
+
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprint(res, string(respJSON))
 }
