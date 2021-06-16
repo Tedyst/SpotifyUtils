@@ -122,7 +122,9 @@ function App() {
                         <div className={classes.toolbar} />
                         <Switch>
                             <Route path="/playlist">
-                                <PlaylistView />
+                                <PlaylistView
+                                    playlists={data?.data.Playlists}
+                                />
                             </Route>
                             <Route path="/tracksearch">
                                 <TrackSearch />

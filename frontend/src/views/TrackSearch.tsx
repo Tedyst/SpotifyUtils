@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Button, CssBaseline, Typography, makeStyles, Container, TextField, Grid,
+    Button, Typography, makeStyles, Container, TextField, Grid,
 } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 
@@ -59,7 +59,6 @@ export default function SearchBox() {
 
     return (
         <div className={classes.paper}>
-            <CssBaseline />
             <Container disableGutters fixed>
                 <Typography variant="h5" color="textPrimary" align="center">
                     To get an URI for a track, right click on that track and then select Share

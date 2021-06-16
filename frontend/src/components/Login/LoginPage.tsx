@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Avatar, Button, CssBaseline, Typography, makeStyles, Container,
+    Avatar, Button, Typography, makeStyles, Container,
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useQuery } from 'react-query';
@@ -68,7 +68,6 @@ export default function LoginPage(props: { loggingIn: boolean }) {
     }
     return (
         <Container maxWidth="xs">
-            <CssBaseline />
             {errorComponent}
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>

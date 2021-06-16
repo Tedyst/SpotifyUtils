@@ -10,7 +10,7 @@ export interface Result {
     Count?: number;
 }
 export default function ResultBox(props: {
-    results: Result[],
+    results: Result[] | undefined,
     usingLink?: boolean,
 }) {
     const { results, usingLink } = props;

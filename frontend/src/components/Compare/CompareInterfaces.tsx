@@ -31,6 +31,7 @@ export interface Artist {
     Name: string;
     Image: string;
     ID: string;
+    URI: string;
 }
 
 export interface Track {

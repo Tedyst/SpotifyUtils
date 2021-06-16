@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    CssBaseline, makeStyles, Container, CircularProgress,
+    makeStyles, Container, CircularProgress,
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -16,7 +16,6 @@ export default function Loading() {
     const classes = useStyles();
     return (
         <Container maxWidth="xs">
-            <CssBaseline />
             <div className={classes.paper}>
                 <CircularProgress color="secondary" />
             </div>
