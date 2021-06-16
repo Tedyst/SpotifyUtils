@@ -78,7 +78,7 @@ func (u *User) RefreshToken() error {
 		log.WithFields(log.Fields{
 			"type":        "refresh-token",
 			"user":        u,
-			"tokenExpiry": u.Token.Expiry.Unix(),
+			"tokenExpiry": u.Token.Expiry,
 		}).Debug("Cannot refresh token, user deleted access to application")
 		return errors.New("cannot refresh token, user deleted access to application")
 	}
@@ -86,20 +86,20 @@ func (u *User) RefreshToken() error {
 		// Try to refresh the token
 		log.WithFields(log.Fields{
 			"user": u,
-		}).Debugf("Trying to refresh token")
+		}).Debug("Trying to refresh token")
 		client := config.SpotifyAPI.NewClient(u.Token)
 		t, err := client.Token()
 		if err != nil {
 			log.WithFields(log.Fields{
 				"type":        "refresh-token",
 				"user":        u,
-				"tokenExpiry": u.Token.Expiry.Unix(),
+				"tokenExpiry": u.Token.Expiry,
 			}).Error(err)
 			if strings.Contains(fmt.Sprint(err), "Refresh token revoked") {
 				log.WithFields(log.Fields{
 					"type":        "refresh-token",
 					"user":        u,
-					"tokenExpiry": u.Token.Expiry.Unix(),
+					"tokenExpiry": u.Token.Expiry,
 				}).Debug("Refresh token revoked")
 				u.StopRecentTracksUpdater()
 				u.Settings.RecentTracks = false
@@ -109,6 +109,7 @@ func (u *User) RefreshToken() error {
 			return err
 		}
 		u.Token = t
+		u.Save()
 	}
 	return nil
 }
@@ -118,7 +119,7 @@ func (u *User) RefreshUser() error {
 		log.WithFields(log.Fields{
 			"type":        "refresh-token",
 			"user":        u,
-			"tokenExpiry": u.Token.Expiry.Unix(),
+			"tokenExpiry": u.Token.Expiry,
 		}).Debug("Token invalid")
 		return errors.New("token invalid")
 	}

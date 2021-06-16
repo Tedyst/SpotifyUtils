@@ -55,17 +55,29 @@ func (u *User) RefreshTop() error {
 	}
 	longTopArtists, err := u.Client().CurrentUsersTopArtistsOpt(longOptions)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"type":        "top",
+			"user":        u,
+			"tokenExpiry": u.Token.Expiry.Unix(),
+		}).Error(err)
 		return err
 	}
 	shortTopArtists, err := u.Client().CurrentUsersTopArtistsOpt(shortOptions)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"type":        "top",
+			"user":        u,
+			"tokenExpiry": u.Token.Expiry.Unix(),
+		}).Error(err)
 		return err
 	}
 	shortTopTracks, err := u.Client().CurrentUsersTopTracksOpt(shortOptions)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"type":        "top",
+			"user":        u,
+			"tokenExpiry": u.Token.Expiry.Unix(),
+		}).Error(err)
 		return err
 	}
 

@@ -30,14 +30,10 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	}
 	val := session.Values["username"]
 	user := userutils.GetUser(val.(string))
-	if !user.Token.Valid() && !(*config.MockExternalCalls) {
-		// Try to refresh the token
-		t, err := user.Client().Token()
-		if err != nil {
-			utils.ErrorString(res, req, "Token not valid")
-			return
-		}
-		user.Token = t
+	err := user.RefreshToken()
+	if err != nil {
+		utils.ErrorErr(res, req, err)
+		return
 	}
 	user.RefreshUser()
 	user.StartRecentTracksUpdater()

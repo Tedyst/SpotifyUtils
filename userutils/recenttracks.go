@@ -161,9 +161,13 @@ func (u *User) StopRecentTracksUpdater() {
 	recentTrackTimerCache = recentTrackTimerCache[:len(recentTrackTimerCache)-1]
 }
 
-func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
+func (u *User) GetRecentTracks() ([]*tracks.Track, error) {
 	if *config.MockExternalCalls {
-		return []spotify.RecentlyPlayedItem{}
+		return []*tracks.Track{}, nil
+	}
+	err := u.RefreshToken()
+	if err != nil {
+		return nil, err
 	}
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
 	items, err := u.Client().PlayerRecentlyPlayedOpt(options)
@@ -173,7 +177,7 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 			"user":        u.UserID,
 			"tokenExpiry": u.Token.Expiry.Unix(),
 		}).Error(err)
-		return []spotify.RecentlyPlayedItem{}
+		return nil, err
 	}
 	if u.Settings.RecentTracks {
 		u.insertRecentTracks(items)
@@ -186,7 +190,7 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 	}
 	tracks.BatchUpdate(list, *u.Client())
 
-	return items
+	return list, nil
 }
 
 func (u *User) GetRecentTrackSince(t time.Time) []RecentTracks {

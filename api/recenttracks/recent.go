@@ -8,7 +8,6 @@ import (
 	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/userutils"
-	"github.com/zmb3/spotify"
 )
 
 type responseSong struct {
@@ -32,47 +31,24 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	}
 
 	response.Success = true
-	recentTracks := user.GetRecentTracks()
-	var ids []spotify.ID
-	count := make(map[string]int32)
-	for _, s := range recentTracks {
-		ok := true
-		for _, s1 := range ids {
-			if s1 == s.Track.ID {
-				ok = false
-				count[s.Track.ID.String()]++
-				break
-			}
-		}
-		if ok {
-			ids = append(ids, s.Track.ID)
-			count[s.Track.ID.String()] = 1
-		}
-	}
-	tracksinfo, err := user.Client().GetTracks(ids...)
+	recentTracks, err := user.GetRecentTracks()
 	if err != nil {
 		utils.ErrorErr(res, req, err)
 		return
 	}
-	for _, s := range tracksinfo {
-		image := ""
-		if len(s.Album.Images) > 0 {
-			image = s.Album.Images[0].URL
-		}
-		var artistsStr string
-		for _, s := range s.Artists {
-			artistsStr += s.Name + ", "
-		}
-		artistsStr = artistsStr[:len(artistsStr)-2]
-		respsong := responseSong{
-			Name:   s.Name,
-			Artist: artistsStr,
-			URI:    string(s.ID),
-			Image:  image,
-			Count:  count[s.ID.String()],
-		}
+	count := make(map[string]int32)
+	for _, s := range recentTracks {
+		count[s.TrackID]++
+	}
 
-		response.Results = append(response.Results, respsong)
+	for _, s := range recentTracks {
+		response.Results = append(response.Results, responseSong{
+			Name:   s.Name,
+			Artist: s.ArtistString(),
+			URI:    s.TrackID,
+			Image:  s.Information.TrackInformation.Image,
+			Count:  count[s.TrackID],
+		})
 	}
 
 	respJSON, err := json.Marshal(response)
