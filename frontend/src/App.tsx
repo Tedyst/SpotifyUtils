@@ -4,7 +4,13 @@ import {
     Route,
     Redirect,
 } from 'react-router-dom';
-import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core';
+import {
+    createMuiTheme,
+    makeStyles,
+    ThemeProvider,
+    StylesProvider,
+    createGenerateClassName,
+} from '@material-ui/core';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { setUser as SentrySetUser } from '@sentry/react';
@@ -25,11 +31,6 @@ const TrackSearch = lazy(() => import('./views/TrackSearch'));
 const ListeningStats = lazy(() => import('./views/ListeningStatsPage'));
 
 const drawerWidth = 240;
-const darkTheme = createMuiTheme({
-    palette: {
-        type: 'dark',
-    },
-});
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -61,6 +62,11 @@ export interface Playlist {
 }
 
 function App() {
+    const darkTheme = createMuiTheme({
+        palette: {
+            type: 'dark',
+        },
+    });
     const classes = useStyles();
 
     const { data } = useQuery('status', () => axios.get<StatusInterface>('/api/status', {
@@ -129,24 +135,30 @@ function App() {
         </Switch>
     );
 
+    const generateClassName = createGenerateClassName({
+        productionPrefix: 'c',
+    });
+
     return (
-        <div className={classes.root}>
-            <ThemeProvider theme={darkTheme}>
-                <Sidebar
-                    logged={!!data?.data.Success}
-                    username={data?.data.Username}
-                    image={data?.data.Image}
-                    settings={data?.data.Settings}
-                />
-                <Suspense fallback={<Loading />}>
-                    <main className={classes.content}>
-                        <div className={classes.toolbar} />
-                        {appContent}
-                        <ServiceWorkerPopup />
-                    </main>
-                </Suspense>
-            </ThemeProvider>
-        </div>
+        <StylesProvider injectFirst generateClassName={generateClassName}>
+            <div className={classes.root}>
+                <ThemeProvider theme={darkTheme}>
+                    <Sidebar
+                        logged={!!data?.data.Success}
+                        username={data?.data.Username}
+                        image={data?.data.Image}
+                        settings={data?.data.Settings}
+                    />
+                    <Suspense fallback={<Loading />}>
+                        <main className={classes.content}>
+                            <div className={classes.toolbar} />
+                            {appContent}
+                            <ServiceWorkerPopup />
+                        </main>
+                    </Suspense>
+                </ThemeProvider>
+            </div>
+        </StylesProvider>
     );
 }
 

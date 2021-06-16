@@ -9,6 +9,7 @@ import { Integrations } from '@sentry/tracing';
 import { createBrowserHistory } from 'history';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { unregister } from './serviceWorkerRegistration';
 
 const history = createBrowserHistory();
 
@@ -46,7 +47,7 @@ if (!isDevelopment) {
 
 ReactDOM.render(
     <React.StrictMode>
-        <Sentry.ErrorBoundary fallback="An error has occurred" showDialog>
+        <Sentry.ErrorBoundary fallback="An error has occurred" showDialog onError={() => unregister()}>
             <QueryClientProvider client={queryClient}>
                 <Router history={history}>
                     <App />

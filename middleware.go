@@ -44,7 +44,9 @@ func securityHeaders(h http.Handler) http.Handler {
 		w.Header().Set("X-Frame-Options", "SAMEORIGIN")
 		w.Header().Set("Referrer-Policy", "same-origin")
 		w.Header().Set("Permissions-Policy", "geolocation=(), microphone=()")
-		w.Header().Set("Content-Security-Policy", "default-src 'none'; manifest-src 'self'; connect-src 'self' https://sentry-relay.stoicatedy.ovh https://sentry.io; img-src *; script-src https://sentry-relay.stoicatedy.ovh https://sentry.io https://storage.googleapis.com 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; base-uri 'self'; report-uri https://sentry-relay.stoicatedy.ovh/api/5689078/security/?sentry_key=a38da28ff45041828f3ee7f714af0527; font-src https://fonts.gstatic.com https://use.typekit.net; worker-src https://spotify.stoicatedy.ovh;")
+		if !(*config.Debug) {
+			w.Header().Set("Content-Security-Policy", "default-src 'none'; manifest-src 'self'; connect-src 'self' https://sentry-relay.stoicatedy.ovh https://sentry.io; img-src *; script-src https://sentry-relay.stoicatedy.ovh https://sentry.io https://storage.googleapis.com 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; base-uri 'self'; report-uri https://sentry-relay.stoicatedy.ovh/api/5689078/security/?sentry_key=a38da28ff45041828f3ee7f714af0527; font-src https://fonts.gstatic.com https://use.typekit.net; worker-src https://spotify.stoicatedy.ovh;")
+		}
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("Expect-CT", "max-age=86400, enforce, report-uri=\"https://github.com/Tedyst/SpotifyUtils\"")
 		h.ServeHTTP(w, r)

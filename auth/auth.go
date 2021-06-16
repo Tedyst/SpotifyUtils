@@ -33,11 +33,15 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	session, _ := config.SessionStore.Get(req, "username")
+	session, err := config.SessionStore.Get(req, "username")
+	if err != nil {
+		utils.ErrorErr(res, req, err)
+		return
+	}
 
 	request := &authAPIRequest{}
 	decoder := json.NewDecoder(req.Body)
-	err := decoder.Decode(request)
+	err = decoder.Decode(request)
 	if err != nil || request.Host == "" || request.Code == "" {
 		utils.ErrorString(res, req, "Invalid Request")
 		return
@@ -56,7 +60,11 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 
 	var u *userutils.User
 	if *config.MockExternalCalls {
-		u = userutils.GetUser("vq0u2761le51p2idib6f89y78")
+		if *config.MockUser == "" {
+			utils.ErrorString(res, req, "MockExternalCalls is enabled but MockUser is not set")
+			return
+		}
+		u = userutils.GetUser(*config.MockUser)
 	} else {
 		client := config.SpotifyAPI.NewClient(token)
 		spotifyUser, err := client.CurrentUser()
