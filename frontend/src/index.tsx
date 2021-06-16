@@ -46,15 +46,13 @@ if (!isDevelopment) {
 }
 
 ReactDOM.render(
-    <React.StrictMode>
-        <Sentry.ErrorBoundary fallback="An error has occurred" showDialog onError={() => unregister()}>
-            <QueryClientProvider client={queryClient}>
-                <Router history={history}>
-                    <App />
-                </Router>
-            </QueryClientProvider>
-        </Sentry.ErrorBoundary>
-    </React.StrictMode>,
+    <Sentry.ErrorBoundary fallback="An error has occurred" showDialog onError={() => unregister()}>
+        <QueryClientProvider client={queryClient}>
+            <Router history={history}>
+                <App />
+            </Router>
+        </QueryClientProvider>
+    </Sentry.ErrorBoundary>,
     document.getElementById('root'),
 );
 

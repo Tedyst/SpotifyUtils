@@ -6,20 +6,20 @@ import {
 } from 'react-router-dom';
 import {
     createMuiTheme,
+    CssBaseline,
     makeStyles,
     ThemeProvider,
-    StylesProvider,
-    createGenerateClassName,
 } from '@material-ui/core';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { setUser as SentrySetUser } from '@sentry/react';
-import Sidebar from './views/Sidebar';
 import ServiceWorkerPopup from './components/ServiceWorkerPopup';
-import Loading from './components/Loading';
 import { Settings as SettingsInterface } from './components/Settings/SettingsPage';
 
-const Login = lazy(() => import('./views/Auth/Login'));
+import Sidebar from './views/Sidebar';
+import Loading from './components/Loading';
+import Login from './views/Auth/Login';
+
 const PlaylistView = lazy(() => import('./views/PlaylistView'));
 const Track = lazy(() => import('./views/TrackPage'));
 const Logout = lazy(() => import('./views/Auth/Logout'));
@@ -80,85 +80,82 @@ function App() {
         if (window.location.pathname !== '/' && window.location.pathname !== '/auth' && window.location.pathname !== '/logout') {
             window.localStorage.setItem('lastURL', window.location.pathname);
         }
-    } else {
-        SentrySetUser({
-            id: data?.data?.ID,
-        });
-        const lastURL = window.localStorage.getItem('lastURL');
-        if (lastURL !== '' && lastURL) {
-            setTimeout(() => {
-                window.localStorage.removeItem('lastURL');
-            }, 1000);
-            redir = <Redirect to={`${lastURL}`} />;
-        }
+        return (
+            <ThemeProvider theme={darkTheme}>
+                <CssBaseline />
+                <div className={classes.root}>
+                    <main className={classes.content}>
+                        <div className={classes.toolbar} />
+                        <Login />
+                        <ServiceWorkerPopup />
+                    </main>
+                </div>
+            </ThemeProvider>
+        );
     }
 
-    const appContent = logged ? (
-        <Switch>
-            <Route path="/playlist">
-                <PlaylistView />
-            </Route>
-            <Route path="/tracksearch">
-                <TrackSearch />
-            </Route>
-            <Route path="/listeningstatistics">
-                <ListeningStats />
-            </Route>
-            <Route path="/compare">
-                <Compare />
-            </Route>
-            <Route path="/track">
-                <Track />
-            </Route>
-            <Route path="/recent">
-                <Recent />
-            </Route>
-            <Route path="/settings">
-                <Settings />
-            </Route>
-            <Route path="/logout">
-                <Logout />
-            </Route>
-            <Route path="/auth">
-                <Redirect to="/" />
-            </Route>
-            <Route path="/">
-                <Top />
-            </Route>
-            {redir}
-        </Switch>
-    ) : (
-        <Switch>
-            <Route path="/">
-                <Login />
-            </Route>
-        </Switch>
-    );
-
-    const generateClassName = createGenerateClassName({
-        productionPrefix: 'c',
+    SentrySetUser({
+        id: data?.data?.ID,
     });
+    const lastURL = window.localStorage.getItem('lastURL');
+    if (lastURL !== '' && lastURL) {
+        setTimeout(() => {
+            window.localStorage.removeItem('lastURL');
+        }, 1000);
+        redir = <Redirect to={`${lastURL}`} />;
+    }
 
     return (
-        <StylesProvider injectFirst generateClassName={generateClassName}>
+        <ThemeProvider theme={darkTheme}>
+            <CssBaseline />
             <div className={classes.root}>
-                <ThemeProvider theme={darkTheme}>
-                    <Sidebar
-                        logged={!!data?.data.Success}
-                        username={data?.data.Username}
-                        image={data?.data.Image}
-                        settings={data?.data.Settings}
-                    />
-                    <Suspense fallback={<Loading />}>
-                        <main className={classes.content}>
-                            <div className={classes.toolbar} />
-                            {appContent}
-                            <ServiceWorkerPopup />
-                        </main>
-                    </Suspense>
-                </ThemeProvider>
+                <Sidebar
+                    logged={!!data?.data?.Success}
+                    username={data?.data?.Username}
+                    image={data?.data?.Image}
+                    settings={data?.data?.Settings}
+                />
+                <Suspense fallback={<Loading />}>
+                    <main className={classes.content}>
+                        <div className={classes.toolbar} />
+                        <Switch>
+                            <Route path="/playlist">
+                                <PlaylistView />
+                            </Route>
+                            <Route path="/tracksearch">
+                                <TrackSearch />
+                            </Route>
+                            <Route path="/listeningstatistics">
+                                <ListeningStats />
+                            </Route>
+                            <Route path="/compare">
+                                <Compare />
+                            </Route>
+                            <Route path="/track">
+                                <Track />
+                            </Route>
+                            <Route path="/recent">
+                                <Recent />
+                            </Route>
+                            <Route path="/settings">
+                                <Settings />
+                            </Route>
+                            <Route path="/logout">
+                                <Logout />
+                            </Route>
+                            <Route path="/auth">
+                                <Redirect to="/" />
+                            </Route>
+                            <Route path="/">
+                                <Top />
+                            </Route>
+                            {redir}
+                        </Switch>
+                        <ServiceWorkerPopup />
+                    </main>
+                </Suspense>
             </div>
-        </StylesProvider>
+        </ThemeProvider>
     );
 }
 
