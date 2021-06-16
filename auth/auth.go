@@ -145,4 +145,6 @@ func Logout(res http.ResponseWriter, req *http.Request) {
 		utils.ErrorErr(res, req, err)
 		return
 	}
+
+	http.ServeFile(res, req, *config.BuildPath+"/index.html")
 }

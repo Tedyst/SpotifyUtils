@@ -86,7 +86,9 @@ function App() {
                 <div className={classes.root}>
                     <main className={classes.content}>
                         <div className={classes.toolbar} />
-                        <Login />
+                        <Login
+                            CSRFToken={data?.headers['x-csrf-token']}
+                        />
                         <ServiceWorkerPopup />
                     </main>
                 </div>

@@ -3,14 +3,17 @@ import { useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
 import LoginPage from '../Login/LoginPage';
 
-export default function LoginWithCode(props: { code: string }) {
+export default function LoginWithCode(props: { code: string, CSRFToken: string | undefined }) {
     const queryClient = useQueryClient();
+    const { CSRFToken } = props;
     const { isLoading, error, data } = useQuery('auth', () => axios.post<AuthInterface>('/api/auth', {
         host: `${window.location.protocol}//${window.location.host}`,
         code: props.code,
     }, {
         withCredentials: true,
-    }));
+    }), {
+        enabled: !!CSRFToken,
+    });
     useEffect(() => {
         if (data?.data.Success) {
             queryClient.invalidateQueries();
