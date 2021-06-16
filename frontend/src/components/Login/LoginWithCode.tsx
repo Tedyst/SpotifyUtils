@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 import LoginPage from '../Login/LoginPage';
 
 export default function LoginWithCode(props: { code: string, CSRFToken: string | undefined }) {
@@ -14,11 +15,16 @@ export default function LoginWithCode(props: { code: string, CSRFToken: string |
     }), {
         enabled: !!CSRFToken,
     });
-    useEffect(() => {
-        if (data?.data.Success) {
-            queryClient.invalidateQueries();
+    if (data?.data.Success) {
+        const lastURL = window.localStorage.getItem('lastURL');
+        queryClient.invalidateQueries();
+        if (lastURL !== '' && lastURL) {
+            setTimeout(() => {
+                window.localStorage.removeItem('lastURL');
+            }, 1000);
+            return <Redirect to={`${lastURL}`} />;
         }
-    }, [data]);
+    }
     if (isLoading) {
         return <LoginPage loggingIn />;
     }

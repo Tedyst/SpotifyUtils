@@ -6,7 +6,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -40,7 +39,6 @@ export default function LoginPage(props: { loggingIn: boolean }) {
     }));
 
     const { loggingIn } = props;
-    let redir = <div />;
     let buttonText = loggingIn
         ? 'Logging in... Please wait...'
         : 'Sign in using Spotify';
@@ -59,13 +57,7 @@ export default function LoginPage(props: { loggingIn: boolean }) {
     } else if (status === 'loading') {
         buttonText = 'Contacting server...';
     }
-    const lastURL = window.localStorage.getItem('lastURL');
-    if (lastURL !== '' && lastURL && loggingIn) {
-        setTimeout(() => {
-            window.localStorage.removeItem('lastURL');
-        }, 1000);
-        redir = <Redirect to={`${lastURL}`} />;
-    }
+
     return (
         <Container maxWidth="xs">
             {errorComponent}
@@ -95,7 +87,6 @@ export default function LoginPage(props: { loggingIn: boolean }) {
                     </Button>
                 </form>
             </div>
-            {redir}
         </Container>
     );
 }
