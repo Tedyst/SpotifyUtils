@@ -7,14 +7,15 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/zmb3/spotify"
+	"gorm.io/gorm"
 )
 
 type Track struct {
-	ID        uint      `gorm:"primarykey" json:"-"`
-	CreatedAt time.Time `json:"-"`
-	UpdatedAt time.Time `json:"-"`
-	DeletedAt time.Time `gorm:"index" json:"-"`
-	TrackID   string    `gorm:"type:VARCHAR(30) NOT NULL UNIQUE"`
+	ID        uint           `gorm:"primarykey" json:"-"`
+	CreatedAt time.Time      `json:"-"`
+	UpdatedAt time.Time      `json:"-"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+	TrackID   string         `gorm:"type:VARCHAR(30) NOT NULL UNIQUE"`
 
 	Lyrics string
 
