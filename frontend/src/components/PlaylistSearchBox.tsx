@@ -42,13 +42,6 @@ export default function SearchBox(props: {
     const ButtonText = searching ? 'Searching...' : 'Search';
 
     // TODO: What is this file
-    if (!playlists) {
-        return (
-            <MenuItem disabled value="none">
-                No playlist found!
-            </MenuItem>
-        );
-    }
     let list: any[] = [];
     if (playlists !== undefined) {
         list = [];
@@ -63,6 +56,12 @@ export default function SearchBox(props: {
                 </MenuItem>,
             );
         });
+    } else {
+        list.push(
+            <MenuItem disabled value="none">
+                No playlist found!
+            </MenuItem>
+        );
     }
 
     const changePlaylist = (event: any) => {
