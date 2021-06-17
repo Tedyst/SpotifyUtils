@@ -60,7 +60,7 @@ export default function SearchBox(props: {
         list.push(
             <MenuItem disabled value="none">
                 No playlist found!
-            </MenuItem>
+            </MenuItem>,
         );
     }
 

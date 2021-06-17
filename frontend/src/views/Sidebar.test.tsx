@@ -3,18 +3,15 @@ import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { waitFor } from '@testing-library/react';
 import nock from 'nock';
-import App from './App';
-import Sidebar from './views/Sidebar';
-import { renderWithClient } from './tests/utils';
+import App from '../App';
+import Sidebar from '../views/Sidebar';
+import { renderWithClient } from '../tests/utils';
 
 describe('sidebar', () => {
     test('recent tracks disabled', async () => {
-        const setMobileOpen = (b: boolean) => { };
         const result = renderWithClient(<Sidebar
             logged
-            mobileOpen={false}
             settings={{ RecentTracks: false }}
-            setMobileOpen={setMobileOpen}
         />);
 
         await waitFor(() => result.getAllByText(/Recent Tracks/));
