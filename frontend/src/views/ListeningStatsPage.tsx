@@ -1,11 +1,10 @@
 /* eslint-disable max-len */
 import React from 'react';
-import { Container } from '@material-ui/core';
 import { useQuery } from 'react-query';
-import { Alert, AlertTitle } from '@material-ui/lab';
 import axios from 'axios';
-import Loading from '../components/Loading';
 import ListeningStatsComp, { ListeningStatsInterface } from '../components/ListeningStats/ListeningStatsComp';
+import ErrorAxiosComponent from '../components/ErrorAxiosComponent';
+import Loading from '../components/Loading';
 
 export default function ListeningStatsPage() {
     const today = new Date();
@@ -14,44 +13,30 @@ export default function ListeningStatsPage() {
         withCredentials: true,
     }));
 
-    let errorComponent = null;
-    if (status === 'error' || data?.data.Success === false) {
-        const errorMessage = data?.data.Error ? data.data.Error : null;
-        if (typeof error === 'object' && error != null) {
-            if (error.toString() !== '') {
-                errorComponent = (
-                    <Container maxWidth="xs">
-                        <Alert severity="error">
-                            <AlertTitle>{error.toString()}</AlertTitle>
-                            {errorMessage}
-                        </Alert>
-                    </Container>
-                );
-            }
-        } else {
-            errorComponent = (
-                <Container maxWidth="xs">
-                    <Alert severity="error">
-                        <AlertTitle>Could not extract data from server</AlertTitle>
-                        {errorMessage}
-                    </Alert>
-                </Container>
-            );
-        }
+    const err = <ErrorAxiosComponent data={data} status={status} error={error} loadingSpinner={false} />;
+
+    if (status === 'loading') {
         return (
             <div>
-                {errorComponent}
+                {err}
+                <ListeningStatsComp
+                    data={data?.data}
+                    selectedDate={selectedDate}
+                    setSelectedDate={(value) => { setSelectedDate(value); }}
+                />
                 <Loading />
             </div>
         );
     }
-    if (data === undefined || status === 'loading' || data?.data === undefined) return <Loading />;
 
     return (
-        <ListeningStatsComp
-            data={data.data}
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-        />
+        <>
+            {err}
+            <ListeningStatsComp
+                data={data?.data}
+                selectedDate={selectedDate}
+                setSelectedDate={(value) => { setSelectedDate(value); }}
+            />
+        </>
     );
 }

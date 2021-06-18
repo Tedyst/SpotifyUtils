@@ -38,7 +38,7 @@ export default function SearchBox(props: {
 }) {
     const classes = useStyles();
     const { playlists, setPlaylist, searching } = props;
-    const [selectedPlaylist, setSelectedPlaylist] = React.useState<string>();
+    const [selectedPlaylist, setSelectedPlaylist] = React.useState<string>('none');
     const ButtonText = searching ? 'Searching...' : 'Search';
 
     // TODO: What is this file
@@ -70,7 +70,7 @@ export default function SearchBox(props: {
 
     const mySubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (selectedPlaylist === undefined) return;
+        if (selectedPlaylist === 'none') return;
         setPlaylist(selectedPlaylist);
     };
 

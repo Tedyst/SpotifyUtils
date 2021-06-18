@@ -2,10 +2,10 @@ import React from 'react';
 import { Container } from '@material-ui/core';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { Alert, AlertTitle } from '@material-ui/lab';
 import SearchBox from '../components/PlaylistSearchBox';
 import ResultBox from '../components/ResultBox';
 import { Playlist } from '../App';
+import ErrorAxiosComponent from '../components/ErrorAxiosComponent';
 
 export interface PlaylistResponse {
     Results: Track[];
@@ -39,45 +39,11 @@ export default function PlaylistSearch(props: {
     });
     const { playlists } = props;
 
-    let errorComponent = null;
-    if (status === 'error') {
-        // This is needed to get the response data for a 401 request
-        const myCustomErrorLet: any = {};
-        myCustomErrorLet.data = error;
-
-        let errorMessage: string = '';
-        if (myCustomErrorLet?.data?.response?.data?.Error) {
-            errorMessage = myCustomErrorLet.data.response.data.Error;
-        } else if (data?.data?.Error) {
-            errorMessage = data.data.Error;
-        }
-
-        if (typeof error === 'object' && error != null) {
-            if (error.toString() !== '') {
-                errorComponent = (
-                    <Container maxWidth="xs">
-                        <Alert severity="error">
-                            <AlertTitle>{error.toString()}</AlertTitle>
-                            {errorMessage}
-                        </Alert>
-                    </Container>
-                );
-            }
-        } else {
-            errorComponent = (
-                <Container maxWidth="xs">
-                    <Alert severity="error">
-                        <AlertTitle>Could not extract data from server</AlertTitle>
-                        {errorMessage}
-                    </Alert>
-                </Container>
-            );
-        }
-    }
+    const err = <ErrorAxiosComponent data={data} status={status} error={error} />;
 
     return (
         <div>
-            {errorComponent}
+            {err}
             <Container maxWidth="xs">
                 <SearchBox
                     setPlaylist={(s) => {

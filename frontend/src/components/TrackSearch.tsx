@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function SearchBox() {
+export default function TrackSearch() {
     const classes = useStyles();
     const [URI, setURI] = React.useState('');
     const [Refresh, setRefresh] = React.useState('');
@@ -48,7 +48,7 @@ export default function SearchBox() {
                 const split = URI.split('/');
                 if (split.length === 5) {
                     // eslint-disable-next-line prefer-destructuring
-                    realURI = split[4].split('?')[0];
+                    [realURI] = split[4].split('?');
                 }
             }
             const newURL = `/track/${realURI}`;

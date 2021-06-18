@@ -27,7 +27,6 @@ const Recent = lazy(() => import('./views/RecentPage'));
 const Settings = lazy(() => import('./views/SettingsPage'));
 const Top = lazy(() => import('./views/TopPage'));
 const Compare = lazy(() => import('./views/ComparePage'));
-const TrackSearch = lazy(() => import('./views/TrackSearch'));
 const ListeningStats = lazy(() => import('./views/ListeningStatsPage'));
 
 const drawerWidth = 240;
@@ -117,9 +116,6 @@ function App() {
                                 <PlaylistView
                                     playlists={data?.data.Playlists}
                                 />
-                            </Route>
-                            <Route path="/tracksearch">
-                                <TrackSearch />
                             </Route>
                             <Route path="/listeningstatistics">
                                 <ListeningStats />
