@@ -3,13 +3,11 @@ import React from 'react';
 import {
     makeStyles, Grid, Container, Card, CardContent, Typography,
 } from '@material-ui/core';
-import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import SongCardRight from '../SongCardRight';
 import ResultBox from '../ResultBox';
 import Graph from '../Graph';
@@ -77,7 +75,7 @@ export default function ListeningStatsComp(props: {
     const classes = useStyles();
     const { data, setSelectedDate, selectedDate } = props;
 
-    const handleDateChange = (date: MaterialUiPickersDate) => {
+    const handleDateChange = (date: Date | null) => {
         if (date !== null && setSelectedDate !== undefined) setSelectedDate(date);
     };
 
