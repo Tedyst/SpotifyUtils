@@ -66,9 +66,12 @@ export interface TrackInformation {
 }
 
 export default function TrackAnalyze(props: {
-    trackInfo: Result;
+    trackInfo: Result | undefined;
 }) {
     const { trackInfo } = props;
+    if (!trackInfo) {
+        return null;
+    }
 
     const lyrics = trackInfo.Lyrics ? (
         <Grid item xs={12}>

@@ -36,8 +36,10 @@ export default function TrackAnalyzeController() {
         );
     }
 
-    if (err != null && data !== undefined) {
-        return <TrackAnalyze trackInfo={data.data.Result} />;
-    }
-    return err;
+    return (
+        <>
+            {err}
+            <TrackAnalyze trackInfo={data?.data?.Result} />
+        </>
+    );
 }
