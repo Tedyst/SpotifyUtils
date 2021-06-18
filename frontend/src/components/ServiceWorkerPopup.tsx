@@ -3,12 +3,13 @@ import { Snackbar, Button } from '@material-ui/core';
 import * as serviceWorkerRegistration from '../serviceWorkerRegistration';
 
 export default function ServiceWorkerWrapper() {
-    const [showReload, setShowReload] = React.useState(false);
+    const [showReload, setShowReload] = React.useState(localStorage.getItem('waitingForServiceWorker') === 'true');
     const [waitingWorker, setWaitingWorker] = React.useState<ServiceWorker | null>(null);
 
     const onSWUpdate = (registration: ServiceWorkerRegistration) => {
         setShowReload(true);
         setWaitingWorker(registration.waiting);
+        localStorage.setItem('waitingForServiceWorker', 'true');
     };
 
     useEffect(() => {
@@ -16,6 +17,7 @@ export default function ServiceWorkerWrapper() {
     }, []);
 
     const reloadPage = () => {
+        localStorage.removeItem('waitingForServiceWorker');
         waitingWorker?.postMessage({ type: 'SKIP_WAITING' });
         setShowReload(false);
         window.location.reload(true);
