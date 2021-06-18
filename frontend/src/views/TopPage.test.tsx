@@ -3,6 +3,7 @@ import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { waitFor } from '@testing-library/react';
 import nock from 'nock';
+import { setLogger } from 'react-query';
 import TopPage from './TopPage';
 import { renderWithClient } from '../tests/utils';
 
@@ -147,6 +148,44 @@ describe('query component', () => {
         result.getAllByText(/anything/).forEach((v) => {
             expect(v).toHaveTextContent('Could not find anything');
         });
+        expectation.done();
+    });
+
+    test('top with no internet', async () => {
+        const expectation = nock('http://localhost')
+            .get('/api/top')
+            .reply(500, {});
+        setLogger({
+            log: () => { },
+            warn: () => { },
+            error: () => { },
+        });
+        const result = renderWithClient(<TopPage />);
+
+        await waitFor(() => result.getByText(/failed/));
+
+        expect(result.getByText(/failed/)).toHaveTextContent('Error: Request failed with status code 500');
+        expectation.done();
+    });
+
+    test('top with error from backend', async () => {
+        const expectation = nock('http://localhost')
+            .get('/api/top')
+            .reply(500, {
+                Success: false,
+                Error: 'Token expired',
+            });
+        setLogger({
+            log: () => { },
+            warn: () => { },
+            error: () => { },
+        });
+        const result = renderWithClient(<TopPage />);
+
+        await waitFor(() => result.getByText(/failed/));
+
+        expect(result.getByText(/failed/)).toHaveTextContent('Error: Request failed with status code 500');
+        expect(result.getByText(/Token/)).toHaveTextContent('Token expired');
         expectation.done();
     });
 });
