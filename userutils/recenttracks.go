@@ -216,6 +216,15 @@ func (u *User) getTopRecentTrackSince(t time.Time) []getTopRecentTrackSinceResul
 	return result
 }
 
+func (u *User) getTopRecentTrackCountSince(t time.Time) int {
+	var count int64
+	config.DB.Raw(`SELECT COUNT(id) AS count
+		FROM recent_tracks
+		WHERE listened_at >= ? AND user = ?`,
+		t.Unix(), u.ID).Count(&count)
+	return int(count)
+}
+
 type getListenedHoursRecentTrackSinceResult struct {
 	Count int
 	Time  int
@@ -300,7 +309,7 @@ func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct 
 	tr := u.getTopRecentTrackSince(t)
 	var countMap = map[string]int{}
 	result := RecentTracksStatisticsStruct{}
-	result.Count = len(tr)
+	result.Count = u.getTopRecentTrackCountSince(t)
 
 	result.TopTracks = make([]RecentTracksStatisticsStructTrack, 0)
 	list := []*tracks.Track{}
