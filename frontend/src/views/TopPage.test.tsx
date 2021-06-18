@@ -116,9 +116,13 @@ describe('query component', () => {
             });
         const result = renderWithClient(<TopPage />);
 
-        await waitFor(() => result.getByText(/Error when extracting/));
+        await waitFor(() => result.getByText(/Your top artists and tracks/));
 
-        expect(result.getByText(/Result/)).toHaveTextContent('Result is invalid');
+        expect(result).not.toBeNull();
+
+        result.getAllByText(/anything/).forEach((v) => {
+            expect(v).toHaveTextContent('Could not find anything');
+        });
         expectation.done();
     });
 
@@ -136,9 +140,13 @@ describe('query component', () => {
             });
         const result = renderWithClient(<TopPage />);
 
-        await waitFor(() => result.getByText(/Error when extracting/));
+        await waitFor(() => result.getByText(/Your top artists and tracks/));
 
-        expect(result.getByText(/Server did/)).toHaveTextContent('Server did not reply with data');
+        expect(result).not.toBeNull();
+
+        result.getAllByText(/anything/).forEach((v) => {
+            expect(v).toHaveTextContent('Could not find anything');
+        });
         expectation.done();
     });
 });
