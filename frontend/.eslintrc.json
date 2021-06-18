@@ -18,7 +18,8 @@
     },
     "plugins": [
         "react",
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "tree-shaking"
     ],
     "rules": {
         "react/jsx-filename-extension": "off",
