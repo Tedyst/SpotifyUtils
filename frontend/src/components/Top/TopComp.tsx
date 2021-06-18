@@ -16,7 +16,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 function unixToTime(lastUpdated: number | undefined): string {
-    if (!lastUpdated) {
+    if (typeof (lastUpdated) !== 'number') {
         return '';
     }
     const d = new Date(lastUpdated * 1000);
@@ -47,13 +47,13 @@ interface Result {
     Tracks: Track[] | null;
 }
 
-interface Artist {
+export interface Artist {
     Name: string;
     Image: string;
     ID: string;
 }
 
-interface Track {
+export interface Track {
     Artist: string;
     Name: string;
     Image: string;
@@ -135,7 +135,7 @@ export default function TopComp(props: {
                 <Grid container spacing={2} className={classes.root} direction="row" alignItems="stretch">
                     <Grid item key="lista-tracks" md={4} className={classes.fullWidth}>
                         <List
-                            items={top.Result.Tracks}
+                            items={top?.Result?.Tracks}
                             name="Your Top Tracks"
                         />
                     </Grid>

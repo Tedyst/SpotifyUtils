@@ -2,6 +2,7 @@ import React from 'react';
 import {
     makeStyles, List, ListItem, ListItemText, ListSubheader,
 } from '@material-ui/core';
+import { Track, Artist } from '../components/Top/TopComp';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ListItems(props: {
-    items: any[] | null,
+    items: Track[] | Artist[] | string[] | undefined | null,
     name: string
 }) {
     const classes = useStyles();
@@ -49,36 +50,28 @@ export default function ListItems(props: {
         );
     }
     Object.values(items).forEach((item) => {
-        if (item.Artist) {
+        if (item?.Artist) {
             it.push(
-                <ListItem key={`track-${item.ID}`}>
+                <ListItem key={`${name}-${item.ID}`}>
                     <ListItemText
-                        primary={item.Name}
-                        secondary={item.Artist}
+                        primary={item?.Name}
+                        secondary={item?.Artist}
                     />
                 </ListItem>,
             );
-        } else if (item.ID) {
+        } else if (item?.ID) {
             it.push(
-                <ListItem key={`artist-${item.ID}`}>
+                <ListItem key={`${name}-${item.ID}`}>
                     <ListItemText
-                        primary={item.Name}
-                    />
-                </ListItem>,
-            );
-        } else if (item.Name) {
-            it.push(
-                <ListItem key={`genre-${item.Name}`}>
-                    <ListItemText
-                        primary={item.Name}
+                        primary={item?.Name}
                     />
                 </ListItem>,
             );
         } else {
             it.push(
-                <ListItem key={`genre-${item}`}>
+                <ListItem key={`${name}-${item}`}>
                     <ListItemText
-                        primary={item}
+                        primary={item?.toString()}
                     />
                 </ListItem>,
             );

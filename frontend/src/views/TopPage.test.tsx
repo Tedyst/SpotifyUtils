@@ -8,7 +8,7 @@ import TopPage from './TopPage';
 import { renderWithClient } from '../tests/utils';
 
 describe('query component', () => {
-    test('top', async () => {
+    test('base', async () => {
         const expectation = nock('http://localhost')
             .get('/api/top')
             .reply(200, {
@@ -45,7 +45,7 @@ describe('query component', () => {
         expectation.done();
     });
 
-    test('top without images', async () => {
+    test('no images', async () => {
         const expectation = nock('http://localhost')
             .get('/api/top')
             .reply(200, {
@@ -82,7 +82,7 @@ describe('query component', () => {
         expectation.done();
     });
 
-    test('top with no data', async () => {
+    test('no data', async () => {
         const expectation = nock('http://localhost')
             .get('/api/top')
             .reply(200, {
@@ -103,13 +103,13 @@ describe('query component', () => {
         expectation.done();
     });
 
-    test('top with bad data', async () => {
+    test('null data', async () => {
         const expectation = nock('http://localhost')
             .get('/api/top')
             .reply(200, {
                 Result: {
                     Genres: null,
-                    Updated: 1622275414,
+                    Updated: null,
                     Artists: null,
                     Tracks: null,
                 },
@@ -127,7 +127,7 @@ describe('query component', () => {
         expectation.done();
     });
 
-    test('top with no success', async () => {
+    test('no success', async () => {
         const expectation = nock('http://localhost')
             .get('/api/top')
             .reply(200, {
@@ -151,7 +151,7 @@ describe('query component', () => {
         expectation.done();
     });
 
-    test('top with no internet', async () => {
+    test('no internet', async () => {
         const expectation = nock('http://localhost')
             .get('/api/top')
             .reply(500, {});
@@ -168,7 +168,7 @@ describe('query component', () => {
         expectation.done();
     });
 
-    test('top with error from backend', async () => {
+    test('error from backend', async () => {
         const expectation = nock('http://localhost')
             .get('/api/top')
             .reply(500, {
@@ -186,6 +186,34 @@ describe('query component', () => {
 
         expect(result.getByText(/failed/)).toHaveTextContent('Error: Request failed with status code 500');
         expect(result.getByText(/Token/)).toHaveTextContent('Token expired');
+        expectation.done();
+    });
+
+    test('corrupt data', async () => {
+        const expectation = nock('http://localhost')
+            .get('/api/top')
+            .reply(200, {
+                Result: {
+                    Genres: [null, 123],
+                    Updated: 123,
+                    Artists: [
+                        {
+                            asd: 'asd',
+                        },
+                    ],
+                    Tracks: [
+                        {
+                            sdf: 'asd',
+                        },
+                    ],
+                },
+                Success: true,
+            });
+        const result = renderWithClient(<TopPage />);
+
+        await waitFor(() => result.getByText(/Your top artists and tracks/));
+
+        expect(result.getByText(/123/)).toHaveTextContent('123');
         expectation.done();
     });
 });
