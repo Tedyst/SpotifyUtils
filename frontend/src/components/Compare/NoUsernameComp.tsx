@@ -88,7 +88,7 @@ export default function NoUsername(props: {
                         root: classes.selected,
                     }}
                     component={Link}
-                    key={`friend-${value.Username}`}
+                    key={`friend-${value.Name}`}
                     to={`/compare/${value.Code}`}
                 >
                     <Avatar image={value.Image} name={value.Name} />
