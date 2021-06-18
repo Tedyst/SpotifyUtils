@@ -6,8 +6,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/Tedyst/gormstore"
 	"github.com/gabyshev/genius-api/genius"
+	"github.com/wader/gormstore/v2"
 	"github.com/zmb3/spotify"
 )
 
@@ -27,6 +27,8 @@ var (
 	Secret      = []byte(lookupEnvOrString("SECRET_KEY", "key"))
 
 	Database = flag.String("Database", lookupEnvOrString("DATABASE", "sqlite://data.db"), "The MySQL Database Address")
+
+	IsMySQL = false
 
 	SpotifyAPI = spotify.NewAuthenticator(*RedirectURL, SpotifyScope)
 

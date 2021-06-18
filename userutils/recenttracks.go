@@ -223,13 +223,24 @@ type getListenedHoursRecentTrackSinceResult struct {
 
 func (u *User) getListenedHoursRecentTrackSince(t time.Time) []getListenedHoursRecentTrackSinceResult {
 	var result []getListenedHoursRecentTrackSinceResult
-	config.DB.Raw(`SELECT COUNT(id) AS count,
-		(listened_at % 86400)/3600 AS time
-		FROM recent_tracks
-		WHERE listened_at >= ? AND user = ?
-		GROUP BY (listened_at % 86400)/3600
-		ORDER BY (listened_at % 86400)/3600`,
-		t.Unix(), u.ID).Scan(&result)
+	if config.IsMySQL {
+		config.DB.Raw(`SELECT COUNT(id) AS count,
+			FLOOR((listened_at % 86400)/3600) AS time
+			FROM recent_tracks
+			WHERE listened_at >= ? AND user = ?
+			GROUP BY FLOOR((listened_at % 86400)/3600)
+			ORDER BY FLOOR((listened_at % 86400)/3600)`,
+			t.Unix(), u.ID).Scan(&result)
+	} else {
+		config.DB.Raw(`SELECT COUNT(id) AS count,
+			(listened_at % 86400)/3600 AS time
+			FROM recent_tracks
+			WHERE listened_at >= ? AND user = ?
+			GROUP BY (listened_at % 86400)/3600
+			ORDER BY (listened_at % 86400)/3600`,
+			t.Unix(), u.ID).Scan(&result)
+	}
+
 	return result
 }
 
@@ -240,13 +251,23 @@ type getListenedDaysRecentTrackSinceResult struct {
 
 func (u *User) getListenedDaysRecentTrackSince(t time.Time) []getListenedDaysRecentTrackSinceResult {
 	var result []getListenedDaysRecentTrackSinceResult
-	config.DB.Raw(`SELECT COUNT(*) AS count,
-		(listened_at / 86400)*86400 AS time
-		FROM recent_tracks
-		WHERE listened_at >= ? AND user = ?
-		GROUP BY (listened_at / 86400)*86400
-		ORDER BY (listened_at / 86400)*86400`,
-		t.Unix(), u.ID).Scan(&result)
+	if config.IsMySQL {
+		config.DB.Raw(`SELECT COUNT(*) AS count,
+			FLOOR((listened_at / 86400))*86400 AS time
+			FROM recent_tracks
+			WHERE listened_at >= ? AND user = ?
+			GROUP BY FLOOR((listened_at / 86400))*86400
+			ORDER BY FLOOR((listened_at / 86400))*86400`,
+			t.Unix(), u.ID).Scan(&result)
+	} else {
+		config.DB.Raw(`SELECT COUNT(*) AS count,
+			(listened_at / 86400)*86400 AS time
+			FROM recent_tracks
+			WHERE listened_at >= ? AND user = ?
+			GROUP BY (listened_at / 86400)*86400
+			ORDER BY (listened_at / 86400)*86400`,
+			t.Unix(), u.ID).Scan(&result)
+	}
 	return result
 }
 

@@ -15,12 +15,13 @@ require (
 	github.com/gorilla/sessions v1.2.1 // indirect
 	github.com/prometheus/client_golang v1.11.0
 	github.com/sirupsen/logrus v1.7.0
+	github.com/wader/gormstore/v2 v2.0.0
 	github.com/weaveworks/promrus v1.2.0
 	github.com/zmb3/spotify v0.0.0-20200814173021-9bec46940cc0
 	golang.org/x/net v0.0.0-20210610132358-84b48f89b13b
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/time v0.0.0-20210611083556-38a9dc6acbc6
-	gorm.io/driver/mysql v1.0.1
+	gorm.io/driver/mysql v1.1.1
 	gorm.io/driver/sqlite v1.1.4
-	gorm.io/gorm v1.20.7
+	gorm.io/gorm v1.21.11
 )

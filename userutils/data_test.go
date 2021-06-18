@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Tedyst/gormstore"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/userutils"
+	"github.com/wader/gormstore/v2"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )

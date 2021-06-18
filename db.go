@@ -20,6 +20,7 @@ const spreadStartupUsers = 30 * time.Minute // 30 minutes
 func initDB() {
 	var datab *gorm.DB
 	if strings.HasPrefix(*config.Database, "mysql://") {
+		config.IsMySQL = true
 		*config.Database = strings.TrimPrefix(*config.Database, "mysql://")
 		createMySQLDB()
 		var err error
@@ -30,6 +31,7 @@ func initDB() {
 			log.Fatalln(err)
 		}
 	} else if strings.HasPrefix(*config.Database, "sqlite://") {
+		config.IsMySQL = false
 		*config.Database = strings.TrimPrefix(*config.Database, "sqlite://")
 		var err error
 		datab, err = gorm.Open(sqlite.Open(fmt.Sprintf("%s?charset=utf8mb4&parseTime=True&loc=Local", *config.Database)), &gorm.Config{

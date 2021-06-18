@@ -11,7 +11,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/Tedyst/gormstore"
+	"github.com/wader/gormstore/v2"
 
 	"github.com/tedyst/spotifyutils/api/compare"
 	"github.com/tedyst/spotifyutils/api/recenttracks"
