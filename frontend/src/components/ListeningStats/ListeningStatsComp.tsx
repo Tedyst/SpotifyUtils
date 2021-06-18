@@ -82,7 +82,7 @@ export default function ListeningStatsComp(props: {
     };
 
     const titleText = (
-        <div>
+        <>
             <Typography align="center" color="textPrimary" variant="h4">
                 Your Listening Statistics
             </Typography>
@@ -91,7 +91,7 @@ export default function ListeningStatsComp(props: {
                 <br />
                 To disable user tracking, go to Settings and uncheck Recent Tracks Tracking
             </Typography>
-        </div>
+        </>
     );
 
     const datepicker = (

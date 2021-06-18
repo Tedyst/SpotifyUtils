@@ -96,7 +96,7 @@ function ResponsiveDrawer(props: {
     };
 
     const drawer = (
-        <div>
+        <>
             <div className={`${classes.toolbar} ${classes.toolbarName}`}>
                 <Typography variant="h5" noWrap>
                     Utils For Spotify
@@ -234,7 +234,7 @@ function ResponsiveDrawer(props: {
                     <ListItemText primary="Logout" />
                 </ListItem>
             </List>
-        </div>
+        </>
     );
 
     const container = window !== undefined ? () => window.document.body : undefined;

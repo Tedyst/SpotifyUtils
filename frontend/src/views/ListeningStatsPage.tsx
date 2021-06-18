@@ -17,7 +17,7 @@ export default function ListeningStatsPage() {
 
     if (status === 'loading') {
         return (
-            <div>
+            <>
                 {err}
                 <ListeningStatsComp
                     data={data?.data}
@@ -25,7 +25,7 @@ export default function ListeningStatsPage() {
                     setSelectedDate={(value) => { setSelectedDate(value); }}
                 />
                 <Loading />
-            </div>
+            </>
         );
     }
 

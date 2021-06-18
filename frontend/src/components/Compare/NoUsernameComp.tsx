@@ -62,13 +62,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function NoUsername(props: {
-    compare: NoUsernameCompareInterface,
+    compare: NoUsernameCompareInterface | undefined,
     enableRedirect?: boolean,
 }) {
     const classes = useStyles();
     const [Word, setWord] = React.useState<string>();
     const [RedirectURL, setRedirectURL] = React.useState<string>();
     const { compare, enableRedirect } = props;
+    if (compare === undefined) {
+        return null;
+    }
     if (RedirectURL !== undefined && enableRedirect) {
         let url = `/compare/${String(RedirectURL)}`;
         if (String(RedirectURL).includes('/compare/')) {
@@ -110,7 +113,7 @@ export default function NoUsername(props: {
     };
 
     return (
-        <div>
+        <>
             <Container disableGutters fixed maxWidth="md">
                 <Typography align="center" color="textPrimary" variant="h4">
                     Your code is
@@ -175,7 +178,7 @@ export default function NoUsername(props: {
                     </ul>
                 </List>
             </Container>
-        </div>
+        </>
     );
 }
 

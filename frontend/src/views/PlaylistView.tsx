@@ -42,7 +42,7 @@ export default function PlaylistSearch(props: {
     const err = <ErrorAxiosComponent data={data} status={status} error={error} />;
 
     return (
-        <div>
+        <>
             {err}
             <Container maxWidth="xs">
                 <SearchBox
@@ -54,6 +54,6 @@ export default function PlaylistSearch(props: {
                 />
             </Container>
             <ResultBox results={data?.data.Results} />
-        </div>
+        </>
     );
 }

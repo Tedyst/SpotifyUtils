@@ -53,10 +53,10 @@ export default function ErrorAxiosComponent(props: {
     }
     if (status === 'loading' && loadingSpinner) {
         return (
-            <div>
+            <>
                 {err}
                 <Loading />
-            </div>
+            </>
         );
     }
     return err;

@@ -81,7 +81,7 @@ export default function TrackAnalyze(props: {
     ) : null;
 
     return (
-        <div>
+        <>
             <Container maxWidth="xs">
                 <SongCard
                     artist={trackInfo.Artist}
@@ -126,6 +126,6 @@ export default function TrackAnalyze(props: {
                 </Grid>
 
             </Grid>
-        </div>
+        </>
     );
 }

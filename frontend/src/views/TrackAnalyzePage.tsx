@@ -29,10 +29,10 @@ export default function TrackAnalyzeController() {
 
     if (myCustomErrorLet?.data?.response?.data?.Success === false) {
         return (
-            <div>
+            <>
                 <ErrorComponent error="Track does not exist" />
                 <TrackSearch />
-            </div>
+            </>
         );
     }
 

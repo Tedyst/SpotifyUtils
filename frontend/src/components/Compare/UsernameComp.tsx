@@ -24,10 +24,14 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function UsernameComp(props: {
-    data: UsernameInterface,
+    data: UsernameInterface | undefined,
 }) {
     const { data } = props;
     const classes = useStyles();
+    if (data === undefined) {
+        return null;
+    }
+
     let bestSongForArtist: string | undefined;
     if (data.Result.Artists && data.Result.Tracks) {
         if (data.Result.Artists.length > 0) {
@@ -96,7 +100,7 @@ export default function UsernameComp(props: {
         );
     }
     return (
-        <div>
+        <>
             <Container disableGutters fixed maxWidth="md">
                 <Grid alignItems="center" container>
                     <Avatars
@@ -162,6 +166,6 @@ export default function UsernameComp(props: {
                     </Grid>
                 </Grid>
             </Container>
-        </div>
+        </>
     );
 }
