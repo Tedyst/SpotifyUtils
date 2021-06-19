@@ -54,6 +54,8 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 	for _, s := range newTracks {
 		ids = append(ids, spotify.ID(s.TrackID))
 	}
+
+	var artistUpdate []*Artist
 	for i := 0; i < len(ids); i += limit {
 		size := len(ids)
 		if size > i+limit {
@@ -73,11 +75,11 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			return
 		}
 
-		var artistUpdate []*Artist
 		for ind, s := range info {
 			var artists []Artist
 			for _, s := range s.Artists {
 				a := GetArtistFromID(s.ID.String())
+				a.Name = s.Name
 				artists = append(artists, *a)
 				artistUpdate = append(artistUpdate, a)
 			}
@@ -110,14 +112,14 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			newTracks[ind+i].Save()
 		}
 
-		go func(client *spotify.Client, tr []*Track, artists []*Artist) {
-			BatchUpdateArtists(artists, cl)
-			for _, s := range tr {
-				s.Update(cl, true)
-				time.Sleep(5 * time.Second)
-			}
-		}(&cl, newTracks, artistUpdate)
 	}
+	go func(client *spotify.Client, tr []*Track, artists []*Artist) {
+		BatchUpdateArtists(artists, cl)
+		for _, s := range tr {
+			s.Update(cl, true)
+			time.Sleep(5 * time.Second)
+		}
+	}(&cl, newTracks, artistUpdate)
 }
 
 func (t *Track) Save() error {

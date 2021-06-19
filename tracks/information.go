@@ -94,6 +94,7 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 		var artistsBatch []*Artist
 		for _, s := range track.Artists {
 			a := GetArtistFromID(s.ID.String())
+			a.Name = s.Name
 			artistsBatch = append(artistsBatch, a)
 		}
 		BatchUpdateArtists(artistsBatch, cl)
