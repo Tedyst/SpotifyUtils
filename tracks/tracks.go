@@ -1,7 +1,6 @@
 package tracks
 
 import (
-	"errors"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -125,27 +124,13 @@ func (t *Track) Save() error {
 	if !enableSaving {
 		return nil
 	}
-	inDB := GetTrackFromID(t.TrackID)
-	if inDB.ID != t.ID {
-		msg := "duplicate entry detected"
-		log.WithFields(log.Fields{
-			"type":       "tracks",
-			"database":   inDB,
-			"track":      t,
-			"databaseid": inDB.ID,
-			"trackid":    t.ID,
-		}).Error(msg)
-		return errors.New(msg)
-	}
-	if t.TrackID == "" {
-		msg := "tried to save empty track_id"
+	if err := config.DB.Save(t).Error; err != nil {
 		log.WithFields(log.Fields{
 			"type":  "tracks",
 			"track": t,
-		}).Error(msg)
-		return errors.New(msg)
+		}).Error(err)
+		return err
 	}
-	config.DB.Save(t)
 	return nil
 }
 

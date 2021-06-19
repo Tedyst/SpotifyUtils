@@ -41,7 +41,6 @@ export default function SearchBox(props: {
     const [selectedPlaylist, setSelectedPlaylist] = React.useState<string>('none');
     const ButtonText = searching ? 'Searching...' : 'Search';
 
-    // TODO: What is this file
     let list: any[] = [];
     if (playlists !== undefined) {
         list = [];

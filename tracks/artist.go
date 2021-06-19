@@ -3,8 +3,6 @@ package tracks
 import (
 	"database/sql/driver"
 	"encoding/json"
-	"errors"
-	"fmt"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -105,17 +103,16 @@ func (a *Artist) Save() error {
 	if !enableSaving {
 		return nil
 	}
-	inDB := GetArtistFromID(a.ArtistID)
-	if inDB.ID != a.ID {
-		msg := fmt.Sprintf("Duplicate entry detected: %d and %d", inDB.ID, a.ID)
-		log.Error(msg)
-		return errors.New(msg)
+	if err := config.DB.Save(a).Error; err != nil {
+		log.WithFields(log.Fields{
+			"type":   "artist",
+			"artist": a,
+		}).Error(err)
+		return err
 	}
-	if a.ArtistID == "" {
-		msg := fmt.Sprintf("Tried to save empty track_id, ID = %d", a.ID)
-		log.Error(msg)
-		return errors.New(msg)
-	}
-	config.DB.Save(a)
 	return nil
+}
+
+func (a Artist) String() string {
+	return a.ArtistID
 }
