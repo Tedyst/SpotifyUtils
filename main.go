@@ -103,8 +103,8 @@ func main() {
 		}))
 
 		go func() {
-			http.Handle("/metrics", promhttp.Handler())
-			http.ListenAndServe(":5001", nil)
+			// http.Handle("/metrics", promhttp.Handler())
+			http.ListenAndServe(":5001", promhttp.Handler())
 		}()
 	}
 
