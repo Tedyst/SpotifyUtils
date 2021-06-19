@@ -94,13 +94,20 @@ func main() {
 		hook := promrus.MustNewPrometheusHook()
 		log.AddHook(hook)
 
-		config.DB.Use(prometheus.New(prometheus.Config{
-			DBName:      "spotifyutils",
-			StartServer: false,
-			MetricsCollector: []prometheus.MetricsCollector{
-				&prometheus.MySQL{VariableNames: []string{"Threads_running"}},
-			},
-		}))
+		if config.IsMySQL {
+			config.DB.Use(prometheus.New(prometheus.Config{
+				DBName:      "spotifyutils",
+				StartServer: false,
+				MetricsCollector: []prometheus.MetricsCollector{
+					&prometheus.MySQL{VariableNames: []string{"threads_running"}},
+				},
+			}))
+		} else {
+			config.DB.Use(prometheus.New(prometheus.Config{
+				DBName:      "spotifyutils",
+				StartServer: false,
+			}))
+		}
 
 		go func() {
 			// http.Handle("/metrics", promhttp.Handler())
