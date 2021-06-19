@@ -8,6 +8,7 @@ import (
 	"github.com/tedyst/spotifyutils/api/playlistview"
 	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/weaveworks/promrus"
+	"gorm.io/plugin/prometheus"
 
 	log "github.com/sirupsen/logrus"
 
@@ -92,6 +93,15 @@ func main() {
 	if *config.Metrics {
 		hook := promrus.MustNewPrometheusHook()
 		log.AddHook(hook)
+
+		config.DB.Use(prometheus.New(prometheus.Config{
+			DBName:      "spotifyutils",
+			StartServer: false,
+			MetricsCollector: []prometheus.MetricsCollector{
+				&prometheus.MySQL{VariableNames: []string{"Threads_running"}},
+			},
+		}))
+
 		go func() {
 			http.Handle("/metrics", promhttp.Handler())
 			http.ListenAndServe(":5001", nil)
