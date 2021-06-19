@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/tedyst/spotifyutils/api/utils"
+	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/tedyst/spotifyutils/tracks"
 	"github.com/tedyst/spotifyutils/userutils"
 	"github.com/zmb3/spotify"
@@ -36,6 +37,7 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	// If the track dosen't exist
 	if !tracks.TrackExists(trackURI) {
 		if !(*config.MockExternalCalls) {
+			metrics.SpotifyRequests.Add(1)
 			_, err := user.Client().GetTrack(spotify.ID(trackURI))
 			if err != nil {
 				utils.ErrorErr(res, req, err)

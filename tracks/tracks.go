@@ -6,6 +6,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/zmb3/spotify"
 	"gorm.io/gorm"
 )
@@ -60,11 +61,13 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			size = i + limit
 		}
 		batch := ids[i:size]
+		metrics.SpotifyRequests.Add(1)
 		info, err := cl.GetTracks(batch...)
 		if err != nil {
 			log.Error(err)
 			return
 		}
+		metrics.SpotifyRequests.Add(1)
 		features, err := cl.GetAudioFeatures(batch...)
 		if err != nil {
 			log.Error(err)

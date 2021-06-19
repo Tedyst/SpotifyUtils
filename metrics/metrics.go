@@ -31,4 +31,14 @@ var (
 		Name:      "recent_tracks_added",
 		Help:      "The total number of recent tracks that are added across all users",
 	})
+	SpotifyRequests = promauto.NewCounter(prometheus.CounterOpts{
+		Namespace: "spotifyutils",
+		Name:      "spotify_requests",
+		Help:      "The total number of API requests to Spotify",
+	})
+	GeniusRequests = promauto.NewCounter(prometheus.CounterOpts{
+		Namespace: "spotifyutils",
+		Name:      "genius_requests",
+		Help:      "The total number of API requests to Genius",
+	})
 )

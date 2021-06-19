@@ -12,6 +12,7 @@ import (
 	"github.com/gabyshev/genius-api/genius"
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/metrics"
 	"golang.org/x/net/html"
 )
 
@@ -32,6 +33,7 @@ func Lyrics(trackName string, trackArtist string) (string, error) {
 		"artist": trackArtist,
 	})
 	name := fmt.Sprintf("%s %s", trackArtist, trackName)
+	metrics.GeniusRequests.Add(1)
 	res, err := config.GeniusClient.Search(name)
 	if err != nil {
 		contextLogger.Error(err)
@@ -45,6 +47,7 @@ func Lyrics(trackName string, trackArtist string) (string, error) {
 		if validResponse(trackName, trackArtist, s) {
 			var lyrics string
 			for i := 1; i <= retryCount; i++ {
+				metrics.GeniusRequests.Add(1)
 				lyrics, err = getLyricsFromURL(s.Result.URL)
 				if err != nil {
 					contextLogger.WithFields(log.Fields{

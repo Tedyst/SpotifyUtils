@@ -5,6 +5,7 @@ import (
 	"net/url"
 
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/zmb3/spotify"
 	"golang.org/x/oauth2"
 )
@@ -35,6 +36,7 @@ func GetSpotifyAuthorization(host string, code string) (*oauth2.Token, error) {
 	newHost := fmt.Sprintf("%s/auth", host)
 	auth := spotify.NewAuthenticator(newHost, config.SpotifyScope)
 	auth.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
+	metrics.SpotifyRequests.Add(1)
 	token, err := auth.Exchange(code)
 	if err != nil {
 		return nil, err

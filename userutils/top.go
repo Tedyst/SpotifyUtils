@@ -6,6 +6,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/zmb3/spotify"
 )
 
@@ -53,6 +54,7 @@ func (u *User) RefreshTop() error {
 	shortOptions := &spotify.Options{
 		Timerange: &shortString,
 	}
+	metrics.SpotifyRequests.Add(1)
 	longTopArtists, err := u.Client().CurrentUsersTopArtistsOpt(longOptions)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -62,6 +64,7 @@ func (u *User) RefreshTop() error {
 		}).Error(err)
 		return err
 	}
+	metrics.SpotifyRequests.Add(1)
 	shortTopArtists, err := u.Client().CurrentUsersTopArtistsOpt(shortOptions)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -71,6 +74,7 @@ func (u *User) RefreshTop() error {
 		}).Error(err)
 		return err
 	}
+	metrics.SpotifyRequests.Add(1)
 	shortTopTracks, err := u.Client().CurrentUsersTopTracksOpt(shortOptions)
 	if err != nil {
 		log.WithFields(log.Fields{

@@ -8,6 +8,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/zmb3/spotify"
 	"golang.org/x/oauth2"
 	"gorm.io/gorm"
@@ -94,6 +95,7 @@ func (u *User) RefreshToken() error {
 			"user": u,
 		}).Debug("Trying to refresh token")
 		client := config.SpotifyAPI.NewClient(u.Token)
+		metrics.SpotifyRequests.Add(1)
 		t, err := client.Token()
 		if err != nil {
 			log.WithFields(log.Fields{
@@ -133,6 +135,7 @@ func (u *User) RefreshUser() error {
 		return nil
 	}
 	client := config.SpotifyAPI.NewClient(u.Token)
+	metrics.SpotifyRequests.Add(1)
 	playlists, err := client.GetPlaylistsForUser(u.UserID)
 	if err != nil {
 		return err
@@ -147,6 +150,7 @@ func (u *User) RefreshUser() error {
 				Name: s.Name,
 			})
 		}
+		metrics.SpotifyRequests.Add(1)
 		err = client.NextPage(playlists)
 		if err == spotify.ErrNoMorePages {
 			break

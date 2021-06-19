@@ -9,6 +9,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/zmb3/spotify"
 )
 
@@ -80,6 +81,7 @@ func BatchUpdateArtists(artists []*Artist, cl spotify.Client) {
 			size = i + limit
 		}
 		batch := ids[i:size]
+		metrics.SpotifyRequests.Add(1)
 		info, err := cl.GetArtists(batch...)
 		if err != nil {
 			log.Error(err)
@@ -98,6 +100,7 @@ func BatchUpdateArtists(artists []*Artist, cl spotify.Client) {
 	}
 }
 
+// Todo: come back here
 func (a *Artist) Save() error {
 	if !enableSaving {
 		return nil
