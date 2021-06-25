@@ -30,7 +30,7 @@ type User struct {
 	Top         TopStruct    `gorm:"embedded;embeddedPrefix:top_"`
 	CompareCode string       `gorm:"unique"`
 	Friends     FriendsStruct
-	DiscordID   int `json:"-"`
+	DiscordID   string `json:"-"`
 }
 
 type UserSettings struct {

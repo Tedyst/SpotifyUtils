@@ -10,9 +10,26 @@ import (
 )
 
 var (
-	GuildID        = "446365233477320716"
-	RemoveCommands = false
-	session        *discordgo.Session
+	GuildID         = "446365233477320716"
+	RemoveCommands  = false
+	session         *discordgo.Session
+	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
+		"link": linkCommand,
+	}
+	commands = []*discordgo.ApplicationCommand{
+		{
+			Name:        "link",
+			Description: "Link Discord account to SpotifyUtils",
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Type:        discordgo.ApplicationCommandOptionBoolean,
+					Name:        "public",
+					Description: "Enable everyone to see the response",
+					Required:    false,
+				},
+			},
+		},
+	}
 )
 
 func InitBot() {
@@ -24,7 +41,9 @@ func InitBot() {
 	}
 	session = discord
 	session.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
-		log.Println("Bot is up!")
+		logrus.WithFields(logrus.Fields{
+			"type": "discord",
+		}).Info("Connected to Discord")
 	})
 	err = session.Open()
 	if err != nil {
@@ -33,12 +52,14 @@ func InitBot() {
 		}).Error(err)
 	}
 
-	// for _, v := range commands {
-	// 	_, err := session.ApplicationCommandCreate(session.State.User.ID, GuildID, v)
-	// 	if err != nil {
-	// 		log.Panicf("Cannot create '%v' command: %v", v.Name, err)
-	// 	}
-	// }
+	if *config.DiscordCreateCommands {
+		for _, v := range commands {
+			_, err := session.ApplicationCommandCreate(session.State.User.ID, GuildID, v)
+			if err != nil {
+				log.Panicf("Cannot create '%v' command: %v", v.Name, err)
+			}
+		}
+	}
 
 	session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		if h, ok := commandHandlers[i.Data.Name]; ok {
@@ -47,34 +68,21 @@ func InitBot() {
 	})
 }
 
-var (
-	commands = []*discordgo.ApplicationCommand{
-		{
-			Name:        "link",
-			Description: "Link Discord account to SpotifyUtils",
-		},
+func errorInteraction(s *discordgo.Session, i *discordgo.InteractionCreate, err error) {
+	embed := &discordgo.MessageEmbed{
+		Title:       "An error occured while executing that command",
+		Description: fmt.Sprintf("```%s```", err),
+		Color:       0x78141b,
 	}
-	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
-		"link": linkCommand,
-	}
-)
 
-func errorInteractionErr(s *discordgo.Session, i *discordgo.InteractionCreate, err error) {
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionApplicationCommandResponseData{
+			Embeds: []*discordgo.MessageEmbed{
+				embed,
+			},
+			Content: "",
 			Flags:   1 << 6,
-			Content: fmt.Sprint(err),
-		},
-	})
-}
-
-func errorInteractionString(s *discordgo.Session, i *discordgo.InteractionCreate, err string) {
-	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionApplicationCommandResponseData{
-			Flags:   1 << 6,
-			Content: err,
 		},
 	})
 }

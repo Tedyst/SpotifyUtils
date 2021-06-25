@@ -17,13 +17,13 @@ func linkCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		request, err = CreateLinkRequest(i.Member.User.ID)
 	}
 	if err != nil {
-		errorInteractionErr(s, i, err)
+		errorInteraction(s, i, err)
 	}
 
 	embed := &discordgo.MessageEmbed{
 		Title:       "Click here to link your Discord account",
 		URL:         fmt.Sprintf("%s/discord/%s", *config.BaseURL, request.Token),
-		Description: "You need to click here and login using your Spotify account to use the bot",
+		Description: "You need to click here and login using your Spotify account to use the bot.\nThe link request is valid for 1 hour only.",
 		Color:       0x78141b,
 		// Fields: []*discordgo.MessageEmbedField{
 		// 	{
@@ -44,6 +44,13 @@ func linkCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		// },
 	}
 
+	var flags uint64
+	flags = 1 << 6
+	if len(i.Data.Options) >= 1 {
+		if i.Data.Options[0].BoolValue() {
+			flags = 0
+		}
+	}
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionApplicationCommandResponseData{
@@ -51,15 +58,7 @@ func linkCommand(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				embed,
 			},
 			Content: "",
-			Flags:   1 << 6,
+			Flags:   flags,
 		},
 	})
-
-	// s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-	// 	Type: discordgo.InteractionResponseChannelMessageWithSource,
-	// 	Data: &discordgo.InteractionApplicationCommandResponseData{
-	// 		Flags:   1 << 6,
-	// 		Content: fmt.Sprint(),
-	// 	},
-	// })
 }

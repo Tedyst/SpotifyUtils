@@ -47,12 +47,43 @@ func CreateLinkRequest(id string) (DiscordLinkRequest, error) {
 	if token == "" {
 		return DiscordLinkRequest{}, errors.New("could not generate new link token")
 	}
-	req := DiscordLinkRequest{
-		Token:     token,
-		DiscordID: id,
+
+	var req DiscordLinkRequest
+	var count int64
+	config.DB.Model(&DiscordLinkRequest{}).Where("discord_id = ?", id).Count(&count)
+	if count != 0 {
+		if err := config.DB.Model(&DiscordLinkRequest{}).Where("discord_id = ?", id).First(&req).Error; err != nil {
+			return DiscordLinkRequest{}, err
+		}
+		req.Token = token
+		if err := config.DB.Save(req).Error; err != nil {
+			return DiscordLinkRequest{}, err
+		}
+	} else {
+		req = DiscordLinkRequest{
+			Token:     token,
+			DiscordID: id,
+		}
+		if err := config.DB.Model(&DiscordLinkRequest{}).Create(&req).Error; err != nil {
+			return DiscordLinkRequest{}, err
+		}
 	}
-	if err := config.DB.Model(&DiscordLinkRequest{}).Create(&req).Error; err != nil {
-		return DiscordLinkRequest{}, err
+
+	return req, nil
+}
+
+func UseLinkRequest(token string) (DiscordLinkRequest, error) {
+	var req DiscordLinkRequest
+	if err := config.DB.Model(&DiscordLinkRequest{}).Where("token = ?", token).First(&req).Error; err != nil {
+		return DiscordLinkRequest{}, errors.New("request not found")
+	}
+
+	if err := config.DB.Model(&DiscordLinkRequest{}).Delete(&req).Error; err != nil {
+		return DiscordLinkRequest{}, errors.New("could not use request")
+	}
+
+	if time.Since(req.CreatedAt) >= time.Hour {
+		return DiscordLinkRequest{}, errors.New("request expired")
 	}
 
 	return req, nil

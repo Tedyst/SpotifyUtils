@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/tedyst/spotifyutils/api/utils"
+	"github.com/tedyst/spotifyutils/discord"
 
 	"github.com/tedyst/spotifyutils/userutils"
 )
@@ -36,11 +36,13 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 		return
 	}
 
-	user.DiscordID, err = strconv.Atoi(request.Token)
+	discordReq, err := discord.UseLinkRequest(request.Token)
 	if err != nil {
 		utils.ErrorErr(res, req, err)
 		return
 	}
+
+	user.DiscordID = discordReq.DiscordID
 	go user.Save()
 
 	respJSON, _ := json.Marshal(r)

@@ -40,7 +40,8 @@ var (
 	GeniusToken  = flag.String("GeniusToken", lookupEnvOrString("GENIUS_TOKEN", ""), "The Genius Client Token")
 	GeniusClient = genius.NewClient(nil, *GeniusToken)
 
-	DiscordBotToken = flag.String("DiscordBotToken", lookupEnvOrString("DISCORD_TOKEN", ""), "The Discord Bot Token")
+	DiscordBotToken       = flag.String("DiscordBotToken", lookupEnvOrString("DISCORD_TOKEN", ""), "The Discord Bot Token")
+	DiscordCreateCommands = flag.Bool("DiscordCreateCommands", false, "Create slash commands using Discord API")
 
 	Debug = flag.Bool("Debug", false, "Debug mode")
 )
