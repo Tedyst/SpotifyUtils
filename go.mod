@@ -6,6 +6,7 @@ require (
 	github.com/NYTimes/gziphandler v1.1.1
 	github.com/PuerkitoBio/goquery v1.6.1
 	github.com/andybalholm/cascadia v1.2.0 // indirect
+	github.com/bwmarrin/discordgo v0.23.3-0.20210617211910-e72c457cb4ae
 	github.com/cyphar/filepath-securejoin v0.2.2
 	github.com/gabyshev/genius-api v0.0.0-20171219135306-0b47a9d5ca7a
 	github.com/google/uuid v1.0.0

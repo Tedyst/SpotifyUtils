@@ -8,6 +8,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/discord"
 	"github.com/tedyst/spotifyutils/tracks"
 	"github.com/tedyst/spotifyutils/userutils"
 	"gorm.io/driver/mysql"
@@ -58,6 +59,7 @@ func initDB() {
 	datab.AutoMigrate(&tracks.Track{})
 	datab.AutoMigrate(&userutils.User{})
 	datab.AutoMigrate(&userutils.RecentTracks{})
+	datab.AutoMigrate(&discord.DiscordLinkRequest{})
 
 	if !*config.Debug {
 		go func() {

@@ -7,6 +7,7 @@ import (
 	"github.com/NYTimes/gziphandler"
 	"github.com/tedyst/spotifyutils/api/playlistview"
 	"github.com/tedyst/spotifyutils/api/utils"
+	"github.com/tedyst/spotifyutils/discord"
 	"github.com/weaveworks/promrus"
 	"gorm.io/plugin/prometheus"
 
@@ -50,6 +51,10 @@ func main() {
 	log.SetReportCaller(true)
 
 	initDB()
+
+	if *config.DiscordBotToken != "" {
+		discord.InitBot()
+	}
 
 	// Setup session store
 	sessionOptions := gormstore.Options{
