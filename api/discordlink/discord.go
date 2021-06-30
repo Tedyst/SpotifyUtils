@@ -1,4 +1,4 @@
-package playlistview
+package discordlink
 
 import (
 	"encoding/json"

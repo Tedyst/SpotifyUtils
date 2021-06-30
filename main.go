@@ -16,6 +16,7 @@ import (
 	"github.com/wader/gormstore/v2"
 
 	"github.com/tedyst/spotifyutils/api/compare"
+	"github.com/tedyst/spotifyutils/api/discordlink"
 	"github.com/tedyst/spotifyutils/api/recenttracks"
 	"github.com/tedyst/spotifyutils/api/settings"
 	"github.com/tedyst/spotifyutils/api/trackapi"
@@ -72,6 +73,7 @@ func main() {
 	api.HandleFunc("/logout", auth.Logout)
 	api.HandleFunc("/status", status.StatusHandler)
 	api.Handle("/playlist/{playlist}", utils.LoggedIn(playlistview.Handler))
+	api.Handle("/discord", utils.LoggedIn(discordlink.Handler))
 	api.Handle("/top", utils.LoggedIn(top.Handler))
 	api.Handle("/top/old/{unixdate}", utils.LoggedIn(top.HandlerSince))
 	api.Handle("/compare", utils.LoggedIn(compare.HandlerNoUsername))
