@@ -37,9 +37,10 @@ const useStyles = makeStyles((theme) => ({
 export default function SettingsComp(props: {
     originalSettings: Settings,
     useReactQuery?: boolean,
+    discordLink?: () => void | undefined,
 }) {
     const classes = useStyles();
-    const { originalSettings, useReactQuery } = props;
+    const { originalSettings, useReactQuery, discordLink } = props;
     const [settings, setSettings] = React.useState(originalSettings);
 
     const handleChangeRecentTracks = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +49,21 @@ export default function SettingsComp(props: {
             RecentTracks: Boolean((event.target as HTMLInputElement).checked),
         });
     };
+
+    const discordLinkButton = !discordLink ? null : (
+        <Card className={classes.root}>
+            <CardContent>
+                <Button
+                    onClick={discordLink}
+                    // className={classes.submit}
+                    variant="contained"
+                    color="secondary"
+                >
+                    Click here to link the Discord account
+                </Button>
+            </CardContent>
+        </Card>
+    );
 
     let mutation: any;
     if (useReactQuery) {
@@ -68,30 +84,34 @@ export default function SettingsComp(props: {
     };
 
     return (
-        <Card className={classes.root}>
-            <CardContent>
-                <form className={classes.form} onSubmit={onSubmit}>
-                    <FormControlLabel
-                        control={(
-                            <Checkbox
-                                checked={settings.RecentTracks}
-                                color="primary"
-                                name="checkedB"
-                                onChange={handleChangeRecentTracks}
-                            />
-                        )}
-                        label="Enable Recent Tracks Tracking"
-                    />
-                    <br />
-                    <Button className={classes.submit} color="primary" type="submit" variant="contained">
-                        Save Settings
-                    </Button>
-                </form>
-            </CardContent>
-        </Card>
+        <>
+            <Card className={classes.root}>
+                <CardContent>
+                    <form className={classes.form} onSubmit={onSubmit}>
+                        <FormControlLabel
+                            control={(
+                                <Checkbox
+                                    checked={settings.RecentTracks}
+                                    color="primary"
+                                    name="checkedB"
+                                    onChange={handleChangeRecentTracks}
+                                />
+                            )}
+                            label="Enable Recent Tracks Tracking"
+                        />
+                        <br />
+                        <Button className={classes.submit} color="primary" type="submit" variant="contained">
+                            Save Settings
+                        </Button>
+                    </form>
+                </CardContent>
+            </Card>
+            {discordLinkButton}
+        </>
     );
 }
 
 SettingsComp.defaultProps = {
     useReactQuery: true,
+    discordLink: undefined,
 };

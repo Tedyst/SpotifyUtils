@@ -19,6 +19,7 @@ import { Settings as SettingsInterface } from './components/Settings/SettingsPag
 import Sidebar from './views/Sidebar';
 import Loading from './components/Loading';
 import Login from './views/Auth/Login';
+import DiscordLinkPage from './views/DiscordLinkPage';
 
 const PlaylistView = lazy(() => import('./views/PlaylistView'));
 const Track = lazy(() => import('./views/TrackPage'));
@@ -134,6 +135,9 @@ function App() {
                             </Route>
                             <Route path="/logout">
                                 <Logout />
+                            </Route>
+                            <Route path="/discord/:token">
+                                <DiscordLinkPage />
                             </Route>
                             <Route path="/auth">
                                 <Redirect to="/" />

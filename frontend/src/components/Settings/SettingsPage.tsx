@@ -16,9 +16,10 @@ const useStyles = makeStyles(() => ({
 
 export default function SettingsPage(props: {
     settings: Settings | undefined,
+    discordLink?: () => void | undefined,
 }) {
     const classes = useStyles();
-    const { settings } = props;
+    const { settings, discordLink } = props;
 
     if (settings === undefined) {
         return null;
@@ -44,8 +45,13 @@ export default function SettingsPage(props: {
                 <SettingsComp
                     originalSettings={settings}
                     useReactQuery
+                    discordLink={discordLink}
                 />
             </Container>
         </>
     );
 }
+
+SettingsPage.defaultProps = {
+    discordLink: undefined,
+};
