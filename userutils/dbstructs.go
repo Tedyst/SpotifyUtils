@@ -29,6 +29,17 @@ func (sla GenresStruct) Value() (driver.Value, error) {
 	return string(val), err
 }
 
+func (sla GenresStruct) StringFirst(count int) string {
+	st := ""
+	for i, s := range sla {
+		if i >= count {
+			return st
+		}
+		st += s + "\n"
+	}
+	return st
+}
+
 type ArtistsStruct []TopArtist
 
 func (sla *ArtistsStruct) Scan(value interface{}) error {
@@ -50,6 +61,17 @@ func (sla ArtistsStruct) Value() (driver.Value, error) {
 	return string(val), err
 }
 
+func (sla ArtistsStruct) StringFirst(count int) string {
+	st := ""
+	for i, s := range sla {
+		if i >= count {
+			return st
+		}
+		st += s.Name + "\n"
+	}
+	return st
+}
+
 type TracksStruct []TopTrack
 
 func (sla *TracksStruct) Scan(value interface{}) error {
@@ -69,6 +91,17 @@ func (sla *TracksStruct) Scan(value interface{}) error {
 func (sla TracksStruct) Value() (driver.Value, error) {
 	val, err := json.Marshal(sla)
 	return string(val), err
+}
+
+func (sla TracksStruct) StringFirst(count int) string {
+	st := ""
+	for i, s := range sla {
+		if i >= count {
+			return st
+		}
+		st += s.Name + "\n"
+	}
+	return st
 }
 
 type PlaylistsStruct []Playlist

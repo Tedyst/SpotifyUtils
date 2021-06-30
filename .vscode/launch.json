@@ -28,6 +28,18 @@
             ]
         },
         {
+            "name": "Launch golang and update Discord commands",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "args": [
+                "-Debug=true",
+                "-DiscordCreateCommands=true"
+            ]
+        },
+        {
             "name": "Launch golang with MockExternalCalls enabled",
             "type": "go",
             "request": "launch",

@@ -62,6 +62,14 @@ func GetUserFromCompareCode(code string) *User {
 	return &user
 }
 
+func GetUserFromDiscordID(id string) (*User, bool) {
+	var user User
+	if err := config.DB.Where("discord_id = ?", id).First(&user).Error; err != nil {
+		return nil, false
+	}
+	return &user, true
+}
+
 func (u *User) Save() error {
 	if err := config.DB.Save(u).Error; err != nil {
 		log.WithFields(log.Fields{

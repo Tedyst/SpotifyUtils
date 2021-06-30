@@ -7,6 +7,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/userutils"
 )
 
 var (
@@ -15,12 +16,31 @@ var (
 	session         *discordgo.Session
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
 		"link": linkCommand,
+		"top":  topCommand,
 	}
 	commands = []*discordgo.ApplicationCommand{
 		{
 			Name:        "link",
 			Description: "Link Discord account to SpotifyUtils",
 			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Type:        discordgo.ApplicationCommandOptionBoolean,
+					Name:        "public",
+					Description: "Enable everyone to see the response",
+					Required:    false,
+				},
+			},
+		},
+		{
+			Name:        "top",
+			Description: "Show your top tracks",
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Type:        discordgo.ApplicationCommandOptionInteger,
+					Name:        "count",
+					Description: "The number of tracks/artists/genres to show",
+					Required:    false,
+				},
 				{
 					Type:        discordgo.ApplicationCommandOptionBoolean,
 					Name:        "public",
@@ -53,6 +73,9 @@ func InitBot() {
 	}
 
 	if *config.DiscordCreateCommands {
+		logrus.WithFields(logrus.Fields{
+			"type": "discord",
+		}).Debug("Creating Discord Commands")
 		for _, v := range commands {
 			_, err := session.ApplicationCommandCreate(session.State.User.ID, GuildID, v)
 			if err != nil {
@@ -85,4 +108,12 @@ func errorInteraction(s *discordgo.Session, i *discordgo.InteractionCreate, err 
 			Flags:   1 << 6,
 		},
 	})
+}
+
+func getUserFromInteraction(i *discordgo.InteractionCreate) (*userutils.User, bool) {
+	if i.User != nil {
+		return userutils.GetUserFromDiscordID(i.User.ID)
+	} else {
+		return userutils.GetUserFromDiscordID(i.Member.User.ID)
+	}
 }
