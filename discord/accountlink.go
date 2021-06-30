@@ -74,7 +74,9 @@ func CreateLinkRequest(id string) (DiscordLinkRequest, error) {
 
 func UseLinkRequest(token string) (DiscordLinkRequest, error) {
 	var req DiscordLinkRequest
-	if err := config.DB.Model(&DiscordLinkRequest{}).Where("token = ?", token).First(&req).Error; err != nil {
+	var count int64
+	config.DB.Model(&DiscordLinkRequest{}).Where("token = ?", token).Count(&count)
+	if count == 0 {
 		return DiscordLinkRequest{}, errors.New("request not found")
 	}
 
