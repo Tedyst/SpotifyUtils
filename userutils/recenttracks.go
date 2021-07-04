@@ -39,6 +39,7 @@ func (u *User) UpdateRecentTracks() {
 		"tokenExpiry": u.Token.Expiry.Unix(),
 	}).Debugf("Updating recent tracks")
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
+	metrics.SpotifyRequests.Add(1)
 	items, err := u.Client().PlayerRecentlyPlayedOpt(options)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -161,11 +162,16 @@ func (u *User) StopRecentTracksUpdater() {
 	recentTrackTimerCache = recentTrackTimerCache[:len(recentTrackTimerCache)-1]
 }
 
-func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
+func (u *User) GetRecentTracks() ([]*tracks.Track, error) {
 	if *config.MockExternalCalls {
-		return []spotify.RecentlyPlayedItem{}
+		return []*tracks.Track{}, nil
+	}
+	err := u.RefreshToken()
+	if err != nil {
+		return nil, err
 	}
 	options := &spotify.RecentlyPlayedOptions{Limit: 50}
+	metrics.SpotifyRequests.Add(1)
 	items, err := u.Client().PlayerRecentlyPlayedOpt(options)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -173,7 +179,7 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 			"user":        u.UserID,
 			"tokenExpiry": u.Token.Expiry.Unix(),
 		}).Error(err)
-		return []spotify.RecentlyPlayedItem{}
+		return nil, err
 	}
 	if u.Settings.RecentTracks {
 		u.insertRecentTracks(items)
@@ -186,7 +192,7 @@ func (u *User) GetRecentTracks() []spotify.RecentlyPlayedItem {
 	}
 	tracks.BatchUpdate(list, *u.Client())
 
-	return items
+	return list, nil
 }
 
 func (u *User) GetRecentTrackSince(t time.Time) []RecentTracks {
@@ -195,30 +201,84 @@ func (u *User) GetRecentTrackSince(t time.Time) []RecentTracks {
 	return result
 }
 
-func (u *User) getTopRecentTrackSince(t time.Time) ([]RecentTracks, int64) {
-	var result []RecentTracks
-	var trackscount int64
-	config.DB.Model(&RecentTracks{}).Select("COUNT(id) AS id, track").Where("listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Group("track").Order("COUNT(id) DESC").Limit(96).Find(&result)
-	if len(result) == 0 {
-		return result, 0
-	}
-	config.DB.Model(&RecentTracks{}).Where("listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Count(&trackscount)
-	return result, trackscount
+type getTopRecentTrackSinceResult struct {
+	Count int
+	Track string
 }
 
-func (u *User) getListenedHoursRecentTrackSince(t time.Time) []RecentTracks {
-	var result []RecentTracks
-	config.DB.Model(&RecentTracks{}).Select("COUNT(*) AS id, FLOOR((listened_at % 86400)/3600) AS listened_at").Where(
-		"listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Group("FLOOR((listened_at % 86400)/3600)").Order(
-		"FLOOR((listened_at % 86400)/3600)").Find(&result)
+func (u *User) getTopRecentTrackSince(t time.Time) []getTopRecentTrackSinceResult {
+	var result []getTopRecentTrackSinceResult
+	config.DB.Raw(`SELECT COUNT(id) AS count, track
+		FROM recent_tracks
+		WHERE listened_at >= ? AND user = ? 
+		GROUP BY track
+		ORDER BY COUNT(id) DESC
+		LIMIT 96`,
+		t.Unix(), u.ID).Scan(&result)
 	return result
 }
 
-func (u *User) getListenedDaysRecentTrackSince(t time.Time) []RecentTracks {
-	var result []RecentTracks
-	config.DB.Model(&RecentTracks{}).Select("COUNT(*) AS id, FLOOR(listened_at / 86400)*86400 AS listened_at").Where(
-		"listened_at >= ?", t.Unix()).Where("user = ?", fmt.Sprint(u.ID)).Group("FLOOR(listened_at / 86400)*86400").Order(
-		"FLOOR(listened_at / 86400)*86400").Find(&result)
+func (u *User) getTopRecentTrackCountSince(t time.Time) int {
+	var count int64
+	config.DB.Raw(`SELECT COUNT(id) AS count
+		FROM recent_tracks
+		WHERE listened_at >= ? AND user = ?`,
+		t.Unix(), u.ID).Count(&count)
+	return int(count)
+}
+
+type getListenedHoursRecentTrackSinceResult struct {
+	Count int
+	Time  int
+}
+
+func (u *User) getListenedHoursRecentTrackSince(t time.Time) []getListenedHoursRecentTrackSinceResult {
+	var result []getListenedHoursRecentTrackSinceResult
+	if config.IsMySQL {
+		config.DB.Raw(`SELECT COUNT(id) AS count,
+			FLOOR((listened_at % 86400)/3600) AS time
+			FROM recent_tracks
+			WHERE listened_at >= ? AND user = ?
+			GROUP BY FLOOR((listened_at % 86400)/3600)
+			ORDER BY FLOOR((listened_at % 86400)/3600)`,
+			t.Unix(), u.ID).Scan(&result)
+	} else {
+		config.DB.Raw(`SELECT COUNT(id) AS count,
+			(listened_at % 86400)/3600 AS time
+			FROM recent_tracks
+			WHERE listened_at >= ? AND user = ?
+			GROUP BY (listened_at % 86400)/3600
+			ORDER BY (listened_at % 86400)/3600`,
+			t.Unix(), u.ID).Scan(&result)
+	}
+
+	return result
+}
+
+type getListenedDaysRecentTrackSinceResult struct {
+	Count int
+	Time  int
+}
+
+func (u *User) getListenedDaysRecentTrackSince(t time.Time) []getListenedDaysRecentTrackSinceResult {
+	var result []getListenedDaysRecentTrackSinceResult
+	if config.IsMySQL {
+		config.DB.Raw(`SELECT COUNT(*) AS count,
+			FLOOR((listened_at / 86400))*86400 AS time
+			FROM recent_tracks
+			WHERE listened_at >= ? AND user = ?
+			GROUP BY FLOOR((listened_at / 86400))*86400
+			ORDER BY FLOOR((listened_at / 86400))*86400`,
+			t.Unix(), u.ID).Scan(&result)
+	} else {
+		config.DB.Raw(`SELECT COUNT(*) AS count,
+			(listened_at / 86400)*86400 AS time
+			FROM recent_tracks
+			WHERE listened_at >= ? AND user = ?
+			GROUP BY (listened_at / 86400)*86400
+			ORDER BY (listened_at / 86400)*86400`,
+			t.Unix(), u.ID).Scan(&result)
+	}
 	return result
 }
 
@@ -227,20 +287,20 @@ func (u *User) getListenedTotalRecentTrackSince(t time.Time) int64 {
 	config.DB.Raw(`SELECT SUM(tracks.information_track_length)
 		FROM recent_tracks INNER JOIN tracks
 			ON tracks.track_id = recent_tracks.track
-		WHERE listened_at >= ? AND user = ?;`, t.Unix(), u.ID).Scan(&result)
+		WHERE listened_at >= ? AND user = ?`, t.Unix(), u.ID).Scan(&result)
 	return result
 }
 
 type RecentTracksStatisticsStruct struct {
-	Count         int64
+	Count         int
 	TopTracks     []RecentTracksStatisticsStructTrack
-	Hours         map[int64]uint
-	Days          map[int64]uint
+	Hours         map[int]int
+	Days          map[int]int
 	TotalListened int
 }
 
 type RecentTracksStatisticsStructTrack struct {
-	Count  uint
+	Count  int
 	Name   string
 	Artist string
 	Image  string
@@ -248,16 +308,16 @@ type RecentTracksStatisticsStructTrack struct {
 }
 
 func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct {
-	tr, count := u.getTopRecentTrackSince(t)
-	var countMap = map[string]uint{}
+	tr := u.getTopRecentTrackSince(t)
+	var countMap = map[string]int{}
 	result := RecentTracksStatisticsStruct{}
-	result.Count = count
-	// TopTracks
+	result.Count = u.getTopRecentTrackCountSince(t)
+
 	result.TopTracks = make([]RecentTracksStatisticsStructTrack, 0)
 	list := []*tracks.Track{}
 	for _, s := range tr {
 		fromDB := tracks.GetTrackFromID(s.Track)
-		countMap[s.Track] = s.ID
+		countMap[s.Track] = s.Count
 		list = append(list, fromDB)
 	}
 	tracks.BatchUpdate(list, *u.Client())
@@ -271,21 +331,22 @@ func (u *User) RecentTracksStatistics(t time.Time) RecentTracksStatisticsStruct 
 		})
 	}
 
+	// Put the data extracted from the database and set the value to 0 where it is not already set
 	hours := u.getListenedHoursRecentTrackSince(t)
-	result.Hours = make(map[int64]uint)
+	result.Hours = make(map[int]int)
 	for _, s := range hours {
-		result.Hours[s.ListenedAt] = s.ID
+		result.Hours[s.Time] = s.Count
 	}
-	for i := int64(0); i <= 23; i++ {
+	for i := 0; i <= 23; i++ {
 		if _, ok := result.Hours[i]; !ok {
 			result.Hours[i] = 0
 		}
 	}
 
 	days := u.getListenedDaysRecentTrackSince(t)
-	result.Days = make(map[int64]uint)
+	result.Days = make(map[int]int)
 	for _, s := range days {
-		result.Days[s.ListenedAt] = s.ID
+		result.Days[s.Time] = s.Count
 	}
 
 	result.TotalListened = int(u.getListenedTotalRecentTrackSince(t) / 1000)

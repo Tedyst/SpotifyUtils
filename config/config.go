@@ -6,16 +6,18 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/Tedyst/gormstore"
 	"github.com/gabyshev/genius-api/genius"
+	"github.com/wader/gormstore/v2"
 	"github.com/zmb3/spotify"
 )
 
 const SpotifyScope = "user-library-read playlist-read-private playlist-read-collaborative user-top-read user-read-recently-played user-read-private playlist-modify-private playlist-modify-public user-follow-modify"
 
 var (
-	BuildPath         = flag.String("BuildPath", "frontend/build", "The Path where is the React app stored")
+	BuildPath = flag.String("BuildPath", "frontend/build", "The Path where is the React app stored")
+
 	MockExternalCalls = flag.Bool("MockExternalCalls", false, "Disable calling the Spotify or Genius API and only use information from DB")
+	MockUser          = flag.String("MockUser", "", "The User to login as when using MockExternalCalls")
 
 	SpotifyClientID     = flag.String("SpotifyClientID", lookupEnvOrString("SPOTIFY_CLIENT_ID", ""), "The Spotify Client ID")
 	SpotifyClientSecret = flag.String("SpotifyClientSecret", lookupEnvOrString("SPOTIFY_CLIENT_SECRET", ""), "The Spotify Client Secret")
@@ -25,6 +27,8 @@ var (
 	Secret      = []byte(lookupEnvOrString("SECRET_KEY", "key"))
 
 	Database = flag.String("Database", lookupEnvOrString("DATABASE", "sqlite://data.db"), "The MySQL Database Address")
+
+	IsMySQL = false
 
 	SpotifyAPI = spotify.NewAuthenticator(*RedirectURL, SpotifyScope)
 

@@ -6,81 +6,88 @@ import (
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/spotifywrapper"
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
+type authAPIResponse struct {
+	Success bool
+}
+type authAPIRequest struct {
+	Host string
+	Code string
+}
+
+type authURLAPIResponse struct {
+	Success bool
+	URL     string
+}
+
 func Auth(res http.ResponseWriter, req *http.Request) {
-	type authAPIResponse struct {
-		Success bool   `json:"success"`
-		Error   string `json:"error,omitempty"`
-	}
-	type authAPIRequest struct {
-		Host string `json:"host"`
-		Code string `json:"code"`
-	}
 	res.Header().Set("Content-Type", "application/json")
 	response := &authAPIResponse{}
 	if req.Method != "POST" {
-		response.Error = "Invalid Method"
-		response.Success = false
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorString(res, req, "Invalid Method")
 		return
 	}
 
-	session, _ := config.SessionStore.Get(req, "username")
+	session, err := config.SessionStore.Get(req, "username")
+	if err != nil {
+		utils.ErrorErr(res, req, err)
+		return
+	}
 
 	request := &authAPIRequest{}
 	decoder := json.NewDecoder(req.Body)
-	err := decoder.Decode(request)
+	err = decoder.Decode(request)
 	if err != nil || request.Host == "" || request.Code == "" {
-		response.Error = "Invalid Request"
-		response.Success = false
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorString(res, req, "Invalid Request")
 		return
 	}
 
-	token, err := spotifywrapper.GetSpotifyAuthorization(request.Host, request.Code)
-	if err != nil {
-		log.WithFields(log.Fields{
-			"error": err,
-			"code":  request.Code,
-			"host":  request.Host,
-		}).Error("Cannot get authorization from code")
-		response.Error = fmt.Sprint(err)
-		response.Success = false
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
-		return
-	}
-
+	var u *userutils.User
 	if *config.MockExternalCalls {
-		response.Error = "cannot login because MockExternalCalls is enabled"
-		response.Success = false
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
-		return
-	}
-
-	client := config.SpotifyAPI.NewClient(token)
-	spotifyUser, err := client.CurrentUser()
-	if err != nil {
-		log.Error(err)
-		response.Error = fmt.Sprint(err)
-		response.Success = false
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
-		return
-	}
-	u := userutils.GetUser(spotifyUser.ID)
-	u.Token = token
-	u.DisplayName = spotifyUser.DisplayName
-	u.UserID = spotifyUser.ID
-	if len(spotifyUser.Images) > 0 {
-		u.Image = spotifyUser.Images[0].URL
+		if *config.MockUser == "" {
+			utils.ErrorString(res, req, "MockExternalCalls is enabled but MockUser is not set")
+			return
+		}
+		u = userutils.GetUser(*config.MockUser)
+	} else {
+		val, ok := session.Values["username"]
+		if ok {
+			u = userutils.GetUser(val.(string))
+		} else {
+			token, err := spotifywrapper.GetSpotifyAuthorization(request.Host, request.Code)
+			if err != nil {
+				log.WithFields(log.Fields{
+					"type": "auth",
+					"code": request.Code,
+					"host": request.Host,
+				}).Error(err)
+				utils.ErrorErr(res, req, err)
+				return
+			}
+			client := config.SpotifyAPI.NewClient(token)
+			spotifyUser, err := client.CurrentUser()
+			if err != nil {
+				log.WithFields(log.Fields{
+					"type": "auth",
+					"code": request.Code,
+					"host": request.Host,
+				}).Error(err)
+				utils.ErrorErr(res, req, err)
+				return
+			}
+			u = userutils.GetUser(spotifyUser.ID)
+			u.Token = token
+			u.DisplayName = spotifyUser.DisplayName
+			u.UserID = spotifyUser.ID
+			if len(spotifyUser.Images) > 0 {
+				u.Image = spotifyUser.Images[0].URL
+			}
+		}
 	}
 
 	u.RefreshUser()
@@ -92,11 +99,12 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 
 	err = session.Save(req, res)
 	if err != nil {
-		log.Error(err)
-		response.Error = fmt.Sprint(err)
-		response.Success = false
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		log.WithFields(log.Fields{
+			"type": "auth",
+			"code": request.Code,
+			"host": request.Host,
+		}).Error(err)
+		utils.ErrorErr(res, req, err)
 		return
 	}
 
@@ -106,44 +114,41 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 }
 
 func AuthURL(res http.ResponseWriter, req *http.Request) {
-	type authURLAPIResponse struct {
-		Success bool   `json:"success"`
-		Error   string `json:"error,omitempty"`
-		URL     string `json:",omitempty"`
-	}
 	res.Header().Set("Content-Type", "application/json")
 	response := &authURLAPIResponse{
-		Success: false,
-		Error:   "Invalid Request",
+		Success: true,
 	}
 	host := req.URL.Query().Get("host")
 	if host == "" {
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorString(res, req, "Invalid Request")
 		return
 	}
 
-	response.URL = spotifywrapper.GetSpotifyURL(host)
-	response.Success = true
-	response.Error = ""
+	if *config.MockExternalCalls {
+		response.URL = fmt.Sprintf("%s/auth?code=asd", host)
+	} else {
+		response.URL = spotifywrapper.GetSpotifyURL(host)
+	}
+
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprint(res, string(respJSON))
 }
 
-func Logout(w http.ResponseWriter, r *http.Request) {
-	session, err := config.SessionStore.Get(r, "username")
+func Logout(res http.ResponseWriter, req *http.Request) {
+	session, err := config.SessionStore.Get(req, "username")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.ErrorErr(res, req, err)
 		return
 	}
 
 	session.Values["username"] = ""
 	session.Options.MaxAge = -1
 
-	err = session.Save(r, w)
+	err = session.Save(req, res)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.ErrorErr(res, req, err)
 		return
 	}
-	http.Redirect(w, r, "/", http.StatusFound)
+
+	http.ServeFile(res, req, *config.BuildPath+"/index.html")
 }

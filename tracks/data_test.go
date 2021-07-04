@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Tedyst/gormstore"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/tracks"
+	"github.com/wader/gormstore/v2"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -15,22 +15,18 @@ import (
 func getTestTrackData() []tracks.Track {
 	return []tracks.Track{
 		{
-			TrackID: "track1",
-			Model: gorm.Model{
-				ID:        1,
-				CreatedAt: time.Now(),
-				UpdatedAt: time.Now(),
-			},
+			TrackID:     "track1",
+			ID:          1,
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
 			LastUpdated: time.Now(),
 			Artists: []tracks.Artist{
 				{
-					Model: gorm.Model{
-						ID:        1,
-						CreatedAt: time.Now(),
-						UpdatedAt: time.Now(),
-					},
-					Name:     "artist1",
-					ArtistID: "artist1",
+					ID:        1,
+					CreatedAt: time.Now(),
+					UpdatedAt: time.Now(),
+					Name:      "artist1",
+					ArtistID:  "artist1",
 					Genres: tracks.GenresStruct{
 						"genre1",
 						"genre2",
@@ -38,13 +34,11 @@ func getTestTrackData() []tracks.Track {
 					Popularity: 1,
 				},
 				{
-					Model: gorm.Model{
-						ID:        2,
-						CreatedAt: time.Now(),
-						UpdatedAt: time.Now(),
-					},
-					Name:     "artist2",
-					ArtistID: "artist2",
+					ID:        2,
+					CreatedAt: time.Now(),
+					UpdatedAt: time.Now(),
+					Name:      "artist2",
+					ArtistID:  "artist2",
 					Genres: tracks.GenresStruct{
 						"genre2",
 						"genre3",

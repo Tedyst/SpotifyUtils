@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Avatar, Button, CssBaseline, Typography, makeStyles, Container,
+    Avatar, Button, Typography, makeStyles, Container,
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useQuery } from 'react-query';
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface AuthURLInterface {
-    success: boolean;
+    Success: boolean;
     URL: string;
 }
 
@@ -57,9 +57,9 @@ export default function LoginPage(props: { loggingIn: boolean }) {
     } else if (status === 'loading') {
         buttonText = 'Contacting server...';
     }
+
     return (
         <Container maxWidth="xs">
-            <CssBaseline />
             {errorComponent}
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>

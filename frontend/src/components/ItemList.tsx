@@ -2,6 +2,7 @@ import React from 'react';
 import {
     makeStyles, List, ListItem, ListItemText, ListSubheader,
 } from '@material-ui/core';
+import { Track, Artist } from '../components/Top/TopComp';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,13 +26,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ListItems(props: {
-    items: any[] | null,
+    items: Track[] | Artist[] | string[] | undefined | null,
     name: string
 }) {
     const classes = useStyles();
     const { items, name } = props;
     const it: any[] = [];
-    if (items === null || items.length === 0 || !items) {
+    if (!items || items.length === 0) {
         return (
             <List className={classes.root} subheader={<li />}>
                 <ListSubheader className={classes.textColor} color="default">
@@ -49,36 +50,28 @@ export default function ListItems(props: {
         );
     }
     Object.values(items).forEach((item) => {
-        if (item.artist) {
+        if (item?.Artist) {
             it.push(
-                <ListItem key={`track-${item.id}`}>
+                <ListItem key={`${name}-${item.ID}`}>
                     <ListItemText
-                        primary={item.name}
-                        secondary={item.artist}
+                        primary={item?.Name}
+                        secondary={item?.Artist}
                     />
                 </ListItem>,
             );
-        } else if (item.id) {
+        } else if (item?.ID) {
             it.push(
-                <ListItem key={`artist-${item.id}`}>
+                <ListItem key={`${name}-${item.ID}`}>
                     <ListItemText
-                        primary={item.name}
-                    />
-                </ListItem>,
-            );
-        } else if (item.name) {
-            it.push(
-                <ListItem key={`genre-${item.name}`}>
-                    <ListItemText
-                        primary={item.name}
+                        primary={item?.Name}
                     />
                 </ListItem>,
             );
         } else {
             it.push(
-                <ListItem key={`genre-${item}`}>
+                <ListItem key={`${name}-${item}`}>
                     <ListItemText
-                        primary={item}
+                        primary={item?.toString()}
                     />
                 </ListItem>,
             );

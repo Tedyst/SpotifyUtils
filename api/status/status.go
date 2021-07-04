@@ -5,43 +5,35 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
+type response struct {
+	Success   bool
+	Username  string
+	Image     string
+	Playlists []userutils.Playlist
+	UserID    string
+	Settings  userutils.UserSettings
+}
+
 func StatusHandler(res http.ResponseWriter, req *http.Request) {
-	type statusAPIResponse struct {
-		Success   bool                   `json:"success"`
-		Error     string                 `json:"error,omitempty"`
-		Username  string                 `json:"username,omitempty"`
-		Image     string                 `json:"image,omitempty"`
-		Playlists []userutils.Playlist   `json:"playlists,omitempty"`
-		UserID    string                 `json:"id"`
-		Settings  userutils.UserSettings `json:"settings"`
-	}
 	res.Header().Set("Content-Type", "application/json")
+	res.WriteHeader(http.StatusOK)
 	session, _ := config.SessionStore.Get(req, "username")
-	response := &statusAPIResponse{}
+	response := &response{}
 	if _, ok := session.Values["username"]; !ok {
-		response.Success = false
-		response.Error = "Not Logged in"
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorString(res, req, "Not Logged In")
 		return
 	}
 	val := session.Values["username"]
 	user := userutils.GetUser(val.(string))
-	if !user.Token.Valid() && !(*config.MockExternalCalls) {
-		// Try to refresh the token
-		t, err := user.Client().Token()
-		if err != nil {
-			response.Success = false
-			response.Error = "Token not valid!"
-			respJSON, _ := json.Marshal(response)
-			fmt.Fprint(res, string(respJSON))
-			return
-		}
-		user.Token = t
+	err := user.RefreshToken()
+	if err != nil {
+		utils.ErrorErr(res, req, err)
+		return
 	}
 	user.RefreshUser()
 	user.StartRecentTracksUpdater()

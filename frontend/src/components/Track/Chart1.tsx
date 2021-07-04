@@ -18,7 +18,7 @@ export default function Chart1(props: {
     });
 
     return (
-        <div>
+        <>
             <Typography>
                 Loudness
             </Typography>
@@ -37,6 +37,6 @@ export default function Chart1(props: {
                     <LineSeries argumentField="argument" valueField="lineValue" />
                 </Chart>
             </Paper>
-        </div>
+        </>
     );
 }

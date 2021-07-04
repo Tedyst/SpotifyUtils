@@ -3,22 +3,38 @@ package tracks
 import (
 	"database/sql/driver"
 	"encoding/json"
-	"errors"
-	"fmt"
+	"sync"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/zmb3/spotify"
-	"gorm.io/gorm"
 )
 
+var artistMutex = make(map[string]*sync.Mutex)
+
 type Artist struct {
-	gorm.Model
-	ArtistID   string `gorm:"type:VARCHAR(30) NOT NULL UNIQUE"`
+	ID         uint      `gorm:"primarykey" json:"-"`
+	CreatedAt  time.Time `json:"-"`
+	UpdatedAt  time.Time `json:"-"`
+	DeletedAt  time.Time `gorm:"index" json:"-"`
+	ArtistID   string    `gorm:"type:VARCHAR(30) NOT NULL UNIQUE"`
 	Name       string
 	Genres     GenresStruct
 	Popularity int16
 	Image      string
+	Mutex      *sync.Mutex `gorm:"-"`
+}
+
+func getArtistMutex(ID string) *sync.Mutex {
+	val, ok := artistMutex[ID]
+	if ok {
+		return val
+	}
+	val = &sync.Mutex{}
+	artistMutex[ID] = val
+	return val
 }
 
 type GenresStruct []string
@@ -47,6 +63,7 @@ func GetArtistFromID(ID string) *Artist {
 	config.DB.Where("artist_id = ?", ID).FirstOrCreate(&ar, Artist{
 		ArtistID: ID,
 	})
+	ar.Mutex = getArtistMutex(ID)
 	return &ar
 }
 
@@ -62,6 +79,8 @@ func BatchUpdateArtists(artists []*Artist, cl spotify.Client) {
 	}
 	newArtists := []*Artist{}
 	for _, s := range artists {
+		s.Mutex.Lock()
+		defer s.Mutex.Unlock()
 		if s.Name == "" {
 			newArtists = append(newArtists, s)
 		}
@@ -77,6 +96,7 @@ func BatchUpdateArtists(artists []*Artist, cl spotify.Client) {
 			size = i + limit
 		}
 		batch := ids[i:size]
+		metrics.SpotifyRequests.Add(1)
 		info, err := cl.GetArtists(batch...)
 		if err != nil {
 			log.Error(err)
@@ -95,21 +115,21 @@ func BatchUpdateArtists(artists []*Artist, cl spotify.Client) {
 	}
 }
 
+// Todo: come back here
 func (a *Artist) Save() error {
 	if !enableSaving {
 		return nil
 	}
-	inDB := GetArtistFromID(a.ArtistID)
-	if inDB.ID != a.ID {
-		msg := fmt.Sprintf("Duplicate entry detected: %d and %d", inDB.ID, a.ID)
-		log.Error(msg)
-		return errors.New(msg)
+	if err := config.DB.Save(a).Error; err != nil {
+		log.WithFields(log.Fields{
+			"type":   "artist",
+			"artist": a,
+		}).Error(err)
+		return err
 	}
-	if a.ArtistID == "" {
-		msg := fmt.Sprintf("Tried to save empty track_id, ID = %d", a.ID)
-		log.Error(msg)
-		return errors.New(msg)
-	}
-	config.DB.Save(a)
 	return nil
+}
+
+func (a Artist) String() string {
+	return a.ArtistID
 }

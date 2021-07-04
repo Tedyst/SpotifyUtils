@@ -56,7 +56,7 @@ export default function Chart2(props: {
     ];
 
     return (
-        <div>
+        <>
             <Typography>
                 Track Features
             </Typography>
@@ -72,6 +72,6 @@ export default function Chart2(props: {
                     <ArgumentAxis />
                 </Chart>
             </Paper>
-        </div>
+        </>
     );
 }

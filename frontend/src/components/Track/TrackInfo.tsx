@@ -55,7 +55,7 @@ export default function TrackInfo(props: {
         timeSignature,
     } = props;
     return (
-        <div>
+        <>
             <Typography>
                 Track Information
             </Typography>
@@ -129,6 +129,6 @@ export default function TrackInfo(props: {
                     </TableBody>
                 </Table>
             </TableContainer>
-        </div>
+        </>
     );
 }

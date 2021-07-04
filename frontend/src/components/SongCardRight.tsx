@@ -49,10 +49,10 @@ function msToText(ms: number): string {
 
 function SongCard(props: {
     duration?: number | undefined,
-    name: string,
-    artist: string,
-    image: string,
-    count?: number,
+    name: string | undefined,
+    artist: string | undefined,
+    image: string | undefined,
+    count?: number | undefined,
 }) {
     const classes = useStyles();
     const {
@@ -62,6 +62,9 @@ function SongCard(props: {
         image,
         count,
     } = props;
+    if (!name || !artist) {
+        return null;
+    }
     let durationComponent = null;
     if (duration) {
         durationComponent = (

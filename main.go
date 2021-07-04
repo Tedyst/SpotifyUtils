@@ -1,33 +1,26 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
-	"fmt"
 	"net/http"
-	"strconv"
-	"strings"
-	"time"
 
 	"github.com/NYTimes/gziphandler"
 	"github.com/tedyst/spotifyutils/api/playlistview"
+	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/weaveworks/promrus"
+	"gorm.io/plugin/prometheus"
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/Tedyst/gormstore"
+	"github.com/wader/gormstore/v2"
 
 	"github.com/tedyst/spotifyutils/api/compare"
 	"github.com/tedyst/spotifyutils/api/recenttracks"
 	"github.com/tedyst/spotifyutils/api/settings"
 	"github.com/tedyst/spotifyutils/api/trackapi"
-	"gorm.io/driver/mysql"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 
 	"github.com/tedyst/spotifyutils/api/top"
 
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/tedyst/spotifyutils/api/status"
 
@@ -38,141 +31,16 @@ import (
 	"github.com/tedyst/spotifyutils/config"
 )
 
-type statusRecorder struct {
-	http.ResponseWriter
-	statusCode int
-}
-
-func (rec *statusRecorder) WriteHeader(statusCode int) {
-	rec.statusCode = statusCode
-	rec.ResponseWriter.WriteHeader(statusCode)
-}
-
-func getRoutePattern(next *mux.Router, r *http.Request) string {
-	var match mux.RouteMatch
-	routeExists := next.Match(r, &match)
-	if routeExists {
-		str, err := match.Route.GetPathTemplate()
-		if err == nil {
-			return str
-		}
-	}
-
-	return "/"
-}
-
-func routerMiddleware(next *mux.Router) http.Handler {
-	buckets := []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10}
-
-	responseTimeHistogram := prometheus.NewHistogramVec(prometheus.HistogramOpts{
-		Namespace: "spotifyutils",
-		Name:      "request_duration_seconds",
-		Help:      "Histogram of response time for handler in seconds",
-		Buckets:   buckets,
-	}, []string{"route", "method", "status_code"})
-
-	prometheus.MustRegister(responseTimeHistogram)
-
-	opts := []csrf.Option{}
-	if *config.Debug {
-		opts = append(opts, csrf.Secure(false))
-	}
-	opts = append(opts, csrf.Path("/"))
-	CSRF := csrf.Protect(config.Secret, opts...)
-
-	return CSRF(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("X-Frame-Options", "SAMEORIGIN")
-		w.Header().Set("Referrer-Policy", "same-origin")
-		w.Header().Set("Permissions-Policy", "geolocation=(), microphone=()")
-		w.Header().Set("Content-Security-Policy", "default-src 'none'; manifest-src 'self'; connect-src 'self' https://sentry-relay.stoicatedy.ovh https://sentry.io; img-src *; script-src https://sentry-relay.stoicatedy.ovh https://sentry.io https://storage.googleapis.com 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; base-uri 'self'; report-uri https://sentry-relay.stoicatedy.ovh/api/5689078/security/?sentry_key=a38da28ff45041828f3ee7f714af0527; font-src https://fonts.gstatic.com https://use.typekit.net; worker-src https://spotify.stoicatedy.ovh;")
-		w.Header().Set("X-Content-Type-Options", "nosniff")
-		w.Header().Set("Expect-CT", "max-age=86400, enforce, report-uri=\"https://github.com/Tedyst/SpotifyUtils\"")
-
-		token := csrf.Token(r)
-		w.Header().Set("X-CSRF-Token", token)
-		start := time.Now()
-		rec := statusRecorder{w, 200}
-
-		next.ServeHTTP(&rec, r)
-
-		duration := time.Since(start)
-		statusCode := strconv.Itoa(rec.statusCode)
-		route := getRoutePattern(next, r)
-		responseTimeHistogram.WithLabelValues(route, r.Method, statusCode).Observe(duration.Seconds())
-
-		ipAddress := r.RemoteAddr
-		fwdAddress := r.Header.Get("X-Forwarded-For")
-		if fwdAddress != "" {
-			ipAddress = fwdAddress
-			ips := strings.Split(fwdAddress, ", ")
-			if len(ips) > 1 {
-				ipAddress = ips[0]
-			}
-		}
-
-		if !(strings.Contains(ipAddress, "localhost") || strings.Contains(ipAddress, "127.0.0.1")) {
-			w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
-		}
-
-		var username string
-		session, _ := config.SessionStore.Get(r, "username")
-		if username_sess, ok := session.Values["username"]; ok {
-			username = username_sess.(string)
-		}
-
-		var routeStr = route
-		if routeStr == "/" {
-			routeStr = r.RequestURI
-		}
-		if username != "" {
-			log.WithFields(log.Fields{
-				"type":     "request",
-				"method":   r.Method,
-				"request":  routeStr,
-				"code":     statusCode,
-				"duration": duration.Seconds(),
-				"ip":       ipAddress,
-				"user":     username,
-			}).Debug()
-		} else {
-			log.WithFields(log.Fields{
-				"type":     "request",
-				"method":   r.Method,
-				"request":  routeStr,
-				"code":     statusCode,
-				"duration": duration.Seconds(),
-				"ip":       ipAddress,
-			}).Debug()
-		}
-
-	}))
-}
-
-func createMySQLDB() {
-	uri := strings.Split(*config.Database, "/")
-	if len(uri) != 2 {
-		return
-	}
-	databaseuri := uri[0] + "/"
-	name := uri[1]
-
-	db, err := sql.Open("mysql", databaseuri)
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
-	// This should create the DB with utf8, the second one is just to be sure because SQLite
-	db.Exec("CREATE DATABASE " + name + "DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci")
-	db.Exec("CREATE DATABASE " + name)
-}
-
 func main() {
+	// Flag parsing
 	flag.Parse()
 	if !(*config.MockExternalCalls) {
 		config.SpotifyAPI.SetAuthInfo(*config.SpotifyClientID, *config.SpotifyClientSecret)
 	} else {
 		log.Warn("MockExternalCalls is enabled! No external service will be used!")
+		if *config.MockUser == "" {
+			log.Warn("MockUser is not set! You will not be able to login!")
+		}
 	}
 
 	if *config.Debug {
@@ -181,82 +49,78 @@ func main() {
 	}
 	log.SetReportCaller(true)
 
-	var datab *gorm.DB
-	if strings.HasPrefix(*config.Database, "mysql://") {
-		*config.Database = strings.TrimPrefix(*config.Database, "mysql://")
-		createMySQLDB()
-		var err error
-		datab, err = gorm.Open(mysql.Open(fmt.Sprintf("%s?charset=utf8mb4&parseTime=True&loc=Local", *config.Database)), &gorm.Config{
-			Logger: &GormLogger{},
-		})
-		if err != nil {
-			log.Fatalln(err)
-		}
-	} else if strings.HasPrefix(*config.Database, "sqlite://") {
-		*config.Database = strings.TrimPrefix(*config.Database, "sqlite://")
-		var err error
-		datab, err = gorm.Open(sqlite.Open(fmt.Sprintf("%s?charset=utf8mb4&parseTime=True&loc=Local", *config.Database)), &gorm.Config{
-			Logger: &GormLogger{},
-		})
-		if err != nil {
-			log.Fatalln(err)
-		}
-	} else {
-		log.Panic("Invalid Database URL")
-	}
+	initDB()
 
-	db, err := datab.DB()
-	if err != nil {
-		log.Fatalln(err)
-	}
-	db.Exec("PRAGMA journal_mode=WAL;")
-	db.Exec("SET NAMES utf8mb4;")
-	db.SetConnMaxLifetime(time.Minute * 4)
-
-	config.DB = datab
-
-	initDB(config.DB)
-
+	// Setup session store
 	sessionOptions := gormstore.Options{
 		TableName: "sessions",
 	}
 	config.SessionStore = gormstore.NewOptions(config.DB, sessionOptions, config.Secret)
 
 	m := mux.NewRouter()
+	m.HandleFunc("/logout", auth.Logout)
 
 	api := m.PathPrefix("/api").Subrouter()
+	api.Use(limitAPIRequests)
 	api.HandleFunc("/auth", auth.Auth)
 	api.HandleFunc("/auth-url", auth.AuthURL)
-	api.HandleFunc("/status", status.StatusHandler)
-	api.HandleFunc("/playlist/{playlist}", playlistview.Handler)
-	api.HandleFunc("/top", top.TopHandler)
-	api.HandleFunc("/top/old/{unixdate}", top.TopHandlerSince)
-	api.HandleFunc("/compare", compare.HandlerNoUsername)
-	api.HandleFunc("/recent", recenttracks.Handler)
-	api.HandleFunc("/track/{track}", trackapi.Handler)
-	api.HandleFunc("/compare/{code}", compare.HandlerUsername)
 	api.HandleFunc("/logout", auth.Logout)
-	api.HandleFunc("/settings", settings.Handler)
+	api.HandleFunc("/status", status.StatusHandler)
+	api.Handle("/playlist/{playlist}", utils.LoggedIn(playlistview.Handler))
+	api.Handle("/top", utils.LoggedIn(top.Handler))
+	api.Handle("/top/old/{unixdate}", utils.LoggedIn(top.HandlerSince))
+	api.Handle("/compare", utils.LoggedIn(compare.HandlerNoUsername))
+	api.Handle("/recent", utils.LoggedIn(recenttracks.Handler))
+	api.Handle("/track/{track}", utils.LoggedIn(trackapi.Handler))
+	api.Handle("/compare/{code}", utils.LoggedIn(compare.HandlerUsername))
+	api.Handle("/settings", utils.LoggedIn(settings.Handler))
 
+	// Serve react app
 	spa := spaHandler{
 		buildPath: *config.BuildPath,
 	}
-	m.HandleFunc("/logout", auth.Logout)
 	m.PathPrefix("/").Handler(spa)
 
+	// Setup CSRF protection
+	opts := []csrf.Option{}
+	if *config.Debug {
+		opts = append(opts, csrf.Secure(false))
+	}
+	opts = append(opts, csrf.Path("/"))
+	CSRF := csrf.Protect(config.Secret, opts...)
+
+	// Setup metrics
 	if *config.Metrics {
 		hook := promrus.MustNewPrometheusHook()
 		log.AddHook(hook)
+
+		if config.IsMySQL {
+			config.DB.Use(prometheus.New(prometheus.Config{
+				DBName:      "spotifyutils",
+				StartServer: false,
+				MetricsCollector: []prometheus.MetricsCollector{
+					&prometheus.MySQL{VariableNames: []string{"threads_running"}},
+				},
+			}))
+		} else {
+			config.DB.Use(prometheus.New(prometheus.Config{
+				DBName:      "spotifyutils",
+				StartServer: false,
+			}))
+		}
+
 		go func() {
-			http.Handle("/metrics", promhttp.Handler())
-			http.ListenAndServe(":5001", nil)
+			// http.Handle("/metrics", promhttp.Handler())
+			http.ListenAndServe(":5001", promhttp.Handler())
 		}()
 	}
 
 	log.Infof("Starting server on address http://%s", *config.Address)
+
+	m.Use(CSRF)
+	m.Use(securityHeaders)
 	m.Use(gziphandler.GzipHandler)
-	err = http.ListenAndServe(*config.Address, routerMiddleware(m))
-	if err != nil {
-		log.Fatalln(err)
+	if err := http.ListenAndServe(*config.Address, routerMiddleware(m)); err != nil {
+		log.Fatal(err)
 	}
 }

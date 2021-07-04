@@ -1,22 +1,30 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 import LoginPage from '../Login/LoginPage';
 
-export default function LoginWithCode(props: { code: string }) {
+export default function LoginWithCode(props: { code: string, CSRFToken: string | undefined }) {
     const queryClient = useQueryClient();
+    const { CSRFToken } = props;
     const { isLoading, error, data } = useQuery('auth', () => axios.post<AuthInterface>('/api/auth', {
         host: `${window.location.protocol}//${window.location.host}`,
         code: props.code,
     }, {
         withCredentials: true,
-    }));
-    useEffect(() => {
-        if (data?.data.success) {
-            queryClient.invalidateQueries('status');
-            queryClient.invalidateQueries('top');
+    }), {
+        enabled: !!CSRFToken,
+    });
+    if (data?.data.Success) {
+        const lastURL = window.localStorage.getItem('lastURL');
+        queryClient.invalidateQueries();
+        if (lastURL !== '' && lastURL) {
+            setTimeout(() => {
+                window.localStorage.removeItem('lastURL');
+            }, 1000);
+            return <Redirect to={`${lastURL}`} />;
         }
-    }, [data]);
+    }
     if (isLoading) {
         return <LoginPage loggingIn />;
     }
@@ -28,5 +36,5 @@ export default function LoginWithCode(props: { code: string }) {
 }
 
 interface AuthInterface {
-    success: boolean;
+    Success: boolean;
 }

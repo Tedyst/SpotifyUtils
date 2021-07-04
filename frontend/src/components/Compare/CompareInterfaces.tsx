@@ -1,50 +1,51 @@
 export interface UsernameInterface {
-    initiator: Initiator;
-    target: Initiator;
-    result: Result;
-    success: boolean;
-    error?: string;
+    Initiator: Initiator;
+    Target: Initiator;
+    Result: Result;
+    Success: boolean;
+    Error?: string;
 }
 
 export interface NoUsernameCompareInterface {
-    friends: Friend[] | null;
-    success: boolean;
-    code: string;
-    error?: string;
+    Friends: Friend[] | null;
+    Success: boolean;
+    Code: string;
+    Error?: string;
 }
 
 export interface Initiator {
-    username: string;
-    name: string;
-    image: string;
-    code: string;
+    Username: string;
+    Name: string;
+    Image: string;
+    Code: string;
 }
 
 export interface Result {
-    artists: Artist[] | null;
-    tracks: Track[] | null;
-    genres: string[] | null;
-    percent: number;
+    Artists: Artist[] | null;
+    Tracks: Track[] | null;
+    Genres: string[] | null;
+    Score: number;
 }
 
 export interface Artist {
-    name: string;
-    image: string;
-    id: string;
+    Name: string;
+    Image: string;
+    ID: string;
+    URI: string;
 }
 
 export interface Track {
-    artist: string;
-    name: string;
-    image: string;
-    id: string;
-    duration: number;
-    previewURL: string;
+    Artist: string;
+    Name: string;
+    Image: string;
+    ID: string;
+    Duration: number;
+    PreviewURL: string;
 }
 
 export interface Friend {
-    username: string;
-    name: string;
-    image: string;
-    code: string;
+    Username: string;
+    Name: string;
+    Image: string;
+    Code: string;
 }

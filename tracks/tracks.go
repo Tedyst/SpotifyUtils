@@ -1,25 +1,33 @@
 package tracks
 
 import (
-	"errors"
+	"sync"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/zmb3/spotify"
 	"gorm.io/gorm"
 )
 
+var trackMutex = make(map[string]*sync.Mutex)
+
 type Track struct {
-	gorm.Model
-	TrackID string `gorm:"type:VARCHAR(30) NOT NULL UNIQUE"`
+	ID        uint           `gorm:"primarykey" json:"-"`
+	CreatedAt time.Time      `json:"-"`
+	UpdatedAt time.Time      `json:"-"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+	TrackID   string         `gorm:"type:VARCHAR(30) NOT NULL UNIQUE"`
 
 	Lyrics string
 
-	LastUpdated time.Time
-	Artists     []Artist `gorm:"many2many:track_artists;"`
+	LastUpdated time.Time `json:"-"`
+	Artists     []Artist  `gorm:"many2many:track_artists;"`
 	Name        string
 	Information SpotifyInformation `gorm:"embedded;embeddedPrefix:information_"`
+
+	Mutex *sync.Mutex `gorm:"-"`
 }
 
 func GetTrackFromID(ID string) *Track {
@@ -27,7 +35,18 @@ func GetTrackFromID(ID string) *Track {
 	config.DB.Where("track_id = ?", ID).Preload("Artists").FirstOrCreate(&tr, Track{
 		TrackID: ID,
 	})
+	tr.Mutex = getTrackMutex(ID)
 	return &tr
+}
+
+func getTrackMutex(ID string) *sync.Mutex {
+	val, ok := trackMutex[ID]
+	if ok {
+		return val
+	}
+	val = &sync.Mutex{}
+	trackMutex[ID] = val
+	return val
 }
 
 func TrackExists(ID string) bool {
@@ -51,28 +70,32 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 	for _, s := range newTracks {
 		ids = append(ids, spotify.ID(s.TrackID))
 	}
+
+	var artistUpdate []*Artist
 	for i := 0; i < len(ids); i += limit {
 		size := len(ids)
 		if size > i+limit {
 			size = i + limit
 		}
 		batch := ids[i:size]
+		metrics.SpotifyRequests.Add(1)
 		info, err := cl.GetTracks(batch...)
 		if err != nil {
 			log.Error(err)
 			return
 		}
+		metrics.SpotifyRequests.Add(1)
 		features, err := cl.GetAudioFeatures(batch...)
 		if err != nil {
 			log.Error(err)
 			return
 		}
 
-		var artistUpdate []*Artist
 		for ind, s := range info {
 			var artists []Artist
 			for _, s := range s.Artists {
 				a := GetArtistFromID(s.ID.String())
+				a.Name = s.Name
 				artists = append(artists, *a)
 				artistUpdate = append(artistUpdate, a)
 			}
@@ -105,45 +128,33 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 			newTracks[ind+i].Save()
 		}
 
-		go func(client *spotify.Client, tr []*Track, artists []*Artist) {
-			BatchUpdateArtists(artists, cl)
-			for _, s := range tr {
-				s.Update(cl, true)
-				time.Sleep(5 * time.Second)
-			}
-		}(&cl, newTracks, artistUpdate)
 	}
+	go func(client *spotify.Client, tr []*Track, artists []*Artist) {
+		BatchUpdateArtists(artists, cl)
+		for _, s := range tr {
+			s.Update(cl, true)
+			time.Sleep(5 * time.Second)
+		}
+	}(&cl, newTracks, artistUpdate)
 }
 
 func (t *Track) Save() error {
 	if !enableSaving {
 		return nil
 	}
-	inDB := GetTrackFromID(t.TrackID)
-	if inDB.ID != t.ID {
-		msg := "duplicate entry detected"
-		log.WithFields(log.Fields{
-			"type":       "tracks",
-			"database":   inDB,
-			"track":      t,
-			"databaseid": inDB.ID,
-			"trackid":    t.ID,
-		}).Error(msg)
-		return errors.New(msg)
-	}
-	if t.TrackID == "" {
-		msg := "tried to save empty track_id"
+	if err := config.DB.Save(t).Error; err != nil {
 		log.WithFields(log.Fields{
 			"type":  "tracks",
 			"track": t,
-		}).Error(msg)
-		return errors.New(msg)
+		}).Error(err)
+		return err
 	}
-	config.DB.Save(t)
 	return nil
 }
 
 func (t *Track) Update(cl spotify.Client, syncUpdateLyrics bool) error {
+	t.Mutex.Lock()
+	defer t.Mutex.Unlock()
 	var err1 error
 	var err2 error
 	if !t.Information.Updated {

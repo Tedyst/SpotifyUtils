@@ -17,7 +17,7 @@ export default function AlbumInfo(props: {
     } = props;
 
     return (
-        <div>
+        <>
             <Typography>
                 Album Information
             </Typography>
@@ -59,6 +59,6 @@ export default function AlbumInfo(props: {
                     </TableBody>
                 </Table>
             </TableContainer>
-        </div>
+        </>
     );
 }

@@ -4,18 +4,22 @@ import {
     Route,
     Redirect,
 } from 'react-router-dom';
-import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core';
-import { useSwipeable } from 'react-swipeable';
+import {
+    createMuiTheme,
+    CssBaseline,
+    makeStyles,
+    ThemeProvider,
+} from '@material-ui/core';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { setUser as SentrySetUser } from '@sentry/react';
-import Sidebar from './views/Sidebar';
 import ServiceWorkerPopup from './components/ServiceWorkerPopup';
-import RedirectToSaved from './components/RedirectToSaved';
-import Loading from './components/Loading';
 import { Settings as SettingsInterface } from './components/Settings/SettingsPage';
 
-const Login = lazy(() => import('./views/Auth/Login'));
+import Sidebar from './views/Sidebar';
+import Loading from './components/Loading';
+import Login from './views/Auth/Login';
+
 const PlaylistView = lazy(() => import('./views/PlaylistView'));
 const Track = lazy(() => import('./views/TrackPage'));
 const Logout = lazy(() => import('./views/Auth/Logout'));
@@ -23,7 +27,6 @@ const Recent = lazy(() => import('./views/RecentPage'));
 const Settings = lazy(() => import('./views/SettingsPage'));
 const Top = lazy(() => import('./views/TopPage'));
 const Compare = lazy(() => import('./views/ComparePage'));
-const TrackSearch = lazy(() => import('./views/TrackSearch'));
 const ListeningStats = lazy(() => import('./views/ListeningStatsPage'));
 
 const drawerWidth = 240;
@@ -43,18 +46,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 export interface StatusInterface {
-    success: boolean;
-    username: string;
-    image: string;
-    playlists: Playlist[];
-    id: string;
-    settings: SettingsInterface;
-    error?: string;
+    Success: boolean;
+    Username: string;
+    Image: string;
+    Playlists: Playlist[];
+    ID: string;
+    Settings: SettingsInterface;
+    Error?: string;
 }
 
 export interface Playlist {
-    id: string;
-    name: string;
+    ID: string;
+    Name: string;
 }
 
 function App() {
@@ -64,16 +67,11 @@ function App() {
         },
     });
     const classes = useStyles();
-    const [mobileOpen, setMobileOpen] = React.useState(false);
-    const handlers = useSwipeable({
-        trackMouse: false,
-        onSwipedRight: () => setMobileOpen(true),
-    });
 
     const { data } = useQuery('status', () => axios.get<StatusInterface>('/api/status', {
         withCredentials: true,
     }));
-    const logged = data?.data.success;
+    const logged = data?.data?.Success;
     axios.defaults.headers.post['X-CSRF-Token'] = data?.headers['x-csrf-token'];
 
     if (!logged) {
@@ -81,62 +79,43 @@ function App() {
             window.localStorage.setItem('lastURL', window.location.pathname);
         }
         return (
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            <div className={classes.root} {...handlers}>
-                <ThemeProvider theme={darkTheme}>
-                    <Sidebar
-                        mobileOpen={mobileOpen}
-                        setMobileOpen={setMobileOpen}
-                        logged={false}
-                        username="Not logged in"
-                        image=""
-                        settings={data?.data.settings}
-                    />
-                    <Suspense fallback={<Loading />}>
-                        <main className={classes.content}>
-                            <div className={classes.toolbar} />
-                            <Switch>
-                                <Route path="/auth">
-                                    <Login />
-                                </Route>
-                                <Route path="/">
-                                    <Redirect to="/auth" />
-                                </Route>
-                            </Switch>
-                            <ServiceWorkerPopup />
-                        </main>
-                    </Suspense>
-                </ThemeProvider>
-            </div>
+            <ThemeProvider theme={darkTheme}>
+                <CssBaseline />
+                <div className={classes.root}>
+                    <main className={classes.content}>
+                        <div className={classes.toolbar} />
+                        <Login
+                            CSRFToken={data?.headers['x-csrf-token']}
+                        />
+                        <ServiceWorkerPopup />
+                    </main>
+                </div>
+            </ThemeProvider>
         );
     }
 
     SentrySetUser({
-        id: data?.data.id,
+        id: data?.data?.ID,
     });
 
     return (
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        <div className={classes.root} {...handlers}>
-            <ThemeProvider theme={darkTheme}>
+        <ThemeProvider theme={darkTheme}>
+            <CssBaseline />
+            <div className={classes.root}>
                 <Sidebar
-                    mobileOpen={mobileOpen}
-                    setMobileOpen={setMobileOpen}
-                    logged={!!data?.data.success}
-                    username={data?.data.username}
-                    image={data?.data.image}
-                    settings={data?.data.settings}
+                    logged={!!data?.data?.Success}
+                    username={data?.data?.Username}
+                    image={data?.data?.Image}
+                    settings={data?.data?.Settings}
                 />
                 <Suspense fallback={<Loading />}>
                     <main className={classes.content}>
                         <div className={classes.toolbar} />
                         <Switch>
                             <Route path="/playlist">
-
-                                <PlaylistView />
-                            </Route>
-                            <Route path="/tracksearch">
-                                <TrackSearch />
+                                <PlaylistView
+                                    playlists={data?.data.Playlists}
+                                />
                             </Route>
                             <Route path="/listeningstatistics">
                                 <ListeningStats />
@@ -163,12 +142,11 @@ function App() {
                                 <Top />
                             </Route>
                         </Switch>
-                        <RedirectToSaved />
                         <ServiceWorkerPopup />
                     </main>
                 </Suspense>
-            </ThemeProvider>
-        </div>
+            </div>
+        </ThemeProvider>
     );
 }
 

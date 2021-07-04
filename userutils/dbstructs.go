@@ -114,6 +114,6 @@ func (sla FriendsStruct) Value() (driver.Value, error) {
 }
 
 type Playlist struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID   string
+	Name string
 }

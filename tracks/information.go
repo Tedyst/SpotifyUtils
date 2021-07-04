@@ -79,6 +79,7 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 	}).Debugf("Getting spotify information")
 
 	if t.Information.AlbumInformation.ID == "" || len(t.Artists) == 0 {
+		metrics.SpotifyRequests.Add(1)
 		track, err := cl.GetTrack(spotify.ID(t.TrackID))
 		if err != nil {
 			log.WithFields(log.Fields{
@@ -93,6 +94,7 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 		var artistsBatch []*Artist
 		for _, s := range track.Artists {
 			a := GetArtistFromID(s.ID.String())
+			a.Name = s.Name
 			artistsBatch = append(artistsBatch, a)
 		}
 		BatchUpdateArtists(artistsBatch, cl)
@@ -110,6 +112,7 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 	}
 
 	if t.Information.TrackFeatures.Energy == 0 {
+		metrics.SpotifyRequests.Add(1)
 		features, err := cl.GetAudioFeatures(spotify.ID(t.TrackID))
 		if err != nil {
 			log.WithFields(log.Fields{
@@ -130,6 +133,7 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 	}
 
 	if t.Information.TrackInformation.Tempo == 0 {
+		metrics.SpotifyRequests.Add(1)
 		analysis, err := cl.GetAudioAnalysis(spotify.ID(t.TrackID))
 		if err != nil {
 			// Sometimes spotify likes to return `{"error": {"status": 502,"message": "Request was not transferred"}}`
@@ -148,6 +152,7 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 	}
 
 	if t.Information.AlbumInformation.Markets == 0 && t.Information.AlbumInformation.ID != "" {
+		metrics.SpotifyRequests.Add(1)
 		album, err := cl.GetAlbum(spotify.ID(t.Information.AlbumInformation.ID))
 		if err != nil {
 			log.WithFields(log.Fields{

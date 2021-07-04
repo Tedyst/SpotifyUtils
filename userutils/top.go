@@ -6,33 +6,36 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/zmb3/spotify"
 )
 
 type TopArtist struct {
-	Name  string `json:"name"`
-	Image string `json:"image"`
-	ID    string `json:"id"`
+	Name  string
+	Image string
+	ID    string
 }
 
 type TopTrack struct {
-	Artist     string `json:"artist"`
-	Name       string `json:"name"`
-	Image      string `json:"image"`
-	ID         string `json:"id"`
-	Duration   int    `json:"duration"`
-	PreviewURL string `json:"previewURL"`
+	Artist     string
+	Name       string
+	Image      string
+	ID         string
+	Duration   int
+	PreviewURL string
 }
 
 type TopStruct struct {
-	Genres  GenresStruct  `json:"genres"`
-	Updated int64         `json:"updated"`
-	Artists ArtistsStruct `json:"artists"`
-	Tracks  TracksStruct  `json:"tracks"`
+	Genres  GenresStruct
+	Updated int64
+	Artists ArtistsStruct
+	Tracks  TracksStruct
 }
 
 // RefreshTop updates the user's top
 func (u *User) RefreshTop() error {
+	u.Mutex.RefreshTop.Lock()
+	defer u.Mutex.RefreshTop.Unlock()
 	if *config.MockExternalCalls {
 		return nil
 	}
@@ -53,19 +56,34 @@ func (u *User) RefreshTop() error {
 	shortOptions := &spotify.Options{
 		Timerange: &shortString,
 	}
+	metrics.SpotifyRequests.Add(1)
 	longTopArtists, err := u.Client().CurrentUsersTopArtistsOpt(longOptions)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"type":        "top",
+			"user":        u,
+			"tokenExpiry": u.Token.Expiry.Unix(),
+		}).Error(err)
 		return err
 	}
+	metrics.SpotifyRequests.Add(1)
 	shortTopArtists, err := u.Client().CurrentUsersTopArtistsOpt(shortOptions)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"type":        "top",
+			"user":        u,
+			"tokenExpiry": u.Token.Expiry.Unix(),
+		}).Error(err)
 		return err
 	}
+	metrics.SpotifyRequests.Add(1)
 	shortTopTracks, err := u.Client().CurrentUsersTopTracksOpt(shortOptions)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"type":        "top",
+			"user":        u,
+			"tokenExpiry": u.Token.Expiry.Unix(),
+		}).Error(err)
 		return err
 	}
 

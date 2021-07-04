@@ -6,63 +6,45 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
-func HandlerUsername(res http.ResponseWriter, req *http.Request) {
-	res.Header().Set("Content-Type", "application/json")
-	session, _ := config.SessionStore.Get(req, "username")
-	vars := mux.Vars(req)
-	type RespUser struct {
-		ID    string `json:"username"`
-		Name  string `json:"name"`
-		Image string `json:"image"`
-		Code  string `json:"code"`
-	}
-	type Resp struct {
-		Initiator RespUser                `json:"initiator"`
-		Target    RespUser                `json:"target"`
-		Result    userutils.CompareStruct `json:"result"`
-		Success   bool                    `json:"success"`
-		Error     string                  `json:"error,omitempty"`
-	}
+type responseUser struct {
+	ID    string
+	Name  string
+	Image string
+	Code  string
+}
+type response struct {
+	Initiator responseUser
+	Target    responseUser
+	Result    userutils.CompareStruct
+	Success   bool
+}
 
-	response := &Resp{}
-	if _, ok := session.Values["username"]; !ok {
-		response.Success = false
-		response.Error = "Not Logged in"
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
-		return
-	}
+func HandlerUsername(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+	vars := mux.Vars(req)
+	response := &response{}
 	if _, ok := vars["code"]; !ok {
-		response.Success = false
-		response.Error = "No Code Specified"
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorString(res, req, "No code specified")
 		return
 	}
-	val := session.Values["username"]
-	user := userutils.GetUser(val.(string))
 	code := vars["code"]
 	target := userutils.GetUserFromCompareCode(code)
 	if target == nil {
-		response.Success = false
-		response.Error = "User not found"
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorString(res, req, "User not found")
 		return
 	}
 
 	response.Success = true
-	response.Initiator = RespUser{
+	response.Initiator = responseUser{
 		ID:    user.UserID,
 		Code:  user.CompareCode,
 		Name:  user.DisplayName,
 		Image: user.Image,
 	}
-	response.Target = RespUser{
+	response.Target = responseUser{
 		ID:    target.UserID,
 		Code:  target.CompareCode,
 		Name:  target.DisplayName,
@@ -70,49 +52,6 @@ func HandlerUsername(res http.ResponseWriter, req *http.Request) {
 	}
 	response.Result = user.Compare(target)
 	go user.AddFriend(target)
-
-	respJSON, _ := json.Marshal(response)
-	fmt.Fprint(res, string(respJSON))
-}
-
-func HandlerNoUsername(res http.ResponseWriter, req *http.Request) {
-	res.Header().Set("Content-Type", "application/json")
-	session, _ := config.SessionStore.Get(req, "username")
-	type RespUser struct {
-		ID    string `json:"username"`
-		Name  string `json:"name"`
-		Image string `json:"image"`
-		Code  string `json:"code"`
-	}
-	type Resp struct {
-		Friends []RespUser `json:"friends"`
-		Success bool       `json:"success"`
-		Error   string     `json:"error,omitempty"`
-		Code    string     `json:"code"`
-	}
-
-	response := &Resp{}
-	response.Friends = []RespUser{}
-	if _, ok := session.Values["username"]; !ok {
-		response.Success = false
-		response.Error = "Not Logged in"
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
-		return
-	}
-	val := session.Values["username"]
-	user := userutils.GetUser(val.(string))
-
-	for _, s := range user.GetFriends() {
-		response.Friends = append(response.Friends, RespUser{
-			Code:  s.CompareCode,
-			ID:    s.UserID,
-			Name:  s.DisplayName,
-			Image: s.Image,
-		})
-	}
-	response.Success = true
-	response.Code = user.CompareCode
 
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprint(res, string(respJSON))

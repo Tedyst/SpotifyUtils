@@ -1,7 +1,8 @@
 import React from 'react';
 import {
-    Button, CssBaseline, Typography, makeStyles, Container, Select, MenuItem, Grid,
+    Button, Typography, makeStyles, Container, Select, MenuItem, Grid,
 } from '@material-ui/core';
+import { Playlist } from '../App';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -31,93 +32,49 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SearchBox(props: {
-    playlists: any,
-    setResults: React.Dispatch<React.SetStateAction<never[]>> | undefined
+    playlists: Playlist[] | undefined,
+    setPlaylist: (s: string) => void,
+    searching?: boolean,
 }) {
     const classes = useStyles();
-    const { playlists } = props;
+    const { playlists, setPlaylist, searching } = props;
+    const [selectedPlaylist, setSelectedPlaylist] = React.useState<string>('none');
+    const ButtonText = searching ? 'Searching...' : 'Search';
 
-    // TODO: What is this file
-    const noplaylistfound = (
-        <MenuItem disabled value="none">
-            No playlist found!
-        </MenuItem>
-    );
     let list: any[] = [];
     if (playlists !== undefined) {
         list = [];
-        Object.keys(playlists).forEach((key) => {
+        Object.values(playlists).forEach((i) => {
             list.push(
                 <MenuItem
                     className={classes.fullWidth}
-                    key={`${playlists[key].id}-${key}`}
-                    value={playlists[key].id}
+                    key={`${i.ID}-playlist`}
+                    value={i.ID}
                 >
-                    {playlists[key].name}
+                    {i.Name}
                 </MenuItem>,
             );
         });
-    }
-    const shown = playlists !== undefined ? list : noplaylistfound;
-    const [selectedPlaylist, setselectedPlaylist] = React.useState('none');
-    const [Updating, setUpdating] = React.useState(false);
-    const [ButtonText, setButtonText] = React.useState('');
-
-    let button = (
-        <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            type="submit"
-        >
-            Search
-        </Button>
-    );
-    if (Updating === true) {
-        button = (
-            <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                type="submit"
-                disabled
-            >
-                {ButtonText}
-            </Button>
+    } else {
+        list.push(
+            <MenuItem disabled value="none">
+                No playlist found!
+            </MenuItem>,
         );
     }
 
     const changePlaylist = (event: any) => {
-        setselectedPlaylist(event.target.value);
-    };
-
-    const update = () => {
-        setButtonText('Searching...');
-        fetch(`/api/playlist/${selectedPlaylist}`, { cache: 'no-store', credentials: 'same-origin' }).then((res) => res.json()).then((data) => {
-            setUpdating(!data.finished);
-            if (props.setResults !== undefined) {
-                props.setResults(data.Results);
-            }
-            setUpdating(false);
-        });
+        setSelectedPlaylist(event.target.value);
     };
 
     const mySubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (selectedPlaylist === 'none') return;
-        setButtonText('Searching...');
-        setUpdating(true);
-        if (props.setResults !== undefined) {
-            props.setResults([]);
-        }
-        update();
+        setPlaylist(selectedPlaylist);
     };
 
     return (
         <Container>
-            <CssBaseline />
             <div className={classes.paper}>
                 <Grid container spacing={2}>
                     <form
@@ -139,12 +96,25 @@ export default function SearchBox(props: {
                             <MenuItem value="none" disabled>
                                 Select a playlist to search into
                             </MenuItem>
-                            {shown}
+                            {list}
                         </Select>
-                        {button}
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                            type="submit"
+                            disabled={searching}
+                        >
+                            {ButtonText}
+                        </Button>
                     </form>
                 </Grid>
             </div>
         </Container>
     );
 }
+
+SearchBox.defaultProps = {
+    searching: false,
+};

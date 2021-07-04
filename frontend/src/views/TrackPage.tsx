@@ -3,8 +3,8 @@ import {
     Switch,
     Route,
     useRouteMatch,
-    Redirect,
 } from 'react-router-dom';
+import TrackSearch from '../components/TrackSearch';
 import TrackAnalyzePage from './TrackAnalyzePage';
 
 export default function Track() {
@@ -15,7 +15,7 @@ export default function Track() {
                 <TrackAnalyzePage />
             </Route>
             <Route path="/">
-                <Redirect to="/" />
+                <TrackSearch />
             </Route>
         </Switch>
     );

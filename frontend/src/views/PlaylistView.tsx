@@ -1,62 +1,59 @@
 import React from 'react';
-import { CssBaseline, Container } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { Alert, AlertTitle } from '@material-ui/lab';
 import SearchBox from '../components/PlaylistSearchBox';
 import ResultBox from '../components/ResultBox';
-import { StatusInterface } from '../App';
-import Loading from '../components/Loading';
+import { Playlist } from '../App';
+import ErrorAxiosComponent from '../components/ErrorAxiosComponent';
 
-export default function PlaylistSearch() {
-    const { data, status, error } = useQuery('status', () => axios.get<StatusInterface>('/api/status', {
+export interface PlaylistResponse {
+    Results: Track[];
+    Success: boolean;
+    Error?: string;
+}
+
+export interface Result {
+    Name: string;
+    Artist: string;
+    URI: string;
+    Image: string;
+}
+
+export interface Track {
+    Name: string;
+    Artist: string;
+    URI: string;
+    Image: string;
+    Count?: number;
+}
+
+export default function PlaylistSearch(props: {
+    playlists: Playlist[] | undefined,
+}) {
+    const [selectedPlaylist, setSelectedPlaylist] = React.useState<string>();
+    const { data, status, error } = useQuery(`/api/playlist/${selectedPlaylist}`, () => axios.get<PlaylistResponse>(`/api/playlist/${selectedPlaylist}`, {
         withCredentials: true,
-    }));
-    const playlists = data?.data.playlists === undefined ? [] : data.data.playlists;
-    const [Results, setResults] = React.useState([]);
-    let errorComponent = null;
-    if (status === 'error' || data?.data.success === false) {
-        const errorMessage = data?.data.error ? data.data.error : null;
-        if (typeof error === 'object' && error != null) {
-            if (error.toString() !== '') {
-                errorComponent = (
-                    <Container maxWidth="xs">
-                        <Alert severity="error">
-                            <AlertTitle>{error.toString()}</AlertTitle>
-                            {errorMessage}
-                        </Alert>
-                    </Container>
-                );
-            }
-        } else {
-            errorComponent = (
-                <Container maxWidth="xs">
-                    <Alert severity="error">
-                        <AlertTitle>Could not extract data from server</AlertTitle>
-                        {errorMessage}
-                    </Alert>
-                </Container>
-            );
-        }
-        return (
-            <div>
-                {errorComponent}
-                <Loading />
-            </div>
-        );
-    }
-    let result = <Loading />;
-    if (status === 'success') result = <ResultBox results={Results} />;
+    }), {
+        enabled: !!selectedPlaylist,
+    });
+    const { playlists } = props;
+
+    const err = <ErrorAxiosComponent data={data} status={status} error={error} />;
+
     return (
-        <div>
+        <>
+            {err}
             <Container maxWidth="xs">
                 <SearchBox
-                    setResults={setResults}
+                    setPlaylist={(s) => {
+                        setSelectedPlaylist(s);
+                    }}
                     playlists={playlists}
+                    searching={!(status === 'success') && selectedPlaylist !== undefined}
                 />
-                <CssBaseline />
             </Container>
-            {result}
-        </div>
+            <ResultBox results={data?.data.Results} />
+        </>
     );
 }

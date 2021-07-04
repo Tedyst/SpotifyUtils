@@ -4,11 +4,10 @@ import {
 } from 'react-router-dom';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { Container } from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
-
-import Loading from '../components/Loading';
 import TrackAnalyze, { TrackParamTypes, TrackInterface } from '../components/Track/TrackAnalyze';
+import ErrorAxiosComponent from '../components/ErrorAxiosComponent';
+import ErrorComponent from '../components/ErrorComponent';
+import TrackSearch from '../components/TrackSearch';
 
 const refetchIntervalSeconds = 10;
 
@@ -19,39 +18,28 @@ export default function TrackAnalyzeController() {
         withCredentials: true,
     }), {
         refetchInterval: refetchIntervalSeconds * 1000,
+        retry: false,
     });
-    let errorComponent = null;
-    if (status === 'error' || data?.data.Success === false) {
-        const errorMessage = data?.data.Error ? data.data.Error : null;
-        if (typeof error === 'object' && error != null) {
-            if (error.toString() !== '') {
-                errorComponent = (
-                    <Container maxWidth="xs">
-                        <Alert severity="error">
-                            <AlertTitle>{error.toString()}</AlertTitle>
-                            {errorMessage}
-                        </Alert>
-                    </Container>
-                );
-            }
-        } else {
-            errorComponent = (
-                <Container maxWidth="xs">
-                    <Alert severity="error">
-                        <AlertTitle>Could not extract data from server</AlertTitle>
-                        {errorMessage}
-                    </Alert>
-                </Container>
-            );
-        }
+
+    const err = <ErrorAxiosComponent data={data} status={status} error={error} />;
+
+    // This is needed to get the response data for a 401 request
+    const myCustomErrorLet: any = {};
+    myCustomErrorLet.data = error;
+
+    if (myCustomErrorLet?.data?.response?.data?.Success === false) {
         return (
-            <div>
-                {errorComponent}
-                <Loading />
-            </div>
+            <>
+                <ErrorComponent error="Track does not exist" />
+                <TrackSearch />
+            </>
         );
     }
-    if (data === undefined || status === 'loading' || data?.data === undefined) return <Loading />;
 
-    return <TrackAnalyze trackInfo={data.data.Result} />;
+    return (
+        <>
+            {err}
+            <TrackAnalyze trackInfo={data?.data?.Result} />
+        </>
+    );
 }

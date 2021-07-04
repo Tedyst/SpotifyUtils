@@ -3,13 +3,11 @@ import React from 'react';
 import {
     makeStyles, Grid, Container, Card, CardContent, Typography,
 } from '@material-ui/core';
-import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import SongCardRight from '../SongCardRight';
 import ResultBox from '../ResultBox';
 import Graph from '../Graph';
@@ -70,19 +68,19 @@ export interface TopTrack {
 }
 
 export default function ListeningStatsComp(props: {
-    data: ListeningStatsInterface,
-    setSelectedDate?: React.Dispatch<React.SetStateAction<Date>> | undefined,
+    data: ListeningStatsInterface | undefined,
+    setSelectedDate?: (b: Date) => void,
     selectedDate: Date,
 }) {
     const classes = useStyles();
     const { data, setSelectedDate, selectedDate } = props;
 
-    const handleDateChange = (date: MaterialUiPickersDate) => {
+    const handleDateChange = (date: Date | null) => {
         if (date !== null && setSelectedDate !== undefined) setSelectedDate(date);
     };
 
     const titleText = (
-        <div>
+        <>
             <Typography align="center" color="textPrimary" variant="h4">
                 Your Listening Statistics
             </Typography>
@@ -91,7 +89,7 @@ export default function ListeningStatsComp(props: {
                 <br />
                 To disable user tracking, go to Settings and uncheck Recent Tracks Tracking
             </Typography>
-        </div>
+        </>
     );
 
     const datepicker = (
@@ -114,15 +112,26 @@ export default function ListeningStatsComp(props: {
         </MuiPickersUtilsProvider>
     );
 
+    if (!data) {
+        return (
+            <>
+                {titleText}
+                <Container maxWidth="sm">
+                    {datepicker}
+                </Container>
+            </>
+        );
+    }
+
     let topsong = null;
 
-    if (data.Result.TopTracks.length > 0) {
+    if (data?.Result?.TopTracks && data?.Result?.TopTracks?.length > 0) {
         topsong = (
             <SongCardRight
-                artist={data.Result.TopTracks[0].Artist}
-                count={data.Result.TopTracks[0].Count}
-                image={data.Result.TopTracks[0].Image}
-                name={data.Result.TopTracks[0].Name}
+                artist={data.Result.TopTracks[0]?.Artist}
+                count={data.Result.TopTracks[0]?.Count}
+                image={data.Result.TopTracks[0]?.Image}
+                name={data.Result.TopTracks[0]?.Name}
             />
         );
     }
@@ -146,7 +155,7 @@ export default function ListeningStatsComp(props: {
     const totallistenedtime = secToText(data.Result.TotalListened);
     const totallistenedtracks = data.Result.Count;
     return (
-        <div>
+        <>
             {titleText}
             <Container maxWidth="sm">
                 {datepicker}
@@ -220,7 +229,7 @@ export default function ListeningStatsComp(props: {
             <Container>
                 <ResultBox results={data.Result.TopTracks} />
             </Container>
-        </div>
+        </>
     );
 }
 

@@ -9,16 +9,19 @@ export interface RecentInterface {
 }
 
 export default function RecentPage(props: {
-    results: Result[],
+    results: Result[] | undefined,
 }) {
     const { results } = props;
+    if (results === undefined) {
+        return null;
+    }
     return (
-        <div>
+        <>
             <Typography component="h4" variant="h4" align="center">
                 Your recent tracks
             </Typography>
             <br />
             <ResultBox results={results} />
-        </div>
+        </>
     );
 }

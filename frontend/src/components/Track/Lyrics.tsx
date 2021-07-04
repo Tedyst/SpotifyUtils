@@ -15,7 +15,7 @@ export default function Lyrics(props: {
     const classes = useStyles();
     const { lyrics } = props;
     return (
-        <div>
+        <>
             <Typography>
                 Lyrics
             </Typography>
@@ -26,6 +26,6 @@ export default function Lyrics(props: {
                     </Typography>
                 </CardContent>
             </Card>
-        </div>
+        </>
     );
 }

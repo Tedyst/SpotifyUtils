@@ -9,6 +9,7 @@ import { Integrations } from '@sentry/tracing';
 import { createBrowserHistory } from 'history';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { unregister } from './serviceWorkerRegistration';
 
 const history = createBrowserHistory();
 
@@ -35,21 +36,23 @@ const queryClient = new QueryClient({
     },
 });
 
-const localStoragePersistor = createLocalStoragePersistor();
+if (!isDevelopment) {
+    const localStoragePersistor = createLocalStoragePersistor();
 
-persistQueryClient({
-    queryClient,
-    persistor: localStoragePersistor,
-});
+    persistQueryClient({
+        queryClient,
+        persistor: localStoragePersistor,
+    });
+}
 
 ReactDOM.render(
-    <QueryClientProvider client={queryClient}>
-        <Sentry.ErrorBoundary fallback="An error has occurred" showDialog>
+    <Sentry.ErrorBoundary fallback="An error has occurred" showDialog onError={() => unregister()}>
+        <QueryClientProvider client={queryClient}>
             <Router history={history}>
                 <App />
             </Router>
-        </Sentry.ErrorBoundary>
-    </QueryClientProvider>,
+        </QueryClientProvider>
+    </Sentry.ErrorBoundary>,
     document.getElementById('root'),
 );
 

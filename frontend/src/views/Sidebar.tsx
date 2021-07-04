@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    CssBaseline,
     Divider,
     Drawer,
     Hidden,
@@ -70,13 +69,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ResponsiveDrawer(props: {
-    setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    mobileOpen: boolean,
     logged: boolean,
     username?: string,
     image?: string,
     settings?: SettingsInterface,
 }) {
+    const [mobileOpen, setMobileOpen] = React.useState(false);
     const classes = useStyles();
     const theme = useTheme();
     const location = useLocation();
@@ -90,15 +88,15 @@ function ResponsiveDrawer(props: {
     if (!logged) return null;
 
     const handleDrawerToggle = () => {
-        props.setMobileOpen(!props.mobileOpen);
+        setMobileOpen(!mobileOpen);
     };
 
     const closeDrawer = () => {
-        props.setMobileOpen(false);
+        setMobileOpen(false);
     };
 
     const drawer = (
-        <div>
+        <>
             <div className={`${classes.toolbar} ${classes.toolbarName}`}>
                 <Typography variant="h5" noWrap>
                     Utils For Spotify
@@ -146,8 +144,8 @@ function ResponsiveDrawer(props: {
                     component={Link}
                     onClick={closeDrawer}
                     key="TrackSearch"
-                    selected={location.pathname === '/tracksearch'}
-                    to="/tracksearch"
+                    selected={location.pathname.startsWith('/track')}
+                    to="/track"
                 >
                     <ListItemIcon>
                         <Search />
@@ -236,7 +234,7 @@ function ResponsiveDrawer(props: {
                     <ListItemText primary="Logout" />
                 </ListItem>
             </List>
-        </div>
+        </>
     );
 
     const container = window !== undefined ? () => window.document.body : undefined;
@@ -268,10 +266,8 @@ function ResponsiveDrawer(props: {
         </AppBar>
     );
 
-    const { mobileOpen } = props;
     return (
         <div className={classes.root}>
-            <CssBaseline />
             {header}
             <nav className={classes.drawer} aria-label="mailbox folders">
                 <Hidden smUp implementation="css">

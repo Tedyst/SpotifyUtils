@@ -1,58 +1,22 @@
 import React from 'react';
-import {
-    Container,
-} from '@material-ui/core';
+
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import { Alert, AlertTitle } from '@material-ui/lab';
 import TopComp, { TopInterface } from '../components/Top/TopComp';
-import Loading from '../components/Loading';
+import ErrorAxiosComponent from '../components/ErrorAxiosComponent';
 
 export default function Top() {
     const { data, status, error } = useQuery('top', () => axios.get<TopInterface>('/api/top', {
         withCredentials: true,
     }));
 
-    let errorComponent = null;
-    if (status === 'error' || data?.data.success === false) {
-        const errorMessage = data?.data.error ? data.data.error : null;
-        if (typeof error === 'object' && error != null) {
-            if (error.toString() !== '') {
-                errorComponent = (
-                    <Container maxWidth="xs">
-                        <Alert severity="error">
-                            <AlertTitle>{error.toString()}</AlertTitle>
-                            {errorMessage}
-                        </Alert>
-                    </Container>
-                );
-            }
-        } else {
-            errorComponent = (
-                <Container maxWidth="xs">
-                    <Alert severity="error">
-                        <AlertTitle>Could not extract data from server</AlertTitle>
-                        {errorMessage}
-                    </Alert>
-                </Container>
-            );
-        }
-        return (
-            <div>
-                {errorComponent}
-                <Loading />
-            </div>
-        );
-    }
-    if (data === undefined || status === 'loading') return <Loading />;
+    const err = <ErrorAxiosComponent data={data} status={status} error={error} />;
     const top = data?.data;
 
-    if (top === undefined) {
-        return <Loading />;
-    }
-    if (top.success === false) {
-        return <Loading />;
-    }
-
-    return <TopComp top={top} />;
+    return (
+        <>
+            {err}
+            <TopComp top={top} />
+        </>
+    );
 }

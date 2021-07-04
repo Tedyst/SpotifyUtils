@@ -1,17 +1,16 @@
 import React, { useEffect } from 'react';
-import { QueryClient } from 'react-query';
+import axios from 'axios';
+import { useQueryClient } from 'react-query';
 import Loading from '../../components/Loading';
 
 export default function Logout() {
-    const queryClient = new QueryClient();
+    const queryClient = useQueryClient();
 
     useEffect(() => {
-        fetch('/api/logout', { cache: 'no-store', credentials: 'same-origin' }).then(() => {
-            localStorage.clear();
+        axios.get('/api/logout').then(() => {
             queryClient.invalidateQueries();
-            window.location.reload();
         });
-    });
+    }, []);
 
     return <Loading />;
 }

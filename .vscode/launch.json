@@ -36,7 +36,8 @@
             "envFile": "${workspaceFolder}/.env",
             "args": [
                 "-Debug=true",
-                "-MockExternalCalls=true"
+                "-MockExternalCalls=true",
+                "-MockUser=vq0u2761le51p2idib6f89y78"
             ]
         }
     ]

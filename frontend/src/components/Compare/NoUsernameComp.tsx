@@ -62,13 +62,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function NoUsername(props: {
-    compare: NoUsernameCompareInterface,
+    compare: NoUsernameCompareInterface | undefined,
     enableRedirect?: boolean,
 }) {
     const classes = useStyles();
     const [Word, setWord] = React.useState<string>();
     const [RedirectURL, setRedirectURL] = React.useState<string>();
     const { compare, enableRedirect } = props;
+    if (compare === undefined) {
+        return null;
+    }
     if (RedirectURL !== undefined && enableRedirect) {
         let url = `/compare/${String(RedirectURL)}`;
         if (String(RedirectURL).includes('/compare/')) {
@@ -77,21 +80,21 @@ export default function NoUsername(props: {
         return <Redirect to={url} />;
     }
     const friends: any[] = [];
-    if (compare.friends !== null) {
-        Object.values(compare.friends).forEach((value) => {
+    if (compare.Friends !== null) {
+        Object.values(compare.Friends).forEach((value) => {
             friends.push(
                 <ListItem
                     classes={{
                         root: classes.selected,
                     }}
                     component={Link}
-                    key={`friend-${value.username}`}
-                    to={`/compare/${value.code}`}
+                    key={`friend-${value.Name}`}
+                    to={`/compare/${value.Code}`}
                 >
-                    <Avatar image={value.image} name={value.name} />
+                    <Avatar image={value.Image} name={value.Name} />
                     <ListItemText
-                        primary={value.name}
-                        secondary={value.code}
+                        primary={value.Name}
+                        secondary={value.Code}
                     />
                 </ListItem>,
             );
@@ -110,13 +113,13 @@ export default function NoUsername(props: {
     };
 
     return (
-        <div>
+        <>
             <Container disableGutters fixed maxWidth="md">
                 <Typography align="center" color="textPrimary" variant="h4">
                     Your code is
                     {' '}
                     <b>
-                        {compare.code}
+                        {compare.Code}
                     </b>
                 </Typography>
                 <Typography align="center" color="textSecondary" variant="h5">
@@ -132,7 +135,7 @@ export default function NoUsername(props: {
                     id="link-to-be-copied"
                     label="Click to copy"
                     onClick={() => { copyToClipboard(); }}
-                    value={getLink(compare.code)}
+                    value={getLink(compare.Code)}
                     variant="outlined"
                 />
 
@@ -175,7 +178,7 @@ export default function NoUsername(props: {
                     </ul>
                 </List>
             </Container>
-        </div>
+        </>
     );
 }
 

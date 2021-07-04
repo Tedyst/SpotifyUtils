@@ -15,13 +15,17 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function SettingsPage(props: {
-    settings: Settings,
+    settings: Settings | undefined,
 }) {
     const classes = useStyles();
     const { settings } = props;
 
+    if (settings === undefined) {
+        return null;
+    }
+
     return (
-        <div>
+        <>
             <Typography align="center" color="textPrimary" gutterBottom variant="h5">
                 Here you can adjust your personal settings
             </Typography>
@@ -42,6 +46,6 @@ export default function SettingsPage(props: {
                     useReactQuery
                 />
             </Container>
-        </div>
+        </>
     );
 }
