@@ -157,6 +157,15 @@ func (u *User) RefreshToken() error {
 				u.Token.RefreshToken = ""
 				u.Save()
 			}
+			if strings.Contains(fmt.Sprint(err), "User does not exist") {
+				log.WithFields(log.Fields{
+					"type":        "refresh-token",
+					"user":        u,
+					"tokenExpiry": u.Token.Expiry,
+				}).Debug("User got deleted by Spotify")
+				config.DB.Delete(u)
+				u.Save()
+			}
 			return err
 		}
 		u.Token = t

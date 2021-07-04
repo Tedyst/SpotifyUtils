@@ -47,17 +47,6 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	token, err := spotifywrapper.GetSpotifyAuthorization(request.Host, request.Code)
-	if err != nil {
-		log.WithFields(log.Fields{
-			"type": "auth",
-			"code": request.Code,
-			"host": request.Host,
-		}).Error(err)
-		utils.ErrorErr(res, req, err)
-		return
-	}
-
 	var u *userutils.User
 	if *config.MockExternalCalls {
 		if *config.MockUser == "" {
@@ -66,23 +55,38 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 		}
 		u = userutils.GetUser(*config.MockUser)
 	} else {
-		client := config.SpotifyAPI.NewClient(token)
-		spotifyUser, err := client.CurrentUser()
-		if err != nil {
-			log.WithFields(log.Fields{
-				"type": "auth",
-				"code": request.Code,
-				"host": request.Host,
-			}).Error(err)
-			utils.ErrorErr(res, req, err)
-			return
-		}
-		u = userutils.GetUser(spotifyUser.ID)
-		u.Token = token
-		u.DisplayName = spotifyUser.DisplayName
-		u.UserID = spotifyUser.ID
-		if len(spotifyUser.Images) > 0 {
-			u.Image = spotifyUser.Images[0].URL
+		val, ok := session.Values["username"]
+		if ok {
+			u = userutils.GetUser(val.(string))
+		} else {
+			token, err := spotifywrapper.GetSpotifyAuthorization(request.Host, request.Code)
+			if err != nil {
+				log.WithFields(log.Fields{
+					"type": "auth",
+					"code": request.Code,
+					"host": request.Host,
+				}).Error(err)
+				utils.ErrorErr(res, req, err)
+				return
+			}
+			client := config.SpotifyAPI.NewClient(token)
+			spotifyUser, err := client.CurrentUser()
+			if err != nil {
+				log.WithFields(log.Fields{
+					"type": "auth",
+					"code": request.Code,
+					"host": request.Host,
+				}).Error(err)
+				utils.ErrorErr(res, req, err)
+				return
+			}
+			u = userutils.GetUser(spotifyUser.ID)
+			u.Token = token
+			u.DisplayName = spotifyUser.DisplayName
+			u.UserID = spotifyUser.ID
+			if len(spotifyUser.Images) > 0 {
+				u.Image = spotifyUser.Images[0].URL
+			}
 		}
 	}
 

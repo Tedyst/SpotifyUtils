@@ -24,7 +24,7 @@ type Artist struct {
 	Genres     GenresStruct
 	Popularity int16
 	Image      string
-	Mutex      *sync.Mutex
+	Mutex      *sync.Mutex `gorm:"-"`
 }
 
 func getArtistMutex(ID string) *sync.Mutex {
