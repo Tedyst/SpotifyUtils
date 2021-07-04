@@ -142,9 +142,9 @@ function App() {
                                 <Top />
                             </Route>
                         </Switch>
-                        <ServiceWorkerPopup />
                     </main>
                 </Suspense>
+                <ServiceWorkerPopup />
             </div>
         </ThemeProvider>
     );
