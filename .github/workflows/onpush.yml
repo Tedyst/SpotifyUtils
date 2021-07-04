@@ -67,10 +67,6 @@ jobs:
       - name: Test the app
         run: |
           go test -v ./...
-        env:
-          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
-          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
   eslint:
     runs-on: ubuntu-latest
