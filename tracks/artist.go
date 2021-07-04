@@ -3,6 +3,7 @@ package tracks
 import (
 	"database/sql/driver"
 	"encoding/json"
+	"sync"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -10,6 +11,8 @@ import (
 	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/zmb3/spotify"
 )
+
+var artistMutex = make(map[string]*sync.Mutex)
 
 type Artist struct {
 	ID         uint      `gorm:"primarykey" json:"-"`
@@ -21,6 +24,17 @@ type Artist struct {
 	Genres     GenresStruct
 	Popularity int16
 	Image      string
+	Mutex      *sync.Mutex
+}
+
+func getArtistMutex(ID string) *sync.Mutex {
+	val, ok := artistMutex[ID]
+	if ok {
+		return val
+	}
+	val = &sync.Mutex{}
+	artistMutex[ID] = val
+	return val
 }
 
 type GenresStruct []string
@@ -49,6 +63,7 @@ func GetArtistFromID(ID string) *Artist {
 	config.DB.Where("artist_id = ?", ID).FirstOrCreate(&ar, Artist{
 		ArtistID: ID,
 	})
+	ar.Mutex = getArtistMutex(ID)
 	return &ar
 }
 
@@ -64,6 +79,8 @@ func BatchUpdateArtists(artists []*Artist, cl spotify.Client) {
 	}
 	newArtists := []*Artist{}
 	for _, s := range artists {
+		s.Mutex.Lock()
+		defer s.Mutex.Unlock()
 		if s.Name == "" {
 			newArtists = append(newArtists, s)
 		}
