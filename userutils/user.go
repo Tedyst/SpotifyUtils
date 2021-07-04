@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -30,13 +31,33 @@ type User struct {
 	Top         TopStruct    `gorm:"embedded;embeddedPrefix:top_"`
 	CompareCode string       `gorm:"unique"`
 	Friends     FriendsStruct
+	Mutex       UserMutex `gorm:"-"`
 }
 
 type UserSettings struct {
 	RecentTracks bool `gorm:"default:false"`
 }
 
+type UserMutex struct {
+	RefreshToken sync.Mutex
+	RefreshUser  sync.Mutex
+	RefreshTop   sync.Mutex
+}
+
 const userRefreshTimeout = 10 * time.Minute
+
+var userCache = make(map[string]*User)
+
+func getUserFromCache(ID string) (*User, bool) {
+	val, ok := userCache[ID]
+	return val, ok
+}
+
+func putUserInCache(u *User) {
+	if u != nil {
+		userCache[u.UserID] = u
+	}
+}
 
 func (u *User) Client() *spotify.Client {
 	u.RefreshToken()
@@ -45,10 +66,15 @@ func (u *User) Client() *spotify.Client {
 }
 
 func GetUser(ID string) *User {
+	u, ok := getUserFromCache(ID)
+	if ok {
+		return u
+	}
 	var user User
 	config.DB.Where("user_id = ?", ID).FirstOrCreate(&user, User{
 		UserID: ID,
 	})
+	putUserInCache(&user)
 	user.verifyifCompareCodeExists()
 	return &user
 }
@@ -57,6 +83,10 @@ func GetUserFromCompareCode(code string) *User {
 	var user User
 	if err := config.DB.Where("compare_code = ?", code).First(&user).Error; err != nil {
 		return nil
+	}
+	u, ok := getUserFromCache(user.UserID)
+	if ok {
+		return u
 	}
 	return &user
 }
@@ -73,7 +103,7 @@ func (u *User) Save() error {
 	return nil
 }
 
-func (u User) String() string {
+func (u *User) String() string {
 	return u.UserID
 }
 
@@ -81,6 +111,8 @@ func (u *User) RefreshToken() error {
 	if *config.MockExternalCalls {
 		return nil
 	}
+	u.Mutex.RefreshToken.Lock()
+	defer u.Mutex.RefreshToken.Unlock()
 	if u.Token.RefreshToken == "" {
 		log.WithFields(log.Fields{
 			"type":        "refresh-token",
@@ -123,6 +155,8 @@ func (u *User) RefreshToken() error {
 }
 
 func (u *User) RefreshUser() error {
+	u.Mutex.RefreshUser.Lock()
+	defer u.Mutex.RefreshUser.Unlock()
 	if !u.Token.Valid() {
 		log.WithFields(log.Fields{
 			"type":        "refresh-token",

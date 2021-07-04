@@ -34,6 +34,8 @@ type TopStruct struct {
 
 // RefreshTop updates the user's top
 func (u *User) RefreshTop() error {
+	u.Mutex.RefreshTop.Lock()
+	defer u.Mutex.RefreshTop.Unlock()
 	if *config.MockExternalCalls {
 		return nil
 	}
