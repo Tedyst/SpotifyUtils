@@ -1,6 +1,7 @@
 package tracks
 
 import (
+	"sync"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -9,6 +10,8 @@ import (
 	"github.com/zmb3/spotify"
 	"gorm.io/gorm"
 )
+
+var trackMutex = make(map[string]*sync.Mutex)
 
 type Track struct {
 	ID        uint           `gorm:"primarykey" json:"-"`
@@ -23,6 +26,8 @@ type Track struct {
 	Artists     []Artist  `gorm:"many2many:track_artists;"`
 	Name        string
 	Information SpotifyInformation `gorm:"embedded;embeddedPrefix:information_"`
+
+	Mutex *sync.Mutex `gorm:"-"`
 }
 
 func GetTrackFromID(ID string) *Track {
@@ -30,7 +35,18 @@ func GetTrackFromID(ID string) *Track {
 	config.DB.Where("track_id = ?", ID).Preload("Artists").FirstOrCreate(&tr, Track{
 		TrackID: ID,
 	})
+	tr.Mutex = getTrackMutex(ID)
 	return &tr
+}
+
+func getTrackMutex(ID string) *sync.Mutex {
+	val, ok := trackMutex[ID]
+	if ok {
+		return val
+	}
+	val = &sync.Mutex{}
+	trackMutex[ID] = val
+	return val
 }
 
 func TrackExists(ID string) bool {
@@ -137,6 +153,8 @@ func (t *Track) Save() error {
 }
 
 func (t *Track) Update(cl spotify.Client, syncUpdateLyrics bool) error {
+	t.Mutex.Lock()
+	defer t.Mutex.Unlock()
 	var err1 error
 	var err2 error
 	if !t.Information.Updated {
