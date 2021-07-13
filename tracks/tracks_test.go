@@ -21,10 +21,3 @@ func TestArtistString(t *testing.T) {
 		t.Errorf("expected %s, got %s", expected, s)
 	}
 }
-
-//TestTrackMutex is a test for the mutex
-func TestTrackMutex(t *testing.T) {
-	tr := tracks.GetTrackFromID("track1")
-	tr.Mutex.Lock()
-	defer tr.Mutex.Unlock()
-}

@@ -31,7 +31,7 @@ type User struct {
 	Top         TopStruct    `gorm:"embedded;embeddedPrefix:top_"`
 	CompareCode string       `gorm:"unique"`
 	Friends     FriendsStruct
-	Mutex       UserMutex `gorm:"-"`
+	mutex       UserMutex `gorm:"-"`
 }
 
 type UserSettings struct {
@@ -115,8 +115,8 @@ func (u *User) RefreshToken() error {
 	if *config.MockExternalCalls {
 		return nil
 	}
-	u.Mutex.RefreshToken.Lock()
-	defer u.Mutex.RefreshToken.Unlock()
+	u.mutex.RefreshToken.Lock()
+	defer u.mutex.RefreshToken.Unlock()
 	if u.Token.RefreshToken == "" {
 		log.WithFields(log.Fields{
 			"type":        "refresh-token",
@@ -169,8 +169,8 @@ func (u *User) RefreshToken() error {
 
 // RefreshUser refreshes the user's information
 func (u *User) RefreshUser() error {
-	u.Mutex.RefreshUser.Lock()
-	defer u.Mutex.RefreshUser.Unlock()
+	u.mutex.RefreshUser.Lock()
+	defer u.mutex.RefreshUser.Unlock()
 	if !u.Token.Valid() {
 		log.WithFields(log.Fields{
 			"type":        "refresh-token",

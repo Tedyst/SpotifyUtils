@@ -24,7 +24,7 @@ type Artist struct {
 	Genres     GenresStruct
 	Popularity int16
 	Image      string
-	Mutex      *sync.Mutex `gorm:"-"`
+	mutex      *sync.Mutex `gorm:"-"`
 }
 
 func getArtistMutex(ID string) *sync.Mutex {
@@ -64,7 +64,7 @@ func GetArtistFromID(ID string) *Artist {
 	config.DB.Where("artist_id = ?", ID).FirstOrCreate(&ar, Artist{
 		ArtistID: ID,
 	})
-	ar.Mutex = getArtistMutex(ID)
+	ar.mutex = getArtistMutex(ID)
 	return &ar
 }
 
@@ -80,8 +80,8 @@ func BatchUpdateArtists(artists []*Artist, cl spotify.Client) {
 	}
 	newArtists := []*Artist{}
 	for _, s := range artists {
-		s.Mutex.Lock()
-		defer s.Mutex.Unlock()
+		s.mutex.Lock()
+		defer s.mutex.Unlock()
 		if s.Name == "" {
 			newArtists = append(newArtists, s)
 		}

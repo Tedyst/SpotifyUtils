@@ -27,7 +27,7 @@ type Track struct {
 	Name        string
 	Information SpotifyInformation `gorm:"embedded;embeddedPrefix:information_"`
 
-	Mutex *sync.Mutex `gorm:"-"`
+	mutex *sync.Mutex `gorm:"-"`
 }
 
 // GetTrackFromID returns a track from database and sets its mutex
@@ -36,7 +36,7 @@ func GetTrackFromID(ID string) *Track {
 	config.DB.Where("track_id = ?", ID).Preload("Artists").FirstOrCreate(&tr, Track{
 		TrackID: ID,
 	})
-	tr.Mutex = getTrackMutex(ID)
+	tr.mutex = getTrackMutex(ID)
 	return &tr
 }
 
@@ -158,8 +158,8 @@ func (t *Track) Save() error {
 
 // Update a track's information
 func (t *Track) Update(cl spotify.Client, syncUpdateLyrics bool) error {
-	t.Mutex.Lock()
-	defer t.Mutex.Unlock()
+	t.mutex.Lock()
+	defer t.mutex.Unlock()
 	var err1 error
 	var err2 error
 	if !t.Information.Updated {
