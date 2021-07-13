@@ -5,6 +5,7 @@ import (
 	"github.com/tedyst/spotifyutils/metrics"
 )
 
+// UpdateUserCount refreshes user metrics
 func UpdateUserCount() {
 	var usercount int64
 	config.DB.Model(&User{}).Count(&usercount)

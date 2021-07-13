@@ -65,6 +65,7 @@ func (u *User) Client() *spotify.Client {
 	return &client
 }
 
+// GetUser gets the user from the database by ID
 func GetUser(ID string) *User {
 	u, ok := getUserFromCache(ID)
 	if ok {
@@ -79,6 +80,7 @@ func GetUser(ID string) *User {
 	return &user
 }
 
+// GetUser gets the user from the database by Compare Code
 func GetUserFromCompareCode(code string) *User {
 	var user User
 	if err := config.DB.Where("compare_code = ?", code).First(&user).Error; err != nil {
@@ -91,6 +93,7 @@ func GetUserFromCompareCode(code string) *User {
 	return &user
 }
 
+// Save
 func (u *User) Save() error {
 	if err := config.DB.Save(u).Error; err != nil {
 		log.WithFields(log.Fields{
@@ -107,6 +110,7 @@ func (u *User) String() string {
 	return u.UserID
 }
 
+// RefreshToken refreshes the user's token
 func (u *User) RefreshToken() error {
 	if *config.MockExternalCalls {
 		return nil
@@ -163,6 +167,7 @@ func (u *User) RefreshToken() error {
 	return nil
 }
 
+// RefreshUser refreshes the user's information
 func (u *User) RefreshUser() error {
 	u.Mutex.RefreshUser.Lock()
 	defer u.Mutex.RefreshUser.Unlock()

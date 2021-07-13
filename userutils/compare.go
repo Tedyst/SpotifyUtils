@@ -15,6 +15,7 @@ type CompareStruct struct {
 	Score   float32
 }
 
+// Compares two users and returns the result
 func (u *User) Compare(target *User) CompareStruct {
 	u.RefreshTop()
 	target.RefreshTop()
@@ -130,6 +131,7 @@ func generateNewCompareCode() string {
 	return ""
 }
 
+// GetFriends returns a user's friends
 func (u *User) GetFriends() []*User {
 	var result []*User
 	for _, s := range u.Friends {
@@ -138,6 +140,7 @@ func (u *User) GetFriends() []*User {
 	return result
 }
 
+// AddFriend appends a friend to a user's friend list and otherwise
 func (u *User) AddFriend(target *User) {
 	if target.ID == u.ID {
 		u.addFriend(target)
@@ -160,4 +163,29 @@ func (u *User) addFriend(target *User) {
 		"user":   u,
 		"target": target,
 	}).Debugf("Added friend")
+}
+
+// RemoveFriend removes a friend from a user's friend list and back
+func (u *User) RemoveFriend(target *User) {
+	if target.ID == u.ID {
+		u.removeFriend(target)
+		return
+	}
+	u.removeFriend(target)
+	target.removeFriend(u)
+}
+
+func (u *User) removeFriend(target *User) {
+	for i, s := range u.Friends {
+		if s == target.UserID {
+			u.Friends = append(u.Friends[:i], u.Friends[i+1:]...)
+			u.Save()
+			log.WithFields(log.Fields{
+				"type":   "friends",
+				"user":   u,
+				"target": target,
+			}).Debugf("Removed friend")
+			return
+		}
+	}
 }

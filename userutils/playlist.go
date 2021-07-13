@@ -8,6 +8,7 @@ import (
 	"github.com/zmb3/spotify"
 )
 
+// GetPlaylistTracks returns a list of tracks for a given playlist
 func (u *User) GetPlaylistTracks(ID string, cl spotify.Client) []*tracks.Track {
 	if *config.MockExternalCalls {
 		return []*tracks.Track{}

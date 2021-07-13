@@ -58,6 +58,7 @@ func (sla GenresStruct) Value() (driver.Value, error) {
 	return string(val), err
 }
 
+// GetArtistFromID
 func GetArtistFromID(ID string) *Artist {
 	var ar Artist
 	config.DB.Where("artist_id = ?", ID).FirstOrCreate(&ar, Artist{

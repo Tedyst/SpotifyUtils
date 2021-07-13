@@ -30,6 +30,7 @@ type Track struct {
 	Mutex *sync.Mutex `gorm:"-"`
 }
 
+// GetTrackFromID returns a track from database and sets its mutex
 func GetTrackFromID(ID string) *Track {
 	var tr Track
 	config.DB.Where("track_id = ?", ID).Preload("Artists").FirstOrCreate(&tr, Track{
@@ -49,12 +50,14 @@ func getTrackMutex(ID string) *sync.Mutex {
 	return val
 }
 
+// TrackExists returns true if the tracks exists or false otherwise
 func TrackExists(ID string) bool {
 	var count int64
 	config.DB.Model(&Track{}).Where("track_id = ?", ID).Count(&count)
 	return count != 0
 }
 
+// BatchUpdate updates the information of a list of tracks using the most efficient method
 func BatchUpdate(tracks []*Track, cl spotify.Client) {
 	if *config.MockExternalCalls {
 		return
@@ -138,6 +141,7 @@ func BatchUpdate(tracks []*Track, cl spotify.Client) {
 	}(&cl, newTracks, artistUpdate)
 }
 
+// Save a track to the database
 func (t *Track) Save() error {
 	if !enableSaving {
 		return nil
@@ -152,6 +156,7 @@ func (t *Track) Save() error {
 	return nil
 }
 
+// Update a track's information
 func (t *Track) Update(cl spotify.Client, syncUpdateLyrics bool) error {
 	t.Mutex.Lock()
 	defer t.Mutex.Unlock()
@@ -213,6 +218,7 @@ func (t *Track) Update(cl spotify.Client, syncUpdateLyrics bool) error {
 	return nil
 }
 
+// ArtistString returns the artist name as a string
 func (t *Track) ArtistString() string {
 	if len(t.Artists) == 0 {
 		log.WithFields(log.Fields{
@@ -234,6 +240,7 @@ func (t *Track) ArtistString() string {
 	return str[:len(str)-2]
 }
 
+// String returns the track id as a string
 func (t Track) String() string {
 	return t.TrackID
 }

@@ -1,16 +1,7 @@
 {
-    "python.testing.pytestArgs": [
-        "tests"
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.nosetestsEnabled": false,
-    "python.testing.pytestEnabled": false,
-    "vsdocker.imageUser": "tedyst/spotifyutils",
+    "vsdocker.imageUser": "ghcr.io/tedyst/spotifyutils",
     "vs-kubernetes": {
         "vs-kubernetes.python-remote-root": "/app"
     },
-    "python.linting.pylintEnabled": true,
-    "python.pythonPath": "/mnt/hddext4/Git/SpotifyUtils/venv/bin/python3.8",
-    "jupyter.debugJustMyCode": false,
     "git.ignoreLimitWarning": true,
 }

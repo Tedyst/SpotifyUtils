@@ -14,6 +14,7 @@ type spotifyAuthorization struct {
 	Success bool
 }
 
+// GetSpotifyURL generates the url needed to login for a specific request
 func GetSpotifyURL(host string) string {
 	u, _ := url.Parse("https://accounts.spotify.com/authorize")
 	q, _ := url.ParseQuery(u.RawQuery)
@@ -29,6 +30,7 @@ func GetSpotifyURL(host string) string {
 	return u.String()
 }
 
+// GetSpotifyAuthorization performs the OAuth2 token exchange
 func GetSpotifyAuthorization(host string, code string) (*oauth2.Token, error) {
 	if *config.MockExternalCalls {
 		return &oauth2.Token{}, nil

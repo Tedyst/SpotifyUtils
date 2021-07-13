@@ -25,6 +25,7 @@ type authURLAPIResponse struct {
 	URL     string
 }
 
+// Auth performs the authentication of users
 func Auth(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	response := &authAPIResponse{}
@@ -113,6 +114,7 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(res, string(respJSON))
 }
 
+// AuthURL generates the OAuth2 url needed to login
 func AuthURL(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	response := &authURLAPIResponse{
@@ -134,6 +136,7 @@ func AuthURL(res http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(res, string(respJSON))
 }
 
+// Logout performs the logout of the users
 func Logout(res http.ResponseWriter, req *http.Request) {
 	session, err := config.SessionStore.Get(req, "username")
 	if err != nil {
