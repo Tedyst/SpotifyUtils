@@ -18,9 +18,6 @@ export interface TrackInterface {
 
 export interface Result {
     ID: number;
-    CreatedAt: string;
-    UpdatedAt: string;
-    DeletedAt: null;
     TrackID: string;
     Lyrics: string;
     LastUpdated: string;

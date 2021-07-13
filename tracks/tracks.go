@@ -16,7 +16,6 @@ var trackMutex = make(map[string]*sync.Mutex)
 type Track struct {
 	ID        uint           `gorm:"primarykey" json:"-"`
 	CreatedAt time.Time      `json:"-"`
-	UpdatedAt time.Time      `json:"-"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 	TrackID   string         `gorm:"type:VARCHAR(30) NOT NULL UNIQUE"`
 

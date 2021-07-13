@@ -17,7 +17,6 @@ func getTestUserData() []userutils.User {
 		{
 			ID:        1,
 			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
 			UserID:    "user1",
 			Playlists: userutils.PlaylistsStruct{
 				{
@@ -60,7 +59,6 @@ func getTestUserData() []userutils.User {
 		{
 			ID:        2,
 			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
 			UserID:    "user2",
 			Playlists: userutils.PlaylistsStruct{
 				{

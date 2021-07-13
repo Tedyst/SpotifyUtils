@@ -18,13 +18,11 @@ func getTestTrackData() []tracks.Track {
 			TrackID:     "track1",
 			ID:          1,
 			CreatedAt:   time.Now(),
-			UpdatedAt:   time.Now(),
 			LastUpdated: time.Now(),
 			Artists: []tracks.Artist{
 				{
 					ID:        1,
 					CreatedAt: time.Now(),
-					UpdatedAt: time.Now(),
 					Name:      "artist1",
 					ArtistID:  "artist1",
 					Genres: tracks.GenresStruct{
@@ -36,7 +34,6 @@ func getTestTrackData() []tracks.Track {
 				{
 					ID:        2,
 					CreatedAt: time.Now(),
-					UpdatedAt: time.Now(),
 					Name:      "artist2",
 					ArtistID:  "artist2",
 					Genres: tracks.GenresStruct{

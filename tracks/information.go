@@ -78,7 +78,7 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 		"track": t,
 	}).Debugf("Getting spotify information")
 
-	if t.Information.AlbumInformation.ID == "" || len(t.Artists) == 0 {
+	if t.Information.AlbumInformation.ID == "" || (len(t.Artists) > 0 && !t.Artists[0].Updated) || len(t.Artists) == 0 {
 		metrics.SpotifyRequests.Add(1)
 		track, err := cl.GetTrack(spotify.ID(t.TrackID))
 		if err != nil {
@@ -94,7 +94,6 @@ func (t *Track) updateInformation(cl spotify.Client) error {
 		var artistsBatch []*Artist
 		for _, s := range track.Artists {
 			a := GetArtistFromID(s.ID.String())
-			a.Name = s.Name
 			artistsBatch = append(artistsBatch, a)
 		}
 		BatchUpdateArtists(artistsBatch, cl)

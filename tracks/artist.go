@@ -17,13 +17,13 @@ var artistMutex = make(map[string]*sync.Mutex)
 type Artist struct {
 	ID         uint      `gorm:"primarykey" json:"-"`
 	CreatedAt  time.Time `json:"-"`
-	UpdatedAt  time.Time `json:"-"`
 	DeletedAt  time.Time `gorm:"index" json:"-"`
 	ArtistID   string    `gorm:"type:VARCHAR(30) NOT NULL UNIQUE"`
 	Name       string
 	Genres     GenresStruct
 	Popularity int16
 	Image      string
+	Updated    bool
 	mutex      *sync.Mutex `gorm:"-"`
 }
 
@@ -69,8 +69,10 @@ func GetArtistFromID(ID string) *Artist {
 }
 
 func (a *Artist) Update(cl spotify.Client) {
-	var artists []*Artist
-	artists = append(artists, a)
+	if a.Updated {
+		return
+	}
+	artists := []*Artist{a}
 	BatchUpdateArtists(artists, cl)
 }
 
@@ -80,9 +82,9 @@ func BatchUpdateArtists(artists []*Artist, cl spotify.Client) {
 	}
 	newArtists := []*Artist{}
 	for _, s := range artists {
-		s.mutex.Lock()
-		defer s.mutex.Unlock()
-		if s.Name == "" {
+		if !s.Updated {
+			s.mutex.Lock()
+			defer s.mutex.Unlock()
 			newArtists = append(newArtists, s)
 		}
 	}
@@ -111,12 +113,13 @@ func BatchUpdateArtists(artists []*Artist, cl spotify.Client) {
 			}
 			newArtists[ind+i].Popularity = int16(s.Popularity)
 			newArtists[ind+i].Genres = s.Genres
+			newArtists[ind+i].Updated = true
 			newArtists[ind+i].Save()
 		}
 	}
 }
 
-// Todo: come back here
+// Save saves the artist to DB
 func (a *Artist) Save() error {
 	if !enableSaving {
 		return nil
@@ -131,6 +134,7 @@ func (a *Artist) Save() error {
 	return nil
 }
 
+// String returns the artist ID
 func (a Artist) String() string {
 	return a.ArtistID
 }
