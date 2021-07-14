@@ -19,7 +19,7 @@
     "material-ui": "^0.20.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-query": "^3.12.1",
+    "react-query": "^3.16.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-swipeable": "^6.0.1",
