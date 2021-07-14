@@ -12,7 +12,7 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/pickers": "^3.2.10",
     "@sentry/react": "^6.3.0",
-    "@sentry/tracing": "^6.2.3",
+    "@sentry/tracing": "^6.5.0",
     "axios": "^0.21.1",
     "date-fns": "^2.16.1",
     "history": "^4.10.1",
