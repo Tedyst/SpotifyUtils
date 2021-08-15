@@ -6,6 +6,7 @@ import {
     Chart,
     LineSeries,
 } from '@devexpress/dx-react-chart-material-ui';
+import { useTranslation } from 'react-i18next';
 
 export default function Chart1(props: {
     data: any,
@@ -13,6 +14,7 @@ export default function Chart1(props: {
     const { data } = props;
     if (data === undefined) return null;
     const points = [];
+    const { t } = useTranslation();
     Object.keys(data).forEach((key) => {
         points.push({ lineValue: data[key], argument: key });
     });
@@ -20,7 +22,7 @@ export default function Chart1(props: {
     return (
         <>
             <Typography>
-                Loudness
+                {t('TRACK.LOUDNESS')}
             </Typography>
             <Paper>
                 <Chart

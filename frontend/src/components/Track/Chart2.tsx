@@ -5,6 +5,7 @@ import {
     ArgumentAxis,
     Chart,
 } from '@devexpress/dx-react-chart-material-ui';
+import { useTranslation } from 'react-i18next';
 
 export default function Chart2(props: {
     acousticness: number,
@@ -24,41 +25,42 @@ export default function Chart2(props: {
         loudness,
         speechiness,
     } = props;
+    const { t } = useTranslation();
     const data = [
         {
             lineValue: acousticness,
-            argument: 'Acousticness',
+            argument: t('TRACK.ACOUSTICNESS'),
         },
         {
             lineValue: danceability,
-            argument: 'Danceability',
+            argument: t('TRACK.DANCEABILITY'),
         },
         {
             lineValue: energy,
-            argument: 'Energy',
+            argument: t('TRACK.ENERGY'),
         },
         {
             lineValue: instrumentalness,
-            argument: 'Instrumentalness',
+            argument: t('TRACK.INSTRUMENTALNESS'),
         },
         {
             lineValue: liveness,
-            argument: 'Liveness',
+            argument: t('TRACK.LIVENESS'),
         },
         {
             lineValue: loudness,
-            argument: 'Loudness',
+            argument: t('TRACK.LOUDNESS'),
         },
         {
             lineValue: speechiness,
-            argument: 'Speechiness',
+            argument: t('TRACK.SPEECHINESS'),
         },
     ];
 
     return (
         <>
             <Typography>
-                Track Features
+                {t('TRACK.TRACK_FEATURES')}
             </Typography>
             <Paper>
                 <Chart

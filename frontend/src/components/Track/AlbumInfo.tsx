@@ -2,6 +2,7 @@ import React from 'react';
 import {
     Table, TableBody, TableCell, TableContainer, TableRow, Paper, Typography,
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 export default function AlbumInfo(props: {
     popularity: number;
@@ -15,18 +16,19 @@ export default function AlbumInfo(props: {
         tracks,
         markets,
     } = props;
+    const { t } = useTranslation();
 
     return (
         <>
             <Typography>
-                Album Information
+                {t('TRACK.ALBUM_INFORMATION')}
             </Typography>
             <TableContainer component={Paper}>
                 <Table aria-label="simple table" size="small">
                     <TableBody>
                         <TableRow>
                             <TableCell component="th" scope="row">
-                                Popularity
+                                {t('TRACK.POPULARITY')}
                             </TableCell>
                             <TableCell align="right">
                                 {popularity}
@@ -34,7 +36,7 @@ export default function AlbumInfo(props: {
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
-                                Release Date
+                                {t('TRACK.RELEASE_DATE')}
                             </TableCell>
                             <TableCell align="right">
                                 {releaseDate}
@@ -42,7 +44,7 @@ export default function AlbumInfo(props: {
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
-                                Amount of Tracks
+                                {t('TRACK.AMOUNT_OF_TRACKS')}
                             </TableCell>
                             <TableCell align="right">
                                 {tracks}
@@ -50,7 +52,7 @@ export default function AlbumInfo(props: {
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
-                                Spotify Markets
+                                {t('TRACK.SPOTIFY_MARKETS')}
                             </TableCell>
                             <TableCell align="right">
                                 {markets}

@@ -74,5 +74,28 @@
     "TRACK_SEARCH": {
         "TEXT_1": "To get an URI for a track, right click on that track and then select Share > Copy Spotify URI",
         "ENTER_URI": "Enter a track URI to search it"
+    },
+    "TRACK": {
+        "ALBUM_INFORMATION": "Album Information",
+        "POPULARITY": "Popularity",
+        "RELEASE_DATE": "Release Date",
+        "AMOUNT_OF_TRACKS": "Amount of Tracks",
+        "SPOTIFY_MARKETS": "Spotify Markets",
+        "LOUDNESS": "Loudness",
+        "ACOUSTICNESS": "Acousticness",
+        "DANCEABILITY": "Danceability",
+        "ENERGY": "Energy",
+        "INSTRUMENTALNESS": "Instrumentalness",
+        "LIVENESS": "Liveness",
+        "SPEECHINESS": "Speechiness",
+        "TRACK_FEATURES": "Track Features",
+        "LYRICS": "Lyrics",
+        "TRACK_INFORMATION": "Track Information",
+        "LENGTH": "Length",
+        "EXPLICIT": "Explicit",
+        "KEY": "Key",
+        "MODE": "Mode",
+        "TEMPO": "Tempo",
+        "TIME_SIGNATURE": "Time Signature"
     }
 }
