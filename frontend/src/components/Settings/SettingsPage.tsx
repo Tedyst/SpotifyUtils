@@ -7,6 +7,7 @@ import SettingsComp from './SettingsComp';
 
 export interface Settings {
     RecentTracks: boolean;
+    Language: string;
 }
 
 const useStyles = makeStyles(() => ({
