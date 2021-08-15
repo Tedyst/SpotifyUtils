@@ -1,0 +1,9 @@
+{
+    "LOGIN": {
+        "SIGN_IN": "Sign In",
+        "NEED_SIGN_IN_USING_SPOTIFY": "To use the app you need to sign in using Spotify.",
+        "SIGNING_IN": "Logging in... Please wait...",
+        "SIGN_IN_BUTTON": "Sign in using Spotify",
+        "CONTACTING_SERVER": "Contacting server..."
+    }
+}

@@ -6,6 +6,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { Alert, AlertTitle } from '@material-ui/lab';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -34,14 +35,15 @@ interface AuthURLInterface {
 
 export default function LoginPage(props: { loggingIn: boolean }) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const { data, status, error } = useQuery('authURL', () => axios.get<AuthURLInterface>(`/api/auth-url?host=${window.location.protocol}//${window.location.host}`, {
         withCredentials: true,
     }));
 
     const { loggingIn } = props;
     let buttonText = loggingIn
-        ? 'Logging in... Please wait...'
-        : 'Sign in using Spotify';
+        ? t('LOGIN.SIGNING_IN')
+        : t('LOGIN.SIGN_IN_BUTTON');
     let errorComponent = null;
     if (status === 'error') {
         buttonText = 'Cannot contact server';
@@ -55,7 +57,7 @@ export default function LoginPage(props: { loggingIn: boolean }) {
             }
         }
     } else if (status === 'loading') {
-        buttonText = 'Contacting server...';
+        buttonText = t('LOGIN.CONTACTING_SERVER');
     }
 
     return (
@@ -66,11 +68,11 @@ export default function LoginPage(props: { loggingIn: boolean }) {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography variant="h5">
-                    Sign in
+                    {t('LOGIN.SIGN_IN')}
                 </Typography>
                 <form className={classes.form} noValidate>
                     <Typography align="center" color="textPrimary" variant="body2">
-                        To use the app you need to sign in using Spotify.
+                        {t('LOGIN.NEED_SIGN_IN_USING_SPOTIFY')}
                     </Typography>
                     <Button
                         className={classes.submit}
