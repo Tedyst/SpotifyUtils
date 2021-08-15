@@ -16,6 +16,7 @@
     "axios": "^0.21.1",
     "date-fns": "^2.16.1",
     "history": "^4.10.1",
+    "humanize-duration-ts": "^2.1.1",
     "i18next": "^20.4.0",
     "i18next-browser-languagedetector": "^6.1.2",
     "material-ui": "^0.20.2",

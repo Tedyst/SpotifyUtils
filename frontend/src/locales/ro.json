@@ -5,5 +5,16 @@
         "SIGNING_IN": "The autentificam... Asteptati putin...",
         "SIGN_IN_BUTTON": "Intra in cont prin Spotify",
         "CONTACTING_SERVER": "Contactez serverul..."
+    },
+    "COMPARE": {
+        "YOUR_CODE_IS": "Codul tau este",
+        "SEND_IT_TO_FRIENDS_FOR_COMPARING": "Trimite-l la prietenii tai pentru a va compara preferintele!",
+        "ENTER_USER_CODE_TO_COMPARE": "Introdu un cod pentru a te compara cu acea persoana",
+        "SEARCH": "Cauta",
+        "YOUR_FRIENDS": "Prietenii tai",
+        "COULD_NOT_FIND_ANY_TRACKS_OR_ARTISTS": "Could not find any data tracks or artists that you both like",
+        "BOTH_LIKE_TRACK": "You both like this track",
+        "BOTH_LIKE_ARTIST": "You both like this artist",
+        "BOTH_LIKE_ARTIST_AND_TRACK": "You both like this artist and track"
     }
 }

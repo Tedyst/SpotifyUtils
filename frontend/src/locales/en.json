@@ -5,5 +5,36 @@
         "SIGNING_IN": "Logging in... Please wait...",
         "SIGN_IN_BUTTON": "Sign in using Spotify",
         "CONTACTING_SERVER": "Contacting server..."
+    },
+    "COMPARE": {
+        "YOUR_CODE_IS": "Your compare code is",
+        "SEND_IT_TO_FRIENDS_FOR_COMPARING": "Send it to your friends and compare your music taste to theirs!",
+        "ENTER_USER_CODE_TO_COMPARE": "Enter an user code to compare to it",
+        "SEARCH": "Search",
+        "YOUR_FRIENDS": "Your friends",
+        "COULD_NOT_FIND_ANY_TRACKS_OR_ARTISTS": "Could not find any data tracks or artists that you both like",
+        "BOTH_LIKE_TRACK": "You both like this track",
+        "BOTH_LIKE_ARTIST": "You both like this artist",
+        "BOTH_LIKE_ARTIST_AND_TRACK": "You both like this artist and track",
+        "YOU_AND_FRIEND_ARE_PERCENT_COMPATIBLE": "You and {{friend}} are <bold>{{percent}}%</bold> compatible!",
+        "HERE_ARE_TOP_COMMON_ALL": "Here are the data common artists, tracks, and genres that you both share",
+        "COMMON_TRACKS": "Common tracks",
+        "COMMON_ARTISTS": "Common artists",
+        "COMMON_GENRES": "Common genres"
+    },
+    "COMMON": {
+        "NO_LIST_ITEMS": "Could not find anything"
+    },
+    "LISTENING_STATS": {
+        "YOUR_STATISTICS": "Your Listening Statistics",
+        "SUBTITLE_1": "This app does not have access to information older than the moment that you first used the app",
+        "SUBTITLE_2": "To disable user tracking, go to Settings and uncheck Recent Tracks Tracking",
+        "SELECT_DATE_START": "Select the Date from which to search",
+        "YOU_LISTENED_TO": "You listened to",
+        "TRACKS": "{{count}} Tracks",
+        "YOU_SPENT": "You spent",
+        "TOTAL_NUMBER_OF_TRACKS_PER_HOUR": "Total number of tracks per hour",
+        "TOTAL_NUMBER_OF_TRACKS_PER_DAY": "Total number of tracks per day",
+        "THE_MOST_LISTENED_TRACKS_PERIOD": "Here are your most listened tracks from this period"
     }
 }
