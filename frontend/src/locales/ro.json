@@ -16,5 +16,13 @@
         "BOTH_LIKE_TRACK": "You both like this track",
         "BOTH_LIKE_ARTIST": "You both like this artist",
         "BOTH_LIKE_ARTIST_AND_TRACK": "You both like this artist and track"
+    },
+    "SETTINGS": {
+        "ENABLE_RECENT_TRACKING": "Activeaza Urmarirea de Melodii Ascultate",
+        "SAVE_SETTINGS": "Salveaza Setarile",
+        "TEXT_1": "Aici poti ajusta setarile personale",
+        "TEXT_2": "Daca vrei sa observi ce face aplicatia pe fundal, poti verifica",
+        "GITHUB_PAGE": "pagina de GitHub",
+        "TEXT_3": "Dezactivarea Urmaririi de Melodii Ascultate va sterge toate datele care sunt legate de aceasta caracteristica!"
     }
 }
