@@ -2,24 +2,16 @@ import React from 'react';
 import {
     Table, TableBody, TableCell, TableContainer, Typography, TableRow, Paper,
 } from '@material-ui/core';
+import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts';
+import i18n from '../../i18n';
 
-function msToText(ms: number) {
-    let seconds = Math.floor(ms / 1000);
-    let minutes = Math.floor(seconds / 60);
-    seconds %= 60;
-    const hours = Math.floor(minutes / 60);
-    minutes %= 60;
-    if (hours === 1) {
-        return `${hours} Hour ${minutes} Minutes and ${seconds} Seconds`;
-    }
-    if (hours !== 0) {
-        return `${hours} Hours ${minutes} Minutes and ${seconds} Seconds`;
-    }
-    if (minutes !== 0) {
-        if (seconds !== 0) return `${minutes} Minutes and ${seconds} Seconds`;
-        return `${minutes} Minutes`;
-    }
-    return `${seconds} Seconds`;
+function msToText(ms: number): string {
+    const langService = new HumanizeDurationLanguage();
+    const humanizer = new HumanizeDuration(langService);
+    humanizer.setOptions({
+        language: i18n.languages[0],
+    });
+    return humanizer.humanize(ms - (ms % 1000));
 }
 
 function keyToText(key: number) {

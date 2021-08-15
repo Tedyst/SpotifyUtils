@@ -17,13 +17,24 @@
         "BOTH_LIKE_ARTIST": "You both like this artist",
         "BOTH_LIKE_ARTIST_AND_TRACK": "You both like this artist and track",
         "YOU_AND_FRIEND_ARE_PERCENT_COMPATIBLE": "You and {{friend}} are <bold>{{percent}}%</bold> compatible!",
-        "HERE_ARE_TOP_COMMON_ALL": "Here are the data common artists, tracks, and genres that you both share",
+        "HERE_ARE_TOP_COMMON_ALL": "Get ready to feel the power of music! Here are the top artists and tracks that you both like",
         "COMMON_TRACKS": "Common tracks",
         "COMMON_ARTISTS": "Common artists",
         "COMMON_GENRES": "Common genres"
     },
     "COMMON": {
-        "NO_LIST_ITEMS": "Could not find anything"
+        "NO_LIST_ITEMS": "Could not find anything",
+        "YOU_REALLY_LOVE_THE_SONG": "You really love the song <bold>{{song}}</bold>",
+        "COULD_NOT_EXTRACT_DATA_FROM_SERVER": "Could not extract data from server",
+        "SEARCHING": "Searching...",
+        "SEARCH": "Search",
+        "NEW_VERSION": "A new version is available!",
+        "RELOAD": "Reload",
+        "WHEN_YOU_ONLY_HAVE": "When you only have <bold>{{duration}}</bold>, you know what you want",
+        "YOU_LISTENED_TO_THIS_SONG": "You listened to this song <bold>{{count}}</bold> times",
+        "INFORMATIONS": "Informations",
+        "COUNT_TIME": "<bold>{{count}}</bold> time",
+        "COUNT_TIMES": "<bold>{{count}}</bold> times"
     },
     "LISTENING_STATS": {
         "YOUR_STATISTICS": "Your Listening Statistics",
@@ -36,5 +47,32 @@
         "TOTAL_NUMBER_OF_TRACKS_PER_HOUR": "Total number of tracks per hour",
         "TOTAL_NUMBER_OF_TRACKS_PER_DAY": "Total number of tracks per day",
         "THE_MOST_LISTENED_TRACKS_PERIOD": "Here are your most listened tracks from this period"
+    },
+    "RECENT": {
+        "YOUR_RECENT_TRACKS": "Your recent tracks"
+    },
+    "SETTINGS": {
+        "ENABLE_RECENT_TRACKING": "Enable Recent Tracks Tracking",
+        "SAVE_SETTINGS": "Save Settings",
+        "TEXT_1": "Here you can adjust your personal settings",
+        "TEXT_2": "If you want to see what the app is doing in the background, you can check the",
+        "GITHUB_PAGE": "GitHub page",
+        "TEXT_3": "Disabling the Recent Tracks option will delete all the data that is related to this feature and associated with this account!"
+    },
+    "TOP": {
+        "YOUR_TOP_ARTISTS_AND_TRACKS": "Your top artists and tracks",
+        "TEXT_1": "Get ready to feel cool. Or much less cool than you thought",
+        "YOUR_TOP_TRACKS": "Your top tracks",
+        "YOUR_TOP_ARTISTS": "Your top artists",
+        "YOUR_TOP_GENRES": "Your top genres"
+    },
+    "PLAYLIST": {
+        "NO_PLAYLIST_FOUND": "Could not find any playlist",
+        "HERE_ALL_PLAYLISTS": "Here are all of your playlists:",
+        "SELECT_PLAYLIST": "Select a playlist to search into"
+    },
+    "TRACK_SEARCH": {
+        "TEXT_1": "To get an URI for a track, right click on that track and then select Share > Copy Spotify URI",
+        "ENTER_URI": "Enter a track URI to search it"
     }
 }

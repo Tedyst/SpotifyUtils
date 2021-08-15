@@ -4,6 +4,7 @@ import {
 } from '@material-ui/core';
 import { useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import { Settings } from './SettingsPage';
 
 const useStyles = makeStyles((theme) => ({
@@ -39,6 +40,7 @@ export default function SettingsComp(props: {
     useReactQuery?: boolean,
 }) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const { originalSettings, useReactQuery } = props;
     const [settings, setSettings] = React.useState(originalSettings);
 
@@ -80,11 +82,11 @@ export default function SettingsComp(props: {
                                 onChange={handleChangeRecentTracks}
                             />
                         )}
-                        label="Enable Recent Tracks Tracking"
+                        label={t('SETTINGS.ENABLE_RECENT_TRACKING')}
                     />
                     <br />
                     <Button className={classes.submit} color="primary" type="submit" variant="contained">
-                        Save Settings
+                        {t('SETTINGS.SAVE_SETTINGS')}
                     </Button>
                 </form>
             </CardContent>

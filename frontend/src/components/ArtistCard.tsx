@@ -2,6 +2,7 @@ import React from 'react';
 import {
     makeStyles, Card, CardContent, CardMedia, Typography,
 } from '@material-ui/core';
+import { Trans } from 'react-i18next';
 
 const useStyles = makeStyles({
     root: {
@@ -38,11 +39,13 @@ function ArtistCard(props: {
     if (bestSong) {
         song = (
             <Typography variant="body2" color="textPrimary">
-                You really love the song
-                <b>
-                    {' '}
-                    {props.bestSong}
-                </b>
+                <Trans
+                    i18nKey="COMMON.YOU_REALLY_LOVE_THE_SONG"
+                    values={{ song: props.bestSong }}
+                    components={{ bold: <b /> }}
+                >
+                    {'You really love the song <bold>{{song}}</bold>'}
+                </Trans>
             </Typography>
         );
     }

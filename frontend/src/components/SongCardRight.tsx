@@ -2,6 +2,9 @@ import React from 'react';
 import {
     makeStyles, Card, CardContent, CardMedia, Typography,
 } from '@material-ui/core';
+import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts';
+import { Trans } from 'react-i18next';
+import i18n from '../i18n';
 
 const useStyles = makeStyles({
     root: {
@@ -29,22 +32,12 @@ const useStyles = makeStyles({
 });
 
 function msToText(ms: number): string {
-    let seconds = Math.floor(ms / 1000);
-    let minutes = Math.floor(seconds / 60);
-    seconds %= 60;
-    const hours = Math.floor(minutes / 60);
-    minutes %= 60;
-    if (hours === 1) {
-        return `${hours} Hour ${minutes} Minutes and ${seconds} Seconds`;
-    }
-    if (hours !== 0) {
-        return `${hours} Hours ${minutes} Minutes and ${seconds} Seconds`;
-    }
-    if (minutes !== 0) {
-        if (seconds !== 0) return `${minutes} Minutes and ${seconds} Seconds`;
-        return `${minutes} Minutes`;
-    }
-    return `${seconds} Seconds`;
+    const langService = new HumanizeDurationLanguage();
+    const humanizer = new HumanizeDuration(langService);
+    humanizer.setOptions({
+        language: i18n.languages[0],
+    });
+    return humanizer.humanize(ms - (ms % 1000));
 }
 
 function SongCard(props: {
@@ -69,12 +62,13 @@ function SongCard(props: {
     if (duration) {
         durationComponent = (
             <Typography variant="body2" color="textPrimary">
-                When you only have
-                {' '}
-                <b>
-                    {msToText(duration)}
-                </b>
-                , you know what you want
+                <Trans
+                    i18nKey="COMMON.WHEN_YOU_ONLY_HAVE"
+                    values={{ duration: msToText(duration) }}
+                    components={{ bold: <b /> }}
+                >
+                    {'When you only have <bold>{{duration}}</bold>, you know what you want'}
+                </Trans>
             </Typography>
         );
     }
@@ -83,13 +77,13 @@ function SongCard(props: {
     if (count) {
         countComponent = (
             <Typography variant="body2" color="textPrimary">
-                You listened to this song
-                {' '}
-                <b>
-                    {count}
-                </b>
-                {' '}
-                times
+                <Trans
+                    i18nKey="COMMON.YOU_LISTENED_TO_THIS_SONG"
+                    values={{ count }}
+                    components={{ bold: <b /> }}
+                >
+                    {'You listened to this song <bold>{{count}}</bold> times'}
+                </Trans>
             </Typography>
         );
     }
