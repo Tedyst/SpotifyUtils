@@ -1,8 +1,8 @@
 {
     "LOGIN": {
         "SIGN_IN": "Intra in cont",
-        "NEED_SIGN_IN_USING_SPOTIFY": "Pentru a utiliza aplicatia trebuie sa te conectezi cu contul de Spotify.",
-        "SIGNING_IN": "The autentificam... Asteptati putin...",
+        "NEED_SIGN_IN_USING_SPOTIFY": "Pentru a utiliza aplicația trebuie să te conectezi cu contul de Spotify.",
+        "SIGNING_IN": "Te autentificăm... Așteptați puțin...",
         "SIGN_IN_BUTTON": "Intra in cont prin Spotify",
         "CONTACTING_SERVER": "Contactez serverul..."
     },
