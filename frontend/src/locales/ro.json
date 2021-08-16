@@ -15,7 +15,41 @@
         "COULD_NOT_FIND_ANY_TRACKS_OR_ARTISTS": "Could not find any data tracks or artists that you both like",
         "BOTH_LIKE_TRACK": "You both like this track",
         "BOTH_LIKE_ARTIST": "You both like this artist",
-        "BOTH_LIKE_ARTIST_AND_TRACK": "You both like this artist and track"
+        "BOTH_LIKE_ARTIST_AND_TRACK": "You both like this artist and track",
+        "YOU_AND_FRIEND_ARE_PERCENT_COMPATIBLE": "You and {{friend}} are <bold>{{percent}}%</bold> compatible!",
+        "HERE_ARE_TOP_COMMON_ALL": "Get ready to feel the power of music! Here are the top artists and tracks that you both like",
+        "COMMON_TRACKS": "Common tracks",
+        "COMMON_ARTISTS": "Common artists",
+        "COMMON_GENRES": "Common genres"
+    },
+    "COMMON": {
+        "NO_LIST_ITEMS": "Could not find anything",
+        "YOU_REALLY_LOVE_THE_SONG": "You really love the song <bold>{{song}}</bold>",
+        "COULD_NOT_EXTRACT_DATA_FROM_SERVER": "Could not extract data from server",
+        "SEARCHING": "Searching...",
+        "SEARCH": "Search",
+        "NEW_VERSION": "A new version is available!",
+        "RELOAD": "Reload",
+        "WHEN_YOU_ONLY_HAVE": "When you only have <bold>{{duration}}</bold>, you know what you want",
+        "YOU_LISTENED_TO_THIS_SONG": "You listened to this song <bold>{{count}}</bold> times",
+        "INFORMATIONS": "Informations",
+        "COUNT_TIME": "<bold>{{count}}</bold> time",
+        "COUNT_TIMES": "<bold>{{count}}</bold> times"
+    },
+    "LISTENING_STATS": {
+        "YOUR_STATISTICS": "Your Listening Statistics",
+        "SUBTITLE_1": "This app does not have access to information older than the moment that you first used the app",
+        "SUBTITLE_2": "To disable user tracking, go to Settings and uncheck Recent Tracks Tracking",
+        "SELECT_DATE_START": "Select the Date from which to search",
+        "YOU_LISTENED_TO": "You listened to",
+        "TRACKS": "{{count}} Tracks",
+        "YOU_SPENT": "You spent",
+        "TOTAL_NUMBER_OF_TRACKS_PER_HOUR": "Total number of tracks per hour",
+        "TOTAL_NUMBER_OF_TRACKS_PER_DAY": "Total number of tracks per day",
+        "THE_MOST_LISTENED_TRACKS_PERIOD": "Here are your most listened tracks from this period"
+    },
+    "RECENT": {
+        "YOUR_RECENT_TRACKS": "Your recent tracks"
     },
     "SETTINGS": {
         "ENABLE_RECENT_TRACKING": "Activeaza Urmarirea de Melodii Ascultate",
@@ -24,5 +58,44 @@
         "TEXT_2": "Daca vrei sa observi ce face aplicatia pe fundal, poti verifica",
         "GITHUB_PAGE": "pagina de GitHub",
         "TEXT_3": "Dezactivarea Urmaririi de Melodii Ascultate va sterge toate datele care sunt legate de aceasta caracteristica!"
+    },
+    "TOP": {
+        "YOUR_TOP_ARTISTS_AND_TRACKS": "Your top artists and tracks",
+        "TEXT_1": "Get ready to feel cool. Or much less cool than you thought",
+        "YOUR_TOP_TRACKS": "Your top tracks",
+        "YOUR_TOP_ARTISTS": "Your top artists",
+        "YOUR_TOP_GENRES": "Your top genres"
+    },
+    "PLAYLIST": {
+        "NO_PLAYLIST_FOUND": "Could not find any playlist",
+        "HERE_ALL_PLAYLISTS": "Here are all of your playlists:",
+        "SELECT_PLAYLIST": "Select a playlist to search into"
+    },
+    "TRACK_SEARCH": {
+        "TEXT_1": "To get an URI for a track, right click on that track and then select Share > Copy Spotify URI",
+        "ENTER_URI": "Enter a track URI to search it"
+    },
+    "TRACK": {
+        "ALBUM_INFORMATION": "Album Information",
+        "POPULARITY": "Popularity",
+        "RELEASE_DATE": "Release Date",
+        "AMOUNT_OF_TRACKS": "Amount of Tracks",
+        "SPOTIFY_MARKETS": "Spotify Markets",
+        "LOUDNESS": "Loudness",
+        "ACOUSTICNESS": "Acousticness",
+        "DANCEABILITY": "Danceability",
+        "ENERGY": "Energy",
+        "INSTRUMENTALNESS": "Instrumentalness",
+        "LIVENESS": "Liveness",
+        "SPEECHINESS": "Speechiness",
+        "TRACK_FEATURES": "Track Features",
+        "LYRICS": "Lyrics",
+        "TRACK_INFORMATION": "Track Information",
+        "LENGTH": "Length",
+        "EXPLICIT": "Explicit",
+        "KEY": "Key",
+        "MODE": "Mode",
+        "TEMPO": "Tempo",
+        "TIME_SIGNATURE": "Time Signature"
     }
 }
