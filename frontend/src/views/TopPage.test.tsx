@@ -38,10 +38,10 @@ describe('query component', () => {
             });
         const result = renderWithClient(<TopPage />);
 
-        await waitFor(() => result.getByText(/Your top/));
+        await waitFor(() => result.getByText(/Your top artists and tracks/));
 
         expect(result.getByText(/You really/)).toHaveTextContent('You really love the song nametrack1 aasd');
-        expect(result.getByText(/When you only/)).toHaveTextContent('When you only have 2 Minutes and 44 Seconds, you know what you want');
+        expect(result.getByText(/When you only/)).toHaveTextContent('When you only have 2 minutes, 44 seconds, you know what you want');
         expectation.done();
     });
 
@@ -75,10 +75,10 @@ describe('query component', () => {
             });
         const result = renderWithClient(<TopPage />);
 
-        await waitFor(() => result.getByText(/Your top/));
+        await waitFor(() => result.getByText(/Your top artists and tracks/));
 
         expect(result.getByText(/You really/)).toHaveTextContent('You really love the song nametrack1 aasd');
-        expect(result.getByText(/When you only/)).toHaveTextContent('When you only have 2 Minutes and 44 Seconds, you know what you want');
+        expect(result.getByText(/When you only/)).toHaveTextContent('When you only have 2 minutes, 44 seconds, you know what you want');
         expectation.done();
     });
 
@@ -97,9 +97,9 @@ describe('query component', () => {
             });
         const result = renderWithClient(<TopPage />);
 
-        await waitFor(() => result.getByText(/Your top/));
+        await waitFor(() => result.getByText(/Your top artists and tracks/));
 
-        expect(result.getByText(/Your top/)).toHaveTextContent('Your top');
+        expect(result.getByText(/Your top artists and tracks/)).toBeDefined();
         expectation.done();
     });
 
