@@ -2,6 +2,7 @@ import React from 'react';
 import { Container } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { AxiosResponse } from 'axios';
+import { useTranslation } from 'react-i18next';
 import Loading from '../components/Loading';
 
 export default function ErrorAxiosComponent(props: {
@@ -16,6 +17,7 @@ export default function ErrorAxiosComponent(props: {
         error,
         loadingSpinner,
     } = props;
+    const { t } = useTranslation();
     let err = null;
     if (status === 'error' || (status === 'loading' && error != null)) {
         // This is needed to get the response data for a 401 request
@@ -44,7 +46,7 @@ export default function ErrorAxiosComponent(props: {
             err = (
                 <Container maxWidth="xs">
                     <Alert severity="error">
-                        <AlertTitle>Could not extract data from server</AlertTitle>
+                        <AlertTitle>{t('COMMON.COULD_NOT_EXTRACT_DATA_FROM_SERVER')}</AlertTitle>
                         {errorMessage}
                     </Alert>
                 </Container>

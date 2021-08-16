@@ -8,9 +8,12 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
+import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts';
+import { Trans, useTranslation } from 'react-i18next';
 import SongCardRight from '../SongCardRight';
 import ResultBox from '../ResultBox';
 import Graph from '../Graph';
+import i18n from '../../i18n';
 
 const useStyles = makeStyles({
     root: {
@@ -34,15 +37,12 @@ function getDate(unix: number): string {
 }
 
 function secToText(seconds: number): string {
-    let sec = seconds;
-    let minutes = Math.floor(seconds / 60);
-    sec %= 60;
-    const hours = Math.floor(minutes / 60);
-    minutes %= 60;
-    let text = '';
-    if (hours !== 0) text += `${hours} Hours, `;
-    text += sec !== 0 ? `${minutes} Minutes and ${sec} Seconds` : `${minutes} Minutes`;
-    return text;
+    const langService = new HumanizeDurationLanguage();
+    const humanizer = new HumanizeDuration(langService);
+    humanizer.setOptions({
+        language: i18n.languages[0],
+    });
+    return humanizer.humanize(seconds * 1000);
 }
 
 export interface ListeningStatsInterface {
@@ -73,6 +73,7 @@ export default function ListeningStatsComp(props: {
     selectedDate: Date,
 }) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const { data, setSelectedDate, selectedDate } = props;
 
     const handleDateChange = (date: Date | null) => {
@@ -82,12 +83,12 @@ export default function ListeningStatsComp(props: {
     const titleText = (
         <>
             <Typography align="center" color="textPrimary" variant="h4">
-                Your Listening Statistics
+                {t('LISTENING_STATS.YOUR_STATISTICS')}
             </Typography>
             <Typography variant="subtitle1" color="textSecondary" align="center">
-                This app does not have access to information older than the moment that you first used the app
+                {t('LISTENING_STATS.SUBTITLE_1')}
                 <br />
-                To disable user tracking, go to Settings and uncheck Recent Tracks Tracking
+                {t('LISTENING_STATS.SUBTITLE_2')}
             </Typography>
         </>
     );
@@ -102,7 +103,7 @@ export default function ListeningStatsComp(props: {
                     disableToolbar
                     format="dd/MM/yyyy"
                     id="listeningstats-date-picker-inline"
-                    label="Select the Date from which to search"
+                    label={t('LISTENING_STATS.SELECT_DATE_START')}
                     margin="normal"
                     onChange={handleDateChange}
                     value={selectedDate}
@@ -167,12 +168,15 @@ export default function ListeningStatsComp(props: {
                         <Card>
                             <CardContent>
                                 <Typography className={classes.title} color="textSecondary" gutterBottom>
-                                    You listened to
+                                    {t('LISTENING_STATS.YOU_LISTENED_TO')}
                                 </Typography>
                                 <Typography variant="h5" component="h2">
-                                    {totallistenedtracks}
-                                    {' '}
-                                    Tracks
+                                    <Trans
+                                        i18nKey="LISTENING_STATS.TRACKS"
+                                        values={{ count: totallistenedtracks }}
+                                    >
+                                        {'{{count}} Tracks'}
+                                    </Trans>
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -181,7 +185,7 @@ export default function ListeningStatsComp(props: {
                         <Card>
                             <CardContent>
                                 <Typography className={classes.title} color="textSecondary" gutterBottom>
-                                    You spent
+                                    {t('LISTENING_STATS.YOU_SPENT')}
                                 </Typography>
                                 <Typography variant="h5" component="h2">
                                     {totallistenedtime}
@@ -204,7 +208,7 @@ export default function ListeningStatsComp(props: {
                         <Card>
                             <CardContent>
                                 <Typography className={classes.title} color="textSecondary" gutterBottom>
-                                    Total number of tracks per hour
+                                    {t('LISTENING_STATS.TOTAL_NUMBER_OF_TRACKS_PER_HOUR')}
                                 </Typography>
                                 <Graph data={hoursdata} argument />
                             </CardContent>
@@ -214,7 +218,7 @@ export default function ListeningStatsComp(props: {
                         <Card>
                             <CardContent>
                                 <Typography className={classes.title} color="textSecondary" gutterBottom>
-                                    Total number of tracks per day
+                                    {t('LISTENING_STATS.TOTAL_NUMBER_OF_TRACKS_PER_DAY')}
                                 </Typography>
                                 <Graph data={daysdata} zoom />
                             </CardContent>
@@ -224,7 +228,7 @@ export default function ListeningStatsComp(props: {
             </Container>
             <br />
             <Typography component="h4" variant="h4" align="center">
-                Here are your most listened tracks from this period
+                {t('LISTENING_STATS.THE_MOST_LISTENED_TRACKS_PERIOD')}
             </Typography>
             <Container>
                 <ResultBox results={data.Result.TopTracks} />

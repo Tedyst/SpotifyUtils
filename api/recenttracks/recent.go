@@ -42,6 +42,9 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	}
 
 	for _, s := range recentTracks {
+		if count[s.TrackID] == 0 {
+			continue
+		}
 		response.Results = append(response.Results, responseSong{
 			Name:   s.Name,
 			Artist: s.ArtistString(),
@@ -49,6 +52,7 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 			Image:  s.Information.TrackInformation.Image,
 			Count:  count[s.TrackID],
 		})
+		count[s.TrackID] = 0
 	}
 
 	respJSON, err := json.Marshal(response)

@@ -2,6 +2,7 @@ import React from 'react';
 import {
     makeStyles, List, ListItem, ListItemText, ListSubheader,
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 import { Track, Artist } from '../components/Top/TopComp';
 
 const useStyles = makeStyles((theme) => ({
@@ -30,6 +31,7 @@ export default function ListItems(props: {
     name: string
 }) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const { items, name } = props;
     const it: any[] = [];
     if (!items || items.length === 0) {
@@ -42,7 +44,7 @@ export default function ListItems(props: {
                     <ListItem key={`list-notfound-${name}`}>
                         <ListItemText
                             primary=""
-                            secondary="Could not find anything"
+                            secondary={t('COMMON.NO_LIST_ITEMS')}
                         />
                     </ListItem>
                 </ul>

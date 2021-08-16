@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import { Snackbar, Button } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 import * as serviceWorkerRegistration from '../serviceWorkerRegistration';
 
 export default function ServiceWorkerWrapper() {
     const [showReload, setShowReload] = React.useState(localStorage.getItem('waitingForServiceWorker') === 'true');
     const [waitingWorker, setWaitingWorker] = React.useState<ServiceWorker | null>(null);
+    const { t } = useTranslation();
 
     const onSWUpdate = (registration: ServiceWorkerRegistration) => {
         setShowReload(true);
@@ -30,7 +32,7 @@ export default function ServiceWorkerWrapper() {
                 horizontal: 'left',
             }}
             open={showReload}
-            message="A new version is available!"
+            message={t('COMMON.NEW_VERSION')}
             autoHideDuration={6000}
             onClick={reloadPage}
             action={(
@@ -39,7 +41,7 @@ export default function ServiceWorkerWrapper() {
                     size="small"
                     onClick={reloadPage}
                 >
-                    Reload
+                    {t('COMMON.RELOAD')}
                 </Button>
             )}
         />

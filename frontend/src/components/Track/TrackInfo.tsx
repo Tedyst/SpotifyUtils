@@ -2,24 +2,17 @@ import React from 'react';
 import {
     Table, TableBody, TableCell, TableContainer, Typography, TableRow, Paper,
 } from '@material-ui/core';
+import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
-function msToText(ms: number) {
-    let seconds = Math.floor(ms / 1000);
-    let minutes = Math.floor(seconds / 60);
-    seconds %= 60;
-    const hours = Math.floor(minutes / 60);
-    minutes %= 60;
-    if (hours === 1) {
-        return `${hours} Hour ${minutes} Minutes and ${seconds} Seconds`;
-    }
-    if (hours !== 0) {
-        return `${hours} Hours ${minutes} Minutes and ${seconds} Seconds`;
-    }
-    if (minutes !== 0) {
-        if (seconds !== 0) return `${minutes} Minutes and ${seconds} Seconds`;
-        return `${minutes} Minutes`;
-    }
-    return `${seconds} Seconds`;
+function msToText(ms: number): string {
+    const langService = new HumanizeDurationLanguage();
+    const humanizer = new HumanizeDuration(langService);
+    humanizer.setOptions({
+        language: i18n.languages[0],
+    });
+    return humanizer.humanize(ms - (ms % 1000));
 }
 
 function keyToText(key: number) {
@@ -54,17 +47,18 @@ export default function TrackInfo(props: {
         tempo,
         timeSignature,
     } = props;
+    const { t } = useTranslation();
     return (
         <>
             <Typography>
-                Track Information
+                {t('TRACK.TRACK_INFORMATION')}
             </Typography>
             <TableContainer component={Paper}>
                 <Table size="small">
                     <TableBody>
                         <TableRow>
                             <TableCell component="th" scope="row">
-                                Popularity
+                                {t('TRACK.POPULARITY')}
                             </TableCell>
                             <TableCell align="right">
                                 {popularity}
@@ -72,7 +66,7 @@ export default function TrackInfo(props: {
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
-                                Length
+                                {t('TRACK.LENGTH')}
                             </TableCell>
                             <TableCell align="right">
                                 {msToText(length)}
@@ -80,7 +74,7 @@ export default function TrackInfo(props: {
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
-                                Spotify markets
+                                {t('TRACK.SPOTIFY_MARKETS')}
                             </TableCell>
                             <TableCell align="right">
                                 {markets}
@@ -88,7 +82,7 @@ export default function TrackInfo(props: {
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
-                                Explicit
+                                {t('TRACK.EXPLICIT')}
                             </TableCell>
                             <TableCell align="right">
                                 {explicit ? 'Yes' : 'No'}
@@ -96,7 +90,7 @@ export default function TrackInfo(props: {
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
-                                Key
+                                {t('TRACK.KEY')}
                             </TableCell>
                             <TableCell align="right">
                                 {keyToText(trackKey)}
@@ -104,7 +98,7 @@ export default function TrackInfo(props: {
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
-                                Mode
+                                {t('TRACK.MODE')}
                             </TableCell>
                             <TableCell align="right">
                                 {mode === 0 ? 'Minor' : 'Major'}
@@ -112,7 +106,7 @@ export default function TrackInfo(props: {
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
-                                Tempo
+                                {t('TRACK.TEMPO')}
                             </TableCell>
                             <TableCell align="right">
                                 {tempo}
@@ -120,7 +114,7 @@ export default function TrackInfo(props: {
                         </TableRow>
                         <TableRow>
                             <TableCell component="th" scope="row">
-                                Time signature
+                                {t('TRACK.TIME_SIGNATURE')}
                             </TableCell>
                             <TableCell align="right">
                                 {timeSignature}

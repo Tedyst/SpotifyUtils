@@ -11,6 +11,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { unregister } from './serviceWorkerRegistration';
 
+import './i18n';
+
 const history = createBrowserHistory();
 
 const isDevelopment = process.env.NODE_ENV === 'development';

@@ -14,6 +14,7 @@ import {
     Link,
     Redirect,
 } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Avatar from '../Avatar';
 import { NoUsernameCompareInterface } from './CompareInterfaces';
 
@@ -66,6 +67,7 @@ export default function NoUsername(props: {
     enableRedirect?: boolean,
 }) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const [Word, setWord] = React.useState<string>();
     const [RedirectURL, setRedirectURL] = React.useState<string>();
     const { compare, enableRedirect } = props;
@@ -116,14 +118,14 @@ export default function NoUsername(props: {
         <>
             <Container disableGutters fixed maxWidth="md">
                 <Typography align="center" color="textPrimary" variant="h4">
-                    Your code is
+                    {t('COMPARE.YOUR_CODE_IS')}
                     {' '}
                     <b>
                         {compare.Code}
                     </b>
                 </Typography>
                 <Typography align="center" color="textSecondary" variant="h5">
-                    Send it to your friends and compare your music taste to theirs!
+                    {t('COMPARE.SEND_IT_TO_FRIENDS_FOR_COMPARING')}
                 </Typography>
                 <br />
                 <br />
@@ -150,7 +152,7 @@ export default function NoUsername(props: {
                         className={classes.grid}
                         defaultValue={Word}
                         id="standard-basic"
-                        label="Enter an user code to compare to it"
+                        label={t('COMPARE.ENTER_USER_CODE_TO_COMPARE')}
                         onChange={changeWord}
                         variant="outlined"
                     />
@@ -161,7 +163,7 @@ export default function NoUsername(props: {
                         type="submit"
                         variant="contained"
                     >
-                        Search
+                        {t('COMPARE.SEARCH')}
                     </Button>
                 </form>
             </Container>
@@ -171,7 +173,7 @@ export default function NoUsername(props: {
             <Container disableGutters fixed maxWidth="xs">
                 <List className={classes.root} disablePadding subheader={<li />}>
                     <ListSubheader color="default">
-                        Your friends
+                        {t('COMPARE.YOUR_FRIENDS')}
                     </ListSubheader>
                     <ul>
                         {friends}

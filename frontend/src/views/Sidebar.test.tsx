@@ -46,7 +46,7 @@ describe('sidebar', () => {
             });
         const result = renderWithClient(<App />);
 
-        await waitFor(() => result.getAllByText(/Your top/));
+        await waitFor(() => result.getAllByText(/Your top artists and tracks/));
 
         result.getAllByText(/Listening Statistics/).forEach((value) => {
             expect(value.closest('a')).toHaveClass('Mui-disabled');
@@ -94,7 +94,7 @@ describe('sidebar', () => {
             });
         const result = renderWithClient(<App />);
 
-        await waitFor(() => result.getAllByText(/Your top/));
+        await waitFor(() => result.getAllByText(/Your top artists and tracks/));
 
         result.getAllByText(/Listening Statistics/).forEach((value) => {
             expect(value.closest('a')).not.toHaveClass('Mui-disabled');
