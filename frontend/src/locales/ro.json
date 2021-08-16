@@ -1,18 +1,18 @@
 {
     "LOGIN": {
         "SIGN_IN": "Intra in cont",
-        "NEED_SIGN_IN_USING_SPOTIFY": "Pentru a utiliza aplicatia trebuie sa te conectezi cu contul de Spotify.",
-        "SIGNING_IN": "The autentificam... Asteptati putin...",
+        "NEED_SIGN_IN_USING_SPOTIFY": "Pentru a utiliza aplicația trebuie să te conectezi cu contul de Spotify.",
+        "SIGNING_IN": "Te autentificăm... Așteptați puțin...",
         "SIGN_IN_BUTTON": "Intra in cont prin Spotify",
         "CONTACTING_SERVER": "Contactez serverul..."
     },
     "COMPARE": {
         "YOUR_CODE_IS": "Codul tau este",
-        "SEND_IT_TO_FRIENDS_FOR_COMPARING": "Trimite-l la prietenii tai pentru a va compara preferintele!",
+        "SEND_IT_TO_FRIENDS_FOR_COMPARING": "Trimite-l la prietenii tăi pentru a vă compara preferințele!",
         "ENTER_USER_CODE_TO_COMPARE": "Introdu un cod pentru a te compara cu acea persoana",
         "SEARCH": "Cauta",
         "YOUR_FRIENDS": "Prietenii tai",
-        "COULD_NOT_FIND_ANY_TRACKS_OR_ARTISTS": "Could not find any data tracks or artists that you both like",
+        "COULD_NOT_FIND_ANY_TRACKS_OR_ARTISTS": "Could not find any tracks or artists that you both like",
         "BOTH_LIKE_TRACK": "You both like this track",
         "BOTH_LIKE_ARTIST": "You both like this artist",
         "BOTH_LIKE_ARTIST_AND_TRACK": "You both like this artist and track",
@@ -52,12 +52,12 @@
         "YOUR_RECENT_TRACKS": "Your recent tracks"
     },
     "SETTINGS": {
-        "ENABLE_RECENT_TRACKING": "Activeaza Urmarirea de Melodii Ascultate",
-        "SAVE_SETTINGS": "Salveaza Setarile",
-        "TEXT_1": "Aici poti ajusta setarile personale",
-        "TEXT_2": "Daca vrei sa observi ce face aplicatia pe fundal, poti verifica",
+        "ENABLE_RECENT_TRACKING": "Activează Urmărirea de Melodii Ascultate",
+        "SAVE_SETTINGS": "Salvează Setările",
+        "TEXT_1": "Aici poti ajusta setările personale",
+        "TEXT_2": "Dacă vrei să observi ce face aplicația pe fundal, poți verifica",
         "GITHUB_PAGE": "pagina de GitHub",
-        "TEXT_3": "Dezactivarea Urmaririi de Melodii Ascultate va sterge toate datele care sunt legate de aceasta caracteristica!"
+        "TEXT_3": "Dezactivarea Urmăririi de Melodii Ascultate va șterge toate datele care sunt legate de această caracteristică!"
     },
     "TOP": {
         "YOUR_TOP_ARTISTS_AND_TRACKS": "Your top artists and tracks",
