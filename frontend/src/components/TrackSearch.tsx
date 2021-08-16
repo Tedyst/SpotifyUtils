@@ -3,6 +3,7 @@ import {
     Button, Typography, makeStyles, Container, TextField, Grid,
 } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -33,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TrackSearch() {
     const classes = useStyles();
+    const { t } = useTranslation();
     const [URI, setURI] = React.useState('');
     const [Refresh, setRefresh] = React.useState('');
 
@@ -61,11 +63,7 @@ export default function TrackSearch() {
         <div className={classes.paper}>
             <Container disableGutters fixed>
                 <Typography variant="h5" color="textPrimary" align="center">
-                    To get an URI for a track, right click on that track and then select Share
-                    {' '}
-                    {'>'}
-                    {' '}
-                    Copy Spotify URI
+                    {t('TRACK_SEARCH.TEXT_1')}
                 </Typography>
             </Container>
             <Container maxWidth="xs">
@@ -79,7 +77,7 @@ export default function TrackSearch() {
 
                         <TextField
                             id="standard-basic"
-                            label="Enter a track URI to search it"
+                            label={t('TRACK_SEARCH.ENTER_URI')}
                             variant="outlined"
                             className={classes.grid}
                             onChange={changeWord}
@@ -91,7 +89,7 @@ export default function TrackSearch() {
                             className={classes.submit}
                             type="submit"
                         >
-                            Search
+                            {t('COMMON.SEARCH')}
                         </Button>
                     </form>
                 </Grid>

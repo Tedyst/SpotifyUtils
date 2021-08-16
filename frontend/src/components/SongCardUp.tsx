@@ -3,6 +3,7 @@ import {
     makeStyles, Card, CardContent, CardMedia, Typography, Fade, CardActions, Button,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { Trans, useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -78,6 +79,7 @@ function SongCardUp(props: {
     usingLink?: boolean,
 }) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const {
         uri,
         image,
@@ -95,7 +97,7 @@ function SongCardUp(props: {
                 size="small"
                 to={`/track/${uri}`}
             >
-                Informations
+                {t('COMMON.INFORMATIONS')}
             </Button>
         </CardActions>
     ) : undefined;
@@ -105,21 +107,25 @@ function SongCardUp(props: {
         if (count === 1) {
             countComponent = (
                 <Typography className={classes.count} color="textSecondary" variant="subtitle2">
-                    <b>
-                        {count}
-                    </b>
-                    {' '}
-                    time
+                    <Trans
+                        i18nKey="COMMON.COUNT_TIME"
+                        values={{ count }}
+                        components={{ bold: <b /> }}
+                    >
+                        {'<bold>{{count}}</bold> time'}
+                    </Trans>
                 </Typography>
             );
         } else {
             countComponent = (
                 <Typography className={classes.count} color="textSecondary" variant="subtitle2">
-                    <b>
-                        {count}
-                    </b>
-                    {' '}
-                    times
+                    <Trans
+                        i18nKey="COMMON.COUNT_TIMES"
+                        values={{ count }}
+                        components={{ bold: <b /> }}
+                    >
+                        {'<bold>{{count}}</bold> times'}
+                    </Trans>
                 </Typography>
             );
         }

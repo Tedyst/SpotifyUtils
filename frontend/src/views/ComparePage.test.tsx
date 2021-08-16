@@ -30,9 +30,9 @@ describe('query component', () => {
             });
         const result = renderWithClient(<ComparePage />);
 
-        await waitFor(() => result.getAllByText(/Your code is/));
+        await waitFor(() => result.getAllByText(/Your compare code is/));
 
-        expect(result.getByText(/Your code is/)).toHaveTextContent('Your code is 12345');
+        expect(result.getByText(/Your compare code is/)).toHaveTextContent('Your compare code is 12345');
         result.getAllByText(/User/).forEach((value) => expect(value.closest('a')).toHaveAttribute('href'));
         expectation.done();
     });
@@ -47,9 +47,9 @@ describe('query component', () => {
             });
         const result = renderWithClient(<ComparePage />);
 
-        await waitFor(() => result.getAllByText(/Your code is/));
+        await waitFor(() => result.getAllByText(/Your compare code is/));
 
-        expect(result.getByText(/Your code is/)).toHaveTextContent('Your code is 12345');
+        expect(result.getByText(/Your compare code is/)).toHaveTextContent('Your compare code is 12345');
         expectation.done();
     });
 
@@ -63,9 +63,9 @@ describe('query component', () => {
             });
         const result = renderWithClient(<ComparePage />);
 
-        await waitFor(() => result.getAllByText(/Your code is/));
+        await waitFor(() => result.getAllByText(/Your compare code is/));
 
-        expect(result.getByText(/Your code is/)).toHaveTextContent('Your code is 12345');
+        expect(result.getByText(/Your compare code is/)).toHaveTextContent('Your compare code is 12345');
         expectation.done();
     });
 });

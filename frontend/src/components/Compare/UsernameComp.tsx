@@ -5,6 +5,7 @@ import {
     Grid,
     Typography,
 } from '@material-ui/core';
+import { Trans, useTranslation } from 'react-i18next';
 import { UsernameInterface } from './CompareInterfaces';
 import ArtistCard from '../ArtistCard';
 import SongCard from '../SongCardRight';
@@ -28,6 +29,7 @@ export default function UsernameComp(props: {
 }) {
     const { data } = props;
     const classes = useStyles();
+    const { t } = useTranslation();
     if (data === undefined) {
         return null;
     }
@@ -77,25 +79,25 @@ export default function UsernameComp(props: {
     if (dataArtist === null && dataTrack === null) {
         commondataArtistTrackText = (
             <Typography align="center" component="h5" variant="h5">
-                Could not find any data tracks or artists that you both like
+                {t('COMPARE.COULD_NOT_FIND_ANY_TRACKS_OR_ARTISTS')}
             </Typography>
         );
     } else if (dataArtist === null) {
         commondataArtistTrackText = (
             <Typography align="center" component="h5" variant="h5">
-                You both like this track
+                {t('COMPARE.BOTH_LIKE_TRACK')}
             </Typography>
         );
     } else if (dataTrack === null) {
         commondataArtistTrackText = (
             <Typography align="center" component="h5" variant="h5">
-                You both like this artist
+                {t('COMPARE.BOTH_LIKE_ARTIST')}
             </Typography>
         );
     } else {
         commondataArtistTrackText = (
             <Typography align="center" component="h5" variant="h5">
-                You both like this artist and track
+                {t('COMPARE.BOTH_LIKE_ARTIST_AND_TRACK')}
             </Typography>
         );
     }
@@ -111,21 +113,16 @@ export default function UsernameComp(props: {
                 <Grid>
                     <br />
                     <Typography align="center" color="textPrimary" variant="h4">
-                        You and
-                        {' '}
-                        {data.Target.Name}
-                        {' '}
-                        are
-                        {' '}
-                        <b>
-                            {data.Result.Score}
-                            %
-                        </b>
-                        {' '}
-                        compatible!
+                        <Trans
+                            i18nKey="COMPARE.YOU_AND_FRIEND_ARE_PERCENT_COMPATIBLE"
+                            values={{ friend: data.Target.Name, percent: data.Result.Score }}
+                            components={{ bold: <b /> }}
+                        >
+                            {'You and {{friend}} are <bold>{{percent}}%</bold> compatible!'}
+                        </Trans>
                     </Typography>
                     <Typography align="center" color="textSecondary" variant="subtitle1">
-                        Here are the data common artists, tracks, and genres that you both share
+                        {t('COMPARE.HERE_ARE_TOP_COMMON_ALL')}
                     </Typography>
                 </Grid>
                 <Grid className={classes.spacer} />
@@ -149,19 +146,19 @@ export default function UsernameComp(props: {
                     <Grid className={classes.fullWidth} item key="lista-tracks" md={4}>
                         <ListItems
                             items={data.Result.Tracks}
-                            name="Common data Tracks"
+                            name={t('COMPARE.COMMON_TRACKS')}
                         />
                     </Grid>
                     <Grid className={classes.fullWidth} item key="lista-artists" md={4}>
                         <ListItems
                             items={data.Result.Artists}
-                            name="Common data Artists"
+                            name={t('COMPARE.COMMON_ARTISTS')}
                         />
                     </Grid>
                     <Grid className={classes.fullWidth} item key="lista-genres" md={4}>
                         <ListItems
                             items={data.Result.Genres}
-                            name="Common data Genres"
+                            name={t('COMPARE.COMMON_GENRES')}
                         />
                     </Grid>
                 </Grid>

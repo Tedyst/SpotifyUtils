@@ -2,6 +2,7 @@ import React from 'react';
 import {
     makeStyles, Container, Grid, Typography,
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 import ArtistCard from '../ArtistCard';
 import SongCard from '../SongCardRight';
 import List from '../ItemList';
@@ -66,6 +67,7 @@ export default function TopComp(props: {
     top: TopInterface | undefined,
 }) {
     const classes = useStyles();
+    const { t } = useTranslation();
 
     const { top } = props;
 
@@ -118,10 +120,10 @@ export default function TopComp(props: {
         <>
             <Container disableGutters fixed maxWidth="xs">
                 <Typography component="h4" variant="h4" align="center">
-                    Your top artists and tracks
+                    {t('TOP.YOUR_TOP_ARTISTS_AND_TRACKS')}
                 </Typography>
                 <Typography variant="subtitle1" color="textSecondary" align="center">
-                    Get ready to feel cool. Or much less cool than you thought
+                    {t('TOP.TEXT_1')}
                 </Typography>
                 <br />
                 <Grid container spacing={2} className={classes.root} direction="column" alignItems="stretch">
@@ -136,19 +138,19 @@ export default function TopComp(props: {
                     <Grid item key="lista-tracks" md={4} className={classes.fullWidth}>
                         <List
                             items={top?.Result?.Tracks}
-                            name="Your Top Tracks"
+                            name={t('TOP.YOUR_TOP_TRACKS')}
                         />
                     </Grid>
                     <Grid item key="lista-artists" md={4} className={classes.fullWidth}>
                         <List
                             items={top.Result.Artists}
-                            name="Your Top Artists"
+                            name={t('TOP.YOUR_TOP_ARTISTS')}
                         />
                     </Grid>
                     <Grid item key="lista-genres" md={4} className={classes.fullWidth}>
                         <List
                             items={top.Result.Genres}
-                            name="Your Top Genres"
+                            name={t('TOP.YOUR_TOP_GENRES')}
                         />
                     </Grid>
                 </Grid>

@@ -1,10 +1,12 @@
 import React from 'react';
 import {
-    Button, Card, makeStyles, CardContent, Checkbox, FormControlLabel,
+    Button, Card, makeStyles, CardContent, Checkbox, FormControlLabel, Select, MenuItem,
 } from '@material-ui/core';
 import { useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import { Settings } from './SettingsPage';
+import i18n from '../../i18n';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -39,13 +41,23 @@ export default function SettingsComp(props: {
     useReactQuery?: boolean,
 }) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const { originalSettings, useReactQuery } = props;
-    const [settings, setSettings] = React.useState(originalSettings);
+    const [settings, setSettings] = React.useState(
+        { ...originalSettings, Language: i18n.languages[0] },
+    );
 
     const handleChangeRecentTracks = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSettings({
             ...settings,
             RecentTracks: Boolean((event.target as HTMLInputElement).checked),
+        });
+    };
+
+    const handleChangeLanguage = (event: React.ChangeEvent<any>) => {
+        setSettings({
+            ...settings,
+            Language: (event.target as HTMLInputElement).value,
         });
     };
 
@@ -65,6 +77,7 @@ export default function SettingsComp(props: {
     const onSubmit = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
         mutation?.mutate(settings);
+        i18n.changeLanguage(settings.Language);
     };
 
     return (
@@ -80,11 +93,27 @@ export default function SettingsComp(props: {
                                 onChange={handleChangeRecentTracks}
                             />
                         )}
-                        label="Enable Recent Tracks Tracking"
+                        label={t('SETTINGS.ENABLE_RECENT_TRACKING')}
                     />
                     <br />
+                    <Select
+                        onChange={handleChangeLanguage}
+                        value={settings.Language}
+                        displayEmpty
+                        autoWidth
+                        variant="outlined"
+                        className={classes.form}
+                    >
+                        <MenuItem value="en">
+                            English
+                        </MenuItem>
+                        <MenuItem value="ro">
+                            Romana
+                        </MenuItem>
+                    </Select>
+                    <br />
                     <Button className={classes.submit} color="primary" type="submit" variant="contained">
-                        Save Settings
+                        {t('SETTINGS.SAVE_SETTINGS')}
                     </Button>
                 </form>
             </CardContent>

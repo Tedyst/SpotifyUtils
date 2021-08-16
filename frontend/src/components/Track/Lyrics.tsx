@@ -2,6 +2,7 @@ import React from 'react';
 import {
     Card, CardContent, Typography, makeStyles,
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
     lyrics: {
@@ -14,10 +15,11 @@ export default function Lyrics(props: {
 }) {
     const classes = useStyles();
     const { lyrics } = props;
+    const { t } = useTranslation();
     return (
         <>
             <Typography>
-                Lyrics
+                {t('TRACK.LYRICS')}
             </Typography>
             <Card>
                 <CardContent>

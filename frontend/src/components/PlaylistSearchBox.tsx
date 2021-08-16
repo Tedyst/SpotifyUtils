@@ -2,6 +2,7 @@ import React from 'react';
 import {
     Button, Typography, makeStyles, Container, Select, MenuItem, Grid,
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 import { Playlist } from '../App';
 
 const useStyles = makeStyles((theme) => ({
@@ -37,9 +38,10 @@ export default function SearchBox(props: {
     searching?: boolean,
 }) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const { playlists, setPlaylist, searching } = props;
     const [selectedPlaylist, setSelectedPlaylist] = React.useState<string>('none');
-    const ButtonText = searching ? 'Searching...' : 'Search';
+    const ButtonText = searching ? t('COMMON.SEARCHING') : t('COMMON.SEARCH');
 
     let list: any[] = [];
     if (playlists !== undefined) {
@@ -58,7 +60,7 @@ export default function SearchBox(props: {
     } else {
         list.push(
             <MenuItem disabled value="none">
-                No playlist found!
+                {t('PLAYLIST.NO_PLAYLIST_FOUND')}
             </MenuItem>,
         );
     }
@@ -83,7 +85,7 @@ export default function SearchBox(props: {
                         onSubmit={mySubmitHandler}
                     >
                         <Typography variant="body2" color="textPrimary" align="center">
-                            Here are all of your playlists:
+                            {t('PLAYLIST.HERE_ALL_PLAYLISTS')}
                         </Typography>
                         <Select
                             onChange={changePlaylist}
@@ -94,7 +96,7 @@ export default function SearchBox(props: {
                             variant="outlined"
                         >
                             <MenuItem value="none" disabled>
-                                Select a playlist to search into
+                                {t('PLAYLIST.SELECT_PLAYLIST')}
                             </MenuItem>
                             {list}
                         </Select>
