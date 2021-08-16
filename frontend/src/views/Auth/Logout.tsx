@@ -9,6 +9,9 @@ export default function Logout() {
     useEffect(() => {
         axios.get('/api/logout').then(() => {
             queryClient.invalidateQueries();
+            setTimeout(() => {
+                window.localStorage.clear();
+            }, 1000);
         });
     }, []);
 

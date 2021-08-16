@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { persistQueryClient } from 'react-query/persistQueryClient-experimental';
-import { createLocalStoragePersistor } from 'react-query/createLocalStoragePersistor-experimental';
+import { createWebStoragePersistor } from 'react-query/createWebStoragePersistor-experimental';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 import { createBrowserHistory } from 'history';
@@ -39,7 +39,7 @@ const queryClient = new QueryClient({
 });
 
 if (!isDevelopment) {
-    const localStoragePersistor = createLocalStoragePersistor();
+    const localStoragePersistor = createWebStoragePersistor({ storage: window.localStorage });
 
     persistQueryClient({
         queryClient,
@@ -48,7 +48,11 @@ if (!isDevelopment) {
 }
 
 ReactDOM.render(
-    <Sentry.ErrorBoundary fallback="An error has occurred" showDialog onError={() => unregister()}>
+    <Sentry.ErrorBoundary
+        fallback={<>An error has occurred</>}
+        showDialog
+        onError={() => unregister()}
+    >
         <QueryClientProvider client={queryClient}>
             <Router history={history}>
                 <App />

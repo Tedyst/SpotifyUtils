@@ -16,7 +16,7 @@ RUN go mod download
 COPY . .
 RUN go build -o /app/build
 
-FROM debian:buster-slim
+FROM debian:10.10-slim
 
 WORKDIR /app
 EXPOSE 5000
