@@ -23,8 +23,8 @@ func getVisitor(username string) *rate.Limiter {
 
 	limiter, exists := visitors[username]
 	if !exists {
-		// Get a maximum of 8 api requests, getting a new one every 3 seconds
-		limiter = rate.NewLimiter(0.3, 8)
+		// Get a maximum of 8 api requests, getting a new one every second
+		limiter = rate.NewLimiter(1, 10)
 		visitors[username] = limiter
 	}
 
