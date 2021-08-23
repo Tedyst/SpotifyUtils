@@ -1,9 +1,8 @@
 name: Release app
 
 on:
-  create:
-    tags:
-      - v*
+  release:
+    types: [published]
 
 jobs:
   buildx:
