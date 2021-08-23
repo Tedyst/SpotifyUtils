@@ -19,6 +19,7 @@ import { Settings as SettingsInterface } from './components/Settings/SettingsPag
 import Sidebar from './views/Sidebar';
 import Loading from './components/Loading';
 import Login from './views/Auth/Login';
+import Share from './views/SharePage';
 
 const PlaylistView = lazy(() => import('./views/PlaylistView'));
 const Track = lazy(() => import('./views/TrackPage'));
@@ -131,6 +132,9 @@ function App() {
                             </Route>
                             <Route path="/settings">
                                 <Settings />
+                            </Route>
+                            <Route path="/share">
+                                <Share />
                             </Route>
                             <Route path="/logout">
                                 <Logout />
