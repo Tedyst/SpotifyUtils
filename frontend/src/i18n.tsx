@@ -3,7 +3,6 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
 import translationEN from './locales/en.json';
-import translationRO from './locales/ro.json';
 
 if (!i18n.isInitialized) {
     i18n
@@ -17,6 +16,7 @@ if (!i18n.isInitialized) {
         .init({
             debug: process.env.NODE_ENV === 'development',
             fallbackLng: 'en',
+            lng: 'en',
             interpolation: {
                 escapeValue: false, // not needed for react as it escapes by default
             },
@@ -26,7 +26,7 @@ if (!i18n.isInitialized) {
                     translation: translationEN,
                 },
                 ro: {
-                    translation: translationRO,
+                    translation: import('./locales/ro.json'),
                 },
             },
         });
