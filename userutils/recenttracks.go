@@ -96,7 +96,7 @@ func (u *User) insertRecentTracks(items []spotify.RecentlyPlayedItem) {
 	}
 }
 
-func (u User) StartRecentTracksUpdater() {
+func (u *User) StartRecentTracksUpdater() {
 	_, timer := searchTimers(u.UserID)
 	if timer.Lock != nil {
 		if !u.Settings.RecentTracks {
@@ -114,7 +114,7 @@ func (u User) StartRecentTracksUpdater() {
 	ticker := time.NewTicker(updateTimer)
 	quit := make(chan struct{})
 	timer.Lock = &quit
-	go func(u User) {
+	go func(u *User) {
 		for {
 			select {
 			case <-ticker.C:

@@ -72,8 +72,8 @@ func initDB() {
 				usercount = 1
 			}
 			sleep := time.Duration(int64(spreadStartupUsers) / usercount)
-			for _, s := range users {
-				s.StartRecentTracksUpdater()
+			for i := range users {
+				users[i].StartRecentTracksUpdater()
 				time.Sleep(sleep)
 			}
 		}()
