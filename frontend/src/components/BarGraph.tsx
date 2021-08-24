@@ -9,8 +9,10 @@ import {
     BarSeries,
     ArgumentAxis,
     Chart,
+    Tooltip,
 } from '@devexpress/dx-react-chart-material-ui';
 import { useTranslation } from 'react-i18next';
+import { EventTracker } from '@devexpress/dx-react-chart';
 
 export interface BarGraphProps {
     acousticness?: number,
@@ -46,33 +48,33 @@ export default function BarGraph(props: BarGraphProps) {
     if (matches) {
         const data1 = [
             {
-                lineValue: acousticness,
+                lineValue: acousticness ? acousticness * 100 : undefined,
                 argument: t('TRACK.ACOUSTICNESS'),
             },
             {
-                lineValue: danceability,
+                lineValue: danceability ? danceability * 100 : undefined,
                 argument: t('TRACK.DANCEABILITY'),
             },
             {
-                lineValue: energy,
+                lineValue: energy ? energy * 100 : undefined,
                 argument: t('TRACK.ENERGY'),
             },
             {
-                lineValue: instrumentalness,
+                lineValue: instrumentalness ? instrumentalness * 100 : undefined,
                 argument: t('TRACK.INSTRUMENTALNESS'),
             },
         ];
         const data2 = [
             {
-                lineValue: liveness,
+                lineValue: liveness ? liveness * 100 : undefined,
                 argument: t('TRACK.LIVENESS'),
             },
             {
-                lineValue: loudness,
+                lineValue: loudness ? loudness * 100 : undefined,
                 argument: t('TRACK.LOUDNESS'),
             },
             {
-                lineValue: speechiness,
+                lineValue: speechiness ? speechiness * 100 : undefined,
                 argument: t('TRACK.SPEECHINESS'),
             },
             {
@@ -93,6 +95,8 @@ export default function BarGraph(props: BarGraphProps) {
                             valueField="lineValue"
                         />
                         <ArgumentAxis />
+                        <EventTracker />
+                        <Tooltip />
                     </Chart>
                     <br />
                     <Chart
@@ -104,6 +108,8 @@ export default function BarGraph(props: BarGraphProps) {
                             valueField="lineValue"
                         />
                         <ArgumentAxis />
+                        <EventTracker />
+                        <Tooltip />
                     </Chart>
                 </Paper>
             </>
@@ -112,31 +118,31 @@ export default function BarGraph(props: BarGraphProps) {
 
     const data = [
         {
-            lineValue: acousticness,
+            lineValue: acousticness ? acousticness * 100 : undefined,
             argument: t('TRACK.ACOUSTICNESS'),
         },
         {
-            lineValue: danceability,
+            lineValue: danceability ? danceability * 100 : undefined,
             argument: t('TRACK.DANCEABILITY'),
         },
         {
-            lineValue: energy,
+            lineValue: energy ? energy * 100 : undefined,
             argument: t('TRACK.ENERGY'),
         },
         {
-            lineValue: instrumentalness,
+            lineValue: instrumentalness ? instrumentalness * 100 : undefined,
             argument: t('TRACK.INSTRUMENTALNESS'),
         },
         {
-            lineValue: liveness,
+            lineValue: liveness ? liveness * 100 : undefined,
             argument: t('TRACK.LIVENESS'),
         },
         {
-            lineValue: loudness,
+            lineValue: loudness ? loudness * 100 : undefined,
             argument: t('TRACK.LOUDNESS'),
         },
         {
-            lineValue: speechiness,
+            lineValue: speechiness ? speechiness * 100 : undefined,
             argument: t('TRACK.SPEECHINESS'),
         },
         {
@@ -158,6 +164,8 @@ export default function BarGraph(props: BarGraphProps) {
                         valueField="lineValue"
                     />
                     <ArgumentAxis />
+                    <EventTracker />
+                    <Tooltip />
                 </Chart>
             </Paper>
         </>
