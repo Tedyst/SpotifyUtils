@@ -1,9 +1,10 @@
 import React from 'react';
 import {
-    makeStyles, Card, CardContent, CardMedia, Typography, Fade, CardActions, Button,
+    makeStyles, Card, CardContent, CardMedia, Typography, CardActions, Button,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
+import { SongCardProps } from './SongCard';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -70,14 +71,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function SongCardUp(props: {
-    uri: string,
-    image: string,
-    name: string,
-    artist: string,
-    count?: number,
-    usingLink?: boolean,
-}) {
+function SongCardUp(props: SongCardProps) {
     const classes = useStyles();
     const { t } = useTranslation();
     const {
@@ -87,6 +81,7 @@ function SongCardUp(props: {
         artist,
         count,
         usingLink,
+        text,
     } = props;
 
     const cardAction = usingLink ? (
@@ -131,33 +126,34 @@ function SongCardUp(props: {
         }
     }
     return (
-        <Fade in>
-            <Card className={classes.root}>
-                <CardMedia
-                    className={classes.cover}
-                    image={image}
-                    title={name}
-                />
-                <div className={classes.details}>
-                    <CardContent className={classes.content}>
-                        <Typography component="h6" variant="h6">
-                            {name}
-                        </Typography>
-                        <Typography variant="subtitle1" color="textSecondary">
-                            {artist}
-                        </Typography>
-                        {countComponent}
-                    </CardContent>
-                    {cardAction}
-                </div>
-            </Card>
-        </Fade>
+        <Card className={classes.root}>
+            <CardMedia
+                className={classes.cover}
+                image={image}
+                title={name}
+            />
+            <div className={classes.details}>
+                <CardContent className={classes.content}>
+                    <Typography component="h6" variant="h6">
+                        {name}
+                    </Typography>
+                    <Typography variant="subtitle1" color="textSecondary">
+                        {artist}
+                    </Typography>
+                    {text}
+                    <br />
+                    {countComponent}
+                </CardContent>
+                {cardAction}
+            </div>
+        </Card>
     );
 }
 
 SongCardUp.defaultProps = {
     count: undefined,
     usingLink: true,
+    text: undefined,
 };
 
 export default SongCardUp;

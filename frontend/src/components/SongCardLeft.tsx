@@ -2,6 +2,7 @@ import React from 'react';
 import {
     makeStyles, Card, CardContent, CardMedia, Typography,
 } from '@material-ui/core';
+
 import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts';
 import { Trans } from 'react-i18next';
 import i18n from '../i18n';
@@ -12,27 +13,23 @@ const useStyles = makeStyles({
         display: 'flex',
         minHeight: 150,
         maxWidth: '100%',
-        minWidth: 300,
     },
     rootnoshadow: {
         display: 'flex',
         minHeight: 150,
         maxWidth: '100%',
-        minWidth: 300,
         boxShadow: 'none',
     },
     details: {
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'hidden',
+        marginRight: 'auto',
     },
     content: {
         flex: '1 0 auto',
     },
     cover: {
         minWidth: 150,
-        marginLeft: 'auto',
-        overflowX: 'visible',
     },
     playIcon: {
         height: 38,
@@ -49,8 +46,9 @@ function msToText(ms: number): string {
     return humanizer.humanize(ms - (ms % 1000));
 }
 
-function SongCardRight(props: SongCardProps) {
+function SongCardLeft(props: SongCardProps) {
     const classes = useStyles();
+
     const {
         duration,
         name,
@@ -99,9 +97,11 @@ function SongCardRight(props: SongCardProps) {
             image={image}
         />
     ) : null;
+
     if (!shadow) {
         return (
-            <Card className={classes.rootnoshadow}>
+            <Card className={classes.root}>
+                {media}
                 <div className={classes.details}>
                     <CardContent className={classes.content}>
                         <Typography component="h6" variant="h6">
@@ -115,12 +115,12 @@ function SongCardRight(props: SongCardProps) {
                         {countComponent}
                     </CardContent>
                 </div>
-                {media}
             </Card>
         );
     }
     return (
         <Card className={classes.root}>
+            {media}
             <div className={classes.details}>
                 <CardContent className={classes.content}>
                     <Typography component="h6" variant="h6">
@@ -134,16 +134,14 @@ function SongCardRight(props: SongCardProps) {
                     {countComponent}
                 </CardContent>
             </div>
-            {media}
         </Card>
     );
 }
 
-SongCardRight.defaultProps = {
+SongCardLeft.defaultProps = {
     count: undefined,
     duration: undefined,
     text: undefined,
-    shadow: true,
 };
 
-export default SongCardRight;
+export default SongCardLeft;
