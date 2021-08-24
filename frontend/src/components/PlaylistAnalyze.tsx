@@ -54,7 +54,7 @@ function PlaylistAnalyze(props: {
                             <br />
                             <Trans
                                 i18nKey="COMMON.PERCENT"
-                                values={{ percent: analyze.Acousticness.Highest.Value * 100 }}
+                                values={{ percent: analyze.Acousticness.Lowest.Value * 100 }}
                                 components={{ bold: <b /> }}
                             />
                         </>

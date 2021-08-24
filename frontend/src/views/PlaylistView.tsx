@@ -81,6 +81,7 @@ export default function PlaylistSearch(props: {
     return (
         <>
             {err}
+            <div style={{ height: '20px', width: '100%' }} />
             <Container maxWidth="xs">
                 <SearchBox
                     setPlaylist={(s) => {
