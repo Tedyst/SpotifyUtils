@@ -16,7 +16,6 @@ if (!i18n.isInitialized) {
         .init({
             debug: process.env.NODE_ENV === 'development',
             fallbackLng: 'en',
-            lng: 'en',
             interpolation: {
                 escapeValue: false, // not needed for react as it escapes by default
             },
