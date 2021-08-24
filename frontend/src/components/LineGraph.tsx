@@ -10,7 +10,7 @@ import {
 
 import { EventTracker } from '@devexpress/dx-react-chart';
 
-function Graph(props: {
+function LineGraph(props: {
     data: any,
     zoom?: boolean,
     argument?: boolean
@@ -29,15 +29,17 @@ function Graph(props: {
 
             <SplineSeries argumentField="argument" valueField="value" />
             <EventTracker />
-            <Tooltip />
+            <Tooltip>
+                asd
+            </Tooltip>
             {zoomComponent}
         </Chart>
     );
 }
 
-Graph.defaultProps = {
+LineGraph.defaultProps = {
     argument: false,
     zoom: false,
 };
 
-export default Graph;
+export default LineGraph;
