@@ -33,7 +33,7 @@ const useStyles = makeStyles({
 });
 
 function getDate(unix: number): string {
-    return new Date(unix * 1000).toLocaleDateString('en-US');
+    return new Date(unix * 1000).toLocaleDateString('ro-RO');
 }
 
 function secToText(seconds: number): string {
@@ -220,7 +220,7 @@ export default function ListeningStatsComp(props: {
                                 <Typography className={classes.title} color="textSecondary" gutterBottom>
                                     {t('LISTENING_STATS.TOTAL_NUMBER_OF_TRACKS_PER_DAY')}
                                 </Typography>
-                                <LineGraph data={daysdata} zoom />
+                                <LineGraph data={daysdata} zoom isDates />
                             </CardContent>
                         </Card>
                     </Grid>

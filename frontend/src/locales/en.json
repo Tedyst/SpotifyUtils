@@ -35,7 +35,8 @@
         "INFORMATIONS": "Informations",
         "COUNT_TIME": "<bold>{{count}}</bold> time",
         "COUNT_TIMES": "<bold>{{count}}</bold> times",
-        "INVALID_SHARE_LINK": "The URL is not a valid Spotify track"
+        "INVALID_SHARE_LINK": "The URL is not a valid Spotify track",
+        "ON_DATE_YOU_LISTENED_TIMES": "On <bold>{{date}}</bold>, you listened to <bold>{{times}}</bold> songs"
     },
     "LISTENING_STATS": {
         "YOUR_STATISTICS": "Your Listening Statistics",
