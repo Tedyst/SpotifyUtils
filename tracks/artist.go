@@ -82,9 +82,16 @@ func BatchUpdateArtists(artists []*Artist, cl spotify.Client) {
 	}
 	newArtists := []*Artist{}
 	for _, s := range artists {
-		if !s.Updated {
-			s.mutex.Lock()
-			defer s.mutex.Unlock()
+		ok := true
+		for _, a := range newArtists {
+			if a.ArtistID == s.ArtistID {
+				ok = false
+			}
+		}
+		if !s.Updated && ok {
+			asd := s
+			asd.mutex.Lock()
+			defer asd.mutex.Unlock()
 			newArtists = append(newArtists, s)
 		}
 	}

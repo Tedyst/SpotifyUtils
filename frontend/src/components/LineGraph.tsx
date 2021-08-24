@@ -9,15 +9,29 @@ import {
 } from '@devexpress/dx-react-chart-material-ui';
 
 import { EventTracker } from '@devexpress/dx-react-chart';
+import { Trans } from 'react-i18next';
 
-function Graph(props: {
+function LineGraph(props: {
     data: any,
     zoom?: boolean,
-    argument?: boolean
+    argument?: boolean,
+    isDates?: boolean,
 }) {
-    const { data, zoom, argument } = props;
+    const {
+        data, zoom, argument, isDates,
+    } = props;
     const zoomComponent = zoom === true ? <ZoomAndPan /> : null;
     const argumentComponent = argument === true ? <ArgumentAxis /> : null;
+    const tooltipHover = (selected: Tooltip.ContentProps) => (isDates ? (
+        <Trans
+            i18nKey="COMMON.ON_DATE_YOU_LISTENED_TIMES"
+            values={{ date: data[selected?.targetItem?.point]?.argument, times: selected?.text }}
+            components={{ bold: <b /> }}
+        >
+            {'On <bold>{{date}}</bold>, you listened to <bold>{{times}}</bold> songs'}
+        </Trans>
+    ) : <div>{selected?.text}</div>
+    );
     return (
         <Chart
             data={data}
@@ -29,15 +43,16 @@ function Graph(props: {
 
             <SplineSeries argumentField="argument" valueField="value" />
             <EventTracker />
-            <Tooltip />
+            <Tooltip contentComponent={tooltipHover} />
             {zoomComponent}
         </Chart>
     );
 }
 
-Graph.defaultProps = {
+LineGraph.defaultProps = {
     argument: false,
     zoom: false,
+    isDates: false,
 };
 
-export default Graph;
+export default LineGraph;

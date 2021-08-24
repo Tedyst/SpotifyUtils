@@ -12,7 +12,7 @@ import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts
 import { Trans, useTranslation } from 'react-i18next';
 import SongCardRight from '../SongCardRight';
 import ResultBox from '../ResultBox';
-import Graph from '../Graph';
+import LineGraph from '../LineGraph';
 import i18n from '../../i18n';
 
 const useStyles = makeStyles({
@@ -33,7 +33,7 @@ const useStyles = makeStyles({
 });
 
 function getDate(unix: number): string {
-    return new Date(unix * 1000).toLocaleDateString('en-US');
+    return new Date(unix * 1000).toLocaleDateString('ro-RO');
 }
 
 function secToText(seconds: number): string {
@@ -210,7 +210,7 @@ export default function ListeningStatsComp(props: {
                                 <Typography className={classes.title} color="textSecondary" gutterBottom>
                                     {t('LISTENING_STATS.TOTAL_NUMBER_OF_TRACKS_PER_HOUR')}
                                 </Typography>
-                                <Graph data={hoursdata} argument />
+                                <LineGraph data={hoursdata} argument />
                             </CardContent>
                         </Card>
                     </Grid>
@@ -220,7 +220,7 @@ export default function ListeningStatsComp(props: {
                                 <Typography className={classes.title} color="textSecondary" gutterBottom>
                                     {t('LISTENING_STATS.TOTAL_NUMBER_OF_TRACKS_PER_DAY')}
                                 </Typography>
-                                <Graph data={daysdata} zoom />
+                                <LineGraph data={daysdata} zoom isDates />
                             </CardContent>
                         </Card>
                     </Grid>
