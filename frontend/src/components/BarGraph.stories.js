@@ -1,7 +1,7 @@
 import React from 'react';
-import Chart2 from './Chart2';
+import BarGraph from './BarGraph';
 
-const Template = (args) => <Chart2 {...args} />;
+const Template = (args) => <BarGraph {...args} />;
 
 export const Primary = Template.bind({});
 
@@ -16,6 +16,6 @@ Primary.args = {
 };
 
 export default {
-    title: 'Chart2',
-    component: Chart2,
+    title: 'BarGraph',
+    component: BarGraph,
 };

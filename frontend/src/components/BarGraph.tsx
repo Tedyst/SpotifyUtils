@@ -12,15 +12,18 @@ import {
 } from '@devexpress/dx-react-chart-material-ui';
 import { useTranslation } from 'react-i18next';
 
-export default function Chart2(props: {
-    acousticness: number,
-    danceability: number,
-    energy: number,
-    instrumentalness: number,
-    liveness: number,
-    loudness: number,
-    speechiness: number,
-}) {
+export interface BarGraphProps {
+    acousticness?: number,
+    danceability?: number,
+    energy?: number,
+    instrumentalness?: number,
+    liveness?: number,
+    loudness?: number,
+    speechiness?: number,
+    tempo?: number,
+    track?: boolean,
+}
+export default function BarGraph(props: BarGraphProps) {
     const {
         acousticness,
         danceability,
@@ -29,10 +32,17 @@ export default function Chart2(props: {
         liveness,
         loudness,
         speechiness,
+        tempo,
+        track,
     } = props;
     const { t } = useTranslation();
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('sm'));
+    const trackFeatures = track ? (
+        <Typography>
+            {t('TRACK.TRACK_FEATURES')}
+        </Typography>
+    ) : null;
     if (matches) {
         const data1 = [
             {
@@ -65,12 +75,14 @@ export default function Chart2(props: {
                 lineValue: speechiness,
                 argument: t('TRACK.SPEECHINESS'),
             },
+            {
+                lineValue: tempo,
+                argument: t('TRACK.TEMPO'),
+            },
         ];
         return (
             <>
-                <Typography>
-                    {t('TRACK.TRACK_FEATURES')}
-                </Typography>
+                {trackFeatures}
                 <Paper>
                     <Chart
                         data={data1}
@@ -127,13 +139,15 @@ export default function Chart2(props: {
             lineValue: speechiness,
             argument: t('TRACK.SPEECHINESS'),
         },
+        {
+            lineValue: tempo,
+            argument: t('TRACK.TEMPO'),
+        },
     ];
 
     return (
         <>
-            <Typography>
-                {t('TRACK.TRACK_FEATURES')}
-            </Typography>
+            {trackFeatures}
             <Paper>
                 <Chart
                     data={data}
@@ -149,3 +163,15 @@ export default function Chart2(props: {
         </>
     );
 }
+
+BarGraph.defaultProps = {
+    acousticness: undefined,
+    danceability: undefined,
+    energy: undefined,
+    instrumentalness: undefined,
+    liveness: undefined,
+    loudness: undefined,
+    speechiness: undefined,
+    tempo: undefined,
+    track: true,
+};
