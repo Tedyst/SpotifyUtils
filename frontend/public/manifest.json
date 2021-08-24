@@ -23,7 +23,8 @@
     "method": "GET",
     "params": {
       "text": "text"
-    }
+    },
+    "enctype": "application/x-www-form-urlencoded"
   },
   "start_url": "/",
   "display": "standalone",
