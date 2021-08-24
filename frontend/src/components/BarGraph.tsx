@@ -24,6 +24,17 @@ export interface BarGraphProps {
     speechiness?: number,
     tempo?: number,
     track?: boolean,
+    title?: string,
+    tooltipComponents?: {
+        acousticness?: React.ReactNode,
+        danceability?: React.ReactNode,
+        energy?: React.ReactNode,
+        instrumentalness?: React.ReactNode,
+        liveness?: React.ReactNode,
+        loudness?: React.ReactNode,
+        speechiness?: React.ReactNode,
+        tempo?: React.ReactNode,
+    },
 }
 export default function BarGraph(props: BarGraphProps) {
     const {
@@ -36,6 +47,8 @@ export default function BarGraph(props: BarGraphProps) {
         speechiness,
         tempo,
         track,
+        title,
+        tooltipComponents,
     } = props;
     const { t } = useTranslation();
     const theme = useTheme();
@@ -84,8 +97,11 @@ export default function BarGraph(props: BarGraphProps) {
         ];
         return (
             <>
-                {trackFeatures}
                 <Paper>
+                    <Typography variant="h6">
+                        {title}
+                    </Typography>
+                    {trackFeatures}
                     <Chart
                         data={data1}
                         height={120}
@@ -151,10 +167,46 @@ export default function BarGraph(props: BarGraphProps) {
         },
     ];
 
+    const asd = (selected: Tooltip.ContentProps) => {
+        const { point } = selected.targetItem;
+        if (point === 0 && tooltipComponents?.acousticness !== undefined) {
+            return <>{tooltipComponents.acousticness}</>;
+        }
+        if (point === 1 && tooltipComponents?.danceability !== undefined) {
+            return <>{tooltipComponents.danceability}</>;
+        }
+        if (point === 2 && tooltipComponents?.energy !== undefined) {
+            return <>{tooltipComponents.energy}</>;
+        }
+        if (point === 3 && tooltipComponents?.instrumentalness !== undefined) {
+            return <>{tooltipComponents.instrumentalness}</>;
+        }
+        if (point === 4 && tooltipComponents?.liveness !== undefined) {
+            return <>{tooltipComponents.liveness}</>;
+        }
+        if (point === 5 && tooltipComponents?.loudness !== undefined) {
+            return <>{tooltipComponents.loudness}</>;
+        }
+        if (point === 6 && tooltipComponents?.speechiness !== undefined) {
+            return <>{tooltipComponents.speechiness}</>;
+        }
+        if (point === 7 && tooltipComponents?.tempo !== undefined) {
+            return <>{tooltipComponents.tempo}</>;
+        }
+        return (
+            <>
+                {selected.text}
+            </>
+        );
+    };
+
     return (
         <>
-            {trackFeatures}
             <Paper>
+                <Typography variant="subtitle1" align="center">
+                    {title}
+                    {trackFeatures}
+                </Typography>
                 <Chart
                     data={data}
                     height={120}
@@ -165,8 +217,11 @@ export default function BarGraph(props: BarGraphProps) {
                     />
                     <ArgumentAxis />
                     <EventTracker />
-                    <Tooltip />
+                    <Tooltip contentComponent={asd} />
                 </Chart>
+                <Typography variant="subtitle2" align="center" color="textSecondary">
+                    You can also click on the bars to see more details
+                </Typography>
             </Paper>
         </>
     );

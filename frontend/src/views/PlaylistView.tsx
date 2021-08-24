@@ -6,11 +6,39 @@ import SearchBox from '../components/PlaylistSearchBox';
 import ResultBox from '../components/ResultBox';
 import { Playlist } from '../App';
 import ErrorAxiosComponent from '../components/ErrorAxiosComponent';
+import PlaylistAnalyze from '../components/PlaylistAnalyze';
+import Loading from '../components/Loading';
 
 export interface PlaylistResponse {
     Results: Track[];
     Success: boolean;
     Error?: string;
+    Analyze: Analyze;
+}
+
+interface medianStruct {
+    Highest: {
+        Track: Track;
+        Value: number;
+    },
+    Lowest: {
+        Track: Track;
+        Value: number;
+    },
+    Median: number;
+}
+
+export interface Analyze {
+    Artists: number[];
+
+    Energy: medianStruct;
+    Acousticness: medianStruct;
+    Instrumentalness: medianStruct;
+    Popularity: medianStruct;
+    Tempo: medianStruct;
+
+    Genres: string[];
+    Explicit: number;
 }
 
 export interface Result {
@@ -39,7 +67,16 @@ export default function PlaylistSearch(props: {
     });
     const { playlists } = props;
 
-    const err = <ErrorAxiosComponent data={data} status={status} error={error} />;
+    const err = (
+        <ErrorAxiosComponent
+            data={data}
+            status={status}
+            error={error}
+            loadingSpinner={false}
+        />
+    );
+
+    const loading = status === 'loading' ? <Loading /> : null;
 
     return (
         <>
@@ -53,6 +90,10 @@ export default function PlaylistSearch(props: {
                     searching={!(status === 'success') && selectedPlaylist !== undefined}
                 />
             </Container>
+            <div style={{ height: '100px', width: '100%' }} />
+            <PlaylistAnalyze analyze={data?.data.Analyze} />
+            {loading}
+            <div style={{ height: '20px', width: '100%' }} />
             <ResultBox results={data?.data.Results} />
         </>
     );

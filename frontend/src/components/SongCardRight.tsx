@@ -58,7 +58,7 @@ function SongCardRight(props: SongCardProps) {
         image,
         count,
         text,
-        shadow,
+        noShadow,
     } = props;
     if (!name || !artist) {
         return null;
@@ -99,7 +99,7 @@ function SongCardRight(props: SongCardProps) {
             image={image}
         />
     ) : null;
-    if (!shadow) {
+    if (noShadow) {
         return (
             <Card className={classes.rootnoshadow}>
                 <div className={classes.details}>

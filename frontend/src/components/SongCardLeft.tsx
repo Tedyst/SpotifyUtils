@@ -56,7 +56,7 @@ function SongCardLeft(props: SongCardProps) {
         image,
         count,
         text,
-        shadow,
+        noShadow,
     } = props;
     if (!name || !artist) {
         return null;
@@ -98,9 +98,9 @@ function SongCardLeft(props: SongCardProps) {
         />
     ) : null;
 
-    if (!shadow) {
+    if (noShadow) {
         return (
-            <Card className={classes.root}>
+            <Card className={classes.rootnoshadow}>
                 {media}
                 <div className={classes.details}>
                     <CardContent className={classes.content}>

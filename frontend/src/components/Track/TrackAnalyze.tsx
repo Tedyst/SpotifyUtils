@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Container } from '@material-ui/core';
 import TrackInfo from './TrackInfo';
 import AlbumInfo from './AlbumInfo';
-import Chart2 from './Chart2';
+import BarGraph from '../BarGraph';
 import Lyrics from './Lyrics';
 import SongCard from '../../components/SongCardRight';
 
@@ -111,7 +111,7 @@ export default function TrackAnalyze(props: {
                         markets={trackInfo.Information.AlbumInformation.Markets}
                     />
                     <br />
-                    <Chart2
+                    <BarGraph
                         acousticness={trackInfo.Information.TrackFeatures.Acousticness}
                         danceability={trackInfo.Information.TrackFeatures.Danceability}
                         energy={trackInfo.Information.TrackFeatures.Energy}

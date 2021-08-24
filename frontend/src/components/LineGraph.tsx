@@ -22,19 +22,6 @@ function LineGraph(props: {
     } = props;
     const zoomComponent = zoom === true ? <ZoomAndPan /> : null;
     const argumentComponent = argument === true ? <ArgumentAxis /> : null;
-    // const asd = () => (
-    //     <div style={{ backgroundColor: 'red', padding: '-4px -8px' }}>
-    //         <Container maxWidth="xs" style={{ width: '100%', padding: 0}}>
-    //             <SongCardRight
-    //                 artist="asd"
-    //                 image="https://i.scdn.co/image/ab67616d0000b273309b0cb81728d42a6dfb2b81"
-    //                 name="ASD"
-    //                 shadow={false}
-    //                 text="The most popular song"
-    //             />
-    //         </Container>
-    //     </div>
-    // );
     const tooltipHover = (selected: Tooltip.ContentProps) => (isDates ? (
         <Trans
             i18nKey="COMMON.ON_DATE_YOU_LISTENED_TIMES"
