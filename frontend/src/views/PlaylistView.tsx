@@ -29,7 +29,7 @@ interface medianStruct {
 }
 
 export interface Analyze {
-    Artists: number[];
+    Artists: { [key: string]: number };
 
     Energy: medianStruct;
     Acousticness: medianStruct;
@@ -91,7 +91,7 @@ export default function PlaylistSearch(props: {
                     searching={!(status === 'success') && selectedPlaylist !== undefined}
                 />
             </Container>
-            <div style={{ height: '100px', width: '100%' }} />
+            <div style={{ height: '20px', width: '100%' }} />
             <PlaylistAnalyze analyze={data?.data.Analyze} />
             {loading}
             <div style={{ height: '20px', width: '100%' }} />

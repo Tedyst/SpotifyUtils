@@ -5,6 +5,7 @@ import { Analyze } from '../views/PlaylistView';
 import BarGraph from './BarGraph';
 import SongCardRight from './SongCardRight';
 import SongCardLeft from './SongCardLeft';
+import PieChart from './PieGraph';
 
 function PlaylistAnalyze(props: {
     analyze: Analyze | undefined;
@@ -14,7 +15,7 @@ function PlaylistAnalyze(props: {
     if (analyze === undefined) {
         return null;
     }
-    const components = {
+    const barGraphComponents = {
         acousticness: (
             <Container maxWidth="xs" style={{ width: '100%', padding: 0 }}>
                 <Typography variant="subtitle1" gutterBottom align="center">
@@ -210,13 +211,22 @@ function PlaylistAnalyze(props: {
     return (
         <>
             <Container maxWidth="sm">
+                <PieChart
+                    data={analyze.Artists}
+                    text={(
+                        <Typography variant="h6" gutterBottom align="center">
+                            Artists from your playlist
+                        </Typography>
+                    )}
+                />
+                <br />
                 <BarGraph
                     acousticness={analyze.Acousticness.Median}
                     instrumentalness={analyze.Instrumentalness.Median}
                     energy={analyze.Energy.Median}
                     tempo={analyze.Tempo.Median}
                     track={false}
-                    tooltipComponents={components}
+                    tooltipComponents={barGraphComponents}
                 />
             </Container>
         </>

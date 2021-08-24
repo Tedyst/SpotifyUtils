@@ -95,6 +95,49 @@ export default function BarGraph(props: BarGraphProps) {
                 argument: t('TRACK.TEMPO'),
             },
         ];
+
+        const tooltipCompSelector1 = (selected: Tooltip.ContentProps) => {
+            const { point } = selected.targetItem;
+            if (point === 0 && tooltipComponents?.acousticness !== undefined) {
+                return <>{tooltipComponents.acousticness}</>;
+            }
+            if (point === 1 && tooltipComponents?.danceability !== undefined) {
+                return <>{tooltipComponents.danceability}</>;
+            }
+            if (point === 2 && tooltipComponents?.energy !== undefined) {
+                return <>{tooltipComponents.energy}</>;
+            }
+            if (point === 3 && tooltipComponents?.instrumentalness !== undefined) {
+                return <>{tooltipComponents.instrumentalness}</>;
+            }
+            return (
+                <>
+                    {selected.text}
+                </>
+            );
+        };
+
+        const tooltipCompSelector2 = (selected: Tooltip.ContentProps) => {
+            const { point } = selected.targetItem;
+            if (point === 0 && tooltipComponents?.liveness !== undefined) {
+                return <>{tooltipComponents.liveness}</>;
+            }
+            if (point === 1 && tooltipComponents?.loudness !== undefined) {
+                return <>{tooltipComponents.loudness}</>;
+            }
+            if (point === 2 && tooltipComponents?.speechiness !== undefined) {
+                return <>{tooltipComponents.speechiness}</>;
+            }
+            if (point === 3 && tooltipComponents?.tempo !== undefined) {
+                return <>{tooltipComponents.tempo}</>;
+            }
+            return (
+                <>
+                    {selected.text}
+                </>
+            );
+        };
+
         return (
             <>
                 <Paper>
@@ -112,7 +155,7 @@ export default function BarGraph(props: BarGraphProps) {
                         />
                         <ArgumentAxis />
                         <EventTracker />
-                        <Tooltip />
+                        <Tooltip contentComponent={tooltipCompSelector1} />
                     </Chart>
                     <br />
                     <Chart
@@ -125,7 +168,7 @@ export default function BarGraph(props: BarGraphProps) {
                         />
                         <ArgumentAxis />
                         <EventTracker />
-                        <Tooltip />
+                        <Tooltip contentComponent={tooltipCompSelector2} />
                     </Chart>
                 </Paper>
             </>
@@ -167,7 +210,7 @@ export default function BarGraph(props: BarGraphProps) {
         },
     ];
 
-    const asd = (selected: Tooltip.ContentProps) => {
+    const tooltipCompSelector = (selected: Tooltip.ContentProps) => {
         const { point } = selected.targetItem;
         if (point === 0 && tooltipComponents?.acousticness !== undefined) {
             return <>{tooltipComponents.acousticness}</>;
@@ -217,7 +260,7 @@ export default function BarGraph(props: BarGraphProps) {
                     />
                     <ArgumentAxis />
                     <EventTracker />
-                    <Tooltip contentComponent={asd} />
+                    <Tooltip contentComponent={tooltipCompSelector} />
                 </Chart>
                 <Typography variant="subtitle2" align="center" color="textSecondary">
                     You can also click on the bars to see more details
