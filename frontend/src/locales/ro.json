@@ -35,7 +35,10 @@
         "INFORMATIONS": "Informations",
         "COUNT_TIME": "<bold>{{count}}</bold> time",
         "COUNT_TIMES": "<bold>{{count}}</bold> times",
-        "INVALID_SHARE_LINK": "The URL is not a valid Spotify track"
+        "INVALID_SHARE_LINK": "The URL is not a valid Spotify track",
+        "ON_DATE_YOU_LISTENED_TIMES": "On <bold>{{date}}</bold>, you listened to <bold>{{times}}</bold> songs",
+        "PERCENT": "<bold>{{percent}}%</bold>",
+        "NUMBER": "<bold>{{number}}</bold>"
     },
     "LISTENING_STATS": {
         "YOUR_STATISTICS": "Your Listening Statistics",
@@ -70,7 +73,16 @@
     "PLAYLIST": {
         "NO_PLAYLIST_FOUND": "Could not find any playlist",
         "HERE_ALL_PLAYLISTS": "Here are all of your playlists:",
-        "SELECT_PLAYLIST": "Select a playlist to search into"
+        "SELECT_PLAYLIST": "Select a playlist to search into",
+        "THE_MOST_ACOUSTIC_SONG": "The most Acoustic song",
+        "THE_LEAST_ACOUSTIC_SONG": "The least Acoustic song",
+        "THE_MOST_ENERGETIC_SONG": "The most Energetic song",
+        "THE_LEAST_ENERGETIC_SONG": "The least Energetic song",
+        "THE_MOST_INSTRUMENTAL_SONG": "The most Instrumental song",
+        "THE_LEAST_INSTRUMENTAL_SONG": "The least Instrumental song",
+        "THE_HIGHEST_TEMPO_SONG": "The highest Tempo song",
+        "THE_LOWEST_TEMPO_SONG": "The lowest Tempo song",
+        "ARTISTS_FROM_PLAYLIST": "Artists from your playlist"
     },
     "TRACK_SEARCH": {
         "TEXT_1": "To get an URI for a track, right click on that track and then select Share > Copy Spotify URI",
