@@ -81,7 +81,8 @@
         "THE_MOST_INSTRUMENTAL_SONG": "The most Instrumental song",
         "THE_LEAST_INSTRUMENTAL_SONG": "The least Instrumental song",
         "THE_HIGHEST_TEMPO_SONG": "The highest Tempo song",
-        "THE_LOWEST_TEMPO_SONG": "The lowest Tempo song"
+        "THE_LOWEST_TEMPO_SONG": "The lowest Tempo song",
+        "ARTISTS_FROM_PLAYLIST": "Artists from your playlist"
     },
     "TRACK_SEARCH": {
         "TEXT_1": "To get an URI for a track, right click on that track and then select Share > Copy Spotify URI",

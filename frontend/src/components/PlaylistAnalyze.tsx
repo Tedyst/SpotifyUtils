@@ -215,7 +215,7 @@ function PlaylistAnalyze(props: {
                     data={analyze.Artists}
                     text={(
                         <Typography variant="h6" gutterBottom align="center">
-                            Artists from your playlist
+                            {t('PLAYLIST.ARTISTS_FROM_PLAYLIST')}
                         </Typography>
                     )}
                 />
