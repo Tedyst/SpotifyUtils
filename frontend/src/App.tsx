@@ -82,15 +82,17 @@ function App() {
         return (
             <ThemeProvider theme={darkTheme}>
                 <CssBaseline />
-                <div className={classes.root}>
-                    <main className={classes.content}>
-                        <div className={classes.toolbar} />
-                        <Login
-                            CSRFToken={data?.headers['x-csrf-token']}
-                        />
-                        <ServiceWorkerPopup />
-                    </main>
-                </div>
+                <Suspense fallback={null}>
+                    <div className={classes.root}>
+                        <main className={classes.content}>
+                            <div className={classes.toolbar} />
+                            <Login
+                                CSRFToken={data?.headers['x-csrf-token']}
+                            />
+                            <ServiceWorkerPopup />
+                        </main>
+                    </div>
+                </Suspense>
             </ThemeProvider>
         );
     }
@@ -102,54 +104,56 @@ function App() {
     return (
         <ThemeProvider theme={darkTheme}>
             <CssBaseline />
-            <div className={classes.root}>
-                <Sidebar
-                    logged={!!data?.data?.Success}
-                    username={data?.data?.Username}
-                    image={data?.data?.Image}
-                    settings={data?.data?.Settings}
-                />
-                <Suspense fallback={<Loading />}>
-                    <main className={classes.content}>
-                        <div className={classes.toolbar} />
-                        <Switch>
-                            <Route path="/playlist">
-                                <PlaylistView
-                                    playlists={data?.data.Playlists}
-                                />
-                            </Route>
-                            <Route path="/listeningstatistics">
-                                <ListeningStats />
-                            </Route>
-                            <Route path="/compare">
-                                <Compare />
-                            </Route>
-                            <Route path="/track">
-                                <Track />
-                            </Route>
-                            <Route path="/recent">
-                                <Recent />
-                            </Route>
-                            <Route path="/settings">
-                                <Settings />
-                            </Route>
-                            <Route path="/share">
-                                <Share />
-                            </Route>
-                            <Route path="/logout">
-                                <Logout />
-                            </Route>
-                            <Route path="/auth">
-                                <Redirect to="/" />
-                            </Route>
-                            <Route path="/">
-                                <Top />
-                            </Route>
-                        </Switch>
-                    </main>
-                </Suspense>
-                <ServiceWorkerPopup />
-            </div>
+            <Suspense fallback={null}>
+                <div className={classes.root}>
+                    <Sidebar
+                        logged={!!data?.data?.Success}
+                        username={data?.data?.Username}
+                        image={data?.data?.Image}
+                        settings={data?.data?.Settings}
+                    />
+                    <Suspense fallback={<Loading />}>
+                        <main className={classes.content}>
+                            <div className={classes.toolbar} />
+                            <Switch>
+                                <Route path="/playlist">
+                                    <PlaylistView
+                                        playlists={data?.data.Playlists}
+                                    />
+                                </Route>
+                                <Route path="/listeningstatistics">
+                                    <ListeningStats />
+                                </Route>
+                                <Route path="/compare">
+                                    <Compare />
+                                </Route>
+                                <Route path="/track">
+                                    <Track />
+                                </Route>
+                                <Route path="/recent">
+                                    <Recent />
+                                </Route>
+                                <Route path="/settings">
+                                    <Settings />
+                                </Route>
+                                <Route path="/share">
+                                    <Share />
+                                </Route>
+                                <Route path="/logout">
+                                    <Logout />
+                                </Route>
+                                <Route path="/auth">
+                                    <Redirect to="/" />
+                                </Route>
+                                <Route path="/">
+                                    <Top />
+                                </Route>
+                            </Switch>
+                        </main>
+                    </Suspense>
+                    <ServiceWorkerPopup />
+                </div>
+            </Suspense>
         </ThemeProvider>
     );
 }

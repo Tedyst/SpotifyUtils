@@ -23,5 +23,6 @@
   "include": [
     "src",
     "src/views/.tsx"
-  ]
+  ],
+  "resolveJsonModule": true,
 }

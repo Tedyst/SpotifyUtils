@@ -1,11 +1,11 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import HttpApi from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
-
-import translationEN from './locales/en.json';
 
 if (!i18n.isInitialized) {
     i18n
+        .use(HttpApi)
         // detect user language
         // learn more: https://github.com/i18next/i18next-browser-languageDetector
         .use(LanguageDetector)
@@ -20,14 +20,7 @@ if (!i18n.isInitialized) {
                 escapeValue: false, // not needed for react as it escapes by default
             },
             keySeparator: '.',
-            resources: {
-                en: {
-                    translation: translationEN,
-                },
-                ro: {
-                    translation: import('./locales/ro.json'),
-                },
-            },
+            supportedLngs: ['en', 'ro'],
         });
 }
 export default i18n;
