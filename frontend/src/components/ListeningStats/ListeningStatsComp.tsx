@@ -10,9 +10,9 @@ import {
 } from '@material-ui/pickers';
 import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts';
 import { Trans, useTranslation } from 'react-i18next';
-import SongCardRight from '../SongCardRight';
+import SongCard from '../Cards/SongCard';
 import ResultBox from '../ResultBox';
-import LineGraph from '../LineGraph';
+import LineGraph from '../Graphs/LineGraph';
 import i18n from '../../i18n';
 
 const useStyles = makeStyles({
@@ -128,7 +128,8 @@ export default function ListeningStatsComp(props: {
 
     if (data?.Result?.TopTracks && data?.Result?.TopTracks?.length > 0) {
         topsong = (
-            <SongCardRight
+            <SongCard
+                type="right"
                 artist={data.Result.TopTracks[0]?.Artist}
                 count={data.Result.TopTracks[0]?.Count}
                 image={data.Result.TopTracks[0]?.Image}

@@ -2,9 +2,9 @@ import React from 'react';
 import { Grid, Container } from '@material-ui/core';
 import TrackInfo from './TrackInfo';
 import AlbumInfo from './AlbumInfo';
-import BarGraph from '../BarGraph';
+import BarGraph from '../Graphs/BarGraph';
 import Lyrics from './Lyrics';
-import SongCard from '../../components/SongCardRight';
+import SongCard from '../../components/Cards/SongCard';
 
 export interface TrackParamTypes {
     trackid: string
@@ -84,6 +84,7 @@ export default function TrackAnalyze(props: {
         <>
             <Container maxWidth="xs">
                 <SongCard
+                    type="right"
                     artist={trackInfo.Artist}
                     name={trackInfo.Name}
                     image={trackInfo.Information.TrackInformation.Image}

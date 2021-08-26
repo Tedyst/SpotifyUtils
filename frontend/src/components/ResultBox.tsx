@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Container } from '@material-ui/core';
-import SongCardUp from './SongCardUp';
+import SongCard from './Cards/SongCard';
 
 export interface Result {
     Name: string;
@@ -18,7 +18,8 @@ export default function ResultBox(props: {
     let items = [];
     items = results.map((item) => (
         <Grid item xs={6} md={3} sm={4} lg={2} key={`${item.URI}-result`}>
-            <SongCardUp
+            <SongCard
+                type="up"
                 key={`${item.URI}-result`}
                 uri={item.URI}
                 name={item.Name}

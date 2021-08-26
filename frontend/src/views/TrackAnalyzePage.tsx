@@ -7,7 +7,7 @@ import { useQuery } from 'react-query';
 import TrackAnalyze, { TrackParamTypes, TrackInterface } from '../components/Track/TrackAnalyze';
 import ErrorAxiosComponent from '../components/ErrorAxiosComponent';
 import ErrorComponent from '../components/ErrorComponent';
-import TrackSearch from '../components/TrackSearch';
+import TrackSearch from '../components/Track/TrackSearch';
 
 const refetchIntervalSeconds = 10;
 

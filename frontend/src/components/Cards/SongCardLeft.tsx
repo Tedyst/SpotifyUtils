@@ -5,8 +5,8 @@ import {
 
 import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts';
 import { Trans } from 'react-i18next';
-import i18n from '../i18n';
 import { SongCardProps } from './SongCard';
+import i18n from '../../i18n';
 
 const useStyles = makeStyles({
     root: {

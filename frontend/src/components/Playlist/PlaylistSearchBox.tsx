@@ -3,7 +3,11 @@ import {
     Button, Typography, makeStyles, Container, Select, MenuItem, Grid,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { Playlist } from '../App';
+
+export interface Playlist {
+    ID: string;
+    Name: string;
+}
 
 const useStyles = makeStyles((theme) => ({
     paper: {

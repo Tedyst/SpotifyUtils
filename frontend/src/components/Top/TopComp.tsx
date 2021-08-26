@@ -3,8 +3,8 @@ import {
     makeStyles, Container, Grid, Typography,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import ArtistCard from '../ArtistCard';
-import SongCard from '../SongCardRight';
+import ArtistCard from '../Cards/ArtistCard';
+import SongCard from '../Cards/SongCard';
 import List from '../ItemList';
 
 const useStyles = makeStyles(() => ({
@@ -105,6 +105,7 @@ export default function TopComp(props: {
         topTrack = (
             <Grid item key={top.Result.Tracks[0].ID}>
                 <SongCard
+                    type="right"
                     artist={top.Result.Tracks[0].Artist}
                     duration={top.Result.Tracks[0].Duration}
                     image={top.Result.Tracks[0].Image}

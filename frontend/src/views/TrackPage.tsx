@@ -4,7 +4,7 @@ import {
     Route,
     useRouteMatch,
 } from 'react-router-dom';
-import TrackSearch from '../components/TrackSearch';
+import TrackSearch from '../components/Track/TrackSearch';
 import TrackAnalyzePage from './TrackAnalyzePage';
 
 export default function Track() {

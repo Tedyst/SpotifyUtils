@@ -7,8 +7,8 @@ import {
 } from '@material-ui/core';
 import { Trans, useTranslation } from 'react-i18next';
 import { UsernameInterface } from './CompareInterfaces';
-import ArtistCard from '../ArtistCard';
-import SongCard from '../SongCardRight';
+import ArtistCard from '../Cards/ArtistCard';
+import SongCard from '../Cards/SongCard';
 import Avatars from '../Avatars';
 import ListItems from '../ItemList';
 
@@ -65,6 +65,7 @@ export default function UsernameComp(props: {
         dataTrack = (
             <Grid item key={data.Result.Tracks[0].ID}>
                 <SongCard
+                    type="right"
                     artist={data.Result.Tracks[0].Artist}
                     duration={data.Result.Tracks[0].Duration}
                     image={data.Result.Tracks[0].Image}

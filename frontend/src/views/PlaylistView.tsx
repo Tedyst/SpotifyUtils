@@ -2,11 +2,11 @@ import React from 'react';
 import { Container } from '@material-ui/core';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import SearchBox from '../components/PlaylistSearchBox';
+import SearchBox from '../components/Playlist/PlaylistSearchBox';
 import ResultBox from '../components/ResultBox';
 import { Playlist } from '../App';
 import ErrorAxiosComponent from '../components/ErrorAxiosComponent';
-import PlaylistAnalyze from '../components/PlaylistAnalyze';
+import PlaylistAnalyze from '../components/Playlist/PlaylistAnalyze';
 import Loading from '../components/Loading';
 
 export interface PlaylistResponse {
