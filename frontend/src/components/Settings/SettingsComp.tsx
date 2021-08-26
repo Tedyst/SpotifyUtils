@@ -44,7 +44,7 @@ export default function SettingsComp(props: {
     const { t } = useTranslation();
     const { originalSettings, useReactQuery } = props;
     const [settings, setSettings] = React.useState(
-        { ...originalSettings, Language: i18n.languages[0] },
+        { ...originalSettings, Language: i18n.languages[0] ? i18n.languages[0] : 'en' },
     );
 
     const handleChangeRecentTracks = (event: React.ChangeEvent<HTMLInputElement>) => {
