@@ -39,6 +39,14 @@
                 "-MockExternalCalls=true",
                 "-MockUser=vq0u2761le51p2idib6f89y78"
             ]
-        }
+        },
+        {
+            "name": "Launch golang without Debug Mode",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+        },
     ]
 }

@@ -89,9 +89,9 @@ function App() {
                             <Login
                                 CSRFToken={data?.headers['x-csrf-token']}
                             />
-                            <ServiceWorkerPopup />
                         </main>
                     </div>
+                    <ServiceWorkerPopup />
                 </Suspense>
             </ThemeProvider>
         );
@@ -150,8 +150,8 @@ function App() {
                                 </Route>
                             </Switch>
                         </main>
+                        <ServiceWorkerPopup />
                     </Suspense>
-                    <ServiceWorkerPopup />
                 </div>
             </Suspense>
         </ThemeProvider>
