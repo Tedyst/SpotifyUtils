@@ -11,6 +11,7 @@ require (
 	github.com/google/uuid v1.0.0
 	github.com/gorilla/csrf v1.7.0
 	github.com/gorilla/mux v1.7.3
+	github.com/mitchellh/go-server-timing v1.0.1 // indirect
 	github.com/prometheus/client_golang v1.11.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/wader/gormstore/v2 v2.0.0

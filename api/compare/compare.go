@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	servertiming "github.com/mitchellh/go-server-timing"
 	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/userutils"
 )
@@ -31,7 +32,10 @@ func HandlerUsername(res http.ResponseWriter, req *http.Request, user *userutils
 		return
 	}
 	code := vars["code"]
+	timing := servertiming.FromContext(req.Context())
+	getuser := timing.NewMetric("GetComparedUser").Start()
 	target := userutils.GetUserFromCompareCode(code)
+	getuser.Stop()
 	if target == nil {
 		utils.ErrorString(res, req, "User not found")
 		return
@@ -50,7 +54,9 @@ func HandlerUsername(res http.ResponseWriter, req *http.Request, user *userutils
 		Name:  target.DisplayName,
 		Image: target.Image,
 	}
+	compare := timing.NewMetric("Compare").Start()
 	response.Result = user.Compare(target)
+	compare.Stop()
 	go user.AddFriend(target)
 
 	respJSON, _ := json.Marshal(response)

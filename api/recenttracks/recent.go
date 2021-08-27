@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
+	servertiming "github.com/mitchellh/go-server-timing"
 	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/tracks"
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
@@ -31,11 +33,17 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	}
 
 	response.Success = true
+	timing := servertiming.FromContext(req.Context())
+	recenttiming := timing.NewMetric("GetRecentTracks").Start()
 	recentTracks, err := user.GetRecentTracks()
+	recenttiming.Stop()
 	if err != nil {
 		utils.ErrorErr(res, req, err)
 		return
 	}
+	updatetracks := timing.NewMetric("UpdateTracks").Start()
+	tracks.BatchUpdate(recentTracks, *user.Client())
+	updatetracks.Stop()
 	count := make(map[string]int32)
 	for _, s := range recentTracks {
 		count[s.TrackID]++

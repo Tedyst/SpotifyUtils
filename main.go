@@ -120,7 +120,7 @@ func main() {
 	m.Use(CSRF)
 	m.Use(securityHeaders)
 	m.Use(gziphandler.GzipHandler)
-	if err := http.ListenAndServe(*config.Address, routerMiddleware(m)); err != nil {
+	if err := http.ListenAndServe(*config.Address, timingMiddleware(m)); err != nil {
 		log.Fatal(err)
 	}
 }

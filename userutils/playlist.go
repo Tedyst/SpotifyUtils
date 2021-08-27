@@ -35,7 +35,5 @@ func (u *User) GetPlaylistTracks(ID string, cl spotify.Client) []*tracks.Track {
 		}
 	}
 
-	tracks.BatchUpdate(result, cl)
-
 	return result
 }

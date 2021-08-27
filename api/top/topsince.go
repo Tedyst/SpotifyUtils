@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	servertiming "github.com/mitchellh/go-server-timing"
 	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/userutils"
 )
@@ -20,7 +21,10 @@ type responseSince struct {
 func HandlerSince(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	response := &responseSince{}
 	vars := mux.Vars(req)
+	timing := servertiming.FromContext(req.Context())
+	refreshtop := timing.NewMetric("RefreshTop").Start()
 	err := user.RefreshTop()
+	refreshtop.Stop()
 	if err != nil {
 		utils.ErrorErr(res, req, err)
 		return
@@ -31,7 +35,9 @@ func HandlerSince(res http.ResponseWriter, req *http.Request, user *userutils.Us
 		utils.ErrorErr(res, req, err)
 		return
 	}
+	getstats := timing.NewMetric("GetStatisticsFromDB").Start()
 	response.Result = user.RecentTracksStatistics(time.Unix(date, 0))
+	getstats.Stop()
 
 	respJSON, _ := json.Marshal(response)
 	fmt.Fprint(res, string(respJSON))

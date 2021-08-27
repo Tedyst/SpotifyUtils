@@ -190,7 +190,6 @@ func (u *User) GetRecentTracks() ([]*tracks.Track, error) {
 		t := tracks.GetTrackFromID(string(s.Track.ID))
 		list = append(list, t)
 	}
-	tracks.BatchUpdate(list, *u.Client())
 
 	return list, nil
 }

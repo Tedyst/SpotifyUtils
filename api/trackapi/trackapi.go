@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	servertiming "github.com/mitchellh/go-server-timing"
 	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/tedyst/spotifyutils/tracks"
@@ -34,8 +35,11 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 		trackURI = trackURI[14:]
 	}
 
+	timing := servertiming.FromContext(req.Context())
+	checkiftrackexists := timing.NewMetric("CheckIfTrackExists").Start()
 	// If the track dosen't exist
 	if !tracks.TrackExists(trackURI) {
+		checkiftrackexists.Stop()
 		if !(*config.MockExternalCalls) {
 			metrics.SpotifyRequests.Add(1)
 			_, err := user.Client().GetTrack(spotify.ID(trackURI))
@@ -48,9 +52,13 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 			return
 		}
 	}
-
+	checkiftrackexists.Stop()
+	gettrackfromdb := timing.NewMetric("GetTrackFromDB").Start()
 	tr := tracks.GetTrackFromID(trackURI)
+	gettrackfromdb.Stop()
+	updatetrackinfo := timing.NewMetric("UpdateTrackInfo").Start()
 	err := tr.Update(*user.Client(), false)
+	updatetrackinfo.Stop()
 	if err != nil {
 		utils.ErrorErr(res, req, err)
 		return
