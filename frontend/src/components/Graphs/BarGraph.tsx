@@ -140,11 +140,11 @@ export default function BarGraph(props: BarGraphProps) {
 
         return (
             <>
+                {trackFeatures}
                 <Paper>
                     <Typography variant="h6">
                         {title}
                     </Typography>
-                    {trackFeatures}
                     <Chart
                         data={data1}
                         height={120}
@@ -245,10 +245,10 @@ export default function BarGraph(props: BarGraphProps) {
 
     return (
         <>
+            {trackFeatures}
             <Paper>
                 <Typography variant="subtitle1" align="center">
                     {title}
-                    {trackFeatures}
                 </Typography>
                 <Chart
                     data={data}
