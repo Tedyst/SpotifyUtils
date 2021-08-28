@@ -49,6 +49,7 @@ func main() {
 	}
 	log.SetReportCaller(true)
 
+	initCache()
 	initDB()
 
 	// Setup session store

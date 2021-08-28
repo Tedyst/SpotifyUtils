@@ -3,16 +3,16 @@ package tracks
 import (
 	"database/sql/driver"
 	"encoding/json"
-	"sync"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/mapofmutex"
 	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/zmb3/spotify"
 )
 
-var artistMutex = make(map[string]*sync.Mutex)
+var artistMutex = mapofmutex.New()
 
 type Artist struct {
 	ID         uint      `gorm:"primarykey" json:"-"`
@@ -24,17 +24,6 @@ type Artist struct {
 	Popularity int16
 	Image      string
 	Updated    bool
-	mutex      *sync.Mutex `gorm:"-"`
-}
-
-func getArtistMutex(ID string) *sync.Mutex {
-	val, ok := artistMutex[ID]
-	if ok {
-		return val
-	}
-	val = &sync.Mutex{}
-	artistMutex[ID] = val
-	return val
 }
 
 type GenresStruct []string
@@ -60,11 +49,16 @@ func (sla GenresStruct) Value() (driver.Value, error) {
 
 // GetArtistFromID
 func GetArtistFromID(ID string) *Artist {
+	a, ok := config.ArtistCache.Get(ID)
+	if ok {
+		ar := a.(Artist)
+		return &ar
+	}
 	var ar Artist
 	config.DB.Where("artist_id = ?", ID).FirstOrCreate(&ar, Artist{
 		ArtistID: ID,
 	})
-	ar.mutex = getArtistMutex(ID)
+	config.ArtistCache.Set(ID, ar, 1)
 	return &ar
 }
 
@@ -89,9 +83,8 @@ func BatchUpdateArtists(artists []*Artist, cl spotify.Client) {
 			}
 		}
 		if !s.Updated && ok {
-			asd := s
-			asd.mutex.Lock()
-			defer asd.mutex.Unlock()
+			unlocker := artistMutex.Lock(s.ArtistID)
+			defer unlocker.Unlock()
 			newArtists = append(newArtists, s)
 		}
 	}
@@ -131,6 +124,7 @@ func (a *Artist) Save() error {
 	if !enableSaving {
 		return nil
 	}
+	config.TrackCache.Set(a.ArtistID, *a, 1)
 	if err := config.DB.Save(a).Error; err != nil {
 		log.WithFields(log.Fields{
 			"type":   "artist",

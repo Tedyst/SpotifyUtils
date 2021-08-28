@@ -7,6 +7,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.6.1
 	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/cyphar/filepath-securejoin v0.2.2
+	github.com/dgraph-io/ristretto v0.1.0 // indirect
 	github.com/gabyshev/genius-api v0.0.0-20171219135306-0b47a9d5ca7a
 	github.com/google/uuid v1.0.0
 	github.com/gorilla/csrf v1.7.0

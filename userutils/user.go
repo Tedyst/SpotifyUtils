@@ -4,16 +4,28 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"sync"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/mapofmutex"
 	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/zmb3/spotify"
 	"golang.org/x/oauth2"
 	"gorm.io/gorm"
 )
+
+var userMutex struct {
+	RefreshToken *mapofmutex.M
+	RefreshUser  *mapofmutex.M
+	RefreshTop   *mapofmutex.M
+}
+
+func init() {
+	userMutex.RefreshToken = mapofmutex.New()
+	userMutex.RefreshTop = mapofmutex.New()
+	userMutex.RefreshUser = mapofmutex.New()
+}
 
 // User is the main user struct
 type User struct {
@@ -30,33 +42,13 @@ type User struct {
 	Top         TopStruct    `gorm:"embedded;embeddedPrefix:top_"`
 	CompareCode string       `gorm:"unique"`
 	Friends     FriendsStruct
-	mutex       UserMutex `gorm:"-"`
 }
 
 type UserSettings struct {
 	RecentTracks bool `gorm:"default:false"`
 }
 
-type UserMutex struct {
-	RefreshToken sync.Mutex
-	RefreshUser  sync.Mutex
-	RefreshTop   sync.Mutex
-}
-
 const userRefreshTimeout = 10 * time.Minute
-
-var userCache = make(map[string]*User)
-
-func getUserFromCache(ID string) (*User, bool) {
-	val, ok := userCache[ID]
-	return val, ok
-}
-
-func putUserInCache(u *User) {
-	if u != nil {
-		userCache[u.UserID] = u
-	}
-}
 
 func (u *User) Client() *spotify.Client {
 	u.RefreshToken()
@@ -66,16 +58,17 @@ func (u *User) Client() *spotify.Client {
 
 // GetUser gets the user from the database by ID
 func GetUser(ID string) *User {
-	u, ok := getUserFromCache(ID)
+	u, ok := config.UserCache.Get(ID)
 	if ok {
-		return u
+		us := u.(User)
+		return &us
 	}
 	var user User
 	config.DB.Where("user_id = ?", ID).FirstOrCreate(&user, User{
 		UserID: ID,
 	})
-	putUserInCache(&user)
 	user.verifyifCompareCodeExists()
+	config.UserCache.Set(ID, user, 1)
 	return &user
 }
 
@@ -85,15 +78,12 @@ func GetUserFromCompareCode(code string) *User {
 	if err := config.DB.Where("compare_code = ?", code).First(&user).Error; err != nil {
 		return nil
 	}
-	u, ok := getUserFromCache(user.UserID)
-	if ok {
-		return u
-	}
 	return &user
 }
 
 // Save
 func (u *User) Save() error {
+	config.UserCache.Set(u.UserID, *u, 1)
 	if err := config.DB.Save(u).Error; err != nil {
 		log.WithFields(log.Fields{
 			"type":        "user",
@@ -114,8 +104,8 @@ func (u *User) RefreshToken() error {
 	if *config.MockExternalCalls {
 		return nil
 	}
-	u.mutex.RefreshToken.Lock()
-	defer u.mutex.RefreshToken.Unlock()
+	unlocker := userMutex.RefreshToken.Lock(u.UserID)
+	defer unlocker.Unlock()
 	if u.Token.RefreshToken == "" {
 		log.WithFields(log.Fields{
 			"type":        "refresh-token",
@@ -168,8 +158,8 @@ func (u *User) RefreshToken() error {
 
 // RefreshUser refreshes the user's information
 func (u *User) RefreshUser() error {
-	u.mutex.RefreshUser.Lock()
-	defer u.mutex.RefreshUser.Unlock()
+	unlocker := userMutex.RefreshUser.Lock(u.UserID)
+	defer unlocker.Unlock()
 	if !u.Token.Valid() {
 		log.WithFields(log.Fields{
 			"type":        "refresh-token",

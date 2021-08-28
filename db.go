@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dgraph-io/ristretto"
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/tracks"
@@ -99,4 +100,36 @@ func createMySQLDB() {
 	// This should create the DB with utf8, the second one is just to be sure because SQLite
 	db.Exec("CREATE DATABASE " + name + "DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci")
 	db.Exec("CREATE DATABASE " + name)
+}
+
+func initCache() {
+	usercache, err := ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e5,
+		MaxCost:     1 << 20,
+		BufferItems: 64,
+	})
+	if err != nil {
+		log.Panic(err)
+	}
+	config.UserCache = usercache
+
+	trackcache, err := ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e5,
+		MaxCost:     1 << 20,
+		BufferItems: 64,
+	})
+	if err != nil {
+		log.Panic(err)
+	}
+	config.TrackCache = trackcache
+
+	artistcache, err := ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e5,
+		MaxCost:     1 << 20,
+		BufferItems: 64,
+	})
+	if err != nil {
+		log.Panic(err)
+	}
+	config.ArtistCache = artistcache
 }

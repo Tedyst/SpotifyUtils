@@ -1,17 +1,17 @@
 package tracks
 
 import (
-	"sync"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/mapofmutex"
 	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/zmb3/spotify"
 	"gorm.io/gorm"
 )
 
-var trackMutex = make(map[string]*sync.Mutex)
+var trackMutex = mapofmutex.New()
 
 type Track struct {
 	ID        uint           `gorm:"primarykey" json:"-"`
@@ -25,28 +25,21 @@ type Track struct {
 	Artists     []Artist  `gorm:"many2many:track_artists;"`
 	Name        string
 	Information SpotifyInformation `gorm:"embedded;embeddedPrefix:information_"`
-
-	mutex *sync.Mutex `gorm:"-"`
 }
 
 // GetTrackFromID returns a track from database and sets its mutex
 func GetTrackFromID(ID string) *Track {
+	t, ok := config.TrackCache.Get(ID)
+	if ok {
+		tr := t.(Track)
+		return &tr
+	}
 	var tr Track
 	config.DB.Where("track_id = ?", ID).Preload("Artists").FirstOrCreate(&tr, Track{
 		TrackID: ID,
 	})
-	tr.mutex = getTrackMutex(ID)
+	config.TrackCache.Set(ID, tr, 1)
 	return &tr
-}
-
-func getTrackMutex(ID string) *sync.Mutex {
-	val, ok := trackMutex[ID]
-	if ok {
-		return val
-	}
-	val = &sync.Mutex{}
-	trackMutex[ID] = val
-	return val
 }
 
 // TrackExists returns true if the tracks exists or false otherwise
@@ -145,6 +138,7 @@ func (t *Track) Save() error {
 	if !enableSaving {
 		return nil
 	}
+	config.TrackCache.Set(t.TrackID, *t, 1)
 	if err := config.DB.Save(t).Error; err != nil {
 		log.WithFields(log.Fields{
 			"type":  "tracks",
@@ -157,8 +151,8 @@ func (t *Track) Save() error {
 
 // Update a track's information
 func (t *Track) Update(cl spotify.Client, syncUpdateLyrics bool) error {
-	t.mutex.Lock()
-	defer t.mutex.Unlock()
+	unlocker := trackMutex.Lock(t.TrackID)
+	defer unlocker.Unlock()
 	var err1 error
 	var err2 error
 	if !t.Information.Updated {

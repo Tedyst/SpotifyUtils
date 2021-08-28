@@ -6,6 +6,7 @@ import (
 
 	"gorm.io/gorm"
 
+	"github.com/dgraph-io/ristretto"
 	"github.com/gabyshev/genius-api/genius"
 	"github.com/wader/gormstore/v2"
 	"github.com/zmb3/spotify"
@@ -40,6 +41,10 @@ var (
 	GeniusClient = genius.NewClient(nil, *GeniusToken)
 
 	Debug = flag.Bool("Debug", false, "Debug mode")
+
+	UserCache   *ristretto.Cache
+	TrackCache  *ristretto.Cache
+	ArtistCache *ristretto.Cache
 )
 
 func lookupEnvOrString(key string, defaultVal string) string {
