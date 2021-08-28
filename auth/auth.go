@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
+	"path"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/api/utils"
@@ -152,6 +154,9 @@ func Logout(res http.ResponseWriter, req *http.Request) {
 		utils.ErrorErr(res, req, err)
 		return
 	}
-
-	http.ServeFile(res, req, *config.BuildPath+"/index.html")
+	index := path.Join(*config.BuildPath, "index.html")
+	if _, err := os.Stat(index); err != nil {
+		return
+	}
+	http.ServeFile(res, req, index)
 }

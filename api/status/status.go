@@ -20,6 +20,11 @@ type response struct {
 	Settings  userutils.UserSettings
 }
 
+type responseError struct {
+	Success bool
+	Error   string
+}
+
 func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	timing := servertiming.FromContext(req.Context())
@@ -28,7 +33,11 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	getfromsession.Stop()
 	response := &response{}
 	if _, ok := session.Values["username"]; !ok {
-		utils.ErrorString(res, req, "Not Logged In")
+		response := &responseError{}
+		response.Success = false
+		response.Error = "not logged in"
+		respJSON, _ := json.Marshal(response)
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	getuser := timing.NewMetric("GetUser").Start()
