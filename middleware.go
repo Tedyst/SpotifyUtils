@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gorilla/csrf"
+	"github.com/gorilla/mux"
 	servertiming "github.com/mitchellh/go-server-timing"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
@@ -41,7 +42,20 @@ func securityHeaders(h http.Handler) http.Handler {
 	})
 }
 
-func timingMiddleware(handler http.Handler) http.Handler {
+func getRoutePattern(next *mux.Router, r *http.Request) string {
+	var match mux.RouteMatch
+	routeExists := next.Match(r, &match)
+	if routeExists {
+		str, err := match.Route.GetPathTemplate()
+		if err == nil {
+			return str
+		}
+	}
+
+	return "/"
+}
+
+func timingMiddleware(next *mux.Router) http.Handler {
 	buckets := []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10}
 
 	responseTimeHistogram := prometheus.NewHistogramVec(prometheus.HistogramOpts{
@@ -58,11 +72,11 @@ func timingMiddleware(handler http.Handler) http.Handler {
 
 		rec := statusRecorder{w, 200}
 
-		handler.ServeHTTP(&rec, r)
+		next.ServeHTTP(&rec, r)
 
 		duration := time.Since(start)
 		statusCode := strconv.Itoa(rec.statusCode)
-		route := r.URL.Path
+		route := getRoutePattern(next, r)
 		responseTimeHistogram.WithLabelValues(route, r.Method, statusCode).Observe(duration.Seconds())
 
 		ipAddress := r.RemoteAddr
