@@ -52,7 +52,7 @@ func Analyze(tracks []*tracks.Track) AnalyzeStruct {
 				response.Genres[genre] += 1
 			}
 		}
-		if s.Information.TrackFeatures.Energy > 0 {
+		if s.Information.TrackFeatures.Energy > 0.1 {
 			energyCount++
 			if response.Energy.Highest.Value < s.Information.TrackFeatures.Energy {
 				response.Energy.Highest.Value = s.Information.TrackFeatures.Energy
@@ -74,7 +74,7 @@ func Analyze(tracks []*tracks.Track) AnalyzeStruct {
 			}
 			response.Energy.Median += s.Information.TrackFeatures.Energy
 		}
-		if s.Information.TrackFeatures.Acousticness > 0 {
+		if s.Information.TrackFeatures.Acousticness > 0.1 {
 			acousticnessCount++
 			if response.Acousticness.Highest.Value < s.Information.TrackFeatures.Acousticness {
 				response.Acousticness.Highest.Value = s.Information.TrackFeatures.Acousticness
@@ -96,7 +96,7 @@ func Analyze(tracks []*tracks.Track) AnalyzeStruct {
 			}
 			response.Acousticness.Median += s.Information.TrackFeatures.Acousticness
 		}
-		if s.Information.TrackFeatures.Instrumentalness > 0 {
+		if s.Information.TrackFeatures.Instrumentalness > 0.1 {
 			instrumentalnessCount++
 			if response.Instrumentalness.Highest.Value < s.Information.TrackFeatures.Instrumentalness {
 				response.Instrumentalness.Highest.Value = s.Information.TrackFeatures.Instrumentalness
