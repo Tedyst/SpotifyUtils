@@ -22,7 +22,7 @@ export default function ServiceWorkerWrapper() {
         localStorage.removeItem('waitingForServiceWorker');
         waitingWorker?.postMessage({ type: 'SKIP_WAITING' });
         setShowReload(false);
-        window.location.reload(true);
+        window.location.reload();
     };
 
     return (

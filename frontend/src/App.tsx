@@ -5,7 +5,7 @@ import {
     Redirect,
 } from 'react-router-dom';
 import {
-    createMuiTheme,
+    createTheme,
     CssBaseline,
     makeStyles,
     ThemeProvider,
@@ -19,8 +19,8 @@ import { Settings as SettingsInterface } from './components/Settings/SettingsPag
 import Sidebar from './views/Sidebar';
 import Loading from './components/Loading';
 import Login from './views/Auth/Login';
-import Share from './views/SharePage';
 
+const Share = lazy(() => import('./views/SharePage'));
 const PlaylistView = lazy(() => import('./views/PlaylistView'));
 const Track = lazy(() => import('./views/TrackPage'));
 const Logout = lazy(() => import('./views/Auth/Logout'));
@@ -62,7 +62,7 @@ export interface Playlist {
 }
 
 function App() {
-    const darkTheme = createMuiTheme({
+    const darkTheme = createTheme({
         palette: {
             type: 'dark',
         },
@@ -104,56 +104,77 @@ function App() {
     return (
         <ThemeProvider theme={darkTheme}>
             <CssBaseline />
-            <Suspense fallback={null}>
-                <div className={classes.root}>
+            <div className={classes.root}>
+                <Suspense fallback={null}>
                     <Sidebar
                         logged={!!data?.data?.Success}
                         username={data?.data?.Username}
                         image={data?.data?.Image}
                         settings={data?.data?.Settings}
                     />
-                    <Suspense fallback={<Loading />}>
-                        <main className={classes.content}>
-                            <div className={classes.toolbar} />
-                            <Switch>
-                                <Route path="/playlist">
-                                    <PlaylistView
-                                        playlists={data?.data.Playlists}
-                                    />
-                                </Route>
-                                <Route path="/listeningstatistics">
-                                    <ListeningStats />
-                                </Route>
-                                <Route path="/compare">
-                                    <Compare />
-                                </Route>
-                                <Route path="/track">
-                                    <Track />
-                                </Route>
-                                <Route path="/recent">
-                                    <Recent />
-                                </Route>
-                                <Route path="/settings">
-                                    <Settings />
-                                </Route>
-                                <Route path="/share">
-                                    <Share />
-                                </Route>
-                                <Route path="/logout">
-                                    <Logout />
-                                </Route>
-                                <Route path="/auth">
-                                    <Redirect to="/" />
-                                </Route>
-                                <Route path="/">
-                                    <Top />
-                                </Route>
-                            </Switch>
-                        </main>
-                        <ServiceWorkerPopup />
-                    </Suspense>
-                </div>
-            </Suspense>
+                </Suspense>
+                <main className={classes.content}>
+                    <div className={classes.toolbar} />
+                    <Switch>
+                        <Route path="/playlist">
+                            <Suspense fallback={<Loading />}>
+                                <PlaylistView
+                                    playlists={data?.data.Playlists}
+                                />
+                            </Suspense>
+                        </Route>
+                        <Route path="/listeningstatistics">
+                            <Suspense fallback={<Loading />}>
+                                <ListeningStats />
+                            </Suspense>
+                        </Route>
+                        <Route path="/compare">
+                            <Suspense fallback={<Loading />}>
+                                <Compare />
+                            </Suspense>
+                        </Route>
+                        <Route path="/track">
+                            <Suspense fallback={<Loading />}>
+                                <Track />
+                            </Suspense>
+                        </Route>
+                        <Route path="/recent">
+                            <Suspense fallback={<Loading />}>
+                                <Recent />
+                            </Suspense>
+                        </Route>
+                        <Route path="/settings">
+                            <Suspense fallback={<Loading />}>
+                                <Settings />
+                            </Suspense>
+                        </Route>
+                        <Route path="/share">
+                            <Suspense fallback={<Loading />}>
+                                <Share />
+                            </Suspense>
+                        </Route>
+                        <Route path="/logout">
+                            <Suspense fallback={<Loading />}>
+                                <Logout />
+                            </Suspense>
+                        </Route>
+                        <Route path="/auth">
+                            <Suspense fallback={<Loading />}>
+                                <Redirect to="/" />
+                            </Suspense>
+                        </Route>
+                        <Route path="/">
+                            <Suspense fallback={<Loading />}>
+                                <Top />
+                            </Suspense>
+                        </Route>
+                    </Switch>
+                </main>
+
+                <Suspense fallback={null}>
+                    <ServiceWorkerPopup />
+                </Suspense>
+            </div>
         </ThemeProvider>
     );
 }

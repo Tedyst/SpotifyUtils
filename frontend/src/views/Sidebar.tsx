@@ -144,7 +144,7 @@ function ResponsiveDrawer(props: {
                     component={Link}
                     onClick={closeDrawer}
                     key="TrackSearch"
-                    selected={location.pathname.startsWith('/track')}
+                    selected={location.pathname?.startsWith('/track')}
                     to="/track"
                 >
                     <ListItemIcon>
