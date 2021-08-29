@@ -59,6 +59,10 @@ func HandlerUsername(res http.ResponseWriter, req *http.Request, user *userutils
 	compare.Stop()
 	go user.AddFriend(target)
 
-	respJSON, _ := json.Marshal(response)
+	respJSON, err := json.Marshal(response)
+	if err != nil {
+		utils.ErrorErr(res, req, err)
+		return
+	}
 	fmt.Fprint(res, string(respJSON))
 }

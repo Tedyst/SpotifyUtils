@@ -69,6 +69,10 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	response.Result.Lyrics = tr.Lyrics
 	response.Success = true
 
-	respJSON, _ := json.Marshal(response)
+	respJSON, err := json.Marshal(response)
+	if err != nil {
+		utils.ErrorErr(res, req, err)
+		return
+	}
 	fmt.Fprint(res, string(respJSON))
 }

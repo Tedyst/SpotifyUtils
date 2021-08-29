@@ -39,6 +39,10 @@ func HandlerSince(res http.ResponseWriter, req *http.Request, user *userutils.Us
 	response.Result = user.RecentTracksStatistics(time.Unix(date, 0))
 	getstats.Stop()
 
-	respJSON, _ := json.Marshal(response)
+	respJSON, err := json.Marshal(response)
+	if err != nil {
+		utils.ErrorErr(res, req, err)
+		return
+	}
 	fmt.Fprint(res, string(respJSON))
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
@@ -35,6 +36,10 @@ func HandlerNoUsername(res http.ResponseWriter, req *http.Request, user *useruti
 	response.Success = true
 	response.Code = user.CompareCode
 
-	respJSON, _ := json.Marshal(response)
+	respJSON, err := json.Marshal(response)
+	if err != nil {
+		utils.ErrorErr(res, req, err)
+		return
+	}
 	fmt.Fprint(res, string(respJSON))
 }

@@ -70,6 +70,10 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	response.Playlists = user.Playlists
 	response.Settings = user.Settings
 
-	respJSON, _ := json.Marshal(response)
+	respJSON, err := json.Marshal(response)
+	if err != nil {
+		utils.ErrorErr(res, req, err)
+		return
+	}
 	fmt.Fprint(res, string(respJSON))
 }
