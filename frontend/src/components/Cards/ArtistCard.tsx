@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    makeStyles, Card, CardContent, CardMedia, Typography,
+    makeStyles, Card, CardContent, CardMedia, Typography, Fade,
 } from '@material-ui/core';
 import { Trans } from 'react-i18next';
 
@@ -30,11 +30,14 @@ const useStyles = makeStyles({
 function ArtistCard(props: {
     bestSong?: string,
     image?: string,
-    name: string
+    name: string,
+    fade?: boolean,
 }) {
     const classes = useStyles();
 
-    const { bestSong, image, name } = props;
+    const {
+        bestSong, image, name, fade,
+    } = props;
     let song = null;
     if (bestSong) {
         song = (
@@ -56,7 +59,7 @@ function ArtistCard(props: {
             image={image}
         />
     ) : undefined;
-    return (
+    const card = (
         <Card className={classes.root}>
             {cardmedia}
             <div className={classes.details}>
@@ -69,6 +72,14 @@ function ArtistCard(props: {
             </div>
         </Card>
     );
+    if (fade) {
+        return (
+            <Fade in>
+                {card}
+            </Fade>
+        );
+    }
+    return card;
 }
 
 ArtistCard.defaultProps = {

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    makeStyles, Card, CardContent, CardMedia, Typography,
+    makeStyles, Card, CardContent, CardMedia, Typography, Fade,
 } from '@material-ui/core';
 
 import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts';
@@ -57,6 +57,7 @@ function SongCardLeft(props: SongCardProps) {
         count,
         text,
         noShadow,
+        fade,
     } = props;
     if (!name || !artist) {
         return null;
@@ -118,7 +119,7 @@ function SongCardLeft(props: SongCardProps) {
             </Card>
         );
     }
-    return (
+    const card = (
         <Card className={classes.root}>
             {media}
             <div className={classes.details}>
@@ -136,6 +137,14 @@ function SongCardLeft(props: SongCardProps) {
             </div>
         </Card>
     );
+    if (fade) {
+        return (
+            <Fade in>
+                {card}
+            </Fade>
+        );
+    }
+    return card;
 }
 
 SongCardLeft.defaultProps = {

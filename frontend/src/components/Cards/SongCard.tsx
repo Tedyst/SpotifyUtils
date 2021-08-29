@@ -13,6 +13,7 @@ export interface SongCardProps {
     noShadow?: boolean,
     uri?: string,
     usingLink?: boolean,
+    fade?: boolean,
 }
 
 export default function SongCard(props: SongCardProps & { type: 'right' | 'left' | 'up' }) {

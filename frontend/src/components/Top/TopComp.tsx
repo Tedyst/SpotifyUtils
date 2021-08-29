@@ -95,6 +95,7 @@ export default function TopComp(props: {
                     image={top.Result.Artists[0].Image}
                     key={top.Result.Artists[0].ID}
                     name={top.Result.Artists[0].Name}
+                    fade
                 />
             </Grid>
         );
@@ -111,6 +112,7 @@ export default function TopComp(props: {
                     image={top.Result.Tracks[0].Image}
                     key={top.Result.Tracks[0].ID}
                     name={top.Result.Tracks[0].Name}
+                    fade
                 />
             </Grid>
         );

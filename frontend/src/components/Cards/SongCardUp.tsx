@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    makeStyles, Card, CardContent, CardMedia, Typography, CardActions, Button,
+    makeStyles, Card, CardContent, CardMedia, Typography, CardActions, Button, Fade,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
@@ -82,6 +82,7 @@ function SongCardUp(props: SongCardProps) {
         count,
         usingLink,
         text,
+        fade,
     } = props;
 
     const cardAction = usingLink ? (
@@ -125,7 +126,7 @@ function SongCardUp(props: SongCardProps) {
             );
         }
     }
-    return (
+    const card = (
         <Card className={classes.root}>
             <CardMedia
                 className={classes.cover}
@@ -148,6 +149,14 @@ function SongCardUp(props: SongCardProps) {
             </div>
         </Card>
     );
+    if (fade) {
+        return (
+            <Fade in>
+                {card}
+            </Fade>
+        );
+    }
+    return card;
 }
 
 SongCardUp.defaultProps = {

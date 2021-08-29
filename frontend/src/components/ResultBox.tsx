@@ -27,6 +27,7 @@ export default function ResultBox(props: {
                 image={item.Image}
                 count={item.Count}
                 usingLink={usingLink}
+                fade
             />
         </Grid>
     ));
