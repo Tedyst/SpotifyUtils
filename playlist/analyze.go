@@ -166,10 +166,20 @@ func Analyze(tracks []*tracks.Track) AnalyzeStruct {
 			response.Explicit += 1
 		}
 	}
-	response.Energy.Median /= float32(energyCount)
-	response.Acousticness.Median /= float32(acousticnessCount)
-	response.Instrumentalness.Median /= float32(instrumentalnessCount)
-	response.Popularity.Median /= float32(popularityCount)
-	response.Tempo.Median /= float32(tempoCount)
+	if energyCount != 0 {
+		response.Energy.Median /= float32(energyCount)
+	}
+	if acousticnessCount != 0 {
+		response.Acousticness.Median /= float32(acousticnessCount)
+	}
+	if instrumentalnessCount != 0 {
+		response.Instrumentalness.Median /= float32(instrumentalnessCount)
+	}
+	if popularityCount != 0 {
+		response.Popularity.Median /= float32(popularityCount)
+	}
+	if tempoCount != 0 {
+		response.Tempo.Median /= float32(tempoCount)
+	}
 	return response
 }
