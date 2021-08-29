@@ -6,7 +6,7 @@
 package mapofmutex
 
 import (
-	"fmt"
+	"log"
 	"sync"
 )
 
@@ -64,7 +64,7 @@ func (me *mentry) Unlock() {
 	e, ok := m.ma[me.key]
 	if !ok { // entry must exist
 		m.ml.Unlock()
-		panic(fmt.Errorf("Unlock requested for key=%v but no entry found", me.key))
+		log.Panicf("Unlock requested for key=%v but no entry found", me.key)
 	}
 	e.cnt--        // ref count
 	if e.cnt < 1 { // if it hits zero then we own it and remove from map
