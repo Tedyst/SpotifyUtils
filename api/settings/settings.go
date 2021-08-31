@@ -45,6 +45,8 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 
 	if !user.Settings.RecentTracks {
 		config.DB.Where("user = ?", fmt.Sprint(user.ID)).Delete(userutils.RecentTracks{})
+	} else {
+		user.StartRecentTracksUpdater()
 	}
 
 	respJSON, err := json.Marshal(response)
