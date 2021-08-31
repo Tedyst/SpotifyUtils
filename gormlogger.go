@@ -33,31 +33,45 @@ func (*GormLogger) Trace(ctx context.Context, begin time.Time, fc func() (string
 	switch {
 	case err != nil:
 		sql, rows := fc()
-		log.WithFields(log.Fields{
-			"type":  "gorm",
-			"rows":  rows,
-			"sql":   sql,
-			"time":  float64(elapsed.Nanoseconds()) / 1e6,
-			"error": err,
-		}).Error("")
+		if err.Error() == "record not found" {
+			log.WithFields(log.Fields{
+				"type":     "gorm",
+				"rows":     rows,
+				"sql":      sql,
+				"time":     float64(elapsed.Nanoseconds()) / 1e6,
+				"error":    err,
+				"origfile": utils.FileWithLineNum(),
+			}).Debug("")
+		} else {
+			log.WithFields(log.Fields{
+				"type":     "gorm",
+				"rows":     rows,
+				"sql":      sql,
+				"time":     float64(elapsed.Nanoseconds()) / 1e6,
+				"error":    err,
+				"origfile": utils.FileWithLineNum(),
+			}).Error("")
+		}
 	case elapsed > slowThreshold:
 		sql, rows := fc()
 		slowLog := fmt.Sprintf("SLOW SQL >= %v", slowThreshold)
 		log.WithFields(log.Fields{
-			"type":  "gorm",
-			"rows":  rows,
-			"sql":   sql,
-			"time":  float64(elapsed.Nanoseconds()) / 1e6,
-			"error": err,
+			"type":     "gorm",
+			"rows":     rows,
+			"sql":      sql,
+			"time":     float64(elapsed.Nanoseconds()) / 1e6,
+			"error":    err,
+			"origfile": utils.FileWithLineNum(),
 		}).Warn(slowLog)
 	default:
 		sql, rows := fc()
 		log.WithFields(log.Fields{
-			"type":  "gorm",
-			"rows":  rows,
-			"sql":   sql,
-			"time":  float64(elapsed.Nanoseconds()) / 1e6,
-			"error": err,
+			"type":     "gorm",
+			"rows":     rows,
+			"sql":      sql,
+			"time":     float64(elapsed.Nanoseconds()) / 1e6,
+			"error":    err,
+			"origfile": utils.FileWithLineNum(),
 		}).Trace("")
 	}
 }
