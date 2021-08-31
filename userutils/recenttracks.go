@@ -29,6 +29,13 @@ func (u *User) UpdateRecentTracks() {
 	if !u.Settings.RecentTracks {
 		return
 	}
+	if *config.Debug {
+		log.WithFields(log.Fields{
+			"type": "recenttracks",
+			"user": u,
+		}).Debug("Started updating recent tracks, but debug mode is enabled!")
+		return
+	}
 	err := u.RefreshToken()
 	if err != nil {
 		return
