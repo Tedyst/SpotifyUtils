@@ -9,16 +9,16 @@ import (
 )
 
 // GetPlaylistTracks returns a list of tracks for a given playlist
-func (u *User) GetPlaylistTracks(ID string, cl spotify.Client) []*tracks.Track {
+func (u *User) GetPlaylistTracks(ID string, cl spotify.Client) ([]*tracks.Track, error) {
 	if *config.MockExternalCalls {
-		return []*tracks.Track{}
+		return nil, nil
 	}
 	var result []*tracks.Track
 	metrics.SpotifyRequests.Add(1)
 	items, err := u.Client().GetPlaylistTracks(spotify.ID(ID))
 	if err != nil {
 		log.Error(err)
-		return []*tracks.Track{}
+		return nil, err
 	}
 
 	for page := 1; ; page++ {
@@ -32,8 +32,9 @@ func (u *User) GetPlaylistTracks(ID string, cl spotify.Client) []*tracks.Track {
 		}
 		if err != nil {
 			log.Error(err)
+			return nil, err
 		}
 	}
 
-	return result
+	return result, nil
 }

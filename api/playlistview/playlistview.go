@@ -32,6 +32,12 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	code := vars["playlist"]
 	response := &response{}
 
+	if len(code) != 22 {
+		response.Success = false
+		utils.ErrorString(res, req, "Invalid playlist ID length")
+		return
+	}
+
 	if *config.MockExternalCalls {
 		utils.ErrorString(res, req, "MockExternalCalls enabled, could not contact Spotify")
 		return
@@ -41,8 +47,13 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	timing := servertiming.FromContext(req.Context())
 	getplaylist := timing.NewMetric("GetPlaylist").Start()
 	cl := user.Client()
-	pl := user.GetPlaylistTracks(code, *cl)
+	pl, err := user.GetPlaylistTracks(code, *cl)
 	getplaylist.Stop()
+	if err != nil {
+		utils.ErrorErr(res, req, err)
+		return
+	}
+
 	gettracks := timing.NewMetric("GetTracks").Start()
 	tracks.BatchUpdate(pl, *cl)
 	gettracks.Stop()
