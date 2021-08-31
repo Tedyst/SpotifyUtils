@@ -67,7 +67,7 @@ func timingMiddleware(next *mux.Router) http.Handler {
 
 	prometheus.MustRegister(responseTimeHistogram)
 
-	return servertiming.Middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 
 		rec := statusRecorder{w, 200}
@@ -123,5 +123,10 @@ func timingMiddleware(next *mux.Router) http.Handler {
 				"ip":       ipAddress,
 			}).Debug()
 		}
-	}), nil)
+	})
+
+	if *config.Debug {
+		return servertiming.Middleware(handler, nil)
+	}
+	return handler
 }
