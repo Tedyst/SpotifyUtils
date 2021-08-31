@@ -20,6 +20,11 @@ type responseSince struct {
 
 func HandlerSince(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	response := &responseSince{}
+	if !user.Settings.RecentTracks {
+		utils.ErrorString(res, req, "recent tracks tracking is disabled")
+		return
+	}
+
 	vars := mux.Vars(req)
 	timing := servertiming.FromContext(req.Context())
 	response.Success = true

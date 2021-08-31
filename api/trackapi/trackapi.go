@@ -34,6 +34,11 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 		// If it contains spotify:track:
 		trackURI = trackURI[14:]
 	}
+	if len(trackURI) != 22 {
+		response.Success = false
+		utils.ErrorString(res, req, "Invalid track ID length")
+		return
+	}
 
 	timing := servertiming.FromContext(req.Context())
 	checkiftrackexists := timing.NewMetric("CheckIfTrackExists").Start()
