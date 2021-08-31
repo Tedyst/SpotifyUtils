@@ -16,9 +16,9 @@ const updateTimer = 2 * time.Hour
 
 type RecentTracks struct {
 	ID         uint `gorm:"primarykey"`
-	User       uint
+	User       uint `gorm:"index"`
 	Track      string
-	ListenedAt int64 `gorm:"autoCreateTime"`
+	ListenedAt int64 `gorm:"index,autoCreateTime"`
 }
 
 // UpdateRecentTracks updates the recent tracks
