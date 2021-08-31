@@ -22,13 +22,6 @@ func HandlerSince(res http.ResponseWriter, req *http.Request, user *userutils.Us
 	response := &responseSince{}
 	vars := mux.Vars(req)
 	timing := servertiming.FromContext(req.Context())
-	refreshtop := timing.NewMetric("RefreshTop").Start()
-	err := user.RefreshTop()
-	refreshtop.Stop()
-	if err != nil {
-		utils.ErrorErr(res, req, err)
-		return
-	}
 	response.Success = true
 	date, err := strconv.ParseInt(vars["unixdate"], 10, 32)
 	if err != nil {
