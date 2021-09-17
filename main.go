@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"net/http"
+	_ "net/http/pprof"
 
 	"github.com/NYTimes/gziphandler"
 	"github.com/tedyst/spotifyutils/api/playlistview"
@@ -89,6 +90,13 @@ func main() {
 	}
 	opts = append(opts, csrf.Path("/"))
 	CSRF := csrf.Protect(config.Secret, opts...)
+
+	// Enable pprof
+	if *config.Debug {
+		go func() {
+			log.Println(http.ListenAndServe(":6060", nil))
+		}()
+	}
 
 	// Setup metrics
 	if *config.Metrics {
