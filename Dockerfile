@@ -12,8 +12,18 @@ FROM golang:buster as backend
 WORKDIR /app
 
 COPY go.mod go.sum ./
-RUN go mod download
-COPY . .
+RUN go mod download && go get ./...
+# This is to not interfere with the frontend build
+COPY api api
+COPY auth auth
+COPY config config
+COPY mapofmutex mapofmutex
+COPY metrics metrics
+COPY playlist playlist
+COPY spotifywrapper spotifywrapper
+COPY tracks tracks
+COPY userutils userutils
+COPY *.go .
 RUN go build -o /app/build
 
 FROM debian:10.10-slim
