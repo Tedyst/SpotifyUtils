@@ -12,7 +12,8 @@ FROM golang:buster as backend
 WORKDIR /app
 
 COPY go.mod go.sum ./
-RUN go mod download && go get ./...
+# Prebuilding go-sqlite because it is VERY slow to build
+RUN go mod download && go get github.com/mattn/go-sqlite3@v2.0.3
 # This is to not interfere with the frontend build
 COPY api api
 COPY auth auth
