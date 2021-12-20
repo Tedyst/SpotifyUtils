@@ -1,4 +1,4 @@
-package top
+package topsince
 
 import (
 	"encoding/json"
@@ -13,13 +13,33 @@ import (
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
-type responseSince struct {
-	Result  userutils.RecentTracksStatisticsStruct
-	Success bool
+// swagger:response topSinceAPIResponse
+type _ struct {
+	// in: body
+	Body topSinceAPIResponse
 }
 
-func HandlerSince(res http.ResponseWriter, req *http.Request, user *userutils.User) {
-	response := &responseSince{}
+type topSinceAPIResponse struct {
+	Success bool
+	Result  userutils.RecentTracksStatisticsStruct
+}
+
+// swagger:parameters topSinceAPIRequest
+type _ struct {
+	// in: path
+	// required: true
+	Date int32
+}
+
+// Handler returns a user's top metrics from a specified date
+// swagger:route GET /top/old/{Date} top topSinceAPIRequest
+// Produces:
+// - application/json
+// responses:
+//   200: topSinceAPIResponse
+//   default: Error
+func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+	response := &topSinceAPIResponse{}
 	if !user.Settings.RecentTracks {
 		utils.ErrorString(res, req, "recent tracks tracking is disabled")
 		return

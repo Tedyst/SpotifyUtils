@@ -12,6 +12,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
+	"github.com/tedyst/spotifyutils/utils"
 )
 
 type statusRecorder struct {
@@ -107,20 +108,20 @@ func timingMiddleware(next *mux.Router) http.Handler {
 			log.WithFields(log.Fields{
 				"type":     "request",
 				"method":   r.Method,
-				"request":  routeStr,
+				"request":  utils.StringSanitize(routeStr),
 				"code":     statusCode,
 				"duration": duration.Seconds(),
-				"ip":       ipAddress,
-				"user":     username,
+				"ip":       utils.StringSanitize(ipAddress),
+				"user":     utils.StringSanitize(username),
 			}).Debug()
 		} else {
 			log.WithFields(log.Fields{
 				"type":     "request",
 				"method":   r.Method,
-				"request":  routeStr,
+				"request":  utils.StringSanitize(routeStr),
 				"code":     statusCode,
 				"duration": duration.Seconds(),
-				"ip":       ipAddress,
+				"ip":       utils.StringSanitize(ipAddress),
 			}).Debug()
 		}
 	})

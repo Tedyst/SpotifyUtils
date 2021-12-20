@@ -12,6 +12,12 @@ import (
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
+// swagger:response recentTracksAPIResponse
+type _ struct {
+	// in: body
+	Body response
+}
+
 type responseSong struct {
 	Name   string
 	Artist string
@@ -25,6 +31,13 @@ type response struct {
 	Success bool
 }
 
+// GetHandler returns the user's recent tracks
+// swagger:route GET /recent recent recent
+// Produces:
+// - application/json
+// responses:
+//   200: recentTracksAPIResponse
+//   default: Error
 func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	response := &response{}
 	if *config.MockExternalCalls {

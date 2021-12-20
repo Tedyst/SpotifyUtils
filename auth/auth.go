@@ -12,22 +12,41 @@ import (
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/spotifywrapper"
 	"github.com/tedyst/spotifyutils/userutils"
+	utils2 "github.com/tedyst/spotifyutils/utils"
 )
 
+// swagger:response authAPIResponse
 type authAPIResponse struct {
+	// The state of the authentication
 	Success bool
 }
+
+// swagger:parameters authAPIRequest
+type _ struct {
+	// in: body
+	Body authAPIRequest
+}
+
 type authAPIRequest struct {
+	// The host of the request
+	// required: true
+	// example: https://localhost:8080
 	Host string
+	// The code of the request
+	// example: asd
+	// required: true
 	Code string
 }
 
-type authURLAPIResponse struct {
-	Success bool
-	URL     string
-}
-
 // Auth performs the authentication of users
+// swagger:route POST /auth auth authAPIRequest
+// Consumes:
+// - application/json
+// Produces:
+// - application/json
+// responses:
+//   200: authAPIResponse
+//   default: Error
 func Auth(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	response := &authAPIResponse{}
@@ -66,8 +85,8 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 			if err != nil {
 				log.WithFields(log.Fields{
 					"type": "auth",
-					"code": request.Code,
-					"host": request.Host,
+					"code": utils2.StringSanitize(request.Code),
+					"host": utils2.StringSanitize(request.Host),
 				}).Error(err)
 				utils.ErrorErr(res, req, err)
 				return
@@ -77,8 +96,8 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 			if err != nil {
 				log.WithFields(log.Fields{
 					"type": "auth",
-					"code": request.Code,
-					"host": request.Host,
+					"code": utils2.StringSanitize(request.Code),
+					"host": utils2.StringSanitize(request.Host),
 				}).Error(err)
 				utils.ErrorErr(res, req, err)
 				return
@@ -104,8 +123,8 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"type": "auth",
-			"code": request.Code,
-			"host": request.Host,
+			"code": utils2.StringSanitize(request.Code),
+			"host": utils2.StringSanitize(request.Host),
 		}).Error(err)
 		utils.ErrorErr(res, req, err)
 		return
@@ -116,7 +135,32 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 	fmt.Fprint(res, string(respJSON))
 }
 
+// swagger:parameters authURLAPIRequest
+type _ struct {
+	// in: query
+	// example: spotify.stoicatedy.ovh
+	Host string `json:"host"`
+}
+
+// swagger:response authURLAPIResponse
+type authURLAPIResponse struct {
+	// The state of the response
+	// example: true
+	Success bool
+	// The URL where the user needs to login
+	// example: https://spotify.com/oauth2?asd
+	URL string
+}
+
 // AuthURL generates the OAuth2 url needed to login
+// swagger:route GET /auth-url auth authURLAPIRequest
+// Consumes:
+// - application/json
+// Produces:
+// - application/json
+// responses:
+//   200: authURLAPIResponse
+//   default: Error
 func AuthURL(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	response := &authURLAPIResponse{
@@ -139,6 +183,14 @@ func AuthURL(res http.ResponseWriter, req *http.Request) {
 }
 
 // Logout performs the logout of the users
+// swagger:route GET /logout auth logout
+// Consumes:
+// - application/json
+// Produces:
+// - application/json
+// responses:
+//   200: authAPIResponse
+//   default: Error
 func Logout(res http.ResponseWriter, req *http.Request) {
 	session, err := config.SessionStore.Get(req, "username")
 	if err != nil {

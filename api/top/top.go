@@ -10,13 +10,27 @@ import (
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
-type responseNormal struct {
+// swagger:parameters responseTopAPI
+type _ struct {
+	// in: body
+	// required: true
+	Body responseTopAPI
+}
+
+type responseTopAPI struct {
 	Result  userutils.TopStruct
 	Success bool
 }
 
+// Handler returns a user's top metrics
+// swagger:route GET /top top top
+// Produces:
+// - application/json
+// responses:
+//   200: responseTopAPI
+//   default: Error
 func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
-	response := &responseNormal{}
+	response := &responseTopAPI{}
 	timing := servertiming.FromContext(req.Context())
 	refreshtop := timing.NewMetric("RefreshTop").Start()
 	err := user.RefreshTop()

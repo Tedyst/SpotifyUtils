@@ -15,6 +15,12 @@ import (
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
+// swagger:response playlistViewResponse
+type _ struct {
+	// in: body
+	Body response
+}
+
 type responseSong struct {
 	Name   string
 	Artist string
@@ -27,6 +33,20 @@ type response struct {
 	Analyze playlist.AnalyzeStruct
 }
 
+// swagger:parameters playlistViewRequest
+type _ struct {
+	// in: path
+	// required: true
+	PlaylistID string
+}
+
+// Handler returns the selected playlist's tracks
+// swagger:route GET /playlist/{PlaylistID} tracks playlistViewRequest
+// Produces:
+// - application/json
+// responses:
+//   200: playlistViewResponse
+//   default: Error
 func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	vars := mux.Vars(req)
 	code := vars["playlist"]

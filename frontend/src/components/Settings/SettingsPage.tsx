@@ -42,6 +42,9 @@ export default function SettingsPage(props: {
             <Typography align="center" color="textSecondary" variant="subtitle2">
                 {t('SETTINGS.TEXT_3')}
             </Typography>
+            <Typography align="center" color="textSecondary" variant="subtitle2">
+                {t('SETTINGS.TEXT_4')}
+            </Typography>
             <Container maxWidth="xs">
                 <SettingsComp
                     originalSettings={settings}

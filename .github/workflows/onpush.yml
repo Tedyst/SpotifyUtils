@@ -71,10 +71,18 @@ jobs:
           sentry-cli releases set-commits --auto $SENTRY_RELEASE
           sentry-cli releases finalize $SENTRY_RELEASE
           sentry-cli releases deploys $SENTRY_RELEASE new -e $SENTRY_DEPLOY_ENVIRONMENT
-      - name: Build Docker Package - tagged
-        run: docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t ghcr.io/tedyst/spotifyutils:${{ steps.get_version.outputs.VERSION }} .
-      - name: Build Docker Package - latest
-        run: docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --push -t ghcr.io/tedyst/spotifyutils:latest .
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/tedyst/spotifyutils:dev
+            ghcr.io/tedyst/spotifyutils:${{ steps.get_version.outputs.VERSION }}
+            ghcr.io/tedyst/spotifyutils:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
 
   testapi:
     runs-on: ubuntu-latest

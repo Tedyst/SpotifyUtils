@@ -56,12 +56,13 @@
         "YOUR_RECENT_TRACKS": "Your recent tracks"
     },
     "SETTINGS": {
-        "ENABLE_RECENT_TRACKING": "Enable Recent Tracks Tracking",
+        "ENABLE_RECENT_TRACKING": "Give permission to track your activity on Spotify and enable Listening Statistics",
         "SAVE_SETTINGS": "Save Settings",
         "TEXT_1": "Here you can adjust your personal settings",
         "TEXT_2": "If you want to see what the app is doing in the background, you can check the",
         "GITHUB_PAGE": "GitHub page",
-        "TEXT_3": "Disabling the Recent Tracks option will delete all the data that is related to this feature and associated with this account!"
+        "TEXT_3": "Giving the permission to track your activity on Spotify will enable the Listening Statistics tab",
+        "TEXT_4": "Denying the permission will delete all the data that is related to this feature and associated with this account!"
     },
     "TOP": {
         "YOUR_TOP_ARTISTS_AND_TRACKS": "Your top artists and tracks",

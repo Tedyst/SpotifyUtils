@@ -11,6 +11,12 @@ import (
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
+// swagger:response statusAPIResponse
+type _ struct {
+	// in: body
+	Body response
+}
+
 type response struct {
 	Success   bool
 	Username  string
@@ -25,6 +31,13 @@ type responseError struct {
 	Error   string
 }
 
+// StatusHandler returns the basic data of the user, like username, image, playlists, etc.
+// swagger:route GET /status status status
+// Produces:
+// - application/json
+// responses:
+//   200: statusAPIResponse
+//   default: Error
 func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	timing := servertiming.FromContext(req.Context())
@@ -33,6 +46,7 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	getfromsession.Stop()
 	response := &response{}
 	if _, ok := session.Values["username"]; !ok {
+		// Not using utils.ErrorString() because we want to return a 200 status code, for the CSRF to work
 		response := &responseError{}
 		response.Success = false
 		response.Error = "not logged in"

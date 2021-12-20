@@ -36,9 +36,19 @@ func LoggedIn(f func(res http.ResponseWriter, req *http.Request, user *userutils
 	})
 }
 
+// swagger:response Error
+type _ struct {
+	// in: body
+	Body responseError
+}
+
 type responseError struct {
+	// The state of the response
+	// example: false
 	Success bool
-	Error   string
+	// The error message
+	// example: Error
+	Error string
 }
 
 func ErrorString(res http.ResponseWriter, req *http.Request, err string) {

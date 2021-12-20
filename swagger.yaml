@@ -1,0 +1,660 @@
+basePath: /api
+consumes:
+- application/json
+definitions:
+  AlbumInformationStruct:
+    properties:
+      ID:
+        type: string
+      Markets:
+        format: int64
+        type: integer
+      Popularity:
+        format: int64
+        type: integer
+      ReleaseDate:
+        type: string
+      TracksAmount:
+        format: int64
+        type: integer
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/tracks
+  AnalyzeStruct:
+    properties:
+      Acousticness:
+        $ref: '#/definitions/medianStruct'
+      Artists:
+        additionalProperties:
+          format: int32
+          type: integer
+        type: object
+      Energy:
+        $ref: '#/definitions/medianStruct'
+      Explicit:
+        format: int32
+        type: integer
+      Genres:
+        additionalProperties:
+          format: int32
+          type: integer
+        type: object
+      Instrumentalness:
+        $ref: '#/definitions/medianStruct'
+      Popularity:
+        $ref: '#/definitions/medianStruct'
+      Tempo:
+        $ref: '#/definitions/medianStruct'
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/playlist
+  ArtistsStruct:
+    items:
+      $ref: '#/definitions/TopArtist'
+    type: array
+    x-go-package: github.com/tedyst/spotifyutils/userutils
+  CompareStruct:
+    properties:
+      Artists:
+        items:
+          $ref: '#/definitions/TopArtist'
+        type: array
+      Genres:
+        items:
+          type: string
+        type: array
+      Score:
+        format: float
+        type: number
+      Tracks:
+        items:
+          $ref: '#/definitions/TopTrack'
+        type: array
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/userutils
+  GenresStruct:
+    items:
+      type: string
+    type: array
+    x-go-package: github.com/tedyst/spotifyutils/userutils
+  Playlist:
+    properties:
+      ID:
+        type: string
+      Name:
+        type: string
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/userutils
+  RecentTracksStatisticsStruct:
+    properties:
+      Count:
+        format: int64
+        type: integer
+      Days: {}
+      Hours: {}
+      TopTracks:
+        items:
+          $ref: '#/definitions/RecentTracksStatisticsStructTrack'
+        type: array
+      TotalListened:
+        format: int64
+        type: integer
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/userutils
+  RecentTracksStatisticsStructTrack:
+    properties:
+      Artist:
+        type: string
+      Count:
+        format: int64
+        type: integer
+      Image:
+        type: string
+      Name:
+        type: string
+      URI:
+        type: string
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/userutils
+  SpotifyInformation:
+    properties:
+      AlbumInformation:
+        $ref: '#/definitions/AlbumInformationStruct'
+      TrackFeatures:
+        $ref: '#/definitions/TrackFeaturesStruct'
+      TrackInformation:
+        $ref: '#/definitions/TrackInformationStruct'
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/tracks
+  TopArtist:
+    properties:
+      ID:
+        type: string
+      Image:
+        type: string
+      Name:
+        type: string
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/userutils
+  TopStruct:
+    properties:
+      Artists:
+        $ref: '#/definitions/ArtistsStruct'
+      Genres:
+        $ref: '#/definitions/GenresStruct'
+      Tracks:
+        $ref: '#/definitions/TracksStruct'
+      Updated:
+        format: int64
+        type: integer
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/userutils
+  TopTrack:
+    properties:
+      Artist:
+        type: string
+      Duration:
+        format: int64
+        type: integer
+      ID:
+        type: string
+      Image:
+        type: string
+      Name:
+        type: string
+      PreviewURL:
+        type: string
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/userutils
+  TrackFeaturesStruct:
+    properties:
+      Acousticness:
+        format: float
+        type: number
+      Energy:
+        format: float
+        type: number
+      Instrumentalness:
+        format: float
+        type: number
+      Liveness:
+        format: float
+        type: number
+      Loudness:
+        format: float
+        type: number
+      Speechiness:
+        format: float
+        type: number
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/tracks
+  TrackInformationStruct:
+    properties:
+      Explicit:
+        type: boolean
+      Image:
+        type: string
+      Key:
+        format: int64
+        type: integer
+      Length:
+        format: int64
+        type: integer
+      Markets:
+        format: int64
+        type: integer
+      Mode:
+        format: int64
+        type: integer
+      Popularity:
+        format: int64
+        type: integer
+      Tempo:
+        format: double
+        type: number
+      TimeSignature:
+        format: int64
+        type: integer
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/tracks
+  TracksStruct:
+    items:
+      $ref: '#/definitions/TopTrack'
+    type: array
+    x-go-package: github.com/tedyst/spotifyutils/userutils
+  UserSettings:
+    properties:
+      RecentTracks:
+        type: boolean
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/userutils
+  authAPIRequest:
+    properties:
+      Code:
+        description: The code of the request
+        example: asd
+        type: string
+      Host:
+        description: The host of the request
+        example: https://localhost:8080
+        type: string
+    required:
+    - Host
+    - Code
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/auth
+  medianStruct:
+    properties:
+      Highest:
+        properties:
+          Track:
+            $ref: '#/definitions/responseSong'
+          Value:
+            format: float
+            type: number
+        type: object
+      Lowest:
+        properties:
+          Track:
+            $ref: '#/definitions/responseSong'
+          Value:
+            format: float
+            type: number
+        type: object
+      Median:
+        format: float
+        type: number
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/playlist
+  response:
+    properties:
+      Image:
+        type: string
+      Playlists:
+        items:
+          $ref: '#/definitions/Playlist'
+        type: array
+      Settings:
+        $ref: '#/definitions/UserSettings'
+      Success:
+        type: boolean
+      UserID:
+        type: string
+      Username:
+        type: string
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/api/status
+  responseError:
+    properties:
+      Error:
+        description: The error message
+        example: Error
+        type: string
+      Success:
+        description: The state of the response
+        example: false
+        type: boolean
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/api/utils
+  responseNoUsername:
+    properties:
+      Code:
+        type: string
+      Friends:
+        items:
+          $ref: '#/definitions/responseUserNoUsername'
+        type: array
+      Success:
+        type: boolean
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/api/comparenousername
+  responseSong:
+    properties:
+      Artist:
+        type: string
+      Count:
+        format: int32
+        type: integer
+      Image:
+        type: string
+      Name:
+        type: string
+      URI:
+        type: string
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/api/recenttracks
+  responseTopAPI:
+    properties:
+      Result:
+        $ref: '#/definitions/TopStruct'
+      Success:
+        type: boolean
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/api/top
+  responseUser:
+    properties:
+      Code:
+        type: string
+      ID:
+        type: string
+      Image:
+        type: string
+      Name:
+        type: string
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/api/compare
+  responseUserNoUsername:
+    properties:
+      Code:
+        type: string
+      ID:
+        type: string
+      Image:
+        type: string
+      Name:
+        type: string
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/api/comparenousername
+  settingsAPIResponse:
+    properties:
+      Settings:
+        $ref: '#/definitions/UserSettings'
+      Success:
+        type: boolean
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/api/settings
+  topSinceAPIResponse:
+    properties:
+      Result:
+        $ref: '#/definitions/RecentTracksStatisticsStruct'
+      Success:
+        type: boolean
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/api/topsince
+  trackAPIResponse:
+    properties:
+      Result:
+        properties:
+          Artist:
+            type: string
+          Information:
+            $ref: '#/definitions/SpotifyInformation'
+          Lyrics:
+            type: string
+          Name:
+            type: string
+        type: object
+      Success:
+        type: boolean
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/api/trackapi
+info:
+  description: Documentation of SpotifyUtils's API
+paths:
+  /auth:
+    post:
+      consumes:
+      - application/json
+      operationId: authAPIRequest
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/authAPIRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/authAPIResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - auth
+  /auth-url:
+    get:
+      consumes:
+      - application/json
+      operationId: authURLAPIRequest
+      parameters:
+      - example: spotify.stoicatedy.ovh
+        in: query
+        name: host
+        type: string
+        x-go-name: Host
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/authURLAPIResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - auth
+  /compare:
+    get:
+      operationId: compare
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/compareNoUsernameResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - compare
+  /compare/{Code}:
+    get:
+      operationId: compareUsernameRequest
+      parameters:
+      - in: path
+        name: Code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/compareUsernameResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - compare
+  /logout:
+    get:
+      consumes:
+      - application/json
+      operationId: logout
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/authAPIResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - auth
+  /playlist/{PlaylistID}:
+    get:
+      operationId: playlistViewRequest
+      parameters:
+      - in: path
+        name: PlaylistID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/playlistViewResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - tracks
+  /recent:
+    get:
+      operationId: recent
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/recentTracksAPIResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - recent
+  /settings:
+    get:
+      operationId: settings
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/settingsAPIResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - settings
+    post:
+      operationId: settingsAPIRequest
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/settingsAPIResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - settings
+  /status:
+    get:
+      operationId: status
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/statusAPIResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - status
+  /top:
+    get:
+      operationId: top
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: responseTopAPI
+          schema:
+            $ref: '#/definitions/responseTopAPI'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - top
+  /top/old/{Date}:
+    get:
+      operationId: topSinceAPIRequest
+      parameters:
+      - format: int32
+        in: path
+        name: Date
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/topSinceAPIResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - top
+  /track/{TrackID}:
+    get:
+      operationId: trackAPIRequest
+      parameters:
+      - in: path
+        name: TrackID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/trackAPIResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - track
+produces:
+- application/json
+responses:
+  Error:
+    description: ""
+    schema:
+      $ref: '#/definitions/responseError'
+  authAPIResponse:
+    description: ""
+    headers:
+      Success:
+        description: The state of the authentication
+        type: boolean
+  authURLAPIResponse:
+    description: ""
+    headers:
+      Success:
+        description: The state of the response
+        example: true
+        type: boolean
+      URL:
+        description: The URL where the user needs to login
+        example: https://spotify.com/oauth2?asd
+        type: string
+  compareNoUsernameResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/responseNoUsername'
+  compareUsernameResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/response'
+  playlistViewResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/response'
+  recentTracksAPIResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/response'
+  settingsAPIRequest:
+    description: ""
+    headers:
+      Body: {}
+    schema:
+      $ref: '#/definitions/settingsAPIResponse'
+  settingsAPIResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/settingsAPIResponse'
+  statusAPIResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/response'
+  topSinceAPIResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/topSinceAPIResponse'
+  trackAPIResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/trackAPIResponse'
+schemes:
+- http
+- https
+security:
+- CSRFToken:
+  - '[]'
+securityDefinitions:
+  CSRFToken:
+    in: header
+    name: x-csrf-token
+    type: apiKey
+swagger: "2.0"
