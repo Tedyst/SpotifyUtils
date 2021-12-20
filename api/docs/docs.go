@@ -1,6 +1,6 @@
 // Documentation of SpotifyUtils
 //
-//     Schemes: http
+//     Schemes: http, https
 //     BasePath: /api
 //     Version: 1.0.0
 //     Host: localhost:5000
@@ -11,13 +11,14 @@
 //     Produces:
 //     - application/json
 //
-//     Security:
-//     - key
+//     SecurityDefinitions:
+//       CSRFToken:
+//         type: apiKey
+//         name: x-csrf-token
+//         in: header
 //
-//    SecurityDefinitions:
-//    key:
-//      type: key
-//
+//	   Security:
+//     - CSRFToken: []
 // swagger:meta
 package docs
 

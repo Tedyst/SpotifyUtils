@@ -2,6 +2,20 @@ basePath: /api
 consumes:
 - application/json
 definitions:
+  Playlist:
+    properties:
+      ID:
+        type: string
+      Name:
+        type: string
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/userutils
+  UserSettings:
+    properties:
+      RecentTracks:
+        type: boolean
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/userutils
   authAPIRequest:
     properties:
       Code:
@@ -17,6 +31,36 @@ definitions:
     - Code
     type: object
     x-go-package: github.com/tedyst/spotifyutils/auth
+  response:
+    properties:
+      Image:
+        type: string
+      Playlists:
+        items:
+          $ref: '#/definitions/Playlist'
+        type: array
+      Settings:
+        $ref: '#/definitions/UserSettings'
+      Success:
+        type: boolean
+      UserID:
+        type: string
+      Username:
+        type: string
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/api/status
+  responseError:
+    properties:
+      Error:
+        description: The error message
+        example: Error
+        type: string
+      Success:
+        description: The state of the response
+        example: false
+        type: boolean
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/api/utils
 host: localhost:5000
 info:
   description: Documentation of SpotifyUtils
@@ -61,20 +105,37 @@ paths:
           $ref: '#/responses/Error'
       tags:
       - auth
+  /logout:
+    get:
+      consumes:
+      - application/json
+      operationId: logout
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/authAPIResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - auth
+  /status:
+    get:
+      operationId: status
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/statusAPIResponse'
+        default:
+          $ref: '#/responses/Error'
 produces:
 - application/json
 responses:
   Error:
     description: ""
-    headers:
-      Error:
-        description: The error message
-        example: Error
-        type: string
-      Success:
-        description: The state of the response
-        example: false
-        type: boolean
+    schema:
+      $ref: '#/definitions/responseError'
   authAPIResponse:
     description: ""
     headers:
@@ -92,9 +153,19 @@ responses:
         description: The URL where the user needs to login
         example: https://spotify.com/oauth2?asd
         type: string
+  statusAPIResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/response'
 schemes:
 - http
+- https
+security:
+- CSRFToken:
+  - '[]'
 securityDefinitions:
-  key:
-    type: key
+  CSRFToken:
+    in: header
+    name: x-csrf-token
+    type: apiKey
 swagger: "2.0"

@@ -182,6 +182,14 @@ func AuthURL(res http.ResponseWriter, req *http.Request) {
 }
 
 // Logout performs the logout of the users
+// swagger:route GET /logout auth logout
+// Consumes:
+// - application/json
+// Produces:
+// - application/json
+// responses:
+//   200: authAPIResponse
+//   default: Error
 func Logout(res http.ResponseWriter, req *http.Request) {
 	session, err := config.SessionStore.Get(req, "username")
 	if err != nil {

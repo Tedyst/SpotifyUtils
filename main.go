@@ -94,9 +94,7 @@ func main() {
 			utils.ErrorString(w, r, "CSRF token mismatch")
 		},
 	)))
-	if *config.Debug {
-		opts = append(opts, csrf.Secure(false))
-	}
+	opts = append(opts, csrf.Secure(false))
 	opts = append(opts, csrf.Path("/"))
 	CSRF := csrf.Protect(config.Secret, opts...)
 
@@ -135,7 +133,9 @@ func main() {
 
 	log.Infof("Starting server on address http://%s", *config.Address)
 
-	m.Use(CSRF)
+	if !*config.Debug {
+		m.Use(CSRF)
+	}
 	m.Use(securityHeaders)
 	m.Use(gziphandler.GzipHandler)
 	if err := http.ListenAndServe(*config.Address, timingMiddleware(m)); err != nil {

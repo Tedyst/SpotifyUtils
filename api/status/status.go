@@ -11,6 +11,12 @@ import (
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
+// swagger:response statusAPIResponse
+type _ struct {
+	// in: body
+	Body response
+}
+
 type response struct {
 	Success   bool
 	Username  string
@@ -20,11 +26,13 @@ type response struct {
 	Settings  userutils.UserSettings
 }
 
-type responseError struct {
-	Success bool
-	Error   string
-}
-
+// StatusHandler returns the basic data of the user, like username, image, playlists, etc.
+// swagger:route GET /status status
+// Produces:
+// - application/json
+// responses:
+//   200: statusAPIResponse
+//   default: Error
 func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	timing := servertiming.FromContext(req.Context())
@@ -33,11 +41,7 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	getfromsession.Stop()
 	response := &response{}
 	if _, ok := session.Values["username"]; !ok {
-		response := &responseError{}
-		response.Success = false
-		response.Error = "not logged in"
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
+		utils.ErrorString(res, req, "Not logged in")
 		return
 	}
 	getuser := timing.NewMetric("GetUser").Start()
