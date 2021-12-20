@@ -1,0 +1,100 @@
+basePath: /api
+consumes:
+- application/json
+definitions:
+  authAPIRequest:
+    properties:
+      Code:
+        description: The code of the request
+        example: asd
+        type: string
+      Host:
+        description: The host of the request
+        example: https://localhost:8080
+        type: string
+    required:
+    - Host
+    - Code
+    type: object
+    x-go-package: github.com/tedyst/spotifyutils/auth
+host: localhost:5000
+info:
+  description: Documentation of SpotifyUtils
+  version: 1.0.0
+paths:
+  /auth:
+    post:
+      consumes:
+      - application/json
+      operationId: authAPIRequest
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/authAPIRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/authAPIResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - auth
+  /auth-url:
+    get:
+      consumes:
+      - application/json
+      operationId: authURLAPIRequest
+      parameters:
+      - example: spotify.stoicatedy.ovh
+        in: query
+        name: host
+        type: string
+        x-go-name: Host
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/authURLAPIResponse'
+        default:
+          $ref: '#/responses/Error'
+      tags:
+      - auth
+produces:
+- application/json
+responses:
+  Error:
+    description: ""
+    headers:
+      Error:
+        description: The error message
+        example: Error
+        type: string
+      Success:
+        description: The state of the response
+        example: false
+        type: boolean
+  authAPIResponse:
+    description: ""
+    headers:
+      Success:
+        description: The state of the authentication
+        type: boolean
+  authURLAPIResponse:
+    description: ""
+    headers:
+      Success:
+        description: The state of the response
+        example: true
+        type: boolean
+      URL:
+        description: The URL where the user needs to login
+        example: https://spotify.com/oauth2?asd
+        type: string
+schemes:
+- http
+securityDefinitions:
+  key:
+    type: key
+swagger: "2.0"

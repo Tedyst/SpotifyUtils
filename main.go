@@ -16,6 +16,7 @@ import (
 	"github.com/wader/gormstore/v2"
 
 	"github.com/tedyst/spotifyutils/api/compare"
+	"github.com/tedyst/spotifyutils/api/docs"
 	"github.com/tedyst/spotifyutils/api/recenttracks"
 	"github.com/tedyst/spotifyutils/api/settings"
 	"github.com/tedyst/spotifyutils/api/trackapi"
@@ -64,6 +65,8 @@ func main() {
 
 	api := m.PathPrefix("/api").Subrouter()
 	api.Use(limitAPIRequests)
+	api.HandleFunc("", docs.DocsHandler)
+	api.HandleFunc("/swagger.json", docs.SwaggerJSONHandler)
 	api.HandleFunc("/auth", auth.Auth)
 	api.HandleFunc("/auth-url", auth.AuthURL)
 	api.HandleFunc("/logout", auth.Logout)
@@ -85,6 +88,12 @@ func main() {
 
 	// Setup CSRF protection
 	opts := []csrf.Option{}
+	opts = append(opts, csrf.ErrorHandler(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			utils.ErrorString(w, r, "CSRF token mismatch")
+		},
+	)))
 	if *config.Debug {
 		opts = append(opts, csrf.Secure(false))
 	}
