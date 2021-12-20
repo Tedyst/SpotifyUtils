@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/api/utils"
@@ -84,8 +85,8 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 			if err != nil {
 				log.WithFields(log.Fields{
 					"type": "auth",
-					"code": request.Code,
-					"host": request.Host,
+					"code": strings.ReplaceAll(request.Code, "\n", ""),
+					"host": strings.ReplaceAll(request.Host, "\n", ""),
 				}).Error(err)
 				utils.ErrorErr(res, req, err)
 				return
@@ -95,8 +96,8 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 			if err != nil {
 				log.WithFields(log.Fields{
 					"type": "auth",
-					"code": request.Code,
-					"host": request.Host,
+					"code": strings.ReplaceAll(request.Code, "\n", ""),
+					"host": strings.ReplaceAll(request.Host, "\n", ""),
 				}).Error(err)
 				utils.ErrorErr(res, req, err)
 				return
@@ -122,8 +123,8 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"type": "auth",
-			"code": request.Code,
-			"host": request.Host,
+			"code": strings.ReplaceAll(request.Code, "\n", ""),
+			"host": strings.ReplaceAll(request.Host, "\n", ""),
 		}).Error(err)
 		utils.ErrorErr(res, req, err)
 		return

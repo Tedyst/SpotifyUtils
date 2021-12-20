@@ -107,20 +107,20 @@ func timingMiddleware(next *mux.Router) http.Handler {
 			log.WithFields(log.Fields{
 				"type":     "request",
 				"method":   r.Method,
-				"request":  routeStr,
+				"request":  strings.ReplaceAll(routeStr, "\n", ""),
 				"code":     statusCode,
 				"duration": duration.Seconds(),
-				"ip":       ipAddress,
-				"user":     username,
+				"ip":       strings.ReplaceAll(ipAddress, "\n", ""),
+				"user":     strings.ReplaceAll(username, "\n", ""),
 			}).Debug()
 		} else {
 			log.WithFields(log.Fields{
 				"type":     "request",
 				"method":   r.Method,
-				"request":  routeStr,
+				"request":  strings.ReplaceAll(routeStr, "\n", ""),
 				"code":     statusCode,
 				"duration": duration.Seconds(),
-				"ip":       ipAddress,
+				"ip":       strings.ReplaceAll(ipAddress, "\n", ""),
 			}).Debug()
 		}
 	})
