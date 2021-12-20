@@ -26,6 +26,11 @@ type response struct {
 	Settings  userutils.UserSettings
 }
 
+type responseError struct {
+	Success bool
+	Error   string
+}
+
 // StatusHandler returns the basic data of the user, like username, image, playlists, etc.
 // swagger:route GET /status status status
 // Produces:
@@ -41,7 +46,12 @@ func StatusHandler(res http.ResponseWriter, req *http.Request) {
 	getfromsession.Stop()
 	response := &response{}
 	if _, ok := session.Values["username"]; !ok {
-		utils.ErrorString(res, req, "Not logged in")
+		// Not using utils.ErrorString() because we want to return a 200 status code, for the CSRF to work
+		response := &responseError{}
+		response.Success = false
+		response.Error = "not logged in"
+		respJSON, _ := json.Marshal(response)
+		fmt.Fprint(res, string(respJSON))
 		return
 	}
 	getuser := timing.NewMetric("GetUser").Start()

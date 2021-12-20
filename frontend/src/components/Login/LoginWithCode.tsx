@@ -32,7 +32,7 @@ export default function LoginWithCode(props: { code: string, CSRFToken: string |
         return <LoginPage loggingIn={false} />;
     }
 
-    return <LoginPage loggingIn />;
+    return <LoginPage loggingIn={false} />;
 }
 
 interface AuthInterface {

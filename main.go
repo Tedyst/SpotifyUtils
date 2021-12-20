@@ -135,9 +135,7 @@ func main() {
 
 	log.Infof("Starting server on address http://%s", *config.Address)
 
-	if !*config.Debug {
-		m.Use(CSRF)
-	}
+	m.Use(CSRF)
 	m.Use(securityHeaders)
 	m.Use(gziphandler.GzipHandler)
 	if err := http.ListenAndServe(*config.Address, timingMiddleware(m)); err != nil {
