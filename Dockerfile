@@ -25,6 +25,7 @@ COPY spotifywrapper spotifywrapper
 COPY tracks tracks
 COPY userutils userutils
 COPY *.go .
+RUN go generate ./...
 RUN go build -o /app/build
 
 FROM debian:10.10-slim
@@ -35,6 +36,7 @@ EXPOSE 5001
 
 RUN ["mkdir", "/frontend"]
 COPY --from=backend /app/build /app/build
+COPY swagger.yaml /app/swagger.yaml
 COPY --from=frontend /app/frontend/build /app/frontend/build
 
 RUN apt update && apt install -y ca-certificates
