@@ -1,4 +1,4 @@
-// Documentation of SpotifyUtils
+// Documentation of SpotifyUtils's API
 //
 //     Schemes: http, https
 //     BasePath: /api

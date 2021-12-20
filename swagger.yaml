@@ -387,7 +387,7 @@ definitions:
     type: object
     x-go-package: github.com/tedyst/spotifyutils/api/trackapi
 info:
-  description: Documentation of SpotifyUtils
+  description: Documentation of SpotifyUtils's API
 paths:
   /auth:
     post:
