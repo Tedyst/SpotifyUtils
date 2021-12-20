@@ -35,7 +35,7 @@ func securityHeaders(h http.Handler) http.Handler {
 		w.Header().Set("Permissions-Policy", "geolocation=(), microphone=()")
 		w.Header().Set("Service-Worker-Allowed", "/")
 		if !(*config.Debug) {
-			w.Header().Set("Content-Security-Policy", "default-src 'none'; manifest-src 'self'; connect-src 'self' https://o557174.ingest.sentry.io https://sentry.io; img-src *; script-src https://o557174.ingest.sentry.io https://sentry.io https://storage.googleapis.com 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; base-uri 'self'; report-uri https://o557174.ingest.sentry.io/api/5689078/security/?sentry_key=a38da28ff45041828f3ee7f714af0527; font-src https://fonts.gstatic.com https://use.typekit.net; worker-src https://testing.stoicatedy.ovh https://spotify.stoicatedy.ovh;")
+			w.Header().Set("Content-Security-Policy", "default-src 'none'; manifest-src 'self'; connect-src 'self' https://o557174.ingest.sentry.io https://sentry.io; img-src * data:; script-src https://o557174.ingest.sentry.io https://sentry.io https://storage.googleapis.com https://unpkg.com 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://unpkg.com; base-uri 'self'; report-uri https://o557174.ingest.sentry.io/api/5689078/security/?sentry_key=a38da28ff45041828f3ee7f714af0527; font-src https://fonts.gstatic.com https://use.typekit.net; worker-src https://testing.stoicatedy.ovh https://spotify.stoicatedy.ovh;")
 		}
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("Expect-CT", "max-age=86400, enforce, report-uri=\"https://github.com/Tedyst/SpotifyUtils\"")
