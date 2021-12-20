@@ -24,6 +24,7 @@ COPY playlist playlist
 COPY spotifywrapper spotifywrapper
 COPY tracks tracks
 COPY userutils userutils
+COPY utils utils
 COPY *.go .
 RUN go generate ./...
 RUN go build -o /app/build
