@@ -16,7 +16,12 @@ import (
 	"github.com/tedyst/spotifyutils/config"
 )
 
-type response struct {
+// swagger:response trackAPIResponse
+type _ struct {
+	// in: body
+	Body trackAPIResponse
+}
+type trackAPIResponse struct {
 	Success bool
 	Result  struct {
 		Artist      string
@@ -26,8 +31,22 @@ type response struct {
 	}
 }
 
+// swagger:parameters trackAPIRequest
+type _ struct {
+	// in: path
+	// required: true
+	TrackID string
+}
+
+// Handler returns a track's information
+// swagger:route GET /track/{TrackID} track trackAPIRequest
+// Produces:
+// - application/json
+// responses:
+//   200: trackAPIResponse
+//   default: Error
 func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
-	response := &response{}
+	response := &trackAPIResponse{}
 	vars := mux.Vars(req)
 	trackURI := vars["track"]
 	if len(trackURI) == 36 {

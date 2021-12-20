@@ -1,4 +1,4 @@
-package compare
+package comparenousername
 
 import (
 	"encoding/json"
@@ -9,6 +9,11 @@ import (
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
+// swagger:response compareNoUsernameResponse
+type _ struct {
+	// in: body
+	Body responseNoUsername
+}
 type responseUserNoUsername struct {
 	ID    string
 	Name  string
@@ -21,7 +26,14 @@ type responseNoUsername struct {
 	Code    string
 }
 
-func HandlerNoUsername(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+// Handler returns the user's compare information
+// swagger:route GET /compare compare compare
+// Produces:
+// - application/json
+// responses:
+//   200: compareNoUsernameResponse
+//   default: Error
+func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	response := &responseNoUsername{}
 	response.Friends = []responseUserNoUsername{}
 

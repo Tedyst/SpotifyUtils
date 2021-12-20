@@ -27,7 +27,7 @@ type response struct {
 }
 
 // StatusHandler returns the basic data of the user, like username, image, playlists, etc.
-// swagger:route GET /status status
+// swagger:route GET /status status status
 // Produces:
 // - application/json
 // responses:

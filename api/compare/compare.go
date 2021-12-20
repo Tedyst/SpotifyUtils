@@ -11,6 +11,12 @@ import (
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
+// swagger:response compareUsernameResponse
+type _ struct {
+	// in: body
+	Body response
+}
+
 type responseUser struct {
 	ID    string
 	Name  string
@@ -24,7 +30,21 @@ type response struct {
 	Success   bool
 }
 
-func HandlerUsername(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+// swagger:parameters compareUsernameRequest
+type _ struct {
+	// in: path
+	// required: true
+	Code string
+}
+
+// Handler returns the user's compare information
+// swagger:route GET /compare/{Code} compare compareUsernameRequest
+// Produces:
+// - application/json
+// responses:
+//   200: compareUsernameResponse
+//   default: Error
+func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 	vars := mux.Vars(req)
 	response := &response{}
 	if _, ok := vars["code"]; !ok {

@@ -16,12 +16,14 @@ import (
 	"github.com/wader/gormstore/v2"
 
 	"github.com/tedyst/spotifyutils/api/compare"
+	"github.com/tedyst/spotifyutils/api/comparenousername"
 	"github.com/tedyst/spotifyutils/api/docs"
 	"github.com/tedyst/spotifyutils/api/recenttracks"
 	"github.com/tedyst/spotifyutils/api/settings"
 	"github.com/tedyst/spotifyutils/api/trackapi"
 
 	"github.com/tedyst/spotifyutils/api/top"
+	"github.com/tedyst/spotifyutils/api/topsince"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/tedyst/spotifyutils/api/status"
@@ -73,11 +75,11 @@ func main() {
 	api.HandleFunc("/status", status.StatusHandler)
 	api.Handle("/playlist/{playlist}", utils.LoggedIn(playlistview.Handler))
 	api.Handle("/top", utils.LoggedIn(top.Handler))
-	api.Handle("/top/old/{unixdate}", utils.LoggedIn(top.HandlerSince))
-	api.Handle("/compare", utils.LoggedIn(compare.HandlerNoUsername))
+	api.Handle("/top/old/{unixdate}", utils.LoggedIn(topsince.Handler))
+	api.Handle("/compare", utils.LoggedIn(comparenousername.Handler))
 	api.Handle("/recent", utils.LoggedIn(recenttracks.Handler))
 	api.Handle("/track/{track}", utils.LoggedIn(trackapi.Handler))
-	api.Handle("/compare/{code}", utils.LoggedIn(compare.HandlerUsername))
+	api.Handle("/compare/{code}", utils.LoggedIn(compare.Handler))
 	api.Handle("/settings", utils.LoggedIn(settings.Handler))
 
 	// Serve react app

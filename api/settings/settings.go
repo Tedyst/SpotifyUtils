@@ -10,24 +10,47 @@ import (
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
-type response struct {
+// swagger:response settingsAPIResponse
+type _ struct {
+	// in: body
+	Body settingsAPIResponse
+}
+
+// swagger:response settingsAPIRequest
+type _ struct {
+	// in: body
+	Success bool
+	Body    settingsAPIResponse
+}
+type settingsAPIResponse struct {
 	Success  bool
 	Settings userutils.UserSettings
 }
 
-func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
-	response := &response{}
+// GetHandler returns the user's settings
+// swagger:route GET /settings settings settings
+// Produces:
+// - application/json
+// responses:
+//   200: settingsAPIResponse
+//   default: Error
+func GetHandler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+	response := &settingsAPIResponse{}
+	response.Success = true
+	response.Settings = user.Settings
+	respJSON, _ := json.Marshal(response)
+	fmt.Fprint(res, string(respJSON))
+}
 
-	if req.Method == "GET" {
-		response.Success = true
-		response.Settings = user.Settings
-		respJSON, _ := json.Marshal(response)
-		fmt.Fprint(res, string(respJSON))
-		return
-	} else if req.Method != "POST" {
-		utils.ErrorString(res, req, "Method not allowed")
-		return
-	}
+// PostHandler handles the saving of user settings
+// swagger:route POST /settings settings settingsAPIRequest
+// Produces:
+// - application/json
+// responses:
+//   200: settingsAPIResponse
+//   default: Error
+func PostHandler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+	response := &settingsAPIResponse{}
 
 	request := &userutils.UserSettings{}
 	decoder := json.NewDecoder(req.Body)
@@ -55,4 +78,14 @@ func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
 		return
 	}
 	fmt.Fprint(res, string(respJSON))
+}
+
+func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+	if req.Method == "GET" {
+		GetHandler(res, req, user)
+	} else if req.Method == "POST" {
+		PostHandler(res, req, user)
+	} else {
+		utils.ErrorString(res, req, "Method not allowed")
+	}
 }
