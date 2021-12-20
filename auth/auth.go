@@ -6,13 +6,13 @@ import (
 	"net/http"
 	"os"
 	"path"
-	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/spotifywrapper"
 	"github.com/tedyst/spotifyutils/userutils"
+	utils2 "github.com/tedyst/spotifyutils/utils"
 )
 
 // swagger:response authAPIResponse
@@ -85,8 +85,8 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 			if err != nil {
 				log.WithFields(log.Fields{
 					"type": "auth",
-					"code": strings.ReplaceAll(request.Code, "\n", ""),
-					"host": strings.ReplaceAll(request.Host, "\n", ""),
+					"code": utils2.StringSanitize(request.Code),
+					"host": utils2.StringSanitize(request.Host),
 				}).Error(err)
 				utils.ErrorErr(res, req, err)
 				return
@@ -96,8 +96,8 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 			if err != nil {
 				log.WithFields(log.Fields{
 					"type": "auth",
-					"code": strings.ReplaceAll(request.Code, "\n", ""),
-					"host": strings.ReplaceAll(request.Host, "\n", ""),
+					"code": utils2.StringSanitize(request.Code),
+					"host": utils2.StringSanitize(request.Host),
 				}).Error(err)
 				utils.ErrorErr(res, req, err)
 				return
@@ -123,8 +123,8 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"type": "auth",
-			"code": strings.ReplaceAll(request.Code, "\n", ""),
-			"host": strings.ReplaceAll(request.Host, "\n", ""),
+			"code": utils2.StringSanitize(request.Code),
+			"host": utils2.StringSanitize(request.Host),
 		}).Error(err)
 		utils.ErrorErr(res, req, err)
 		return
