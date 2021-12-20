@@ -29,6 +29,8 @@ var (
 
 	Database = flag.String("Database", lookupEnvOrString("DATABASE", "sqlite://data.db"), "The MySQL Database Address")
 
+	ServeSwagger = flag.Bool("ServeSwagger", true, "Serve the Swagger UI")
+
 	IsMySQL = false
 
 	SpotifyAPI = spotify.NewAuthenticator(*RedirectURL, SpotifyScope)
