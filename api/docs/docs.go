@@ -29,6 +29,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// go:generate swagger generate spec -o swagger.yaml --scan-models
 var handler = middleware.SwaggerUI(middleware.SwaggerUIOpts{
 	BasePath: "",
 	Path:     "/api",
