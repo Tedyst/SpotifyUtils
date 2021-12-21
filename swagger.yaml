@@ -414,7 +414,7 @@ paths:
       - application/json
       operationId: authURLAPIRequest
       parameters:
-      - example: spotify.stoicatedy.ovh
+      - example: spotify.tedyst.ro
         in: query
         name: host
         type: string

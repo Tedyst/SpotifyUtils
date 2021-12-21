@@ -23,7 +23,7 @@ var (
 	SpotifyClientID     = flag.String("SpotifyClientID", lookupEnvOrString("SPOTIFY_CLIENT_ID", ""), "The Spotify Client ID")
 	SpotifyClientSecret = flag.String("SpotifyClientSecret", lookupEnvOrString("SPOTIFY_CLIENT_SECRET", ""), "The Spotify Client Secret")
 
-	RedirectURL = flag.String("RedirectURL", "https://testing.stoicatedy.ovh/auth", "The Default Redirect URL")
+	RedirectURL = flag.String("RedirectURL", "https://testing.tedyst.ro/auth", "The Default Redirect URL")
 	Address     = flag.String("Address", "0.0.0.0:5000", "The Default Address")
 	Secret      = []byte(lookupEnvOrString("SECRET_KEY", "key"))
 

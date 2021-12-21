@@ -138,7 +138,7 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 // swagger:parameters authURLAPIRequest
 type _ struct {
 	// in: query
-	// example: spotify.stoicatedy.ovh
+	// example: spotify.tedyst.ro
 	Host string `json:"host"`
 }
 
