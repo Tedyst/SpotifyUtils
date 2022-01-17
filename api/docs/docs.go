@@ -9,12 +9,6 @@
 //     Produces:
 //     - application/json
 //
-//     SecurityDefinitions:
-//       CSRFToken:
-//         type: apiKey
-//         name: x-csrf-token
-//         in: header
-//
 //	   Security:
 //     - CSRFToken: []
 // swagger:meta
@@ -26,7 +20,6 @@ import (
 	"os"
 
 	"github.com/go-openapi/loads"
-	"github.com/go-openapi/runtime/middleware"
 	"github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/config"
 )
@@ -44,11 +37,12 @@ func init() {
 		logrus.Warn("swagger.yaml not found! Disabling Swagger UI")
 		return
 	}
-	handler = middleware.SwaggerUI(middleware.SwaggerUIOpts{
-		BasePath: "",
-		Path:     "/api",
-		Title:    "SpotifyUtils",
-		SpecURL:  "api/swagger.json",
+	handler = SwaggerUI(SwaggerUIOpts{
+		BasePath:        "",
+		Path:            "/api",
+		Title:           "SpotifyUtils",
+		SpecURL:         "api/swagger.json",
+		CSRFTokenHeader: "X-CSRF-Token",
 	}, nil)
 	var err error
 	specDoc, err := loads.Spec("swagger.yaml")
