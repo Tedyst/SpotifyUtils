@@ -61,6 +61,9 @@ func main() {
 		TableName: "sessions",
 	}
 	config.SessionStore = gormstore.NewOptions(config.DB, sessionOptions, config.Secret)
+	config.SessionStore.SessionOpts.Secure = true
+	config.SessionStore.SessionOpts.SameSite = http.SameSiteStrictMode
+	config.SessionStore.SessionOpts.HttpOnly = true
 
 	m := mux.NewRouter()
 	m.HandleFunc("/logout", auth.Logout)
@@ -69,18 +72,22 @@ func main() {
 	api.Use(limitAPIRequests)
 	api.HandleFunc("", docs.DocsHandler)
 	api.HandleFunc("/swagger.json", docs.SwaggerJSONHandler)
+
 	api.HandleFunc("/auth", auth.Auth)
 	api.HandleFunc("/auth-url", auth.AuthURL)
 	api.HandleFunc("/logout", auth.Logout)
 	api.HandleFunc("/status", status.StatusHandler)
-	api.Handle("/playlist/{playlist}", utils.LoggedIn(playlistview.Handler))
-	api.Handle("/top", utils.LoggedIn(top.Handler))
-	api.Handle("/top/old/{unixdate}", utils.LoggedIn(topsince.Handler))
-	api.Handle("/compare", utils.LoggedIn(comparenousername.Handler))
-	api.Handle("/recent", utils.LoggedIn(recenttracks.Handler))
-	api.Handle("/track/{track}", utils.LoggedIn(trackapi.Handler))
-	api.Handle("/compare/{code}", utils.LoggedIn(compare.Handler))
-	api.Handle("/settings", utils.LoggedIn(settings.Handler))
+
+	loggedin := api.NewRoute().Subrouter()
+	loggedin.Use(auth.Middleware)
+	loggedin.HandleFunc("/top", top.Handler)
+	loggedin.HandleFunc("/playlist/{playlist}", playlistview.Handler)
+	loggedin.HandleFunc("/top/old/{unixdate}", topsince.Handler)
+	loggedin.HandleFunc("/compare", comparenousername.Handler)
+	loggedin.HandleFunc("/recent", recenttracks.Handler)
+	loggedin.HandleFunc("/track/{track}", trackapi.Handler)
+	loggedin.HandleFunc("/compare/{code}", compare.Handler)
+	loggedin.HandleFunc("/settings", settings.Handler)
 
 	// Serve react app
 	spa := spaHandler{
@@ -96,8 +103,11 @@ func main() {
 			utils.ErrorString(w, r, "CSRF token mismatch")
 		},
 	)))
-	opts = append(opts, csrf.Secure(false))
+	if *config.Debug {
+		opts = append(opts, csrf.Secure(false))
+	}
 	opts = append(opts, csrf.Path("/"))
+	opts = append(opts, csrf.SameSite(csrf.SameSiteStrictMode))
 	CSRF := csrf.Protect(config.Secret, opts...)
 
 	// Enable pprof

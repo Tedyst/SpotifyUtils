@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 	servertiming "github.com/mitchellh/go-server-timing"
 	"github.com/tedyst/spotifyutils/api/utils"
+	"github.com/tedyst/spotifyutils/auth"
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
@@ -38,7 +39,8 @@ type _ struct {
 // responses:
 //   200: topSinceAPIResponse
 //   default: Error
-func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+func Handler(res http.ResponseWriter, req *http.Request) {
+	user := req.Context().Value(auth.UserContextKey{}).(*userutils.User)
 	response := &topSinceAPIResponse{}
 	if !user.Settings.RecentTracks {
 		utils.ErrorString(res, req, "recent tracks tracking is disabled")

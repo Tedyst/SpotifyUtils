@@ -1,12 +1,15 @@
 package auth
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
 	"path"
 
+	servertiming "github.com/mitchellh/go-server-timing"
 	log "github.com/sirupsen/logrus"
 	"github.com/tedyst/spotifyutils/api/utils"
 	"github.com/tedyst/spotifyutils/config"
@@ -14,6 +17,10 @@ import (
 	"github.com/tedyst/spotifyutils/userutils"
 	utils2 "github.com/tedyst/spotifyutils/utils"
 )
+
+type UserContextKey struct{}
+
+const userSessionStoreKey = "username"
 
 // swagger:response authAPIResponse
 type authAPIResponse struct {
@@ -55,7 +62,7 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	session, err := config.SessionStore.Get(req, "username")
+	session, err := config.SessionStore.Get(req, userSessionStoreKey)
 	if err != nil {
 		utils.ErrorErr(res, req, err)
 		return
@@ -77,7 +84,7 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 		}
 		u = userutils.GetUser(*config.MockUser)
 	} else {
-		val, ok := session.Values["username"]
+		val, ok := session.Values[userSessionStoreKey]
 		if ok {
 			u = userutils.GetUser(val.(string))
 		} else {
@@ -117,7 +124,7 @@ func Auth(res http.ResponseWriter, req *http.Request) {
 
 	go userutils.UpdateUserCount()
 
-	session.Values["username"] = u.UserID
+	session.Values[userSessionStoreKey] = u.UserID
 
 	err = session.Save(req, res)
 	if err != nil {
@@ -192,13 +199,13 @@ func AuthURL(res http.ResponseWriter, req *http.Request) {
 //   200: authAPIResponse
 //   default: Error
 func Logout(res http.ResponseWriter, req *http.Request) {
-	session, err := config.SessionStore.Get(req, "username")
+	session, err := config.SessionStore.Get(req, userSessionStoreKey)
 	if err != nil {
 		utils.ErrorErr(res, req, err)
 		return
 	}
 
-	session.Values["username"] = ""
+	session.Values[userSessionStoreKey] = ""
 	session.Options.MaxAge = -1
 
 	err = session.Save(req, res)
@@ -211,4 +218,49 @@ func Logout(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	http.ServeFile(res, req, index)
+}
+
+func GetUserFromRequest(req *http.Request) (*userutils.User, error) {
+	user := req.Context().Value(UserContextKey{})
+	if user != nil {
+		return user.(*userutils.User), nil
+	}
+	timing := servertiming.FromContext(req.Context())
+	getfromsession := timing.NewMetric("GetFromSession").Start()
+	session, err := config.SessionStore.Get(req, userSessionStoreKey)
+	getfromsession.Stop()
+	if err != nil {
+		return nil, err
+	}
+	val, ok := session.Values[userSessionStoreKey]
+	if !ok {
+		return nil, errors.New("user not found")
+	}
+	return userutils.GetUser(val.(string)), nil
+}
+
+func Middleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		timing := servertiming.FromContext(r.Context())
+		getfromsession := timing.NewMetric("GetFromSession").Start()
+		session, _ := config.SessionStore.Get(r, userSessionStoreKey)
+		val, ok := session.Values[userSessionStoreKey]
+		getfromsession.Stop()
+		if !ok {
+			w.WriteHeader(401)
+			utils.ErrorString(w, r, "Not Logged In")
+			return
+		}
+		switch v := val.(type) {
+		case string:
+			getuser := timing.NewMetric("GetUser").Start()
+			user := userutils.GetUser(v)
+			r = r.WithContext(context.WithValue(r.Context(), UserContextKey{}, user))
+			getuser.Stop()
+			next.ServeHTTP(w, r)
+		default:
+			utils.ErrorString(w, r, "Invalid username")
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+	})
 }

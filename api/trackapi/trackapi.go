@@ -7,6 +7,7 @@ import (
 
 	servertiming "github.com/mitchellh/go-server-timing"
 	"github.com/tedyst/spotifyutils/api/utils"
+	"github.com/tedyst/spotifyutils/auth"
 	"github.com/tedyst/spotifyutils/metrics"
 	"github.com/tedyst/spotifyutils/tracks"
 	"github.com/tedyst/spotifyutils/userutils"
@@ -45,7 +46,8 @@ type _ struct {
 // responses:
 //   200: trackAPIResponse
 //   default: Error
-func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+func Handler(res http.ResponseWriter, req *http.Request) {
+	user := req.Context().Value(auth.UserContextKey{}).(*userutils.User)
 	response := &trackAPIResponse{}
 	vars := mux.Vars(req)
 	trackURI := vars["track"]

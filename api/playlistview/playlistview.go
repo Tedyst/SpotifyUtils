@@ -7,6 +7,7 @@ import (
 
 	servertiming "github.com/mitchellh/go-server-timing"
 	"github.com/tedyst/spotifyutils/api/utils"
+	"github.com/tedyst/spotifyutils/auth"
 	"github.com/tedyst/spotifyutils/playlist"
 	"github.com/tedyst/spotifyutils/tracks"
 
@@ -47,7 +48,8 @@ type _ struct {
 // responses:
 //   200: playlistViewResponse
 //   default: Error
-func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+func Handler(res http.ResponseWriter, req *http.Request) {
+	user := req.Context().Value(auth.UserContextKey{}).(*userutils.User)
 	vars := mux.Vars(req)
 	code := vars["playlist"]
 	response := &response{}

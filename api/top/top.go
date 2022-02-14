@@ -7,6 +7,7 @@ import (
 
 	servertiming "github.com/mitchellh/go-server-timing"
 	"github.com/tedyst/spotifyutils/api/utils"
+	"github.com/tedyst/spotifyutils/auth"
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
@@ -29,8 +30,10 @@ type responseTopAPI struct {
 // responses:
 //   200: responseTopAPI
 //   default: Error
-func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+func Handler(res http.ResponseWriter, req *http.Request) {
 	response := &responseTopAPI{}
+	user := req.Context().Value(auth.UserContextKey{}).(*userutils.User)
+
 	timing := servertiming.FromContext(req.Context())
 	refreshtop := timing.NewMetric("RefreshTop").Start()
 	err := user.RefreshTop()

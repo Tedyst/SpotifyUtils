@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 	servertiming "github.com/mitchellh/go-server-timing"
 	"github.com/tedyst/spotifyutils/api/utils"
+	"github.com/tedyst/spotifyutils/auth"
 	"github.com/tedyst/spotifyutils/userutils"
 )
 
@@ -44,7 +45,8 @@ type _ struct {
 // responses:
 //   200: compareUsernameResponse
 //   default: Error
-func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+func Handler(res http.ResponseWriter, req *http.Request) {
+	user := req.Context().Value(auth.UserContextKey{}).(*userutils.User)
 	vars := mux.Vars(req)
 	response := &response{}
 	if _, ok := vars["code"]; !ok {

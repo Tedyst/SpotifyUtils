@@ -7,6 +7,7 @@ import (
 
 	servertiming "github.com/mitchellh/go-server-timing"
 	"github.com/tedyst/spotifyutils/api/utils"
+	"github.com/tedyst/spotifyutils/auth"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/tracks"
 	"github.com/tedyst/spotifyutils/userutils"
@@ -38,7 +39,8 @@ type response struct {
 // responses:
 //   200: recentTracksAPIResponse
 //   default: Error
-func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+func Handler(res http.ResponseWriter, req *http.Request) {
+	user := req.Context().Value(auth.UserContextKey{}).(*userutils.User)
 	response := &response{}
 	if *config.MockExternalCalls {
 		utils.ErrorString(res, req, "MockExternalCalls enabled, could not contact Spotify")

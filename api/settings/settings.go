@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/tedyst/spotifyutils/api/utils"
+	"github.com/tedyst/spotifyutils/auth"
 	"github.com/tedyst/spotifyutils/config"
 	"github.com/tedyst/spotifyutils/userutils"
 )
@@ -34,7 +35,8 @@ type settingsAPIResponse struct {
 // responses:
 //   200: settingsAPIResponse
 //   default: Error
-func GetHandler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+func GetHandler(res http.ResponseWriter, req *http.Request) {
+	user := req.Context().Value(auth.UserContextKey{}).(*userutils.User)
 	response := &settingsAPIResponse{}
 	response.Success = true
 	response.Settings = user.Settings
@@ -49,7 +51,8 @@ func GetHandler(res http.ResponseWriter, req *http.Request, user *userutils.User
 // responses:
 //   200: settingsAPIResponse
 //   default: Error
-func PostHandler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+func PostHandler(res http.ResponseWriter, req *http.Request) {
+	user := req.Context().Value(auth.UserContextKey{}).(*userutils.User)
 	response := &settingsAPIResponse{}
 
 	request := &userutils.UserSettings{}
@@ -80,11 +83,11 @@ func PostHandler(res http.ResponseWriter, req *http.Request, user *userutils.Use
 	fmt.Fprint(res, string(respJSON))
 }
 
-func Handler(res http.ResponseWriter, req *http.Request, user *userutils.User) {
+func Handler(res http.ResponseWriter, req *http.Request) {
 	if req.Method == "GET" {
-		GetHandler(res, req, user)
+		GetHandler(res, req)
 	} else if req.Method == "POST" {
-		PostHandler(res, req, user)
+		PostHandler(res, req)
 	} else {
 		utils.ErrorString(res, req, "Method not allowed")
 	}
