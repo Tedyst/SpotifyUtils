@@ -104,6 +104,9 @@ func (u *User) RefreshToken() error {
 	if *config.MockExternalCalls {
 		return nil
 	}
+	if u.Token == nil {
+		return errors.New("token is nil")
+	}
 	unlocker := userMutex.RefreshToken.Lock(u.UserID)
 	defer unlocker.Unlock()
 	if u.Token.RefreshToken == "" {
