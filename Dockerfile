@@ -29,7 +29,7 @@ COPY *.go .
 RUN go generate ./...
 RUN go build -o /app/build
 
-FROM debian:10.10-slim
+FROM debian:buster-20231009-slim
 
 WORKDIR /app
 EXPOSE 5000
